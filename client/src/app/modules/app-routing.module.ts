@@ -4,6 +4,7 @@ import { GameCreationPageComponent } from '@app/pages/game-creation-page/game-cr
 import { GamePageComponent } from '@app/pages/game-page/game-page.component';
 import { MainPageComponent } from '@app/pages/main-page/main-page.component';
 import { MaterialPageComponent } from '@app/pages/material-page/material-page.component';
+import { SelectionPageComponentComponent } from '@app/pages/selection-page-component/selection-page-component.component';
 import { SoloViewPageComponent } from '@app/pages/solo-view-page/solo-view-page.component';
 
 const routes: Routes = [
@@ -13,6 +14,7 @@ const routes: Routes = [
     { path: 'material', component: MaterialPageComponent },
     { path: 'gameCreation', component: GameCreationPageComponent },
     { path: 'soloView', component: SoloViewPageComponent },
+    { path: 'gameSelection', component: SelectionPageComponentComponent },
     { path: '**', redirectTo: '/home' },
 ];
 

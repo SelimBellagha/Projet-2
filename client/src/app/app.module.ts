@@ -13,6 +13,7 @@ import { MainPageComponent } from '@app/pages/main-page/main-page.component';
 import { MaterialPageComponent } from '@app/pages/material-page/material-page.component';
 import { GameCreationPageComponent } from './pages/game-creation-page/game-creation-page.component';
 import { SoloViewPageComponent } from './pages/solo-view-page/solo-view-page.component';
+import { SelectionPageComponentComponent } from './pages/selection-page-component/selection-page-component.component';
 
 /**
  * Main module that is used in main.ts.
@@ -30,6 +31,7 @@ import { SoloViewPageComponent } from './pages/solo-view-page/solo-view-page.com
         SidebarComponent,
         GameCreationPageComponent,
         SoloViewPageComponent,
+        SelectionPageComponentComponent,
     ],
     imports: [AppMaterialModule, AppRoutingModule, BrowserAnimationsModule, BrowserModule, FormsModule, HttpClientModule],
     providers: [],
