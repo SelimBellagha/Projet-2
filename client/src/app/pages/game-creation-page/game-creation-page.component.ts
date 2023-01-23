@@ -16,7 +16,8 @@ export class GameCreationPageComponent {
 
     resetBackground(leftPicture: boolean): void {
         // TODO Remettre le fond en blanc
-        window.alert('reset background');
+        const message: string = 'reset ' + (leftPicture ? 'left' : 'right') + ' Background';
+        window.alert(message);
     }
 
     replicateForeground(leftPicture: boolean): void {
