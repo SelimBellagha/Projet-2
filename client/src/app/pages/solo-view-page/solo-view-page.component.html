@@ -1,15 +1,12 @@
-<head>
-    <title>Jeu des differences</title>
-</head>
+
 <body class="container">
+
     <div class="section">
         <div class="score-text">
-            <p>
-                <span class="underline-title-text">Differences trouvées:</span>
-            </p>
-            <div>
-                <p class="player-score"><span>NomJoueur1:</span><span class="player-name">X</span></p>
-                <p class="player-score"><span>NomJoueur2:</span><span class="player-name">X</span></p>
+            <p class="underline-title-text"> Differences trouvées: </p>
+             <div>
+                <p class="player-score"> NomJoueur : X </p>
+                <p class="player-score"> Indices restants: X </p>  
             </div>
             <div><img src="stopwatch.png" class="watch-logo" /> Timer</div>
         </div>
@@ -24,8 +21,8 @@
     </div>
     <div class="section">
         <div class="game-information-text">
-            <p class="information-text">
-                <span>Informations de la partie :</span>
+            <p class="underline-title-text">
+                Informations de la partie :
             </p>
             <div>
                 <ul>
@@ -33,6 +30,7 @@
                     <li>Niveau de difficulté</li>
                     <li>Mode de jeu</li>
                     <li>X Differences sur l'image</li>
+                    <li id = "penalty">Pénalités pour utilisation d'indice : 00: XX</li>
                 </ul>
             </div>
         </div>
@@ -47,13 +45,10 @@
     </div>
     <div class="section">
         <div class="chat-container">
-            <p style="text-align: center">
-                <span class="title-chat-text">Messages</span>
+            <p class="title-chat-text" style="text-align: center">
+                Messages
             </p>
             <div class="message-container">les messages arriveront ici<br /><br /><br /><br />oui</div>
-            <div style="text-align: center">
-                <input type="text" size="35" style="height: 50px" /><input type="submit" style="vertical-align: bottom" value="Envoyer le message" />
-            </div>
         </div>
     </div>
 </body>
