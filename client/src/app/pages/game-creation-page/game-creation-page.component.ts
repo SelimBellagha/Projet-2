@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 
 @Component({
     selector: 'app-game-creation-page',
@@ -6,6 +6,8 @@ import { Component } from '@angular/core';
     styleUrls: ['./game-creation-page.component.scss'],
 })
 export class GameCreationPageComponent {
+    @ViewChild('modifiedImageCanvas') modifiedImageCanvas: ElementRef<HTMLCanvasElement>;
+    @ViewChild('modifiedImageInput') modifiedImageInput: ElementRef<HTMLInputElement>;
     radius: number = 3;
 
     resetForeground(leftPicture: boolean): void {
@@ -35,5 +37,10 @@ export class GameCreationPageComponent {
         // TODO changer le radius pour la nouvelle valeur
         this.radius = newRadius;
         window.alert('radius modified');
+    }
+
+    updateModifiedImageDisplay(): void {
+        // this.modifiedImageCanvas.nativeElement.getContext('2d')?.drawImage(this.modifiedImageInput.nativeElement.files[0], 0, 0);
+        window.alert('received new file');
     }
 }

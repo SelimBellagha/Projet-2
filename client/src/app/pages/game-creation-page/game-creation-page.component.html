@@ -22,9 +22,11 @@
         </div>
         <div class="image-container">
             <h1>Zone Image Modifiée</h1>
-            <canvas width="640px" height="480px"></canvas>
+            <canvas #modifiedImageCanvas width="640px" height="480px"></canvas>
             <div class="buttons">
-                <button type="button">Upload</button>
+                <!--<button type="button">Upload</button>-->
+                <input type="file" accept="image/*" id="modified-image-upload-button" (change)="updateModifiedImageDisplay()" hidden />
+                <label for="modified-image-upload-button">Choose File</label>
                 <button type="button" (click)="resetBackground(false)">Réinitialiser arrière-plan</button>
                 <button type="button" (click)="resetForeground(false)">Réinitialiser avant-plan</button>
                 <button type="button" (click)="replicateForeground(false)">Dupliquer avant-plan</button>
