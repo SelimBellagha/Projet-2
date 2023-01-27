@@ -16,7 +16,6 @@ import { GameCreationPageComponent } from './pages/game-creation-page/game-creat
 import { SoloViewPageComponent } from './pages/solo-view-page/solo-view-page.component';
 import { SelectionPageComponentComponent } from './pages/selection-page-component/selection-page-component.component';
 
-
 /**
  * Main module that is used in main.ts.
  * All automatically generated components will appear in this module.
