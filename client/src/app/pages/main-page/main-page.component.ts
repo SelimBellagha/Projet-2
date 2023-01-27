@@ -49,4 +49,8 @@ export class MainPageComponent {
     goToGameSelection(): void {
         this.router.navigate(['/gameSelection']);
     }
+
+    goToConfiguration(): void {
+        this.router.navigate(['/gameConfiguration']);
+    }
 }
