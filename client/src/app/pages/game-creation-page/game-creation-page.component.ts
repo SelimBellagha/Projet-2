@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 
 @Component({
@@ -7,8 +7,10 @@ import { Router } from '@angular/router';
     styleUrls: ['./game-creation-page.component.scss'],
 })
 export class GameCreationPageComponent {
-    radius: number = 3;
+    @ViewChild('rightCanvas') rightCanvas: ElementRef<HTMLCanvasElement>;
+    @ViewChild('leftCanvas') leftCanvas: ElementRef<HTMLCanvasElement>;
 
+    radius: number = 3;
     constructor(private router: Router) {}
 
     resetForeground(leftPicture: boolean): void {
@@ -38,6 +40,30 @@ export class GameCreationPageComponent {
         // TODO changer le radius pour la nouvelle valeur
         this.radius = newRadius;
         window.alert('radius modified');
+    }
+
+    onUpdateRightImageInput(rightImageInput: HTMLInputElement): void {
+        const file = rightImageInput.files?.item(0);
+        if (file !== null && file !== undefined) {
+            createImageBitmap(file).then((image) => {
+                this.rightCanvas.nativeElement.getContext('2d')?.drawImage(image, 0, 0);
+            });
+        } else {
+            // manage error
+            window.alert('error reading file');
+        }
+    }
+
+    onUpdateLeftImageInput(leftImageInput: HTMLInputElement): void {
+        const file = leftImageInput.files?.item(0);
+        if (file !== null && file !== undefined) {
+            createImageBitmap(file).then((image) => {
+                this.leftCanvas.nativeElement.getContext('2d')?.drawImage(image, 0, 0);
+            });
+        } else {
+            // manage error
+            window.alert('error reading file');
+        }
     }
 
     goToConfiguration(): void {
