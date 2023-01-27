@@ -1,0 +1,44 @@
+.container {
+    background-color: #b5d8b5;
+    padding: 0 5% 5% 5%;
+}
+
+.main-container {
+    position: relative;
+    background-color: #fffafa;
+    border: 1px dashed #000000;
+    border-radius: 5px;
+    min-height: 80%;
+    min-width: 100%;
+    display: grid;
+    grid-template-columns: 50% 50%;
+}
+
+.jeu {
+    background-color: #ffa07a;
+    border: 1px solid black;
+    border-radius: 5px;
+    margin: 3%;
+}
+
+#nav-buttons {
+    text-align: right;
+}
+
+.return-button {
+    position: absolute;
+    left:    0;
+    top:   0;
+    margin-top: 5px;
+    margin-left: 5px;
+    text-align: center;
+    font-weight: bold;
+    height: 30px;
+    width: 100px;
+    background-color: #6DA093;
+    color: white;
+    border-radius: 10px;
+    border-color: #6DA093;
+    font-family: 'Oleo Script Swash Caps';   
+    font-size: 15px;
+}
