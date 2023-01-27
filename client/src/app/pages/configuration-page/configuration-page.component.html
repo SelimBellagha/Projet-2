@@ -1,5 +1,5 @@
 <div id="grid-container">
-    <button class= "boutton bouttonRetour">Retour</button>
+    <button class= "boutton bouttonRetour" (click)="goToHomePage()">Retour</button>
     <p id= "Config">Configuration</p>
     <div id="GridJeux">
         <button class="Boutton-3">Précédent</button>
@@ -52,7 +52,7 @@
         </div>
     </div>
     <div style="display: inline; justify-content: center; justify-content: space-between;">
-        <button class= "boutton">Créer jeu +</button>
+        <button class= "boutton" (click)="goToCreationPage()">Créer jeu +</button>
         <button class= "boutton">Définir constantes</button>
         <button class= "boutton">Historique</button>
     </div>

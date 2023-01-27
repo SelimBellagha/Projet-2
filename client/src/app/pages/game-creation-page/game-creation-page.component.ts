@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
     selector: 'app-game-creation-page',
@@ -7,6 +8,8 @@ import { Component } from '@angular/core';
 })
 export class GameCreationPageComponent {
     radius: number = 3;
+
+    constructor(private router: Router) {}
 
     resetForeground(leftPicture: boolean): void {
         // enlever les dessins/modifications
@@ -35,5 +38,9 @@ export class GameCreationPageComponent {
         // TODO changer le radius pour la nouvelle valeur
         this.radius = newRadius;
         window.alert('radius modified');
+    }
+
+    goToConfiguration(): void {
+        this.router.navigate(['/gameConfiguration']);
     }
 }

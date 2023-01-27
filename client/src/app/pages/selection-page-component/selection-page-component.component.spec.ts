@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { RouterTestingModule } from '@angular/router/testing';
 import { SelectionPageComponentComponent } from './selection-page-component.component';
 
 describe('SelectionPageComponentComponent', () => {
@@ -9,6 +9,7 @@ describe('SelectionPageComponentComponent', () => {
     beforeEach(async () => {
         await TestBed.configureTestingModule({
             declarations: [SelectionPageComponentComponent],
+            imports: [RouterTestingModule],
         }).compileComponents();
 
         fixture = TestBed.createComponent(SelectionPageComponentComponent);
