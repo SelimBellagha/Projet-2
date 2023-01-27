@@ -1,0 +1,225 @@
+#canvas {
+    border: 1px solid black;
+}
+
+#grid-container {
+    position: relative;
+    width: 1920px;
+    height: 1080px;
+    
+    background: #A2CEC4; 
+}
+
+.boutton {
+    left: 17px;
+    top: 20px;
+    
+    background: #6DA093;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    border-radius: 20px;
+}
+
+.bouttonRetour {
+    width: 8%;
+    height: 5%;
+}
+.bouttonFichiers {
+    width: 95%;
+    height: 15%;
+}
+.ButtonsContainer {
+    display: inline;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+#GridJeux {
+    position: absolute;
+    width: 1569px;
+    height: 894px;
+    left: 17px;
+    top: 154px;
+    
+    background: #E4E2E2;
+    border-radius: 50px;
+}
+
+#GridJeu1 {
+    box-sizing: border-box;
+
+    position: absolute;
+    width: 609px;
+    height: 332px;
+    left: 126px;
+    top: 208px;
+    
+    background: #F08C8C;
+    border: 4px solid #000000;
+    border-radius: 50px;
+}
+
+#GridImageDuJeu {
+    box-sizing: border-box;
+
+    width: 253px;
+    height: 213px;
+    left: 149px;
+    top: 283px;
+
+    background: #FFFFFF;
+    border: 3px solid #000000;
+    border-radius: 10px;
+}
+
+#GridTopScores {
+    box-sizing: border-box;
+
+    width: 308px;
+    height: 213px;
+    left: 412px;
+    top: 283px;
+
+    background: #FFFFFF;
+    border: 3px solid #000000;
+    border-radius: 10px;
+}
+
+#boutton-2 {
+    position: absolute;
+    width: 71.69px;
+    height: 23px;
+    left: 593.16px;
+    top: 460px;
+
+    background: #C6C1C1;
+    border-radius: 6px; 
+}
+#titre{
+    width: 145px;
+    height: 53px;
+    left: 358px;
+    top: 223px;
+
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 700;
+    font-size: 44px;
+    line-height: 53px;
+    text-align: center;
+
+    color: #000000;
+}
+#difficulte{
+    width: 100px;
+    height: 22px;
+    left: 556px;
+    top: 238px;
+
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 700;
+    font-size: 18px;
+    line-height: 22px;
+
+    text-align: center;
+
+    color: #000000;
+    padding-top: 4%;
+}
+
+#image{
+    width: 49px;
+    height: 52px;
+    left: 645px;
+    top: 223px;
+}
+
+#titre-Score{
+    padding: 3% 0 0 0;
+    width: 125.91px;
+    height: 35.28px;
+    left: 502.53px;
+    top: 293.45px;
+
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 700;
+    font-size: 22px;
+    line-height: 27px;
+    text-align: center;
+
+    color: #000000;
+}
+.titre-solo{
+    padding-left: 20px;
+    width: 52.03px;
+    height: 28.75px;
+    left: 487px;
+    top: 336px;
+
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 700;
+    font-size: 18px;
+    line-height: 22px;
+    text-align: center;
+
+    color: #EAEAEA;
+}
+.Boutton-3 {
+    position: absolute;
+    width: 164px;
+    height: 53px;
+    left: 1331px;
+    top: 966px;
+    
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 700;
+    font-size: 44px;
+    line-height: 53px;
+    text-align: center;
+    
+    color: #919191;  
+}
+
+#GridBoutton {
+    position: absolute;
+    width: 303px;
+    height: 416px;
+    left: 1596px;
+    top: 632px;
+    
+    background: #E4E2E2;
+    border-radius: 20px;
+}
+
+#Image-couronne {
+    position: absolute;
+    width: 33.3px;
+    height: 36.59px;
+    left: 465.07px;
+    top: 293.45px;
+
+    background: url(../../../assets/couronne.png);
+}
+
+#Config {
+    position: absolute;
+    width: 836px;
+    height: 122px;
+    left: 542px;
+    top: 32px;
+
+    font-family: 'Oleo Script';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 90px;
+    line-height: 124px;
+    text-align: center;
+
+    color: #6D5E5E;
+
+    text-shadow: 4px 4px 4px rgba(0, 0, 0, 0.25);
+}
+
