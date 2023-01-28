@@ -18,7 +18,8 @@
             </div>
         </div>
         <div class="middle-buttons">
-            <button>Upload to both</button>
+            <input #middleImageInput id="middleImageInput" type="file" accept="image/bmp" hidden (change)="onUpdateMiddleImageInput(middleImageInput)">
+            <label for="middleImageInput">Choose File for Both</label>
             <button>Intervertir avant-plan</button>
         </div>
         <div class="image-container">
@@ -35,7 +36,16 @@
     </div>
 
     <div class="bottom-buttons">
-        <button type="button" (click)="modifyRadius(3)">Configurer Rayon</button>
+        <!--<button type="button" (click)="modifyRadius(3)">Configurer Rayon</button>-->
+        <input id="radius-input-0" type="radio" name="radius"  (click)="modifyRadius(0)">
+        <label for="radius-input-0">0</label>
+        <input id="radius-input-1" type="radio" name="radius" (click)="modifyRadius(3)" checked>
+        <label for="radius-input-3">3</label>
+        <input id="radius-input-9" type="radio" name="radius" (click)="modifyRadius(9)">
+        <label for="radius-input-9">9</label>
+        <input id="radius-input-15" type="radio" name="radius" (click)="modifyRadius(15)">
+        <label for="radius-input-15">15</label>
         <button type="button " (click)="launchValidation()">Valider et créer</button>
+        <p>Current Radius: {{radius}}</p>
     </div>
 </body>
