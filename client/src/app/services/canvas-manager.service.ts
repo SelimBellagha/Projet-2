@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { DifferenceDetectionService } from './difference-detection.service';
 import { DEFAULT_HEIGHT, DEFAULT_WIDTH } from './draw.service';
 
 @Injectable({
@@ -7,6 +8,9 @@ import { DEFAULT_HEIGHT, DEFAULT_WIDTH } from './draw.service';
 export class CanvasManagerService {
     leftCanavsContext: CanvasRenderingContext2D;
     rightCanavsContext: CanvasRenderingContext2D;
+
+    constructor(private differenceDetector: DifferenceDetectionService) {}
+
     changeRightBackground(file: File): void {
         if (file !== null && file !== undefined) {
             createImageBitmap(file).then((image) => {
@@ -64,5 +68,11 @@ export class CanvasManagerService {
 
     validateImageSize(image: ImageBitmap) {
         return image.height === DEFAULT_HEIGHT && image.width === DEFAULT_WIDTH;
+    }
+
+    launchVerification(radius: number) {
+        const leftImageData = this.leftCanavsContext.getImageData(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT);
+        const rightImageData = this.rightCanavsContext.getImageData(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT);
+        this.differenceDetector.launchDifferenceDetection(leftImageData, rightImageData, radius);
     }
 }
