@@ -7,7 +7,6 @@
     <div class="images-area">
         <div class="image-container">
             <h1>Zone Image Originale</h1>
-            <!--<img alt="Test" src="https://www.jardiner-malin.fr/wp-content/uploads/2015/02/tilleul-arbre.jpg" />-->
             <canvas #leftCanvas width="640px" height="480px"></canvas>
             <div class="buttons">
                 <input #leftImageInput id="leftImageInput" type="file" accept="image/*" hidden (change)="onUpdateLeftImageInput(leftImageInput)">
@@ -45,7 +44,7 @@
         <label for="radius-input-9">9</label>
         <input id="radius-input-15" type="radio" name="radius" (click)="modifyRadius(15)">
         <label for="radius-input-15">15</label>
-        <button type="button " (click)="launchValidation()">Valider et créer</button>
+        <button type="button " (click)="onValidationLaunched()">Valider et créer</button>
         <p>Current Radius: {{radius}}</p>
     </div>
 </body>

@@ -40,9 +40,9 @@ export class GameCreationPageComponent implements AfterViewInit {
         window.alert(message);
     }
 
-    launchValidation(): void {
+    onValidationLaunched(): void {
         // TODO lancer la validation des erreurs avec le service créer
-        window.alert('validation lancée');
+        this.canvasManager.launchVerification(this.radius);
     }
 
     modifyRadius(newRadius: number): void {

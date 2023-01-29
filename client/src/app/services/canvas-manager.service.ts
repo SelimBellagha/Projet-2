@@ -73,6 +73,7 @@ export class CanvasManagerService {
     launchVerification(radius: number) {
         const leftImageData = this.leftCanavsContext.getImageData(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT);
         const rightImageData = this.rightCanavsContext.getImageData(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT);
-        this.differenceDetector.launchDifferenceDetection(leftImageData, rightImageData, radius);
+        const differenceImage = this.differenceDetector.launchDifferenceDetection(leftImageData, rightImageData, radius);
+        this.rightCanavsContext.putImageData(differenceImage, 0, 0);
     }
 }
