@@ -3,7 +3,7 @@
     padding: 0 5% 5% 5%;
 }
 
-.main-container { 
+.main-container {
     position: relative;
     background-color: #fffafa;
     border: 1px dashed #000000;
@@ -48,9 +48,8 @@
     border-radius: 1px;
     padding: 120px;
     position: relative;
-    // top: -100px;
-    // left: -100px;
-    
+    top: -100px;
+    left: -100px;
 
     /* Scale the image as you normally would. */
     width: 300px;
@@ -59,9 +58,9 @@
 
   .top {
     // border: 2px solid #ddd;
-    position: relative; 
-    left:  430px;
-    top:   250px;
+    position: relative;
+    left:  530px;
+    top:   50px;
     // left: 100px;
 
     /* Scale the image as you normally would. */
@@ -71,15 +70,12 @@
   .solo{
     // border: 2px solid #ddd;
     position: relative;
-    left:  100px;
+    left:  455px;
     top:   50px;
 
     // left: 100px;
 
   }
- 
-
-
 
   .difficulte {
     // border: 2px solid #ddd;
@@ -91,3 +87,21 @@
     /* Scale the image as you normally would. */
 
   }
+
+  .play-button {
+    // position: absolute;
+    // left:    0;
+    // top:   0;
+    // margin-top: 5px;
+    // margin-left: 5px;
+    // text-align: center;
+    font-weight: bold;
+    height: 30px;
+    width: 100px;
+    background-color: #6DA093;
+    color: white;
+    border-radius: 10px;
+    border-color: #6DA093;
+    font-family: 'Oleo Script Swash Caps';   
+    font-size: 15px;
+}
