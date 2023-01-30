@@ -105,6 +105,7 @@ export class DifferenceDetectionService {
         }
         // eslint-disable-next-line no-console
         console.log(differences);
+        window.alert('nombre de différences:' + nbDifferences);
     }
 
     isPointBlack(differenceImage: ImageData, pixelPosition: Vec2): boolean {
