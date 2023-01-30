@@ -5,17 +5,18 @@
         </font>
     </h1>
 
+    <div>
+        <button routerLink="/" class="return-button">Retour</button>
+    </div>
+
     <div class="main-container">
         <app-jeux customTitle = "Jeu 1" customDifficulty="Facile">  </app-jeux>
         <app-jeux customTitle = "Jeu 2" customDifficulty="Moyen">  </app-jeux>
         <app-jeux customTitle = "Jeu 3" customDifficulty="Difficile">  </app-jeux>
         <app-jeux customTitle = "Jeu 4" customDifficulty="Facile">  </app-jeux>
     </div>
-    
-        
-        
-        <div id="buttons">
-            <button routerLink="/" class="return-button">Retour</button>
-            <button>suivant</button>
-        </div>
+    <div class="next-button-align">
+        <button>Suivant</button>
+
+    </div>
 </body>

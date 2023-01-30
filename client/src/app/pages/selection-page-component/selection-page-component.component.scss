@@ -14,10 +14,6 @@
     max-height: 90%;
 }
 
-#nav-buttons {
-    text-align: right;
-}
-
 .return-button {
     position: absolute;
     left:    0;
@@ -34,5 +30,10 @@
     border-color: #6DA093;
     font-family: 'Oleo Script Swash Caps';   
     font-size: 15px;
+}
+
+
+.next-button-align {
+  text-align: right;
 }
 
