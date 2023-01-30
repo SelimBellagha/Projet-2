@@ -1,13 +1,11 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 
 @Component({
     selector: 'app-jeux',
     templateUrl: './jeux.component.html',
     styleUrls: ['./jeux.component.scss'],
 })
-export class JeuxComponent implements OnInit {
+export class JeuxComponent {
     @Input() customTitle: string;
     @Input() customDifficulty: string;
-    constructor() {}
-    ngOnInit(): void {}
 }
