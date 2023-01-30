@@ -1,0 +1,36 @@
+.jeu {
+    background-color: #ffa07a;
+    border: 1px solid black;
+    border-radius: 5px;
+    margin: 2%;
+}
+
+.image-position{
+  width: 35%;
+  height: 35%
+}
+
+.buttons {
+  text-align: right;
+}
+
+.button-choice {
+  margin: 0 2% 2% 2%;
+    text-align: center;
+    font-weight: bold;
+    height: 30px;
+    width: 100px;
+    background-color: #3d7db1;
+    color: white;
+    border-radius: 10px;
+    border-color: #394b77;
+    font-family: 'Oleo Script Swash Caps';   
+    font-size: 15px;
+}
+
+.info-jeu {
+  text-align: center;
+  font-style: italic;
+  font-weight: bold;
+}
+
