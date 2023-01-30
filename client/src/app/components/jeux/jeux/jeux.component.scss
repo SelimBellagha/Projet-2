@@ -1,107 +1,21 @@
-.container {
-    background-color: #b5d8b5;
-    padding: 0 5% 5% 5%;
-}
-
-.main-container {
-    position: relative;
-    background-color: #fffafa;
-    border: 1px dashed #000000;
-    border-radius: 5px;
-    min-height: 80%;
-    min-width: 100%;
-    display: grid;
-    grid-template-columns: 50% 50%;
-}
-
 .jeu {
     background-color: #ffa07a;
     border: 1px solid black;
     border-radius: 5px;
-    margin: 10%;
+    margin: 2%;
 }
 
-#nav-buttons {
-    text-align: right;
+.image-position{
+  width: 30%;
+  height: 30%
 }
 
-.return-button {
-    position: absolute;
-    left:    0;
-    top:   0;
-    margin-top: 5px;
-    margin-left: 5px;
-    text-align: center;
-    font-weight: bold;
-    height: 30px;
-    width: 100px;
-    background-color: #6DA093;
-    color: white;
-    border-radius: 10px;
-    border-color: #6DA093;
-    font-family: 'Oleo Script Swash Caps';   
-    font-size: 15px;
+.buttons {
+  text-align: right;
 }
 
-.img {
-    // border: 2px solid #ddd;
-    border-radius: 1px;
-    padding: 120px;
-    position: relative;
-    top: -100px;
-    left: -100px;
-
-    /* Scale the image as you normally would. */
-    width: 300px;
-    height: 150px;
-  }
-
-  .top {
-    // border: 2px solid #ddd;
-    position: relative;
-    left:  530px;
-    top:   50px;
-    // left: 100px;
-
-    /* Scale the image as you normally would. */
-
-  }
-
-  .solo{
-    // border: 2px solid #ddd;
-    position: relative;
-    left:  455px;
-    top:   50px;
-
-    // left: 100px;
-
-  }
-
-  .difficulte {
-    // border: 2px solid #ddd;
-    position: relative;
-    left:  260px;
-    top:   100;
-    // left: 100px;
-
-    /* Scale the image as you normally would. */
-
-  }
-
-  .play-button {
-    // position: absolute;
-    // left:    0;
-    // top:   0;
-    // margin-top: 5px;
-    // margin-left: 5px;
-    // text-align: center;
-    font-weight: bold;
-    height: 30px;
-    width: 100px;
-    background-color: #6DA093;
-    color: white;
-    border-radius: 10px;
-    border-color: #6DA093;
-    font-family: 'Oleo Script Swash Caps';   
-    font-size: 15px;
+.button-choice {
+  margin: 0 2% 2% 2%;
 }
+
+
