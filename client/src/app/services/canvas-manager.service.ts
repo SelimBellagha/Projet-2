@@ -74,6 +74,7 @@ export class CanvasManagerService {
         const leftImageData = this.leftCanavsContext.getImageData(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT);
         const rightImageData = this.rightCanavsContext.getImageData(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT);
         const differenceImage = this.differenceDetector.launchDifferenceDetection(leftImageData, rightImageData, radius);
+        // TEMP TO TEST
         this.rightCanavsContext.putImageData(differenceImage, 0, 0);
     }
 }

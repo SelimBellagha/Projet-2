@@ -4,6 +4,12 @@ import { Vec2 } from '@app/interfaces/vec2';
 import { DEFAULT_WIDTH } from './draw.service';
 
 const PIXEL_SIZE = 4;
+const DIRECTIONS: Vec2[] = [
+    { x: 0, y: 1 },
+    { x: 1, y: 0 },
+    { x: 0, y: -1 },
+    { x: -1, y: 0 },
+];
 
 @Injectable({
     providedIn: 'root',
@@ -12,6 +18,7 @@ export class DifferenceDetectionService {
     launchDifferenceDetection(imageData1: ImageData, imageData2: ImageData, radius: number): ImageData {
         const pixelDifferences: Vec2[] = this.findDifferences(imageData1, imageData2);
         const differenceImage: ImageData = this.createDifferenceImage(pixelDifferences, radius);
+        this.findNumberOfDifference(differenceImage);
         return differenceImage;
     }
 
@@ -23,7 +30,6 @@ export class DifferenceDetectionService {
             }
         }
         // eslint-disable-next-line no-console
-        console.log(pixelDifferences);
         return pixelDifferences;
     }
 
@@ -40,6 +46,10 @@ export class DifferenceDetectionService {
 
     createDifferenceImage(pixelDifferences: Vec2[], radius: number): ImageData {
         const differencesImage: ImageData = new ImageData(DEFAULT_WIDTH, DEFAULT_HEIGHT);
+        // Met tout en blanc
+        for (let i = 0; i < differencesImage.data.length; i++) {
+            differencesImage.data[i] = 255;
+        }
         pixelDifferences.forEach((pixelPosition) => {
             this.drawRadius(differencesImage, radius, pixelPosition);
         });
@@ -60,6 +70,49 @@ export class DifferenceDetectionService {
                     // eslint-disable-next-line no-console
                 }
             }
+        }
+    }
+
+    findNumberOfDifference(differenceImage: ImageData): void {
+        const differences: Vec2[][] = [];
+        let nbDifferences = 0;
+        const isPixelChecked: boolean[][] = new Array(DEFAULT_HEIGHT).fill(false).map(() => new Array(DEFAULT_WIDTH).fill(false));
+
+        for (let i = 0; i < differenceImage.data.length / PIXEL_SIZE; i++) {
+            const pixelPosition: Vec2 = { x: i % DEFAULT_WIDTH, y: Math.floor(i / DEFAULT_WIDTH) };
+
+            if (differenceImage.data[i * PIXEL_SIZE] === 0 && !isPixelChecked[pixelPosition.y][pixelPosition.x]) {
+                const pixelStack: Vec2[] = [];
+                pixelStack.push(pixelPosition);
+                differences[nbDifferences] = [];
+
+                while (pixelStack.length) {
+                    const currentPixel: Vec2 = pixelStack.pop() as Vec2;
+                    differences[nbDifferences].push(currentPixel);
+
+                    // Pour chaque direction, vérifier la couleur et push
+                    DIRECTIONS.forEach((direction) => {
+                        const newPixel: Vec2 = { x: currentPixel.x + direction.x, y: currentPixel.y + direction.y };
+                        if (this.isPointBlack(differenceImage, newPixel) && !isPixelChecked[newPixel.y][newPixel.x]) {
+                            pixelStack.push(newPixel);
+                        }
+                        isPixelChecked[newPixel.y][newPixel.x] = true;
+                    });
+                }
+
+                nbDifferences++;
+            }
+        }
+        // eslint-disable-next-line no-console
+        console.log(differences);
+    }
+
+    isPointBlack(differenceImage: ImageData, pixelPosition: Vec2): boolean {
+        // assume que le point est soit noir, soit blanc
+        if (pixelPosition.x < 0 || pixelPosition.y < 0) {
+            return false;
+        } else {
+            return differenceImage.data[PIXEL_SIZE * (pixelPosition.x + pixelPosition.y * DEFAULT_WIDTH)] === 0;
         }
     }
 
