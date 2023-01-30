@@ -17,7 +17,6 @@ const routes: Routes = [
     { path: 'gameSelection', component: SelectionPageComponentComponent },
     { path: '**', redirectTo: '/home' },
 ];
-
 @NgModule({
     imports: [RouterModule.forRoot(routes, { useHash: true })],
     exports: [RouterModule],
