@@ -1,32 +1,46 @@
 <body class="container">
     <div class="top-bar">
-        <button type="button">Retour à la vue de configuration</button>
+        <button type="button" (click)="goToConfiguration()">Retour à la vue de configuration</button>
         <span>Emplacement pour les outils</span>
     </div>
 
     <div class="images-area">
         <div class="image-container">
             <h1>Zone Image Originale</h1>
-            <!--<img alt="Test" src="https://www.jardiner-malin.fr/wp-content/uploads/2015/02/tilleul-arbre.jpg" />-->
-            <canvas width="640px" height="480px"></canvas>
+            <canvas #leftCanvas width="640px" height="480px"></canvas>
             <div class="buttons">
-                <button type="button">Upload</button>
+                <input #leftImageInput id="leftImageInput" type="file" accept="image/*" hidden (change)="onUpdateLeftImageInput(leftImageInput)" />
+                <label for="leftImageInput">Choose File</label>
                 <button type="button" (click)="resetBackground(true)">Réinitialiser arrière-plan</button>
                 <button type="button" (click)="resetForeground(true)">Réinitialiser avant-plan</button>
                 <button type="button" (click)="replicateForeground(true)">Dupliquer avant-plan</button>
             </div>
         </div>
         <div class="middle-buttons">
-            <button>Upload to both</button>
+            <input
+                #middleImageInput
+                id="middleImageInput"
+                type="file"
+                accept="image/bmp"
+                hidden
+                (change)="onUpdateMiddleImageInput(middleImageInput)"
+            />
+            <label for="middleImageInput">Choose File for Both</label>
             <button>Intervertir avant-plan</button>
         </div>
         <div class="image-container">
             <h1>Zone Image Modifiée</h1>
-            <canvas #modifiedImageCanvas width="640px" height="480px"></canvas>
+            <canvas #rightCanvas width="640px" height="480px"></canvas>
             <div class="buttons">
-                <!--<button type="button">Upload</button>-->
-                <input type="file" accept="image/*" id="modified-image-upload-button" (change)="updateModifiedImageDisplay()" hidden />
-                <label for="modified-image-upload-button">Choose File</label>
+                <input
+                    #rightImageInput
+                    id="rightImageInput"
+                    type="file"
+                    accept="image/*"
+                    hidden
+                    (change)="onUpdateRightImageInput(rightImageInput)"
+                />
+                <label for="rightImageInput">Choose File</label>
                 <button type="button" (click)="resetBackground(false)">Réinitialiser arrière-plan</button>
                 <button type="button" (click)="resetForeground(false)">Réinitialiser avant-plan</button>
                 <button type="button" (click)="replicateForeground(false)">Dupliquer avant-plan</button>
@@ -35,7 +49,16 @@
     </div>
 
     <div class="bottom-buttons">
-        <button type="button" (click)="modifyRadius(3)">Configurer Rayon</button>
-        <button type="button " (click)="launchValidation()">Valider et créer</button>
+        <!--<button type="button" (click)="modifyRadius(3)">Configurer Rayon</button>-->
+        <input id="radius-input-0" type="radio" name="radius" (click)="modifyRadius(0)" />
+        <label for="radius-input-0">0</label>
+        <input id="radius-input-1" type="radio" name="radius" (click)="modifyRadius(3)" checked />
+        <label for="radius-input-3">3</label>
+        <input id="radius-input-9" type="radio" name="radius" (click)="modifyRadius(9)" />
+        <label for="radius-input-9">9</label>
+        <input id="radius-input-15" type="radio" name="radius" (click)="modifyRadius(15)" />
+        <label for="radius-input-15">15</label>
+        <button type="button " (click)="onValidationLaunched()">Valider et créer</button>
+        <p>Current Radius: {{ radius }}</p>
     </div>
 </body>

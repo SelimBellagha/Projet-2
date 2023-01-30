@@ -1,5 +1,6 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 import { CommunicationService } from '@app/services/communication.service';
 import { Message } from '@common/message';
 import { BehaviorSubject } from 'rxjs';
@@ -14,7 +15,7 @@ export class MainPageComponent {
     readonly title: string = 'LOG2990';
     message: BehaviorSubject<string> = new BehaviorSubject<string>('');
 
-    constructor(private readonly communicationService: CommunicationService) {}
+    constructor(private readonly communicationService: CommunicationService, private router: Router) {}
 
     sendTimeToServer(): void {
         const newTimeMessage: Message = {
@@ -44,5 +45,12 @@ export class MainPageComponent {
                 }),
             )
             .subscribe(this.message);
+    }
+    goToGameSelection(): void {
+        this.router.navigate(['/gameSelection']);
+    }
+
+    goToConfiguration(): void {
+        this.router.navigate(['/gameConfiguration']);
     }
 }

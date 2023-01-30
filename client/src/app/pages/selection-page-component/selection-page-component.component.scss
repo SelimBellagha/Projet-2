@@ -4,6 +4,7 @@
 }
 
 .main-container {
+    position: relative;
     background-color: #fffafa;
     border: 1px dashed #000000;
     border-radius: 5px;
@@ -20,6 +21,24 @@
     margin: 3%;
 }
 
-#buttons {
+#nav-buttons {
     text-align: right;
+}
+
+.return-button {
+    position: absolute;
+    left:    0;
+    top:   0;
+    margin-top: 5px;
+    margin-left: 5px;
+    text-align: center;
+    font-weight: bold;
+    height: 30px;
+    width: 100px;
+    background-color: #6DA093;
+    color: white;
+    border-radius: 10px;
+    border-color: #6DA093;
+    font-family: 'Oleo Script Swash Caps';   
+    font-size: 15px;
 }
