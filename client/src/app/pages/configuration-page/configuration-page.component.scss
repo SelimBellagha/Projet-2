@@ -1,9 +1,8 @@
-.container {
-    background-color: #b5d8b5;
-    padding: 0 5% 5% 5%;
+#canvas {
+    border: 1px solid black;
 }
 
-.main-container {
+#grid-container {
     position: relative;
     width: 1920px;
     height: 1080px;
@@ -112,12 +111,20 @@
 }
 #difficulte {
     width: 100px;
-    background-color: #6da093;
-    color: white;
-    border-radius: 10px;
-    border-color: #6da093;
-    font-family: 'Oleo Script Swash Caps';
-    font-size: 15px;
+    height: 22px;
+    left: 556px;
+    top: 238px;
+
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 700;
+    font-size: 18px;
+    line-height: 22px;
+
+    text-align: center;
+
+    color: #000000;
+    padding-top: 4%;
 }
 
 #image {
