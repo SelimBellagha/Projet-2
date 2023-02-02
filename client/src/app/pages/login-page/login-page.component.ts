@@ -14,6 +14,12 @@ export class LoginPageComponent {
     }
 
     goToGamePage(): void {
-        this.router.navigate(['/game']);
+        const input = document.getElementById('username') as HTMLInputElement;
+        const name = input?.value;
+        if (name === '') {
+            window.alert('Nom de joueur invalide: entrez un nom non vide');
+        } else {
+            this.router.navigate(['/soloView']);
+        }
     }
 }
