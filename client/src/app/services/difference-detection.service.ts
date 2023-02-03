@@ -29,7 +29,6 @@ export class DifferenceDetectionService {
                 pixelDifferences.push({ x: i % imageData1.width, y: Math.floor(i / imageData1.width) });
             }
         }
-        // eslint-disable-next-line no-console
         return pixelDifferences;
     }
 

@@ -17,6 +17,8 @@ export class GameCreationPageComponent implements AfterViewInit {
     ngAfterViewInit(): void {
         this.canvasManager.leftCanavsContext = this.leftCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         this.canvasManager.rightCanavsContext = this.rightCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
+        this.canvasManager.resetLeftBackground();
+        this.canvasManager.resetRightBackground();
     }
 
     resetForeground(leftPicture: boolean): void {
@@ -26,7 +28,7 @@ export class GameCreationPageComponent implements AfterViewInit {
     }
 
     resetBackground(leftPicture: boolean): void {
-        // TODO Remettre le fond en blanc
+        // Remettre le fond en blanc
         if (leftPicture) {
             this.canvasManager.resetLeftBackground();
         } else {
@@ -41,7 +43,7 @@ export class GameCreationPageComponent implements AfterViewInit {
     }
 
     onValidationLaunched(): void {
-        // TODO lancer la validation des erreurs avec le service créer
+        // lancer la validation des erreurs avec le service créer
         this.canvasManager.launchVerification(this.radius);
     }
 
@@ -66,10 +68,5 @@ export class GameCreationPageComponent implements AfterViewInit {
 
     goToConfiguration(): void {
         this.router.navigate(['/gameConfiguration']);
-    }
-
-    updateModifiedImageDisplay(): void {
-        // this.modifiedImageCanvas.nativeElement.getContext('2d')?.drawImage(this.modifiedImageInput.nativeElement.files[0], 0, 0);
-        window.alert('received new file');
     }
 }
