@@ -22,7 +22,7 @@ describe('DifferenceDetectionService', () => {
         const pos3: Vec2 = { x: -3, y: -4 };
         const expectedResult = 5;
         expect(service.calculateDistance(pos1, pos2)).toEqual(expectedResult);
-        expect(service.calculateDistance(pos3, pos1)).toEqual(expectedResult);
+        expect(service.calculateDistance(pos3, pos2)).toEqual(expectedResult);
     });
 
     it('calculateSumOfLengths should return the total length of arrays in an array', () => {
