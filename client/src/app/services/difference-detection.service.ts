@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { DEFAULT_HEIGHT } from '@app/components/play-area/play-area.component';
+import { GameData } from '@app/interfaces/game-data';
 import { Vec2 } from '@app/interfaces/vec2';
 import { DEFAULT_WIDTH } from './draw.service';
 
@@ -10,16 +11,29 @@ const DIRECTIONS: Vec2[] = [
     { x: 0, y: -1 },
     { x: -1, y: 0 },
 ];
+const NB_IMAGE_DIFFICULT = 7;
+const PERCENTAGE_COVERAGE_DIFFICULT = 0.15;
 
 @Injectable({
     providedIn: 'root',
 })
 export class DifferenceDetectionService {
-    launchDifferenceDetection(imageData1: ImageData, imageData2: ImageData, radius: number): ImageData {
+    async launchDifferenceDetection(imageData1: ImageData, imageData2: ImageData, radius: number): Promise<GameData> {
         const pixelDifferences: Vec2[] = this.findDifferences(imageData1, imageData2);
-        const differenceImage: ImageData = this.createDifferenceImage(pixelDifferences, radius);
-        this.findNumberOfDifference(differenceImage);
-        return differenceImage;
+        const differenceImageData: ImageData = this.createDifferenceImage(pixelDifferences, radius);
+        const differencesArray = this.findNumberOfDifference(differenceImageData);
+        const difficulty = this.getDifficulty(differencesArray);
+        const originalImageBmp: ImageBitmap = await createImageBitmap(imageData1);
+        const modifiedImageBmp: ImageBitmap = await createImageBitmap(imageData2);
+        return {
+            name: 'temp',
+            originalImage: originalImageBmp,
+            modifiedImage: modifiedImageBmp,
+            differenceImage: differenceImageData,
+            nbDifferences: differencesArray.length,
+            differences: differencesArray,
+            isDifficult: difficulty,
+        };
     }
 
     findDifferences(imageData1: ImageData, imageData2: ImageData): Vec2[] {
@@ -72,7 +86,7 @@ export class DifferenceDetectionService {
         }
     }
 
-    findNumberOfDifference(differenceImage: ImageData): void {
+    findNumberOfDifference(differenceImage: ImageData): Vec2[][] {
         const differences: Vec2[][] = [];
         let nbDifferences = 0;
         const isPixelChecked: boolean[][] = new Array(DEFAULT_HEIGHT).fill(false).map(() => new Array(DEFAULT_WIDTH).fill(false));
@@ -102,9 +116,7 @@ export class DifferenceDetectionService {
                 nbDifferences++;
             }
         }
-        // eslint-disable-next-line no-console
-        console.log(differences);
-        window.alert('nombre de différences:' + nbDifferences);
+        return differences;
     }
 
     isPointBlack(differenceImage: ImageData, pixelPosition: Vec2): boolean {
@@ -114,6 +126,21 @@ export class DifferenceDetectionService {
         } else {
             return differenceImage.data[PIXEL_SIZE * (pixelPosition.x + pixelPosition.y * DEFAULT_WIDTH)] === 0;
         }
+    }
+
+    getDifficulty(differences: Vec2[][]): boolean {
+        return (
+            differences.length >= NB_IMAGE_DIFFICULT &&
+            this.calculateSumOfLengths(differences) <= DEFAULT_HEIGHT * DEFAULT_WIDTH * PERCENTAGE_COVERAGE_DIFFICULT
+        );
+    }
+
+    calculateSumOfLengths(differences: Vec2[][]): number {
+        let sum = 0;
+        differences.forEach((array) => {
+            sum += array.length;
+        });
+        return sum;
     }
 
     calculateDistance(point1: Vec2, point2: Vec2): number {
