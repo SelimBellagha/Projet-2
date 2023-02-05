@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
+import { LoginFormService } from '@app/services/login-form.service';
 
 @Component({
     selector: 'app-login-page',
@@ -7,10 +8,16 @@ import { Router } from '@angular/router';
     styleUrls: ['./login-page.component.scss'],
 })
 export class LoginPageComponent {
-    constructor(private router: Router) {}
+    username: string;
+    constructor(private router: Router, private loginService: LoginFormService) {}
 
     goToGameSelection(): void {
         this.router.navigate(['/gameSelection']);
+    }
+
+    onClickSubmit(name: string) {
+        this.username = name;
+        this.loginService.setFormData(this.username);
     }
 
     goToGamePage(): void {
@@ -19,6 +26,7 @@ export class LoginPageComponent {
         if (name === '') {
             window.alert('Nom de joueur invalide: entrez un nom non vide');
         } else {
+            this.onClickSubmit(name);
             this.router.navigate(['/soloView']);
         }
     }
