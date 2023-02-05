@@ -53,7 +53,7 @@
         <!--<button type="button" (click)="modifyRadius(3)">Configurer Rayon</button>-->
         <input id="radius-input-0" type="radio" name="radius" (click)="modifyRadius(0)" />
         <label for="radius-input-0">0</label>
-        <input id="radius-input-1" type="radio" name="radius" (click)="modifyRadius(3)" checked />
+        <input id="radius-input-3" type="radio" name="radius" (click)="modifyRadius(3)" checked />
         <label for="radius-input-3">3</label>
         <input id="radius-input-9" type="radio" name="radius" (click)="modifyRadius(9)" />
         <label for="radius-input-9">9</label>
@@ -75,7 +75,7 @@
             <p *ngIf="!(currentGameData.nbDifferences >= 3 && currentGameData.nbDifferences <=9)"> Le jeu doit avoir entre 3 et 9 différences pour être validé</p>
             </div>
             <label for="gameName"><b>Entrez votre nom de joueur:</b></label>
-            <input #gameName type="text" placeholder="Entrez Nom">
+            <input #gameName type="text" placeholder="Entrez Nom" id="gameName">
             <button type="button" (click)="onClosingPopUp()"> Retour</button>
 
             

@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { CanvasManagerService } from '@app/services/canvas-manager.service';
 import { GameCreationPageComponent } from './game-creation-page.component';
@@ -8,6 +9,7 @@ describe('GameCreationPageComponent', () => {
     let component: GameCreationPageComponent;
     let fixture: ComponentFixture<GameCreationPageComponent>;
     let canvasManagerServiceSpy: SpyObj<CanvasManagerService>;
+    let router: Router;
 
     beforeEach(async () => {
         canvasManagerServiceSpy = jasmine.createSpyObj('CanvasManagerService', [
@@ -21,11 +23,12 @@ describe('GameCreationPageComponent', () => {
 
         await TestBed.configureTestingModule({
             declarations: [GameCreationPageComponent],
-            imports: [RouterTestingModule],
+            imports: [RouterTestingModule.withRoutes([])],
             providers: [{ provide: CanvasManagerService, useValue: canvasManagerServiceSpy }],
         }).compileComponents();
 
         fixture = TestBed.createComponent(GameCreationPageComponent);
+        router = TestBed.inject(Router);
         component = fixture.componentInstance;
         fixture.detectChanges();
     });
@@ -63,5 +66,50 @@ describe('GameCreationPageComponent', () => {
         const input: HTMLInputElement = document.getElementById('middleImageInput') as HTMLInputElement;
         input.dispatchEvent(new Event('change'));
         expect(canvasManagerServiceSpy.changeBothBackgrounds).toHaveBeenCalled();
+    });
+    // TODO test onValidationLaunched, OnClosingPopUp,
+
+    it('default radius value should be 3', () => {
+        expect(component.radius).toEqual(3);
+    });
+    /* eslint-disable @typescript-eslint/no-magic-numbers -- */
+    it('clicking on a radius button should change the radius', () => {
+        const input0 = document.getElementById('radius-input-0');
+        const input3 = document.getElementById('radius-input-3');
+        const input9 = document.getElementById('radius-input-9');
+        const input15 = document.getElementById('radius-input-15');
+
+        input0?.click();
+        expect(component.radius).toEqual(0);
+        input3?.click();
+        expect(component.radius).toEqual(3);
+        input9?.click();
+        expect(component.radius).toEqual(9);
+        input15?.click();
+        expect(component.radius).toEqual(15);
+    });
+
+    it('onSave should go to configuration page if name is valid', () => {
+        const input: HTMLInputElement = document.getElementById('gameName') as HTMLInputElement;
+        input.value = 'validName';
+        const spy = spyOn(component, 'goToConfiguration');
+        component.onSave(input);
+        expect(spy).toHaveBeenCalled();
+    });
+
+    it('onSave should not go to configuration page if name is invalid', () => {
+        const input: HTMLInputElement = document.getElementById('gameName') as HTMLInputElement;
+        input.value = '';
+        const spy = spyOn(component, 'goToConfiguration');
+        component.onSave(input);
+        expect(spy).toHaveBeenCalledTimes(0);
+    });
+
+    it(' clicking on return button should navigate to configuration Page', () => {
+        const routerSpy = spyOn(router, 'navigate');
+
+        component.goToConfiguration();
+        expect(routerSpy).toHaveBeenCalled();
+        expect(routerSpy).toHaveBeenCalledWith(['/gameConfiguration']);
     });
 });

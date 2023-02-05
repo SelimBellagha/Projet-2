@@ -54,7 +54,6 @@ export class GameCreationPageComponent implements AfterViewInit {
 
             this.popUpWindow.nativeElement.style.display = 'block';
         });
-        this.popUpWindow.nativeElement.style.display = 'block';
     }
 
     modifyRadius(newRadius: number): void {
