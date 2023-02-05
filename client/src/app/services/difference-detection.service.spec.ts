@@ -6,6 +6,9 @@ import { DifferenceDetectionService } from './difference-detection.service';
 
 describe('DifferenceDetectionService', () => {
     let service: DifferenceDetectionService;
+    const whiteValue = 255;
+    const blackValue = 0;
+    const pixelSize = 4;
 
     beforeEach(() => {
         TestBed.configureTestingModule({});
@@ -60,16 +63,14 @@ describe('DifferenceDetectionService', () => {
         expect(service.getDifficulty(array)).toBeFalse();
     });
     it('isPointBlack should return false if point is not black', () => {
-        const whiteRGB = 255;
         const imageData: ImageData = new ImageData(DEFAULT_WIDTH, DEFAULT_HEIGHT);
-        imageData.data.fill(whiteRGB);
+        imageData.data.fill(whiteValue);
         const vector: Vec2 = { x: 3, y: 4 };
         expect(service.isPointBlack(imageData, vector)).toBeFalse();
     });
     it('isPointBlack should return true if point is black', () => {
-        const blackRGB = 0;
         const imageData: ImageData = new ImageData(DEFAULT_WIDTH, DEFAULT_HEIGHT);
-        imageData.data.fill(blackRGB);
+        imageData.data.fill(blackValue);
         const vector: Vec2 = { x: 3, y: 4 };
         expect(service.isPointBlack(imageData, vector)).toBeTrue();
     });
@@ -78,4 +79,42 @@ describe('DifferenceDetectionService', () => {
         const vector: Vec2 = { x: -1, y: 4 };
         expect(service.isPointBlack(imageData, vector)).toBeFalse();
     });
+
+    it('comparePixels should return true if the arrays have the same RGBO values at specified index', () => {
+        const array1: Uint8ClampedArray = new Uint8ClampedArray([0, 0, 1, 0]);
+        const array2: Uint8ClampedArray = new Uint8ClampedArray([0, 0, 1, 0]);
+        expect(service.comparePixels(array1, array2, 0)).toBeTrue();
+    });
+
+    it('comparePixels should return true if the arrays have a different R,G,B or O value at specified index', () => {
+        const array1: Uint8ClampedArray = new Uint8ClampedArray([0, 0, 1, 0, 0, 1, 1, 0]);
+        const array2: Uint8ClampedArray = new Uint8ClampedArray([0, 0, 1, 0, 0, 0, 1, 0]);
+        expect(service.comparePixels(array1, array2, 1)).toBeFalse();
+    });
+
+    it('drawRadius should but in black every pixel that is in radius of center', () => {
+        const center: Vec2 = { x: 0, y: 0 };
+        const radius = 1;
+        const imageData: ImageData = new ImageData(DEFAULT_WIDTH, DEFAULT_HEIGHT);
+        imageData.data.fill(whiteValue);
+        service.drawRadius(imageData, radius, center);
+        expect(imageData.data[0]).toEqual(blackValue);
+        expect(imageData.data[pixelSize + 1]).toEqual(blackValue);
+        expect(imageData.data[pixelSize * DEFAULT_WIDTH]).toEqual(blackValue);
+        expect(imageData.data[pixelSize * (DEFAULT_WIDTH + 1)]).toEqual(whiteValue);
+    });
+    it('isInCanvas should be false if position is not in the canvas', () => {
+        const vec: Vec2 = { x: -1, y: -1 };
+        const vec2: Vec2 = { x: DEFAULT_WIDTH, y: 0 };
+        expect(service.isInCanvas(vec)).toBeFalse();
+        expect(service.isInCanvas(vec2)).toBeFalse();
+    });
+    it('isInCanvas should be true if position is in the canvas', () => {
+        const vec: Vec2 = { x: 0, y: 0 };
+        const vec2: Vec2 = { x: DEFAULT_HEIGHT - 1, y: DEFAULT_HEIGHT - 1 };
+        expect(service.isInCanvas(vec)).toBeTrue();
+        expect(service.isInCanvas(vec2)).toBeTrue();
+    });
+
+    // TODO Tester launchDifference, findDifferences, createDifferenceImage, findNumber
 });
