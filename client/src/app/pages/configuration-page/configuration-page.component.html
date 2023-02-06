@@ -10,10 +10,9 @@
     </div>
 
     <div class="main-container">
-        <app-jeux customTitle="Jeu 1" customDifficulty="Facile" [isConfigurationMode]="true"> </app-jeux>
-        <app-jeux customTitle="Jeu 2" customDifficulty="Moyen" [isConfigurationMode]="true"> </app-jeux>
-        <app-jeux customTitle="Jeu 3" customDifficulty="Difficile" [isConfigurationMode]="true"> </app-jeux>
-        <app-jeux customTitle="Jeu 4" customDifficulty="Facile" [isConfigurationMode]="true"> </app-jeux>
+        <div *ngFor="let game of gamesDisplayed">
+            <app-jeux [customTitle]="game.title" [customDifficulty]="game.difficulty" [isConfigurationMode]="true"></app-jeux>
+        </div>
     </div>
     
     <div class="buttonContainer">
@@ -21,7 +20,7 @@
             <button>Précédent</button>
         </div>
         <div class="next-button-align-2">
-            <button>Suivant</button>
+            <button (click)="next()" >Suivant</button>
         </div>
     </div>
     <div class="buttons">
