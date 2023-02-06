@@ -60,8 +60,13 @@ button {
 }
 
 .watch-logo {
-    width: 10%;
-    height: 19%;
+    width: 7%;
+    height: 15%;
+}
+
+.timer {
+    display: flex;
+    align-items: center;
 }
 
 .section {
@@ -101,6 +106,6 @@ button {
 }
 
 #penalty {
-    color:red;
+    color: red;
     font-weight: bold;
 }
