@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { LoginFormService } from '@app/services/login-form.service';
 
 @Component({
     selector: 'app-solo-view-page',
@@ -6,11 +7,19 @@ import { Component, OnInit } from '@angular/core';
     styleUrls: ['./solo-view-page.component.scss'],
 })
 export class SoloViewPageComponent implements OnInit {
+    username: string;
     minutes: number = 0;
     secondes1: number = 0;
     secondes2: number = 0;
     minutes1: number = 0;
     minutes2: number = 0;
+
+    constructor(private loginService: LoginFormService) {}
+
+    ngOnInit() {
+        this.username = this.loginService.getFormData();
+        this.startTimer();
+    }
 
     timer() {
         const decimalMax = 9;
@@ -32,10 +41,6 @@ export class SoloViewPageComponent implements OnInit {
                 this.secondes1++;
             }
         }, timerInterval);
-    }
-
-    ngOnInit() {
-        this.startTimer();
     }
 
     startTimer() {
