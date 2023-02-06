@@ -40,8 +40,13 @@
     </div>
 
     <div class = "buttons">
-        <button class = "button-choice" (click)="goToLoginPage()"> Jouer</button>
-        <button class = "button-choice"> Rejoindre</button>
-    </div>
+        <div *ngIf="!isConfigurationMode" class = "buttons">
+            <button class = "button-choice" (click)="goToLoginPage()"> Jouer</button>
+            <button class = "button-choice" disabled="disabled"> Rejoindre</button>
+        </div>
+        <div *ngIf="isConfigurationMode" class = "buttons">
+            <button class = "button-choice" > Supprimer</button>
+            <button class = "button-choice" disabled="disabled"> Reinitialiser</button>
+        </div>
     </div>
 </div>
