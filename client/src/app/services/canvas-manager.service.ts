@@ -1,80 +1,89 @@
 import { Injectable } from '@angular/core';
+import { GameData } from '@app/interfaces/game-data';
 import { DifferenceDetectionService } from './difference-detection.service';
 import { DEFAULT_HEIGHT, DEFAULT_WIDTH } from './draw.service';
+
+const BMP_24BIT_FILE_SIZE = 921654;
 
 @Injectable({
     providedIn: 'root',
 })
 export class CanvasManagerService {
-    leftCanavsContext: CanvasRenderingContext2D;
-    rightCanavsContext: CanvasRenderingContext2D;
+    leftCanvasContext: CanvasRenderingContext2D;
+    rightCanvasContext: CanvasRenderingContext2D;
+    modalCanvasContext: CanvasRenderingContext2D;
 
     constructor(private differenceDetector: DifferenceDetectionService) {}
 
     changeRightBackground(file: File): void {
-        if (file !== null && file !== undefined) {
+        if (this.isFileValid(file)) {
             createImageBitmap(file).then((image) => {
                 if (this.validateImageSize(image)) {
-                    this.rightCanavsContext.drawImage(image, 0, 0);
+                    this.rightCanvasContext.drawImage(image, 0, 0);
                 } else {
-                    window.alert('Image height or width was not in correct 480 by 640 pixels size');
+                    this.notifyFileError();
                 }
             });
         } else {
-            // manage error
-            window.alert('error reading file');
+            this.notifyFileError();
         }
     }
 
     changeLeftBackground(file: File): void {
-        if (file !== null && file !== undefined) {
+        if (this.isFileValid(file)) {
             createImageBitmap(file).then((image) => {
                 if (this.validateImageSize(image)) {
-                    this.leftCanavsContext.drawImage(image, 0, 0);
+                    this.leftCanvasContext.drawImage(image, 0, 0);
                 } else {
-                    window.alert('Image height or width was not in correct 480 by 640 pixels size');
+                    this.notifyFileError();
                 }
             });
         } else {
-            // manage error
-            window.alert('error reading file');
+            this.notifyFileError();
         }
     }
 
     changeBothBackgrounds(file: File): void {
-        if (file !== null && file !== undefined) {
+        if (this.isFileValid(file)) {
             createImageBitmap(file).then((image) => {
                 if (this.validateImageSize(image)) {
-                    this.leftCanavsContext.drawImage(image, 0, 0);
-                    this.rightCanavsContext.drawImage(image, 0, 0);
+                    this.leftCanvasContext.drawImage(image, 0, 0);
+                    this.rightCanvasContext.drawImage(image, 0, 0);
                 } else {
-                    window.alert('Image height or width was not in correct 480 by 640 pixels size');
+                    this.notifyFileError();
                 }
             });
         } else {
-            // manage error
-            window.alert('error reading file');
+            this.notifyFileError();
         }
     }
 
+    isFileValid(file: File): boolean {
+        return file !== null && file !== undefined && file.type === 'image/bmp' && file.size === BMP_24BIT_FILE_SIZE;
+    }
+
+    notifyFileError(): void {
+        window.alert("Fichier invalide: l'image doit être en format BMP 24-bit et de taille 640x480");
+    }
+
     resetLeftBackground(): void {
-        this.leftCanavsContext.fillStyle = '#FFFFFF';
-        this.leftCanavsContext.fillRect(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT);
+        this.leftCanvasContext.fillStyle = '#FFFFFF';
+        this.leftCanvasContext.fillRect(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT);
     }
     resetRightBackground(): void {
-        this.rightCanavsContext.fillStyle = '#FFFFFF';
-        this.rightCanavsContext.fillRect(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT);
+        this.rightCanvasContext.fillStyle = '#FFFFFF';
+        this.rightCanvasContext.fillRect(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT);
     }
 
     validateImageSize(image: ImageBitmap) {
         return image.height === DEFAULT_HEIGHT && image.width === DEFAULT_WIDTH;
     }
 
-    launchVerification(radius: number) {
-        const leftImageData = this.leftCanavsContext.getImageData(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT);
-        const rightImageData = this.rightCanavsContext.getImageData(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT);
-        const differenceImage = this.differenceDetector.launchDifferenceDetection(leftImageData, rightImageData, radius);
-        // TEMP TO TEST
-        this.rightCanavsContext.putImageData(differenceImage, 0, 0);
+    async launchVerification(radius: number): Promise<GameData> {
+        const leftImageData = this.leftCanvasContext.getImageData(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT);
+        const rightImageData = this.rightCanvasContext.getImageData(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT);
+        const gameData: GameData = await this.differenceDetector.launchDifferenceDetection(leftImageData, rightImageData, radius);
+        this.modalCanvasContext.putImageData(gameData.differenceImage, 0, 0);
+        return gameData;
     }
 }

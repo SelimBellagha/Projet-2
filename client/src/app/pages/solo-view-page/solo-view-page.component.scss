@@ -64,6 +64,11 @@ button {
     height: 19%;
 }
 
+.timer {
+    display: flex;
+    align-items: baseline;
+}
+
 .section {
     margin: 0 10px;
     flex: 1;
