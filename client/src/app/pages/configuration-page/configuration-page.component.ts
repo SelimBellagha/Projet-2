@@ -2,38 +2,38 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 
 type Game = {
-    title: string,
-    difficulty: string,
-    image: string
+    title: string;
+    difficulty: string;
+    image: string;
 };
 
-const GAMES_LIST : Game[] = [
+const GAMES_LIST: Game[] = [
     {
-        title : "Jeu 1",
-        difficulty : "Facile",
-        image: "https://www.jardiner-malin.fr/wp-content/uploads/2015/02/tilleul-arbre.jpg"
+        title: 'Jeu 1',
+        difficulty: 'Facile',
+        image: 'https://www.jardiner-malin.fr/wp-content/uploads/2015/02/tilleul-arbre.jpg',
     },
     {
-        title : "Jeu 2",
-        difficulty : "Moyen",
-        image: "https://www.jardiner-malin.fr/wp-content/uploads/2015/02/tilleul-arbre.jpg"
+        title: 'Jeu 2',
+        difficulty: 'Moyen',
+        image: 'https://www.jardiner-malin.fr/wp-content/uploads/2015/02/tilleul-arbre.jpg',
     },
     {
-        title : "Jeu 3",
-        difficulty : "Facile",
-        image: "https://www.jardiner-malin.fr/wp-content/uploads/2015/02/tilleul-arbre.jpg"
+        title: 'Jeu 3',
+        difficulty: 'Facile',
+        image: 'https://www.jardiner-malin.fr/wp-content/uploads/2015/02/tilleul-arbre.jpg',
     },
     {
-        title : "Jeu 4",
-        difficulty : "Difficile",
-        image: "https://www.jardiner-malin.fr/wp-content/uploads/2015/02/tilleul-arbre.jpg"
+        title: 'Jeu 4',
+        difficulty: 'Difficile',
+        image: 'https://www.jardiner-malin.fr/wp-content/uploads/2015/02/tilleul-arbre.jpg',
     },
     {
-        title : "Jeu 5",
-        difficulty : "Facile",
-        image: "https://www.jardiner-malin.fr/wp-content/uploads/2015/02/tilleul-arbre.jpg"
-    }
-]
+        title: 'Jeu 5',
+        difficulty: 'Facile',
+        image: 'https://www.jardiner-malin.fr/wp-content/uploads/2015/02/tilleul-arbre.jpg',
+    },
+];
 
 @Component({
     selector: 'app-configuration-page',
@@ -42,8 +42,6 @@ const GAMES_LIST : Game[] = [
 })
 export class ConfigurationPageComponent {
     games = GAMES_LIST;
-    gamesDisplayed = this.games.slice(0, 4)
-    pageNumber = 0;
 
     constructor(private router: Router) {}
 
@@ -52,10 +50,5 @@ export class ConfigurationPageComponent {
     }
     goToCreationPage(): void {
         this.router.navigate(['gameCreation']);
-    }
-
-    next(): void {
-        this.pageNumber++;
-    
     }
 }
