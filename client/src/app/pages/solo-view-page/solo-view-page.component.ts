@@ -46,4 +46,26 @@ export class SoloViewPageComponent implements OnInit {
     startTimer() {
         this.timer();
     }
+
+    playDifferenceAudio() {
+        const soundTime = 3000;
+        const audio = new Audio();
+        audio.src = '../../../assets/audio/DifferenceTrouvee.mp3';
+        audio.load();
+        audio.play();
+        setInterval(() => {
+            audio.pause();
+        }, soundTime);
+    }
+
+    playWinAudio() {
+        const soundTime = 3000;
+        const audio = new Audio();
+        audio.src = '../../../assets/audio/Win.mp3';
+        audio.load();
+        audio.play();
+        setInterval(() => {
+            audio.pause();
+        }, soundTime);
+    }
 }
