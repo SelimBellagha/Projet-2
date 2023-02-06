@@ -8,6 +8,11 @@ import { LoginFormService } from '@app/services/login-form.service';
 })
 export class SoloViewPageComponent implements OnInit {
     username: string;
+    minutes: number = 0;
+    secondes1: number = 0;
+    secondes2: number = 0;
+    minutes1: number = 0;
+    minutes2: number = 0;
 
     constructor(private loginService: LoginFormService) {}
 
@@ -15,12 +20,6 @@ export class SoloViewPageComponent implements OnInit {
         this.username = this.loginService.getFormData();
         this.startTimer();
     }
-
-    minutes: number = 0;
-    secondes1: number = 0;
-    secondes2: number = 0;
-    minutes1: number = 0;
-    minutes2: number = 0;
 
     timer() {
         const decimalMax = 9;
