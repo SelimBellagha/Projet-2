@@ -48,7 +48,7 @@ export class SoloViewPageComponent implements OnInit {
     }
 
     playDifferenceAudio() {
-        number = 3000;
+        const soundTime = 3000;
         const audio = new Audio();
         audio.src = '../../../assets/audio/DifferenceTrouvee.mp3';
         audio.load();
@@ -59,12 +59,13 @@ export class SoloViewPageComponent implements OnInit {
     }
 
     playWinAudio() {
+        const soundTime = 3000;
         const audio = new Audio();
         audio.src = '../../../assets/audio/Win.mp3';
         audio.load();
         audio.play();
         setInterval(() => {
             audio.pause();
-        }, 3000);
+        }, soundTime);
     }
 }
