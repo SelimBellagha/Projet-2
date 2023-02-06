@@ -1,22 +1,22 @@
 <div class="container justified">
-    <h1 class="header-item">Bienvenue au cours {{ title }}</h1>
+    <!-- TODO Trouver un nom pour le jeu-->
+    <h1 class="header-item">Jeu de différences</h1>
+    <!-- TODO Trouver un logo pour le jeu-->
     <img src="https://bit.ly/3QofL1J" alt="Logo Projet" />
     <section id="server-message" class="justified">
-        <p>Petit message du serveur : {{ message.getValue() }}</p>
-        <div class="justified">
-            <button class="button" (click)="getMessagesFromServer()">Récupérer un message du serveur</button>
-            <button class="button" (click)="sendTimeToServer()">Envoyer un message au serveur</button>
-            <button class="button" routerLink="/material">Voir la page démo Angular Material</button>
+        <div class="button-group justified">
+            <!--TODO Mettre les routes pour les pages (routerLink)-->
+            <button class="button" (click)="goToGameSelection()">Classique</button>
+            <button class="button" >Temps Limité</button>
+            <button class="button" (click)="goToConfiguration()">Configuration</button>
         </div>
     </section>
 
-    <button class="button" routerLink="/game">Jouer!</button>
-
     <footer class="footer-item">
-        <h4 class="team-name">Équipe Poly</h4>
+        <h4 class="team-name">AUTEURS - Équipe N°9</h4>
         <p>
-            <span>Coéquipier #1</span>, <span>Coéquipier #2</span>, <span>Coéquipier #3</span>, 
-            <span>Coéquipier #4</span>, <span>Coéquipier #5</span>, <span>Coéquipier #6</span>
+            <span>Selim Bellagha</span>, <span>Benjamin Léveillé</span>, <span>Debanjan Bhaumick</span>, <span>Marcy Sima</span>,
+            <span>Yahya Badrane</span>, <span>Asimina Koutsos</span>
         </p>
     </footer>
 </div>

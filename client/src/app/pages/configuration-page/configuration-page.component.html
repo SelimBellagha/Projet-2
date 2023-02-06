@@ -1,0 +1,32 @@
+<body class="container">
+    <h1 align="center">
+        <font face="times">
+            <i> Configuration </i>
+        </font>
+    </h1>
+
+    <div>
+        <button routerLink="/" class="return-button">Retour</button>
+    </div>
+
+    <div class="main-container">
+        <app-jeux customTitle="Jeu 1" customDifficulty="Facile"> </app-jeux>
+        <app-jeux customTitle="Jeu 2" customDifficulty="Moyen"> </app-jeux>
+        <app-jeux customTitle="Jeu 3" customDifficulty="Difficile"> </app-jeux>
+        <app-jeux customTitle="Jeu 4" customDifficulty="Facile"> </app-jeux>
+    </div>
+    <div class="buttonContainer">
+        <div class="next-button-align-1">
+            <button>Précédent</button>
+        </div>
+        <div class="next-button-align-2">
+            <button>Suivant</button>
+        </div>
+    </div>
+    <div class="buttons">
+        <button class="button-choice" (click)="goToCreationPage()">Accéder à la Vue de création de jeu</button>
+        <button class="button-choice">Définir des constantes de jeu</button>
+        <button class="button-choice">Accéder à l'historique des parties jouées</button>
+        <button class="button-choice">Remettre les données à leur état initial</button>
+    </div>
+</body>

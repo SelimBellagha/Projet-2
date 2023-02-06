@@ -1,0 +1,111 @@
+body {
+    background-color: #b5d8b5;
+    min-height: 100%;
+    min-width: 100%;
+    padding: 1%;
+}
+
+button {
+    background: #6da093;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    border-radius: 20px;
+    top: 100px;
+    position: relative;
+    width: 75%;
+    height: 20%;
+    border-color: #6da093;
+}
+.container {
+    display: flex;
+}
+
+.underline-title-text {
+    text-decoration-line: underline;
+    font-weight: 700;
+}
+
+.timer {
+    vertical-align: middle;
+}
+
+.title-chat-text {
+    position: relative;
+    top: 5px;
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 700;
+    font-size: 150%;
+    line-height: 50px;
+}
+
+.button-container {
+    position: relative;
+    width: 100%;
+    height: 25%;
+}
+
+.score-text {
+    font-family: 'Inter';
+    font-style: normal;
+    font-size: 150%;
+    line-height: 60%;
+    height: 25%;
+}
+
+.game-information-text {
+    font-family: 'Inter';
+    font-style: normal;
+    font-size: 150%;
+    height: 25%;
+}
+
+.watch-logo {
+    width: 7%;
+    height: 15%;
+}
+
+.timer {
+    display: flex;
+    align-items: center;
+}
+
+.section {
+    margin: 0 10px;
+    flex: 1;
+}
+
+.picture {
+    width: 400px;
+    height: 400px;
+    fill: white;
+    border: 2px none black;
+}
+
+.picture-container {
+    position: relative;
+    top: 20px;
+    text-align: center;
+    width: 400px;
+    height: 400px;
+}
+
+.chat-container {
+    width: 100%;
+    height: 94%;
+    background-color: #ebf6f3;
+    border-radius: 20px;
+}
+
+.message-container {
+    height: 83%;
+    overflow-y: scroll;
+}
+
+.player-score {
+    text-indent: 10%;
+}
+
+#penalty {
+    color: red;
+    font-weight: bold;
+}

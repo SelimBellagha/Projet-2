@@ -1,0 +1,53 @@
+<body class="container">
+    <div class="section">
+        <div class="score-text">
+            <p class="underline-title-text">Differences trouvées:</p>
+            <div>
+                <p class="player-score">{{ username }} : X</p>
+                <p class="player-score">Indices restants: X</p>
+                <div class="timer">
+                    <img src="../../../assets/images/stopwatch.png" class="watch-logo" />
+                    <div>{{ minutes2 }}{{ minutes1 }}</div>
+                    :
+                    <div>{{ secondes2 }}{{ secondes1 }}</div>
+                </div>
+            </div>
+        </div>
+        <div>
+            <svg class="picture-container">
+                <rect class="picture" />
+            </svg>
+        </div>
+        <div class="button-container">
+            <button>Abandonner la partie</button>
+        </div>
+    </div>
+    <div class="section">
+        <div class="game-information-text">
+            <p class="underline-title-text">Informations de la partie :</p>
+            <div>
+                <ul>
+                    <li>Nom du jeu</li>
+                    <li>Niveau de difficulté</li>
+                    <li>Mode de jeu</li>
+                    <li>X Differences sur l'image</li>
+                    <li id="penalty">Pénalités pour utilisation d'indice : 00: XX</li>
+                </ul>
+            </div>
+        </div>
+        <div>
+            <svg class="picture-container">
+                <rect class="picture" />
+            </svg>
+        </div>
+        <div class="button-container">
+            <button>Demander un indice</button>
+        </div>
+    </div>
+    <div class="section">
+        <div class="chat-container">
+            <p class="title-chat-text" style="text-align: center">Messages</p>
+            <div class="message-container">les messages arriveront ici<br /><br /><br /><br />oui</div>
+        </div>
+    </div>
+</body>
