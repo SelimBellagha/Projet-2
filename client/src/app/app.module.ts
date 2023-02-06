@@ -16,6 +16,7 @@ import { GameCreationPageComponent } from './pages/game-creation-page/game-creat
 import { SoloViewPageComponent } from './pages/solo-view-page/solo-view-page.component';
 import { SelectionPageComponentComponent } from './pages/selection-page-component/selection-page-component.component';
 import { JeuxComponent } from './components/jeux/jeux/jeux.component';
+import { PopUpComponent } from './components/pop-up/pop-up.component';
 
 /**
  * Main module that is used in main.ts.
@@ -36,6 +37,7 @@ import { JeuxComponent } from './components/jeux/jeux/jeux.component';
         SoloViewPageComponent,
         SelectionPageComponentComponent,
         JeuxComponent,
+        PopUpComponent,
     ],
     imports: [AppMaterialModule, AppRoutingModule, BrowserAnimationsModule, BrowserModule, FormsModule, HttpClientModule],
     providers: [],

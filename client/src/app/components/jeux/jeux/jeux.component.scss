@@ -6,9 +6,13 @@
 }
 
 .image-position{
-  width: 35%;
-  height: 35%;
+  width: 50%;
+  height: 50%;
   margin-left: 3%;
+}
+
+.flex-column {
+  margin-left: 60%;
 }
 
 .buttons {
@@ -35,3 +39,11 @@
   font-weight: bold;
 }
 
+.top3 {
+  font-weight: bold;
+  text-align: center;
+}
+
+.place {
+  border: 1px solid black;
+}
