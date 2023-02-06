@@ -46,11 +46,12 @@ describe('GameCreationPageComponent', () => {
         component.resetBackground(false);
         expect(canvasManagerServiceSpy.resetRightBackground).toHaveBeenCalled();
     });
-    /*
+
     it('clicking on launchValidation button should call launchVerification in the service', () => {
+        canvasManagerServiceSpy.launchVerification.and.resolveTo();
         component.onValidationLaunched();
         expect(canvasManagerServiceSpy.launchVerification).toHaveBeenCalled();
-    });*/
+    });
 
     it('updating the file input for the right image should call changeRightBackground from service', () => {
         const input: HTMLInputElement = document.getElementById('rightImageInput') as HTMLInputElement;
@@ -67,7 +68,13 @@ describe('GameCreationPageComponent', () => {
         input.dispatchEvent(new Event('change'));
         expect(canvasManagerServiceSpy.changeBothBackgrounds).toHaveBeenCalled();
     });
-    // TODO test onValidationLaunched, OnClosingPopUp,
+
+    it('onClosingPopUp should hide the popUp window', () => {
+        const popUp = component.popUpWindow;
+        popUp.nativeElement.style.display = 'block';
+        component.onClosingPopUp();
+        expect(popUp.nativeElement.style.display).toEqual('none');
+    });
 
     it('default radius value should be 3', () => {
         expect(component.radius).toEqual(3);

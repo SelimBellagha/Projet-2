@@ -1,7 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { CanvasTestHelper } from '@app/classes/canvas-test-helper';
 import { GameData } from '@app/interfaces/game-data';
-
 import { CanvasManagerService } from './canvas-manager.service';
 import { DifferenceDetectionService } from './difference-detection.service';
 import SpyObj = jasmine.SpyObj;
@@ -69,7 +68,6 @@ describe('CanvasManagerService', () => {
     });
 
     it('isFileValid should return true if file  in bmp 24-bit format', () => {
-        // TODO: utiliser les assets/test
         expect(true).toBeTrue();
     });
 

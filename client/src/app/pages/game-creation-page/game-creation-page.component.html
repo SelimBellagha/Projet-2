@@ -12,12 +12,12 @@
                 <input #leftImageInput id="leftImageInput" type="file" accept="image/bmp" hidden (change)="onUpdateLeftImageInput(leftImageInput)" />
                 <label for="leftImageInput">Choose File</label>
                 <button type="button" (click)="resetBackground(true)">Réinitialiser arrière-plan</button>
-                <button type="button" (click)="resetForeground(true)">Réinitialiser avant-plan</button>
-                <button type="button" (click)="replicateForeground(true)">Dupliquer avant-plan</button>
+                <button type="button">Réinitialiser avant-plan</button>
+                <button type="button">Dupliquer avant-plan</button>
             </div>
         </div>
         <div class="middle-buttons">
-            <p> Les images doivent être en format BMP 24-bit de taille 640x480 pixels</p>
+            <p>Les images doivent être en format BMP 24-bit de taille 640x480 pixels</p>
             <input
                 #middleImageInput
                 id="middleImageInput"
@@ -43,8 +43,8 @@
                 />
                 <label for="rightImageInput">Choose File</label>
                 <button type="button" (click)="resetBackground(false)">Réinitialiser arrière-plan</button>
-                <button type="button" (click)="resetForeground(false)">Réinitialiser avant-plan</button>
-                <button type="button" (click)="replicateForeground(false)">Dupliquer avant-plan</button>
+                <button type="button">Réinitialiser avant-plan</button>
+                <button type="button">Dupliquer avant-plan</button>
             </div>
         </div>
     </div>
@@ -64,22 +64,22 @@
     </div>
 
     <div #popUpWindow class="modal">
-
         <div class="modal-content">
             <canvas #modalCanvas width="640px" height="480px"></canvas>
             <div *ngIf="currentGameData !== undefined">
-                <p>Nombre de différences: {{currentGameData.nbDifferences}}</p>
+                <p>Nombre de différences: {{ currentGameData.nbDifferences }}</p>
                 <p *ngIf="currentGameData.isDifficult">Difficulté: Difficile</p>
                 <p *ngIf="!currentGameData.isDifficult">Difficulté: Facile</p>
-            <button *ngIf="currentGameData.nbDifferences >= 3 && currentGameData.nbDifferences <=9" type="button" (click)="onSave(gameName)" >Sauvegarder</button>
-            <p *ngIf="!(currentGameData.nbDifferences >= 3 && currentGameData.nbDifferences <=9)"> Le jeu doit avoir entre 3 et 9 différences pour être validé</p>
+                <button *ngIf="currentGameData.nbDifferences >= 3 && currentGameData.nbDifferences <= 9" type="button" (click)="onSave(gameName)">
+                    Sauvegarder
+                </button>
+                <p *ngIf="!(currentGameData.nbDifferences >= 3 && currentGameData.nbDifferences <= 9)">
+                    Le jeu doit avoir entre 3 et 9 différences pour être validé
+                </p>
             </div>
             <label for="gameName"><b>Entrez votre nom de joueur:</b></label>
-            <input #gameName type="text" placeholder="Entrez Nom" id="gameName">
-            <button type="button" (click)="onClosingPopUp()"> Retour</button>
-
-            
+            <input #gameName type="text" placeholder="Entrez Nom" id="gameName" />
+            <button type="button" (click)="onClosingPopUp()">Retour</button>
         </div>
-      
     </div>
 </body>
