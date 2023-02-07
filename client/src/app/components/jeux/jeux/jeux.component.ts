@@ -9,6 +9,7 @@ import { Router } from '@angular/router';
 export class JeuxComponent {
     @Input() customTitle: string;
     @Input() customDifficulty: string;
+    @Input() isConfigurationMode: boolean;
 
     constructor(private router: Router) {}
 
