@@ -10,12 +10,13 @@ describe('CanvasManagerService', () => {
     let differenceDetectionServiceSpy: SpyObj<DifferenceDetectionService>;
     const CANVAS_WIDTH = 640;
     const CANVAS_HEIGHT = 480;
+    const image: HTMLImageElement = new Image();
     // White RGBO value is 255, 255, 255, 255
     const whiteValue = 255;
 
     beforeEach(() => {
+        image.src = '../assets/tests/image_wrong_res.bmp';
         differenceDetectionServiceSpy = jasmine.createSpyObj('DifferenceDetectionService', ['launchDifferenceDetection']);
-
         TestBed.configureTestingModule({
             providers: [{ provide: DifferenceDetectionService, useValue: differenceDetectionServiceSpy }],
         });
@@ -48,9 +49,10 @@ describe('CanvasManagerService', () => {
         service.launchVerification(0);
         expect(differenceDetectionServiceSpy.launchDifferenceDetection).toHaveBeenCalled();
     });
-    it('validateImageSize should return false if image is not 640x480 ', () => {
+    it('validateImageSize should return false if image is not 640x480 ', async () => {
         // TODO: utiliser les assets/test
-        expect(true).toBeTrue();
+        const bitmap = await createImageBitmap(image);
+        expect(service.validateImageSize(bitmap)).toBeTrue();
     });
     it('validateImageSize should return true if image is 640x480 ', () => {
         // TODO: utiliser les assets/test
