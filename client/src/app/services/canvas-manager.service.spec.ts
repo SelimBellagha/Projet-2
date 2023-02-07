@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { CanvasTestHelper } from '@app/classes/canvas-test-helper';
 import { GameData } from '@app/interfaces/game-data';
-import { CanvasManagerService } from './canvas-manager.service';
+import { BMP_24BIT_FILE_SIZE, CanvasManagerService } from './canvas-manager.service';
 import { DifferenceDetectionService } from './difference-detection.service';
 import SpyObj = jasmine.SpyObj;
 
@@ -10,12 +10,15 @@ describe('CanvasManagerService', () => {
     let differenceDetectionServiceSpy: SpyObj<DifferenceDetectionService>;
     const CANVAS_WIDTH = 640;
     const CANVAS_HEIGHT = 480;
-    const image: HTMLImageElement = new Image();
+    const imageValid: HTMLImageElement = new Image();
+    const imageWrongSize: HTMLImageElement = new Image();
     // White RGBO value is 255, 255, 255, 255
     const whiteValue = 255;
 
     beforeEach(() => {
-        image.src = '../assets/tests/image_wrong_res.bmp';
+        imageValid.src = '../assets/tests/image_2_diff.bmp';
+        imageWrongSize.src = '../assets/tests/image_wrong_res.bmp';
+
         differenceDetectionServiceSpy = jasmine.createSpyObj('DifferenceDetectionService', ['launchDifferenceDetection']);
         TestBed.configureTestingModule({
             providers: [{ provide: DifferenceDetectionService, useValue: differenceDetectionServiceSpy }],
@@ -50,13 +53,14 @@ describe('CanvasManagerService', () => {
         expect(differenceDetectionServiceSpy.launchDifferenceDetection).toHaveBeenCalled();
     });
     it('validateImageSize should return false if image is not 640x480 ', async () => {
-        // TODO: utiliser les assets/test
-        const bitmap = await createImageBitmap(image);
-        expect(service.validateImageSize(bitmap)).toBeTrue();
+        await imageWrongSize.decode();
+        const bitmap = await createImageBitmap(imageWrongSize);
+        expect(service.validateImageSize(bitmap)).toBeFalse();
     });
-    it('validateImageSize should return true if image is 640x480 ', () => {
-        // TODO: utiliser les assets/test
-        expect(true).toBeTrue();
+    it('validateImageSize should return true if image is 640x480 ', async () => {
+        await imageValid.decode();
+        const bitmap = await createImageBitmap(imageValid);
+        expect(service.validateImageSize(bitmap)).toBeTrue();
     });
     it('isFileValid shoul return false if file is null or undefined', () => {
         const file: File = null as unknown as File;
@@ -64,13 +68,14 @@ describe('CanvasManagerService', () => {
         expect(service.isFileValid(file)).toBeFalse();
         expect(service.isFileValid(file2)).toBeFalse();
     });
-    it('isFileValid should return false if file not in bmp 24-bit format', () => {
-        // TODO: utiliser les assets/test
-        expect(true).toBeTrue();
+    it('isFileValid should return false if file not in bmp format', () => {
+        const fileMock = { type: 'image/png', size: BMP_24BIT_FILE_SIZE };
+        expect(service.isFileValid(fileMock as File)).toBeFalse();
     });
 
-    it('isFileValid should return true if file  in bmp 24-bit format', () => {
-        expect(true).toBeTrue();
+    it('isFileValid should return true if file  in bmp 24-bit format', async () => {
+        const fileMock = { type: 'image/bmp', size: BMP_24BIT_FILE_SIZE };
+        expect(service.isFileValid(fileMock as File)).toBeTrue();
     });
 
     it('resetLeftBackground should put all the canvas pixels to white', () => {
@@ -136,6 +141,62 @@ describe('CanvasManagerService', () => {
         const spy = spyOn(service, 'notifyFileError');
         service.changeBothBackgrounds(null as unknown as File);
         expect(spy).toHaveBeenCalled();
+    });
+
+    it('changeBothBackground should call notifyFileError if file is in wrong size', async () => {
+        const spy = spyOn(service, 'notifyFileError');
+        spyOn(service, 'validateImageSize').and.returnValue(false);
+        spyOn(service, 'isFileValid').and.returnValue(true);
+        await imageValid.decode();
+        await service.changeBothBackgrounds(imageValid as unknown as File);
+        expect(spy).toHaveBeenCalled();
+    });
+
+    it('changeBothBackground should call drawImage on both canvas if file is valid', async () => {
+        const spyRight = spyOn(service.rightCanvasContext, 'drawImage');
+        const spyLeft = spyOn(service.leftCanvasContext, 'drawImage');
+        spyOn(service, 'validateImageSize').and.returnValue(true);
+        spyOn(service, 'isFileValid').and.returnValue(true);
+        await imageValid.decode();
+        await service.changeBothBackgrounds(imageValid as unknown as File);
+        expect(spyLeft).toHaveBeenCalled();
+        expect(spyRight).toHaveBeenCalled();
+    });
+
+    it('changeLeftBackground should call notifyFileError if file is in wrong size', async () => {
+        const spy = spyOn(service, 'notifyFileError');
+        spyOn(service, 'validateImageSize').and.returnValue(false);
+        spyOn(service, 'isFileValid').and.returnValue(true);
+        await imageValid.decode();
+        await service.changeLeftBackground(imageValid as unknown as File);
+        expect(spy).toHaveBeenCalled();
+    });
+
+    it('changeLeftBackground should call drawImage on left canvas if file is valid', async () => {
+        const spyLeft = spyOn(service.leftCanvasContext, 'drawImage');
+        spyOn(service, 'validateImageSize').and.returnValue(true);
+        spyOn(service, 'isFileValid').and.returnValue(true);
+        await imageValid.decode();
+        await service.changeLeftBackground(imageValid as unknown as File);
+        expect(spyLeft).toHaveBeenCalled();
+    });
+
+    it('changeRightBackground should call notifyFileError if file is in wrong size', async () => {
+        const spy = spyOn(service, 'notifyFileError');
+        spyOn(service, 'validateImageSize').and.returnValue(false);
+        spyOn(service, 'isFileValid').and.returnValue(true);
+        await imageValid.decode();
+        await service.changeRightBackground(imageValid as unknown as File);
+        expect(spy).toHaveBeenCalled();
+    });
+
+    it('changeRightBackground should call drawImage on right canvas if file is valid', async () => {
+        const spyRight = spyOn(service.rightCanvasContext, 'drawImage');
+        spyOn(service, 'validateImageSize').and.returnValue(true);
+        spyOn(service, 'isFileValid').and.returnValue(true);
+        await imageValid.decode();
+        await service.changeRightBackground(imageValid as unknown as File);
+        expect(spyRight).toHaveBeenCalled();
     });
 
     // TODO: Test change Backgrounds with files and refactor the code?

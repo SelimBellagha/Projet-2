@@ -3,7 +3,7 @@ import { GameData } from '@app/interfaces/game-data';
 import { DifferenceDetectionService } from './difference-detection.service';
 import { DEFAULT_HEIGHT, DEFAULT_WIDTH } from './draw.service';
 
-const BMP_24BIT_FILE_SIZE = 921654;
+export const BMP_24BIT_FILE_SIZE = 921654;
 
 @Injectable({
     providedIn: 'root',
@@ -15,9 +15,9 @@ export class CanvasManagerService {
 
     constructor(private differenceDetector: DifferenceDetectionService) {}
 
-    changeRightBackground(file: File): void {
+    async changeRightBackground(file: File): Promise<void> {
         if (this.isFileValid(file)) {
-            createImageBitmap(file).then((image) => {
+            await createImageBitmap(file).then((image) => {
                 if (this.validateImageSize(image)) {
                     this.rightCanvasContext.drawImage(image, 0, 0);
                 } else {
@@ -29,9 +29,9 @@ export class CanvasManagerService {
         }
     }
 
-    changeLeftBackground(file: File): void {
+    async changeLeftBackground(file: File): Promise<void> {
         if (this.isFileValid(file)) {
-            createImageBitmap(file).then((image) => {
+            await createImageBitmap(file).then((image) => {
                 if (this.validateImageSize(image)) {
                     this.leftCanvasContext.drawImage(image, 0, 0);
                 } else {
@@ -43,9 +43,9 @@ export class CanvasManagerService {
         }
     }
 
-    changeBothBackgrounds(file: File): void {
+    async changeBothBackgrounds(file: File): Promise<void> {
         if (this.isFileValid(file)) {
-            createImageBitmap(file).then((image) => {
+            await createImageBitmap(file).then((image) => {
                 if (this.validateImageSize(image)) {
                     this.leftCanvasContext.drawImage(image, 0, 0);
                     this.rightCanvasContext.drawImage(image, 0, 0);

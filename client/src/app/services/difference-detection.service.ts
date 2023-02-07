@@ -108,10 +108,12 @@ export class DifferenceDetectionService {
                     // Pour chaque direction, vérifier la couleur et push
                     DIRECTIONS.forEach((direction) => {
                         const newPixel: Vec2 = { x: currentPixel.x + direction.x, y: currentPixel.y + direction.y };
-                        if (this.isPointBlack(differenceImage, newPixel) && !isPixelChecked[newPixel.y][newPixel.x]) {
-                            pixelStack.push(newPixel);
+                        if (this.isInCanvas(newPixel)) {
+                            if (this.isPointBlack(differenceImage, newPixel) && !isPixelChecked[newPixel.y][newPixel.x]) {
+                                pixelStack.push(newPixel);
+                            }
+                            isPixelChecked[newPixel.y][newPixel.x] = true;
                         }
-                        isPixelChecked[newPixel.y][newPixel.x] = true;
                     });
                 }
 
