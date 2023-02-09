@@ -13,17 +13,17 @@
         </div>
     </div>
     <div class="buttons-align">
-        <div *ngIf="hasnext == true && hasprevious == true">
+        <div *ngIf="hasnext === true && hasprevious === true">
             <button (click)="previous()" >Précédent</button>
             <button (click)="next()" >Suivant</button>
         </div>
 
-        <div *ngIf="hasprevious == false">
+        <div *ngIf="hasprevious === false">
             <button disabled="disabled">Précédent</button>
             <button (click)="next()" >Suivant</button>
         </div>
         
-        <div *ngIf="hasnext == false">
+        <div *ngIf="hasnext === false">
             <button (click)="previous()" >Précédent</button>
             <button disabled="disabled">Suivant</button>
         </div>

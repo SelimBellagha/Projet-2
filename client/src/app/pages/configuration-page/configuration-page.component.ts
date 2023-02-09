@@ -33,22 +33,9 @@ const GAMES_LIST: Game[] = [
         difficulty: 'Facile',
         image: 'https://www.jardiner-malin.fr/wp-content/uploads/2015/02/tilleul-arbre.jpg',
     },
-    {
-        title: 'Jeu 6',
-        difficulty: 'Difficile',
-        image: 'https://www.jardiner-malin.fr/wp-content/uploads/2015/02/tilleul-arbre.jpg',
-    },
-    {
-        title: 'Jeu 7',
-        difficulty: 'Difficile',
-        image: 'https://www.jardiner-malin.fr/wp-content/uploads/2015/02/tilleul-arbre.jpg',
-    },
-    {
-        title: 'Jeu 8',
-        difficulty: 'Moyen',
-        image: 'https://www.jardiner-malin.fr/wp-content/uploads/2015/02/tilleul-arbre.jpg',
-    }
 ];
+
+const display = 4;
 
 @Component({
     selector: 'app-configuration-page',
@@ -58,15 +45,14 @@ const GAMES_LIST: Game[] = [
 export class ConfigurationPageComponent {
     @ViewChild('popUpWindow') popUpWindow: ElementRef<HTMLDivElement>;
     games = GAMES_LIST;
-    gameslenght: number = this.games.length;
     hasprevious: boolean = false;
     hasnext: boolean = true;
     firstgame: number = 0;
-    lastgame: number = 4;
+    lastgame: number = display;
+    marge: number = display;
     gamesDisplayed = this.games.slice(this.firstgame, this.lastgame);
-    protected marge: number = 4;
+
     constructor(private router: Router) {}
-    test: String = this.gameslenght.toString();
 
     goToHomePage(): void {
         this.router.navigate(['home']);
@@ -80,10 +66,9 @@ export class ConfigurationPageComponent {
         this.lastgame = this.lastgame + this.marge;
         this.hasprevious = true;
 
-        if (this.lastgame === this.games.length) {
+        if (this.lastgame >= this.games.length) {
             this.hasnext = false;
         }
-        
     }
 
     previous() {
@@ -104,5 +89,4 @@ export class ConfigurationPageComponent {
     onClosingPopUp(): void {
         this.popUpWindow.nativeElement.style.display = 'none';
     }
-    
 }

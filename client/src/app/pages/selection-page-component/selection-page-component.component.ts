@@ -47,27 +47,9 @@ const GAMES_LIST: Game[] = [
         difficulty: 'Moyen',
         image: 'https://www.jardiner-malin.fr/wp-content/uploads/2015/02/tilleul-arbre.jpg',
     },
-    {
-        title: 'Jeu 9',
-        difficulty: 'Facile',
-        image: 'https://www.jardiner-malin.fr/wp-content/uploads/2015/02/tilleul-arbre.jpg',
-    },
-    {
-        title: 'Jeu 10',
-        difficulty: 'Difficile',
-        image: 'https://www.jardiner-malin.fr/wp-content/uploads/2015/02/tilleul-arbre.jpg',
-    },
-    {
-        title: 'Jeu 11',
-        difficulty: 'Difficile',
-        image: 'https://www.jardiner-malin.fr/wp-content/uploads/2015/02/tilleul-arbre.jpg',
-    },
-    {
-        title: 'Jeu 12',
-        difficulty: 'Difficile',
-        image: 'https://www.jardiner-malin.fr/wp-content/uploads/2015/02/tilleul-arbre.jpg',
-    },
 ];
+
+const display = 4;
 
 @Component({
     selector: 'app-selection-page-component',
@@ -78,10 +60,10 @@ export class SelectionPageComponentComponent {
     games = GAMES_LIST;
     hasprevious: boolean = false;
     hasnext: boolean = true;
-    protected firstgame: number = 0;
-    protected lastgame: number = 4;
+    firstgame: number = 0;
+    lastgame: number = display;
+    marge: number = display;
     gamesDisplayed = this.games.slice(this.firstgame, this.lastgame);
-    protected marge: number = 4;
 
     constructor(private router: Router) {}
 
@@ -95,10 +77,9 @@ export class SelectionPageComponentComponent {
         this.lastgame = this.lastgame + this.marge;
         this.hasprevious = true;
 
-        if (this.lastgame === this.games.length) {
+        if (this.lastgame >= this.games.length) {
             this.hasnext = false;
         }
-        
     }
 
     previous() {
