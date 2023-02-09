@@ -10,21 +10,21 @@
     </div>
 
     <div class="main-container">
-        <app-jeux customTitle="Jeu 1" customDifficulty="Facile"> </app-jeux>
-        <app-jeux customTitle="Jeu 2" customDifficulty="Moyen"> </app-jeux>
-        <app-jeux customTitle="Jeu 3" customDifficulty="Difficile"> </app-jeux>
-        <app-jeux customTitle="Jeu 4" customDifficulty="Facile"> </app-jeux>
+        <div *ngFor="let game of gamesDisplayed">
+            <app-jeux [customTitle]="game.title" [customDifficulty]="game.difficulty" [isConfigurationMode]="true"></app-jeux>
+        </div>
     </div>
+    
     <div class="buttonContainer">
         <div class="next-button-align-1">
             <button>Précédent</button>
         </div>
         <div class="next-button-align-2">
-            <button>Suivant</button>
+            <button (click)="next()" >Suivant</button>
         </div>
     </div>
     <div class="buttons">
-        <button class="button-choice">Accéder à la Vue de création de jeu</button>
+        <button class="button-choice" (click)="goToCreationPage()">Accéder à la Vue de création de jeu</button>
         <button class="button-choice">Définir des constantes de jeu</button>
         <button class="button-choice">Accéder à l'historique des parties jouées</button>
         <button class="button-choice">Remettre les données à leur état initial</button>

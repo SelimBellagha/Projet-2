@@ -4,13 +4,49 @@
     </h2>    
 
     <div class ="info">
-        <div >  
+        <div>
+            <p style="float:left"> 
         <img class = "image-position" style="vertical-align:top" src="https://www.jardiner-malin.fr/wp-content/uploads/2015/02/tilleul-arbre.jpg" alt="Test">
-        </div>
+            </p>
 
-        <div class = "buttons">
+        <div class = "top3" >TOP 3</div>
+        <table class = "place">
+        <tr>
+            <th></th>
+            <th>SOLO</th>
+            <th> 1 VS 1 </th>
+        </tr>
+
+        <tr>
+            <th>🥇</th>
+            <td>0:30 Mario </td>
+            <td>1:15 Mickey</td>
+        </tr>
+
+        <tr>
+            <th>🥈</th>
+            <td>0:28 Luigi </td>
+            <td>1:01 Daisy </td>
+        </tr>
+
+        <tr>
+            <th>🥉</th>
+            <td>0:30 Minnie </td>
+            <td class>0:55 Pluto </td>
+        </tr>
+        </table>
+         <div style="clear:both"></div>
+
+    </div>
+
+    <div class = "buttons">
+        <div *ngIf="!isConfigurationMode" class = "buttons">
             <button class = "button-choice" (click)="goToLoginPage()"> Jouer</button>
-            <button class = "button-choice"> Rejoindre</button>
+            <button class = "button-choice" disabled="disabled"> Rejoindre</button>
+        </div>
+        <div *ngIf="isConfigurationMode" class = "buttons">
+            <button class = "button-choice" > Supprimer</button>
+            <button class = "button-choice" disabled="disabled"> Reinitialiser</button>
         </div>
     </div>
 </div>
