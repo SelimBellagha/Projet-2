@@ -26,12 +26,6 @@ export class GameCreationPageComponent implements AfterViewInit {
         this.canvasManager.resetRightBackground();
     }
 
-    resetForeground(leftPicture: boolean): void {
-        // enlever les dessins/modifications
-        const message: string = 'reset ' + (leftPicture ? 'left' : 'right') + ' foreground';
-        window.alert(message);
-    }
-
     resetBackground(leftPicture: boolean): void {
         // Remettre le fond en blanc
         if (leftPicture) {
@@ -41,12 +35,6 @@ export class GameCreationPageComponent implements AfterViewInit {
         }
     }
 
-    replicateForeground(leftPicture: boolean): void {
-        // dupliquer l'avant plan du canevas appelé vers l'autre
-        const message: string = 'replicated ' + (leftPicture ? 'left' : 'right') + ' foreground';
-        window.alert(message);
-    }
-
     onValidationLaunched(): void {
         // lancer la validation des erreurs avec le service créer
         this.canvasManager.launchVerification(this.radius).then((gameData) => {
@@ -54,7 +42,6 @@ export class GameCreationPageComponent implements AfterViewInit {
 
             this.popUpWindow.nativeElement.style.display = 'block';
         });
-        this.popUpWindow.nativeElement.style.display = 'block';
     }
 
     modifyRadius(newRadius: number): void {

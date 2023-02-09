@@ -73,17 +73,19 @@ export class DifferenceDetectionService {
         for (let i = 0 - radius; i <= radius; i++) {
             for (let j = 0 - radius; j <= radius; j++) {
                 const pixelPosition = { x: center.x + j, y: center.y + i };
-                if (this.calculateDistance(center, pixelPosition) <= radius) {
+                if (this.calculateDistance(center, pixelPosition) <= radius && this.isInCanvas(pixelPosition)) {
                     const pixelStartPosition = PIXEL_SIZE * (pixelPosition.x + pixelPosition.y * DEFAULT_WIDTH);
                     differencesImage.data[pixelStartPosition] = 0;
                     differencesImage.data[pixelStartPosition + 1] = 0;
                     differencesImage.data[pixelStartPosition + 2] = 0;
                     differencesImage.data[pixelStartPosition + 3] = 255;
-                } else {
-                    // eslint-disable-next-line no-console
                 }
             }
         }
+    }
+
+    isInCanvas(position: Vec2): boolean {
+        return position.x >= 0 && position.x < DEFAULT_WIDTH && position.y >= 0 && position.y < DEFAULT_HEIGHT;
     }
 
     findNumberOfDifference(differenceImage: ImageData): Vec2[][] {
@@ -106,10 +108,12 @@ export class DifferenceDetectionService {
                     // Pour chaque direction, vérifier la couleur et push
                     DIRECTIONS.forEach((direction) => {
                         const newPixel: Vec2 = { x: currentPixel.x + direction.x, y: currentPixel.y + direction.y };
-                        if (this.isPointBlack(differenceImage, newPixel) && !isPixelChecked[newPixel.y][newPixel.x]) {
-                            pixelStack.push(newPixel);
+                        if (this.isInCanvas(newPixel)) {
+                            if (this.isPointBlack(differenceImage, newPixel) && !isPixelChecked[newPixel.y][newPixel.x]) {
+                                pixelStack.push(newPixel);
+                            }
+                            isPixelChecked[newPixel.y][newPixel.x] = true;
                         }
-                        isPixelChecked[newPixel.y][newPixel.x] = true;
                     });
                 }
 
@@ -127,7 +131,7 @@ export class DifferenceDetectionService {
             return differenceImage.data[PIXEL_SIZE * (pixelPosition.x + pixelPosition.y * DEFAULT_WIDTH)] === 0;
         }
     }
-
+    // True : le jeu est difficile
     getDifficulty(differences: Vec2[][]): boolean {
         return (
             differences.length >= NB_IMAGE_DIFFICULT &&
