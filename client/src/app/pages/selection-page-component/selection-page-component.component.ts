@@ -62,6 +62,11 @@ const GAMES_LIST: Game[] = [
         difficulty: 'Difficile',
         image: 'https://www.jardiner-malin.fr/wp-content/uploads/2015/02/tilleul-arbre.jpg',
     },
+    {
+        title: 'Jeu 12',
+        difficulty: 'Difficile',
+        image: 'https://www.jardiner-malin.fr/wp-content/uploads/2015/02/tilleul-arbre.jpg',
+    },
 ];
 
 @Component({
@@ -71,7 +76,6 @@ const GAMES_LIST: Game[] = [
 })
 export class SelectionPageComponentComponent {
     games = GAMES_LIST;
-    gameslenght: number = this.games.length;
     hasprevious: boolean = false;
     hasnext: boolean = true;
     protected firstgame: number = 0;
@@ -91,9 +95,10 @@ export class SelectionPageComponentComponent {
         this.lastgame = this.lastgame + this.marge;
         this.hasprevious = true;
 
-        if (this.lastgame === this.gameslenght) {
+        if (this.lastgame === this.games.length) {
             this.hasnext = false;
         }
+        
     }
 
     previous() {
