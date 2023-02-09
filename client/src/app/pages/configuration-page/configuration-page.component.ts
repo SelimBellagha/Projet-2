@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 
 type Game = {
@@ -41,8 +41,15 @@ const GAMES_LIST: Game[] = [
     styleUrls: ['./configuration-page.component.scss'],
 })
 export class ConfigurationPageComponent {
+    @ViewChild('popUpWindow') popUpWindow: ElementRef<HTMLDivElement>;
     games = GAMES_LIST;
-
+    gameslenght: number = this.games.length;
+    hasprevious: boolean = false;
+    hasnext: boolean = true;
+    protected firstgame: number = 0;
+    protected lastgame: number = 4;
+    gamesDisplayed = this.games.slice(this.firstgame, this.lastgame);
+    protected marge: number = 4;
     constructor(private router: Router) {}
 
     goToHomePage(): void {
@@ -51,4 +58,35 @@ export class ConfigurationPageComponent {
     goToCreationPage(): void {
         this.router.navigate(['gameCreation']);
     }
+
+    next(): void {
+        this.gamesDisplayed = this.games.slice(this.lastgame, this.lastgame + this.marge);
+        this.firstgame = this.lastgame;
+        this.lastgame = this.lastgame + this.marge;
+        this.hasprevious = true;
+
+       if (this.lastgame === this.gameslenght) {
+            this.hasnext = false; 
+        }
+    }
+
+    previous() {
+        this.gamesDisplayed = this.games.slice(this.firstgame - this.marge, this.firstgame);
+        this.lastgame = this.firstgame;
+        this.firstgame = this.firstgame - this.marge;
+        this.hasnext = true;
+
+        if (this.firstgame === 0) {
+            this.hasprevious = false;
+        }
+    }
+
+    goToConstants() {
+        this.popUpWindow.nativeElement.style.display = 'block';
+    }
+
+    onClosingPopUp(): void {
+        this.popUpWindow.nativeElement.style.display = 'none';
+    }
+    
 }

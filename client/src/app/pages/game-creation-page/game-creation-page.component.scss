@@ -109,7 +109,6 @@ h1 {
 
 .note {
     color: red;
-    margin-left: 20%;
     font-style: italic;
 }
 
@@ -124,6 +123,9 @@ h1 {
     overflow:auto; /* Enable scroll if needed */
     background-color: black; /* Fallback color */
     background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+    visibility: visible;
+    -webkit-animation: fadeIn 1s;
+    animation: fadeIn 1s;
   }
   
   /* Modal Content/Box */
@@ -161,3 +163,12 @@ h1 {
   font-size: 15px;
   }
 
+  @-webkit-keyframes fadeIn {
+    from {opacity: 0;} 
+    to {opacity: 1;}
+  }
+  
+  @keyframes fadeIn {
+    from {opacity: 0;}
+    to {opacity:1 ;}
+  }

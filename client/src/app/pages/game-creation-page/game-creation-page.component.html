@@ -59,13 +59,12 @@
                 <p>Nombre de différences: {{currentGameData.nbDifferences}}</p>
                 <p *ngIf="currentGameData.isDifficult">Difficulté: Difficile</p>
                 <p *ngIf="!currentGameData.isDifficult">Difficulté: Facile</p>
-            <button *ngIf="currentGameData.nbDifferences >= 3 && currentGameData.nbDifferences <=9" type="button" (click)="onSave(gameName)" >Sauvegarder</button>
             <p class="modal-note" *ngIf="!(currentGameData.nbDifferences >= 3 && currentGameData.nbDifferences <=9)"> Le jeu doit avoir entre 3 et 9 différences pour être validé</p>
+            <button *ngIf="currentGameData.nbDifferences >= 3 && currentGameData.nbDifferences <=9" type="button" (click)="onSave(gameName)" class="modal-button">Sauvegarder</button>
             </div>
             <label for="gameName"><b>Entrez votre nom de joueur:</b></label>
             <input #gameName type="text" placeholder="Entrez Nom">
             <div class ="modal-buttons">
-                <button class="modal-button"> Créer </button>
                 <button class="modal-button" type="button" (click)="onClosingPopUp()"> Retour</button>  
             </div>
         </div>  

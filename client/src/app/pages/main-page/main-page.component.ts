@@ -51,6 +51,6 @@ export class MainPageComponent {
     }
 
     goToConfiguration(): void {
-        this.router.navigate(['/gameConfiguration']);
+        this.router.navigate(['/config']);
     }
 }

@@ -14,7 +14,7 @@ const routes: Routes = [
     { path: 'home', component: MainPageComponent },
     { path: 'game', component: GamePageComponent },
     { path: 'material', component: MaterialPageComponent },
-    { path: 'gameConfiguration', component: ConfigurationPageComponent },
+    { path: 'config', component: ConfigurationPageComponent },
     { path: 'gameCreation', component: GameCreationPageComponent },
     { path: 'soloView', component: SoloViewPageComponent },
     { path: 'gameSelection', component: SelectionPageComponentComponent },

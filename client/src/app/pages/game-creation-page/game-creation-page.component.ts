@@ -91,6 +91,6 @@ export class GameCreationPageComponent implements AfterViewInit {
     }
 
     goToConfiguration(): void {
-        this.router.navigate(['/gameConfiguration']);
+        this.router.navigate(['/config']);
     }
 }

@@ -41,12 +41,12 @@
 
     <div class = "buttons">
         <div *ngIf="!isConfigurationMode" class = "buttons">
-            <button class = "button-choice" (click)="goToLoginPage()"> Jouer</button>
-            <button class = "button-choice" disabled="disabled"> Rejoindre</button>
+            <button (click)="goToLoginPage()"> Jouer</button>
+            <button disabled="disabled"> Créer </button>
         </div>
         <div *ngIf="isConfigurationMode" class = "buttons">
-            <button class = "button-choice" > Supprimer</button>
-            <button class = "button-choice" disabled="disabled"> Reinitialiser</button>
+            <button disabled="disabled" > Supprimer</button>
+            <button disabled="disabled"> Reinitialiser</button>
         </div>
     </div>
 </div>
