@@ -1,13 +1,17 @@
-.container {
-    min-height: 100vh;
-    height: auto;
-    background-color: #b5d8b5;
-}
-
 img {
     position: fixed;
-    top: 0;
-    left: 0;
+    margin-top: 6%;
+    top: 20;
+    left: 20;
+    max-width: 20%;
+    max-height: 20%;
+}
+
+.container {
+    min-height: 100%;
+    background-image: url('../../../assets/images/giphy.gif');
+    background-size:15%;
+
 }
 
 .justified {
@@ -39,7 +43,6 @@ img {
 .team-name {
     margin-top: 0.25em;
     margin-bottom: 0.25em;
-    color: #6d5e5e;
     font-weight: bold;
     font-size: 25px;
 }
@@ -58,10 +61,10 @@ img {
 .footer-item {
     text-align: center;
     margin-bottom: 25px;
+    color: #000000;
 }
 
 .footer-item p {
-    color: #6d5e5e;
     font-size: 20px;
 }
 
