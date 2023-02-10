@@ -1,12 +1,10 @@
 <body class="container">
-    <h1 align="center">
-        <font face="times">
-            <i> Configuration </i>
-        </font>
+    <h1 class="title" >
+        Configuration
     </h1>
 
     <div>
-        <button routerLink="/" class="return-button">Retour</button>
+        <button routerLink="/" class="return-button">Acceuil</button>
     </div>
 
     <div class="main-container">
@@ -14,19 +12,39 @@
             <app-jeux [customTitle]="game.title" [customDifficulty]="game.difficulty" [isConfigurationMode]="true"></app-jeux>
         </div>
     </div>
-    
-    <div class="buttonContainer">
-        <div class="next-button-align-1">
-            <button>Précédent</button>
-        </div>
-        <div class="next-button-align-2">
+    <div class="buttons-align">
+        <div *ngIf="hasnext === true && hasprevious === true">
+            <button (click)="previous()" >Précédent</button>
             <button (click)="next()" >Suivant</button>
         </div>
+
+        <div *ngIf="hasprevious === false">
+            <button disabled="disabled">Précédent</button>
+            <button (click)="next()" >Suivant</button>
+        </div>
+        
+        <div *ngIf="hasnext === false">
+            <button (click)="previous()" >Précédent</button>
+            <button disabled="disabled">Suivant</button>
+        </div>
     </div>
-    <div class="buttons">
+    
+    <div class="button-container">
         <button class="button-choice" (click)="goToCreationPage()">Accéder à la Vue de création de jeu</button>
-        <button class="button-choice">Définir des constantes de jeu</button>
+        <button class="button-choice" (click)="goToConstants()">Constantes de jeu</button>
+        
         <button class="button-choice">Accéder à l'historique des parties jouées</button>
         <button class="button-choice">Remettre les données à leur état initial</button>
+    </div>
+
+    <div #popUpWindow class="modal">
+        <div class="modal-content">
+            <li>temps initial du compte à rebours : 30 secondes</li>
+            <li>temps gagné avec la découverte d’une différence : 5 secondes</li>
+            <li> temps de pénalité pour l’utilisation d’un indice : 5 secondes</li>
+            <div class="close-button">
+                <button (click)="onClosingPopUp()">Fermer</button>
+            </div>   
+        </div>      
     </div>
 </body>
