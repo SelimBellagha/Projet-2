@@ -3,9 +3,9 @@
 
     <div class="section">
         <div class="score-text">
-            <p class="underline-title-text"> Differences trouvées: </p>
+            <p class="underline-title-text"> Differences trouvées: X </p>
              <div>
-                <p class="player-score"> {{username}} : X </p>
+                <p class="player-score"> Nom du Joueur: {{username}} </p>
                 <p class="player-score"> Indices restants: X </p>  
             </div>
             <div><img src="stopwatch.png" class="watch-logo" /> Timer</div>
@@ -16,7 +16,7 @@
             </svg>
         </div>
         <div class="button-container">
-            <button>Abandonner la partie</button>
+            <button (click)="returnSelectionPage()">Abandonner la partie</button>
         </div>
     </div>
     <div class="section">
@@ -26,11 +26,11 @@
             </p>
             <div>
                 <ul>
-                    <li>Nom du jeu</li>
-                    <li>Niveau de difficulté</li>
-                    <li>Mode de jeu</li>
-                    <li>X Differences sur l'image</li>
-                    <li id = "penalty">Pénalités pour utilisation d'indice : 00: XX</li>
+                    <li>{{gameName}}</li>
+                    <li>{{difficulty}}</li>
+                    <li>Mode de jeu Classique</li>
+                    <li>{{nbDifferences}} differences sur l'image</li>
+                    <li id = "penalty">Pénalités pour utilisation d'indice : 00: 15</li>
                 </ul>
             </div>
         </div>

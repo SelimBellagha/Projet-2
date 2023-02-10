@@ -7,6 +7,7 @@ import { Router } from '@angular/router';
     styleUrls: ['./selection-page-component.component.scss'],
 })
 export class SelectionPageComponentComponent {
+    componentNumber: number = 0;
     constructor(private router: Router) {}
 
     goToHomePage(): void {
