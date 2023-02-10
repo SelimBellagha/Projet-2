@@ -66,20 +66,13 @@ describe('MainPageComponent', () => {
             },
         });
     });
-    it(' clicking on return button should navigate to configuration Page', () => {
-        const routerSpy = spyOn(router, 'navigate');
-
-        component.goToConfiguration();
-        expect(routerSpy).toHaveBeenCalled();
-        expect(routerSpy).toHaveBeenCalledWith(['/gameConfiguration']);
-    });
 
     it('goToConfiguration should navigate to configuration Page', () => {
         const routerSpy = spyOn(router, 'navigate');
 
         component.goToConfiguration();
         expect(routerSpy).toHaveBeenCalled();
-        expect(routerSpy).toHaveBeenCalledWith(['/gameConfiguration']);
+        expect(routerSpy).toHaveBeenCalledWith(['/config']);
     });
     it('goToConfiguration should navigate to configuration Page', () => {
         const routerSpy = spyOn(router, 'navigate');
