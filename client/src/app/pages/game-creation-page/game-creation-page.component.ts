@@ -4,6 +4,7 @@ import { GameData } from '@app/interfaces/game-data';
 import { CanvasManagerService } from '@app/services/canvas-manager.service';
 import { GameManagerService } from '@app/services/game-manager.service';
 
+// Vérifier l'emplacement du bouton Sauvegarder avev Benjamin lundi!!!! (Marcy)
 @Component({
     selector: 'app-game-creation-page',
     templateUrl: './game-creation-page.component.html',
@@ -80,6 +81,6 @@ export class GameCreationPageComponent implements AfterViewInit {
     }
 
     goToConfiguration(): void {
-        this.router.navigate(['/gameConfiguration']);
+        this.router.navigate(['/config']);
     }
 }

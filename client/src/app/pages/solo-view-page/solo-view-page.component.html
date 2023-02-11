@@ -17,7 +17,7 @@
             <canvas #originalImage #gridCanvas (click)="onClick($event)" width="640px" height="480px"></canvas>
         </div>
         <div class="button-container">
-            <button>Abandonner la partie</button>
+            <button (click)="returnSelectionPage()">Abandonner la partie</button>
         </div>
     </div>
     <div class="section">
@@ -25,11 +25,11 @@
             <p class="underline-title-text">Informations de la partie :</p>
             <div>
                 <ul>
-                    <li>Nom du jeu</li>
-                    <li>Niveau de difficulté</li>
-                    <li>Mode de jeu</li>
-                    <li>X Differences sur l'image</li>
-                    <li id="penalty">Pénalités pour utilisation d'indice : 00: XX</li>
+                    <li>{{gameName}}</li>
+                    <li>{{difficulty}}</li>
+                    <li>Mode de jeu Classique</li>
+                    <li>{{nbDifferences}} differences sur l'image</li>
+                    <li id = "penalty">Pénalités pour utilisation d'indice : 00: 15</li>
                 </ul>
             </div>
         </div>

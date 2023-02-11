@@ -3,6 +3,11 @@
     padding: 0 5% 5% 5%;
 }
 
+.title {
+  font-family: 'Times New Roman';
+  font-style: italic;
+  text-align: center;
+}
 
 .main-container { 
     position: relative;
@@ -14,7 +19,7 @@
     max-height: 90%;
 }
 
-.return-button {
+.main-button {
     position: absolute;
     left:    0;
     top:   0;
@@ -32,8 +37,7 @@
     font-size: 15px;
 }
 
-
-.next-button-align {
+.buttons-align {
   text-align: right;
 }
 

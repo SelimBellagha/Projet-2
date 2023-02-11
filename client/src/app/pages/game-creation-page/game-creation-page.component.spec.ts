@@ -97,18 +97,16 @@ describe('GameCreationPageComponent', () => {
     });
 
     it('onSave should go to configuration page if name is valid', () => {
-        const input: HTMLInputElement = document.getElementById('gameName') as HTMLInputElement;
-        input.value = 'validName';
+        const inputMock = { value: 'ValidName' } as HTMLInputElement;
         const spy = spyOn(component, 'goToConfiguration');
-        component.onSave(input);
+        component.onSave(inputMock);
         expect(spy).toHaveBeenCalled();
     });
 
     it('onSave should not go to configuration page if name is invalid', () => {
-        const input: HTMLInputElement = document.getElementById('gameName') as HTMLInputElement;
-        input.value = '';
+        const inputMock = { value: '' } as HTMLInputElement;
         const spy = spyOn(component, 'goToConfiguration');
-        component.onSave(input);
+        component.onSave(inputMock);
         expect(spy).toHaveBeenCalledTimes(0);
     });
 
@@ -117,6 +115,6 @@ describe('GameCreationPageComponent', () => {
 
         component.goToConfiguration();
         expect(routerSpy).toHaveBeenCalled();
-        expect(routerSpy).toHaveBeenCalledWith(['/gameConfiguration']);
+        expect(routerSpy).toHaveBeenCalledWith(['/config']);
     });
 });

@@ -1,6 +1,8 @@
 import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Router } from '@angular/router';
 import { MouseButton } from '@app/components/play-area/play-area.component';
 import { Vec2 } from '@app/interfaces/vec2';
+import { DisplayGameService } from '@app/services/display-game.service';
 import { GameManagerService } from '@app/services/game-manager.service';
 import { LoginFormService } from '@app/services/login-form.service';
 
@@ -13,17 +15,40 @@ export class SoloViewPageComponent implements OnInit, AfterViewInit {
     @ViewChild('modifiedImage') modifiedCanvas: ElementRef<HTMLCanvasElement>;
     @ViewChild('originalImage') originalCanvas: ElementRef<HTMLCanvasElement>;
     username: string;
+    gameName: string;
+    difficulty: string;
+    nbDifferences: number;
     minutes: number = 0;
     secondes1: number = 0;
     secondes2: number = 0;
     minutes1: number = 0;
     minutes2: number = 0;
 
-    constructor(private loginService: LoginFormService, private gameManager: GameManagerService) {}
+    constructor(
+        private router: Router,
+        private loginService: LoginFormService,
+        private displayService: DisplayGameService,
+        private gameManager: GameManagerService,
+    ) {}
 
     ngOnInit() {
         this.username = this.loginService.getFormData();
         this.startTimer();
+        this.displayService.loadGame('1');
+        if (this.displayService.loadGame('1') === undefined) {
+            return;
+        }
+        this.gameName = this.displayService.game.name;
+        if (this.displayService.game.isDifficult) {
+            this.difficulty = 'Niveau: difficile';
+        } else {
+            this.difficulty = 'Niveau: facile';
+        }
+        this.nbDifferences = this.displayService.game.nbDifferences;
+    }
+
+    returnSelectionPage(): void {
+        this.router.navigate(['/gameSelection']);
     }
     ngAfterViewInit() {
         this.gameManager.modifiedImageCanvas = this.modifiedCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
