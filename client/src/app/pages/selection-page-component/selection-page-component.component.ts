@@ -57,6 +57,7 @@ const display = 4;
     styleUrls: ['./selection-page-component.component.scss'],
 })
 export class SelectionPageComponentComponent {
+    componentNumber: number = 0;
     games = GAMES_LIST;
     hasprevious: boolean = false;
     hasnext: boolean = true;
