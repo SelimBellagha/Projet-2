@@ -14,9 +14,7 @@
             </div>
         </div>
         <div>
-            <svg class="picture-container">
-                <rect class="picture" />
-            </svg>
+            <canvas #originalImage #gridCanvas (click)="onClick($event)" width="640px" height="480px"></canvas>
         </div>
         <div class="button-container">
             <button>Abandonner la partie</button>
@@ -36,9 +34,7 @@
             </div>
         </div>
         <div>
-            <svg class="picture-container">
-                <rect class="picture" />
-            </svg>
+            <canvas #modifiedImage (click)="onClick($event)" width="640px" height="480px"></canvas>
         </div>
         <div class="button-container">
             <button>Demander un indice</button>

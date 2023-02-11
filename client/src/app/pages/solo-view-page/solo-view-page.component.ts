@@ -1,4 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { MouseButton } from '@app/components/play-area/play-area.component';
+import { Vec2 } from '@app/interfaces/vec2';
+import { GameManagerService } from '@app/services/game-manager.service';
 import { LoginFormService } from '@app/services/login-form.service';
 
 @Component({
@@ -6,7 +9,9 @@ import { LoginFormService } from '@app/services/login-form.service';
     templateUrl: './solo-view-page.component.html',
     styleUrls: ['./solo-view-page.component.scss'],
 })
-export class SoloViewPageComponent implements OnInit {
+export class SoloViewPageComponent implements OnInit, AfterViewInit {
+    @ViewChild('modifiedImage') modifiedCanvas: ElementRef<HTMLCanvasElement>;
+    @ViewChild('originalImage') originalCanvas: ElementRef<HTMLCanvasElement>;
     username: string;
     minutes: number = 0;
     secondes1: number = 0;
@@ -14,11 +19,16 @@ export class SoloViewPageComponent implements OnInit {
     minutes1: number = 0;
     minutes2: number = 0;
 
-    constructor(private loginService: LoginFormService) {}
+    constructor(private loginService: LoginFormService, private gameManager: GameManagerService) {}
 
     ngOnInit() {
         this.username = this.loginService.getFormData();
         this.startTimer();
+    }
+    ngAfterViewInit() {
+        this.gameManager.modifiedImageCanvas = this.modifiedCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
+        this.gameManager.originalImageCanvas = this.originalCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
+        this.gameManager.putImages();
     }
 
     timer() {
@@ -47,25 +57,13 @@ export class SoloViewPageComponent implements OnInit {
         this.timer();
     }
 
-    playDifferenceAudio() {
-        const soundTime = 3000;
-        const audio = new Audio();
-        audio.src = '../../../assets/audio/DifferenceTrouvee.mp3';
-        audio.load();
-        audio.play();
-        setInterval(() => {
-            audio.pause();
-        }, soundTime);
-    }
-
-    playWinAudio() {
-        const soundTime = 3000;
-        const audio = new Audio();
-        audio.src = '../../../assets/audio/Win.mp3';
-        audio.load();
-        audio.play();
-        setInterval(() => {
-            audio.pause();
-        }, soundTime);
+    async onClick(event: MouseEvent): Promise<void> {
+        if (event.button === MouseButton.Left) {
+            const mousePosition: Vec2 = { x: event.offsetX, y: event.offsetY };
+            if (await this.gameManager.onPositionClicked(mousePosition)) {
+                // Incrementer le cpt de differences
+                // Si on a tout trouvé, finir le jeu.
+            }
+        }
     }
 }

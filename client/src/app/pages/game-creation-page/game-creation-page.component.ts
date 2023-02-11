@@ -2,6 +2,7 @@ import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { GameData } from '@app/interfaces/game-data';
 import { CanvasManagerService } from '@app/services/canvas-manager.service';
+import { GameManagerService } from '@app/services/game-manager.service';
 
 @Component({
     selector: 'app-game-creation-page',
@@ -16,7 +17,7 @@ export class GameCreationPageComponent implements AfterViewInit {
 
     radius: number = 3;
     currentGameData: GameData;
-    constructor(private router: Router, private canvasManager: CanvasManagerService) {}
+    constructor(private router: Router, private canvasManager: CanvasManagerService, private game: GameManagerService) {}
 
     ngAfterViewInit(): void {
         this.canvasManager.leftCanvasContext = this.leftCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
@@ -71,6 +72,7 @@ export class GameCreationPageComponent implements AfterViewInit {
         if (name) {
             window.alert('posting the game to server');
             // TODO Implémenter la sauvegarde
+            this.game.initalizeGame(this.currentGameData);
             this.goToConfiguration();
         } else {
             window.alert('name not valid');

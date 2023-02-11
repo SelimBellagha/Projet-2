@@ -10,7 +10,7 @@
     </div>
 
     <div class="main-container">
-        <div *ngFor="let game of gamesDisplayed">
+        <div *ngFor="let game of games">
             <app-jeux [customTitle]="game.title" [customDifficulty]="game.difficulty" [isConfigurationMode]="true"></app-jeux>
         </div>
     </div>
@@ -20,7 +20,7 @@
             <button>Précédent</button>
         </div>
         <div class="next-button-align-2">
-            <button (click)="next()" >Suivant</button>
+            <button  >Suivant</button>
         </div>
     </div>
     <div class="buttons">
