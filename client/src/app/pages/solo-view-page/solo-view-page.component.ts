@@ -57,6 +57,12 @@ export class SoloViewPageComponent implements OnInit, AfterViewInit {
         this.timer();
     }
 
+    endGame(): void {
+        // stopTimer
+        // afficher le pop-up
+        this.gameManager.playWinAudio();
+    }
+
     async onClick(event: MouseEvent): Promise<void> {
         if (event.button === MouseButton.Left) {
             const mousePosition: Vec2 = { x: event.offsetX, y: event.offsetY };

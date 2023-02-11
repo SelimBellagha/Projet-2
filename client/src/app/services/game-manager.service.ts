@@ -15,20 +15,23 @@ export class GameManagerService {
     locked: boolean;
 
     initalizeGame(gameData: GameData) {
-        this.gameData = gameData;
-        this.differencesFound = new Array<boolean>(gameData.nbDifferences).fill(false);
-        this.lastDifferenceFound = 1;
-        this.locked = false;
+        if (gameData) {
+            this.gameData = gameData;
+            this.differencesFound = new Array<boolean>(gameData.nbDifferences).fill(false);
+            this.lastDifferenceFound = 1;
+            this.locked = false;
+        }
     }
 
     putImages(): void {
-        this.originalImageCanvas.drawImage(this.gameData.originalImage, 0, 0);
-        this.modifiedImageCanvas.drawImage(this.gameData.modifiedImage, 0, 0);
+        if (this.gameData) {
+            this.originalImageCanvas.drawImage(this.gameData.originalImage, 0, 0);
+            this.modifiedImageCanvas.drawImage(this.gameData.modifiedImage, 0, 0);
+        }
     }
 
     async onPositionClicked(position: Vec2): Promise<boolean> {
         if (!this.locked) {
-            console.log('called');
             if (this.verifiyDifference(position)) {
                 this.playDifferenceAudio();
                 // Clignotement de tout les pixels faisant partie de la différence
@@ -39,8 +42,9 @@ export class GameManagerService {
             } else {
                 this.locked = true;
                 // Écrire Erreur sur le canvas à la position
-                await this.errorMessage(position);
                 // Bloquer les clics pendant 1 sec
+                await this.errorMessage(position);
+
                 this.locked = false;
             }
         }
@@ -90,7 +94,6 @@ export class GameManagerService {
     }
 
     replacePixels(pixels: Vec2[]): void {
-        console.log('replace Called');
         // Copier les pixels dee l'image originale vers l'image modifiée
         const originalImageData = this.originalImageCanvas.getImageData(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT);
         const modifiedImageData = this.modifiedImageCanvas.getImageData(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT);
