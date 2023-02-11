@@ -3,7 +3,7 @@ import { BaseGame, Game } from '@app/data/game.interface';
 import { Games } from '@app/data/games.interface';
 import { Service } from 'typedi';
 
-const gamesData: Games = {
+export const gamesData: Games = {
     0: {
         id: '0',
         name: 'Jeu 1',
