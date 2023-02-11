@@ -1,5 +1,6 @@
 import { HttpClientModule, HttpResponse } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { MainPageComponent } from '@app/pages/main-page/main-page.component';
 import { CommunicationService } from '@app/services/communication.service';
@@ -10,6 +11,7 @@ describe('MainPageComponent', () => {
     let component: MainPageComponent;
     let fixture: ComponentFixture<MainPageComponent>;
     let communicationServiceSpy: SpyObj<CommunicationService>;
+    let router: Router;
 
     beforeEach(async () => {
         communicationServiceSpy = jasmine.createSpyObj('ExampleService', ['basicGet', 'basicPost']);
@@ -27,6 +29,7 @@ describe('MainPageComponent', () => {
         fixture = TestBed.createComponent(MainPageComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
+        router = TestBed.inject(Router);
     });
 
     it('should create', () => {
@@ -62,5 +65,20 @@ describe('MainPageComponent', () => {
                 expect(res).toContain('Le serveur ne répond pas');
             },
         });
+    });
+
+    it('goToConfiguration should navigate to configuration Page', () => {
+        const routerSpy = spyOn(router, 'navigate');
+
+        component.goToConfiguration();
+        expect(routerSpy).toHaveBeenCalled();
+        expect(routerSpy).toHaveBeenCalledWith(['/config']);
+    });
+    it('goToConfiguration should navigate to configuration Page', () => {
+        const routerSpy = spyOn(router, 'navigate');
+
+        component.goToGameSelection();
+        expect(routerSpy).toHaveBeenCalled();
+        expect(routerSpy).toHaveBeenCalledWith(['/gameSelection']);
     });
 });

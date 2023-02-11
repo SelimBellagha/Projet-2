@@ -1,22 +1,27 @@
 <body class="container">
-    <h1 align="center">
-        <font face="times">
-            <i> Selectionnez une partie: </i>
-        </font>
+    <h1 class="title" >
+            Selectionnez une partie 
     </h1>
 
-    <div>
-        <button routerLink="/" class="return-button">Retour</button>
-    </div>
+    <button class="main-button" (click)="goToHomePage()" >Acceuil</button>
 
     <div class="main-container">
-        <app-jeux customTitle = "Jeu 1" customDifficulty="Facile">  </app-jeux>
-        <app-jeux customTitle = "Jeu 2" customDifficulty="Moyen">  </app-jeux>
-        <app-jeux customTitle = "Jeu 3" customDifficulty="Difficile">  </app-jeux>
-        <app-jeux customTitle = "Jeu 4" customDifficulty="Facile">  </app-jeux>
+        <div *ngFor="let game of gamesDisplayed">
+            <app-jeux [customTitle]="game.title" [customDifficulty]="game.difficulty" [isConfigurationMode]="false"></app-jeux>
+        </div>
     </div>
-    <div class="next-button-align">
-        <button>Suivant</button>
-
+    <div class="buttons-align">
+        <div *ngIf="hasnext === false" class = "buttons">
+            <button (click)="previous()"> Précédent</button>
+            <button disabled="disabled">Suivant</button>
+        </div>
+        <div *ngIf="hasprevious === false" class = "buttons">
+            <button disabled="disabled"> Précédent</button>
+            <button (click)="next()">Suivant</button>
+        </div>
+        <div *ngIf="hasnext === true && hasprevious === true" class ="buttons">
+            <button (click)="previous()" >Précédent</button>
+            <button (click)="next()" >Suivant</button>
+        </div>
     </div>
 </body>
