@@ -1,5 +1,5 @@
-import { Game } from './game.interface';
+import { GameData } from './game.interface';
 
 export interface Games {
-    [key: number]: Game;
+    [key: number]: GameData;
 }
