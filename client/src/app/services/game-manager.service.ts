@@ -3,6 +3,8 @@ import { GameData } from '@app/interfaces/game-data';
 import { Vec2 } from '@app/interfaces/vec2';
 import { DEFAULT_HEIGHT, DEFAULT_WIDTH } from './draw.service';
 
+const PIXEL_SIZE = 4;
+const ONE_SECOND = 1000;
 @Injectable({
     providedIn: 'root',
 })
@@ -32,21 +34,21 @@ export class GameManagerService {
 
     async onPositionClicked(position: Vec2): Promise<boolean> {
         if (!this.locked) {
+            this.locked = true;
             if (this.verifiyDifference(position)) {
                 this.playDifferenceAudio();
                 // Clignotement de tout les pixels faisant partie de la différence
                 await this.flashImages(this.gameData.differences[this.lastDifferenceFound]);
                 // Changer les pixels de droite pour qu'ils soient comme à gauche
                 this.replacePixels(this.gameData.differences[this.lastDifferenceFound]);
+                this.locked = false;
                 return true;
             } else {
-                this.locked = true;
                 // Écrire Erreur sur le canvas à la position
                 // Bloquer les clics pendant 1 sec
                 await this.errorMessage(position);
-
-                this.locked = false;
             }
+            this.locked = false;
         }
         return false;
     }
@@ -73,7 +75,7 @@ export class GameManagerService {
         const flashingOriginalImageData = canvas.getImageData(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT);
 
         pixels.forEach((pixelPosition) => {
-            const pixelStartPosition = 4 * (pixelPosition.x + pixelPosition.y * DEFAULT_WIDTH);
+            const pixelStartPosition = PIXEL_SIZE * (pixelPosition.x + pixelPosition.y * DEFAULT_WIDTH);
             flashingOriginalImageData.data[pixelStartPosition] = 0;
             flashingOriginalImageData.data[pixelStartPosition + 1] = 0;
             flashingOriginalImageData.data[pixelStartPosition + 2] = 0;
@@ -81,11 +83,11 @@ export class GameManagerService {
         });
         // fait
         canvas.putImageData(flashingOriginalImageData, 0, 0);
-        await this.wait(1000);
+        await this.wait(ONE_SECOND);
         canvas.putImageData(originalImageData, 0, 0);
-        await this.wait(1000);
+        await this.wait(ONE_SECOND);
         canvas.putImageData(flashingOriginalImageData, 0, 0);
-        await this.wait(1000);
+        await this.wait(ONE_SECOND);
         canvas.putImageData(originalImageData, 0, 0);
     }
 
@@ -99,7 +101,7 @@ export class GameManagerService {
         const modifiedImageData = this.modifiedImageCanvas.getImageData(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT);
         // traiter chaque position
         pixels.forEach((pixelPosition) => {
-            const pixelStartPosition = 4 * (pixelPosition.x + pixelPosition.y * DEFAULT_WIDTH);
+            const pixelStartPosition = PIXEL_SIZE * (pixelPosition.x + pixelPosition.y * DEFAULT_WIDTH);
             modifiedImageData.data[pixelStartPosition] = originalImageData.data[pixelStartPosition];
             modifiedImageData.data[pixelStartPosition + 1] = originalImageData.data[pixelStartPosition + 1];
             modifiedImageData.data[pixelStartPosition + 2] = originalImageData.data[pixelStartPosition + 2];
@@ -113,19 +115,20 @@ export class GameManagerService {
         const originalImageData = this.originalImageCanvas.getImageData(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT);
         const modifiedImageData = this.modifiedImageCanvas.getImageData(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT);
         // put error
-        this.drawError(this.originalImageCanvas);
-        this.drawError(this.modifiedImageCanvas);
-        await this.wait(1000);
+        this.drawError(this.originalImageCanvas, position);
+        this.drawError(this.modifiedImageCanvas, position);
+        await this.wait(ONE_SECOND);
         // restore Canvas
         this.originalImageCanvas.putImageData(originalImageData, 0, 0);
         this.modifiedImageCanvas.putImageData(modifiedImageData, 0, 0);
     }
-    drawError(context: CanvasRenderingContext2D): void {
+    drawError(context: CanvasRenderingContext2D, position: Vec2): void {
         // Modifer pour que ce soit fait à la position du clic
-        const startPosition: Vec2 = { x: 175, y: 100 };
+        const startPosition: Vec2 = position;
         const step = 20;
         const word = 'ERREUR';
         context.font = '20px system-ui';
+        context.fillStyle = 'Red';
         for (let i = 0; i < word.length; i++) {
             context.fillText(word[i], startPosition.x + step * i, startPosition.y);
         }

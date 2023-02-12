@@ -5,7 +5,6 @@ import { Vec2 } from '@app/interfaces/vec2';
 import { DisplayGameService } from '@app/services/display-game.service';
 import { GameManagerService } from '@app/services/game-manager.service';
 import { LoginFormService } from '@app/services/login-form.service';
-
 @Component({
     selector: 'app-solo-view-page',
     templateUrl: './solo-view-page.component.html',
@@ -14,10 +13,12 @@ import { LoginFormService } from '@app/services/login-form.service';
 export class SoloViewPageComponent implements OnInit, AfterViewInit {
     @ViewChild('modifiedImage') modifiedCanvas: ElementRef<HTMLCanvasElement>;
     @ViewChild('originalImage') originalCanvas: ElementRef<HTMLCanvasElement>;
+    @ViewChild('popUpWindow') popUpWindow: ElementRef<HTMLDivElement>;
     username: string;
     gameName: string;
     difficulty: string;
     nbDifferences: number;
+    nbDifferencesFound: number;
     minutes: number = 0;
     secondes1: number = 0;
     secondes2: number = 0;
@@ -34,8 +35,8 @@ export class SoloViewPageComponent implements OnInit, AfterViewInit {
     ngOnInit() {
         this.username = this.loginService.getFormData();
         this.startTimer();
-        this.displayService.loadGame('1');
-        if (this.displayService.loadGame('1') === undefined) {
+        const game = this.displayService.loadGame('1');
+        if (game === undefined) {
             return;
         }
         this.gameName = this.displayService.game.name;
@@ -45,6 +46,7 @@ export class SoloViewPageComponent implements OnInit, AfterViewInit {
             this.difficulty = 'Niveau: facile';
         }
         this.nbDifferences = this.displayService.game.nbDifferences;
+        this.nbDifferencesFound = 0;
     }
 
     returnSelectionPage(): void {
@@ -84,8 +86,8 @@ export class SoloViewPageComponent implements OnInit, AfterViewInit {
 
     endGame(): void {
         // stopTimer
-        // afficher le pop-up
         this.gameManager.playWinAudio();
+        this.popUpWindow.nativeElement.style.display = 'block';
     }
 
     async onClick(event: MouseEvent): Promise<void> {
@@ -93,8 +95,15 @@ export class SoloViewPageComponent implements OnInit, AfterViewInit {
             const mousePosition: Vec2 = { x: event.offsetX, y: event.offsetY };
             if (await this.gameManager.onPositionClicked(mousePosition)) {
                 // Incrementer le cpt de differences
+                this.nbDifferencesFound++;
+                if (this.nbDifferences === this.nbDifferencesFound) {
+                    this.endGame();
+                }
                 // Si on a tout trouvé, finir le jeu.
             }
         }
+    }
+    onClosingPopUp(): void {
+        this.router.navigate(['/home']);
     }
 }

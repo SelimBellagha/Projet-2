@@ -3,7 +3,7 @@
         <div class="score-text">
             <p class="underline-title-text">Differences trouvées:</p>
             <div>
-                <p class="player-score">{{ username }} : X</p>
+                <p class="player-score">{{ username }} : {{nbDifferencesFound}} </p>
                 <p class="player-score">Indices restants: X</p>
                 <div class="timer">
                     <img src="../../../assets/images/stopwatch.png" class="watch-logo" />
@@ -45,5 +45,13 @@
             <p class="title-chat-text" style="text-align: center">Messages</p>
             <div class="message-container">les messages arriveront ici<br /><br /><br /><br />oui</div>
         </div>
+    </div>
+    <div #popUpWindow class="modal">
+        <div class="modal-content">
+            <P>Félicitation!</P>
+            <div class="close-button">
+                <button (click)="onClosingPopUp()">Fermer</button>
+            </div>   
+        </div>      
     </div>
 </body>
