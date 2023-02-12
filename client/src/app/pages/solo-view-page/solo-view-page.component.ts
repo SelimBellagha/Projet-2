@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { LoginFormService } from '@app/services/login-form.service';
 
 @Component({
@@ -14,7 +15,7 @@ export class SoloViewPageComponent implements OnInit {
     minutes1: number = 0;
     minutes2: number = 0;
 
-    constructor(private loginService: LoginFormService) {}
+    constructor(private loginService: LoginFormService, private router : Router) {}
 
     ngOnInit() {
         this.username = this.loginService.getFormData();
@@ -68,4 +69,9 @@ export class SoloViewPageComponent implements OnInit {
             audio.pause();
         }, soundTime);
     }
+
+    goToSelectionPage() {
+        this.router.navigate(['/gameSelection']);
+    }
+
 }
