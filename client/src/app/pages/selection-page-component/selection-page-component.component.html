@@ -1,9 +1,7 @@
 <body class="container">
-    <h1 class="title" >
-            Selectionnez une partie 
-    </h1>
+    <h1 class="title">Selectionnez une partie</h1>
 
-    <button class="main-button" (click)="goToHomePage()" >Acceuil</button>
+    <button class="main-button" (click)="goToHomePage()">Acceuil</button>
 
     <div class="main-container">
         <div *ngFor="let game of gamesDisplayed">
@@ -11,17 +9,17 @@
         </div>
     </div>
     <div class="buttons-align">
-        <div *ngIf="hasnext === false" class = "buttons">
-            <button (click)="previous()"> Précédent</button>
+        <div *ngIf="hasnext === false" class="buttons">
+            <button (click)="previous()" id="previousInput">Précédent</button>
             <button disabled="disabled">Suivant</button>
         </div>
-        <div *ngIf="hasprevious === false" class = "buttons">
-            <button disabled="disabled"> Précédent</button>
+        <div *ngIf="hasprevious === false" class="buttons">
+            <button disabled="disabled">Précédent</button>
             <button (click)="next()">Suivant</button>
         </div>
-        <div *ngIf="hasnext === true && hasprevious === true" class ="buttons">
-            <button (click)="previous()" >Précédent</button>
-            <button (click)="next()" >Suivant</button>
+        <div *ngIf="hasnext === true && hasprevious === true" class="buttons">
+            <button (click)="previous()" id="nextInput">Précédent</button>
+            <button (click)="next()">Suivant</button>
         </div>
     </div>
 </body>

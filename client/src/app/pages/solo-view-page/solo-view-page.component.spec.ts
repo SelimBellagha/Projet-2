@@ -19,4 +19,19 @@ describe('SoloViewPageComponent', () => {
     it('should create', () => {
         expect(component).toBeTruthy();
     });
+
+    it('timer should start', () => {
+        // const log = new LoginFormService();
+        // const start_time = new SoloViewPageComponent(log);
+        const timerTest = 5;
+        const time = component.startTimer();
+        expect(time).toBeGreaterThanOrEqual(0);
+        setTimeout(() => {
+            // eslint-disable-next-line no-console
+            expect(time).toBeGreaterThanOrEqual(timerTest);
+            // eslint-disable-next-line @typescript-eslint/no-magic-numbers
+        }, timerTest);
+        expect(time).toBeGreaterThanOrEqual(timerTest);
+        // expect(mouseServiceSpy.onMouseUp).toHaveBeenCalled();
+    });
 });
