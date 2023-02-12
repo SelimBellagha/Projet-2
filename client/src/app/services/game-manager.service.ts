@@ -20,7 +20,7 @@ export class GameManagerService {
         if (gameData) {
             this.gameData = gameData;
             this.differencesFound = new Array<boolean>(gameData.nbDifferences).fill(false);
-            this.lastDifferenceFound = 1;
+            this.lastDifferenceFound = 1;// change this
             this.locked = false;
         }
     }

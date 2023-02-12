@@ -198,6 +198,4 @@ describe('CanvasManagerService', () => {
         await service.changeRightBackground(imageValid as unknown as File);
         expect(spyRight).toHaveBeenCalled();
     });
-
-    // TODO: Test change Backgrounds with files and refactor the code?
 });

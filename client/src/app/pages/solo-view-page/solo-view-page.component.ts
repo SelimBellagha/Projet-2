@@ -35,6 +35,7 @@ export class SoloViewPageComponent implements OnInit, AfterViewInit {
     ngOnInit() {
         this.username = this.loginService.getFormData();
         this.startTimer();
+        this.nbDifferencesFound = 0;
         const game = this.displayService.loadGame('1');
         if (game === undefined) {
             return;
@@ -46,7 +47,6 @@ export class SoloViewPageComponent implements OnInit, AfterViewInit {
             this.difficulty = 'Niveau: facile';
         }
         this.nbDifferences = this.displayService.game.nbDifferences;
-        this.nbDifferencesFound = 0;
     }
 
     returnSelectionPage(): void {
