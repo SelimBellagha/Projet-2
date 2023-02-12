@@ -1,6 +1,7 @@
 import { HttpException } from '@app/classes/http.exception';
 import { DateController } from '@app/controllers/date.controller';
 import { ExampleController } from '@app/controllers/example.controller';
+import { GameController } from '@app/controllers/games.controller';
 import * as cookieParser from 'cookie-parser';
 import * as cors from 'cors';
 import * as express from 'express';
@@ -15,7 +16,11 @@ export class Application {
     private readonly internalError: number = StatusCodes.INTERNAL_SERVER_ERROR;
     private readonly swaggerOptions: swaggerJSDoc.Options;
 
-    constructor(private readonly exampleController: ExampleController, private readonly dateController: DateController) {
+    constructor(
+        private readonly exampleController: ExampleController,
+        private readonly dateController: DateController,
+        private gamesController: GameController,
+    ) {
         this.app = express();
 
         this.swaggerOptions = {
@@ -38,6 +43,7 @@ export class Application {
         this.app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerJSDoc(this.swaggerOptions)));
         this.app.use('/api/example', this.exampleController.router);
         this.app.use('/api/date', this.dateController.router);
+        this.app.use('/api/games', this.gamesController.router);
         this.app.use('/', (req, res) => {
             res.redirect('/api/docs');
         });

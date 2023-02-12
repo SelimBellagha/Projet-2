@@ -1,13 +1,14 @@
 <body class="container">
-    <button class="quit-button" (click)="goToSelectionPage()"> Abandonner la partie </button>
+    <button class="quit-button" (click)="returnSelectionPage()"> Abandonner la partie </button>
 
     <div class="section">
         <div class="main-container">
-            <h2 class="game-info">Nom du jeu - Niveau de difficulté </h2>
+            <h2 class="game-info">{{gameName}} - {{difficulty}} </h2>
             <p class = "game-details"> Mode classique </p>
-            <p class = "game-details">L' image contient X différences</p>
+            <p class = "game-details">L' image contient {{nbDifferences}} différences</p>
             <button class= "indice">Obtenir un indice</button>  
         </div>
+
         <div>
             <canvas #leftCanvas width="640px" height="480px"></canvas>
         </div>
@@ -26,7 +27,6 @@
                  </div>
             </div>
         </div>
-
 
         <div>
             <canvas #leftCanvas width="640px" height="480px"></canvas>
