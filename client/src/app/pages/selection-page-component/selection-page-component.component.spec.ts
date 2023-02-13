@@ -33,7 +33,7 @@ describe('SelectionPageComponentComponent', () => {
     });
 
     it('clicking on suivant should call next()', () => {
-        component.hasnext = true;
+        component.hasNext = true;
         // component.hasprevious = true;
         const nextSpy = spyOn(component, 'next');
         const nextInput: HTMLInputElement = document.getElementById('nextInput') as HTMLInputElement;
@@ -42,15 +42,14 @@ describe('SelectionPageComponentComponent', () => {
     });
 
     it('clicking on previous should call previous()', () => {
-        component.hasnext = false;
-        component.hasprevious = true;
+        component.hasPrevious = true;
 
         // eslint-disable-next-line no-console
-        console.log(component.hasprevious);
+        console.log(component.hasPrevious);
 
         const previousInput: HTMLInputElement = document.getElementById('previousInput') as HTMLInputElement;
         const previousSpy = spyOn(component, 'previous');
-        previousInput?.click();
+        previousInput.click();
         expect(previousSpy).toHaveBeenCalled();
     });
 });
