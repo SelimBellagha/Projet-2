@@ -74,7 +74,6 @@ export class GameCreationPageComponent implements AfterViewInit {
             // TODO Implémenter la sauvegarde
             this.currentGameData.name = name;
             this.commService.addNewGame(this.currentGameData);
-            console.log(this.currentGameData);
             this.goToConfiguration();
         } else {
             window.alert('name not valid');

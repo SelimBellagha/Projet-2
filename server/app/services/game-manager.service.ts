@@ -18,16 +18,10 @@ export class GameManager {
     }
 
     async addGame(newGame: GameData): Promise<GameData> {
-        let id = this.countProperties();
-        if (id !== 0) {
-            id++;
-        }
+        const id = this.countProperties() + 1;
         const gameId = String(id);
         newGame.id = gameId;
         this.gamesData[id] = newGame;
-        console.log('game added');
-        console.log(this.gamesData[id]);
-        console.log(newGame);
         return this.gamesData[id];
     }
 

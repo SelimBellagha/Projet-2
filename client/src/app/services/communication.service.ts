@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import { HttpClient, HttpParams, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { GameData } from '@app/interfaces/game.interface';
@@ -19,7 +20,7 @@ export class CommunicationService {
     }
 
     getAllGames(): Observable<GameData[]> {
-        return this.http.get<GameData[]>(this.baseUrl + '/games').pipe(catchError(this.handleError<GameData[]>('getAllGames')));
+        return this.http.get<GameData[]>(`${this.baseUrl}/games`).pipe(catchError(this.handleError<GameData[]>('getAllGames')));
     }
 
     getGameById(id: string): Observable<GameData> {
@@ -31,12 +32,8 @@ export class CommunicationService {
         return this.http.post(this.baseUrl + '/example/send', message, { observe: 'response', responseType: 'text' });
     }
 
-    addNewGame(game: GameData) {
-        try {
-            this.http.post(this.baseUrl + '/games', game);
-        } catch (err) {
-            window.alert('An error has occured while adding a new game');
-        }
+    addNewGame(game: GameData): void {
+        this.http.post<GameData>('http://localhost:3000/api/games/send', game).subscribe((response) => console.log(response));
     }
 
     deleteGame(id: string) {

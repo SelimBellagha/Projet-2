@@ -42,9 +42,8 @@ export class GameController {
         });
 
         // POST games
-        this.router.post('/', async (req: Request, res: Response) => {
+        this.router.post('/send', async (req: Request, res: Response) => {
             try {
-                console.log('entered');
                 const game: GameData = req.body;
                 const newGame = await this.gameService.addGame(game);
                 res.status(StatusCodes.CREATED).json(newGame);

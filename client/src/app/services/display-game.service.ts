@@ -11,7 +11,8 @@ export class DisplayGameService {
     constructor(private comm: CommunicationService) {}
 
     loadGame() {
-        this.comm.getGameById(this.gameId).subscribe((game) => (this.game = game));
+        // this.comm.getGameById(this.gameId).subscribe((game) => (this.game = game));
+        this.comm.getGameById('1').subscribe((game) => (this.game = game));
         return this.game;
     }
 
