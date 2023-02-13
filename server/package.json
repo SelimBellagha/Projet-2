@@ -30,7 +30,8 @@
             "app/server.ts",
             "app/app.ts",
             "app/services/game-manager.service.ts",
-            "app/controllers/games.controller.ts"
+            "app/controllers/games.controller.ts",
+            "app/controllers/difference-verification.controller.ts"
         ],
         "require": [
             "ts-node/register",

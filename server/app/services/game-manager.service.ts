@@ -78,6 +78,31 @@ export class GameManager {
         delete gamesData[id];
     }
 
+    async verificationInPicture(positionX: number, positionY: number, id: string) {
+        const clickPosition = [positionX, positionY];
+        const game = await this.getGamebyId(id);
+        for (let i = 0; i < game.nbDifferences; i++) {
+            // eslint-disable-next-line @typescript-eslint/prefer-for-of
+            for (let j = 0; j < game.differences[i].length; j++) {
+                if (clickPosition === game.differences[i][j]) {
+                    return {
+                        title: 'Difference',
+                        body: {
+                            difference: 'true',
+                            differenceId: `${i}`,
+                        },
+                    };
+                }
+            }
+        }
+        return {
+            title: 'Difference',
+            body: {
+                difference: 'false',
+            },
+        };
+    }
+
     /*
     async getAllGames(): Promise<Games> {
         const fileBuffer = await this.fileSystemManager.readFile(this.jsonPath);
