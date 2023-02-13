@@ -19,7 +19,7 @@
         "resolveJsonModule": false, // DO NOT CHANGE
         "paths": {
             "@app/*": ["./app/*"],
-            "@common/*": ["../common/*"],
+            "@common/*": ["../common/*"]
         }
     }
 }

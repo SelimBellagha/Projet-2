@@ -1,73 +1,28 @@
-/* eslint-disable @typescript-eslint/naming-convention */
-import { BaseGame, Game } from '@app/data/game.interface';
-import { Games } from '@app/data/games.interface';
+import { GameData } from '@app/data/game.interface';
 import { Service } from 'typedi';
-
-export const gamesData: Games = {
-    0: {
-        id: '0',
-        name: 'Jeu 1',
-        originalImage: './assets/image_2_diff.bmp',
-        modifiedImage: './assets/image_7_diff.bmp',
-        differenceImage: '',
-        nbDifferences: 1,
-        differences: [[{ x: 0, y: 0 }]],
-        isDifficult: false,
-    },
-    1: {
-        id: '1',
-        name: 'Jeu 2',
-        originalImage: './assets/image_3_diff_radius.bmp',
-        modifiedImage: './assets/image_2_diff.bmp',
-        differenceImage: '',
-        nbDifferences: 7,
-        differences: [],
-        isDifficult: true,
-    },
-    2: {
-        id: '2',
-        name: 'Jeu 3',
-        originalImage: './assets/image_7_diff.bmp',
-        modifiedImage: './assets/image_12_diff.bmp',
-        differenceImage: '',
-        nbDifferences: 7,
-        differences: [],
-        isDifficult: true,
-    },
-    3: {
-        id: '3',
-        name: 'Jeu 4',
-        originalImage: './assets/image_12_diff.bmp',
-        modifiedImage: './assets/image_3_diff_radius.bmp',
-        differenceImage: '',
-        nbDifferences: 7,
-        differences: [],
-        isDifficult: false,
-    },
-};
 
 @Service()
 export class GameManager {
+    gamesData: GameData[] = [];
+
     countProperties() {
-        return Object.keys(gamesData).length;
+        return Object.keys(this.gamesData).length;
     }
 
-    async getAllGames(): Promise<Game[]> {
-        return Object.values(gamesData);
+    async getAllGames(): Promise<GameData[]> {
+        return Object.values(this.gamesData);
     }
 
-    async getGamebyId(id: string): Promise<Game> {
-        return gamesData[id];
+    async getGamebyId(id: string): Promise<GameData> {
+        return this.gamesData[id];
     }
 
-    async addGame(newGame: BaseGame): Promise<Game> {
+    async addGame(newGame: GameData): Promise<GameData> {
         const id = this.countProperties() + 1;
         const gameId = String(id);
-        gamesData[gameId] = {
-            gameId,
-            ...newGame,
-        };
-        return gamesData[id];
+        newGame.id = gameId;
+        this.gamesData[id] = newGame;
+        return this.gamesData[id];
     }
 
     async deleteGame(id: string): Promise<null | void> {
@@ -75,7 +30,7 @@ export class GameManager {
         if (!gameToDelete) {
             return null;
         }
-        delete gamesData[id];
+        delete this.gamesData[id];
     }
 
     async verificationInPicture(positionX: number, positionY: number, id: string) {
@@ -84,7 +39,7 @@ export class GameManager {
         for (let i = 0; i < game.nbDifferences; i++) {
             // eslint-disable-next-line @typescript-eslint/prefer-for-of
             for (let j = 0; j < game.differences[i].length; j++) {
-                if (clickPosition.x === 0) {
+                if (clickPosition.x === game.differences[i][j].x && game.differences[i][j].y === clickPosition.y) {
                     return {
                         result: true,
                         index: i,
@@ -139,6 +94,5 @@ export class GameManager {
         } else {
             return false;
         }
-    }
-    */
+    }*/
 }

@@ -1,4 +1,4 @@
-import { BaseGame, Game } from '@app/data/game.interface';
+import { GameData } from '@app/data/game.interface';
 import { GameManager } from '@app/services/game-manager.service';
 import { Request, Response, Router } from 'express';
 import { StatusCodes } from 'http-status-codes';
@@ -19,7 +19,7 @@ export class GameController {
         // GET games
         this.router.get('/', async (req: Request, res: Response) => {
             try {
-                const games: Game[] = await this.gameService.getAllGames();
+                const games: GameData[] = await this.gameService.getAllGames();
                 res.status(StatusCodes.OK).send(games);
             } catch (error) {
                 res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(error.message);
@@ -30,7 +30,7 @@ export class GameController {
         this.router.get('/:id', async (req: Request, res: Response) => {
             // const id: number = parseInt(req.params.id, 10);
             try {
-                const game: Game = await this.gameService.getGamebyId(req.params.id);
+                const game: GameData = await this.gameService.getGamebyId(req.params.id);
                 if (game) {
                     res.status(StatusCodes.OK).send(game);
                 } else {
@@ -42,9 +42,9 @@ export class GameController {
         });
 
         // POST games
-        this.router.post('/', async (req: Request, res: Response) => {
+        this.router.post('/send', async (req: Request, res: Response) => {
             try {
-                const game: BaseGame = req.body;
+                const game: GameData = req.body;
                 const newGame = await this.gameService.addGame(game);
                 res.status(StatusCodes.CREATED).json(newGame);
             } catch (error) {

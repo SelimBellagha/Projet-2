@@ -1,16 +1,22 @@
 import { Injectable } from '@angular/core';
-import { Game } from '@app/interfaces/game';
+import { GameData } from '@app/interfaces/game.interface';
 import { CommunicationService } from './communication.service';
 
 @Injectable({
     providedIn: 'root',
 })
 export class DisplayGameService {
-    game: Game;
+    game: GameData;
+    gameId: string;
     constructor(private comm: CommunicationService) {}
 
-    loadGame(id: string) {
-        this.comm.getGameById(id).subscribe((game) => (this.game = game));
+    loadGame() {
+        // this.comm.getGameById(this.gameId).subscribe((game) => (this.game = game));
+        this.comm.getGameById('1').subscribe((game) => (this.game = game));
         return this.game;
+    }
+
+    setGameId(id: string) {
+        this.gameId = id;
     }
 }

@@ -1,6 +1,6 @@
 import { HttpClient, HttpParams, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Game } from '@app/interfaces/game.interface';
+import { GameData } from '@app/interfaces/game.interface';
 import { Message } from '@common/message';
 import { Observable, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
@@ -18,25 +18,21 @@ export class CommunicationService {
         return this.http.get<Message>(this.baseUrl + '/example').pipe(catchError(this.handleError<Message>('basicGet')));
     }
 
-    getAllGames(): Observable<Game[]> {
-        return this.http.get<Game[]>(this.baseUrl + '/games').pipe(catchError(this.handleError<Game[]>('getAllGames')));
+    getAllGames(): Observable<GameData[]> {
+        return this.http.get<GameData[]>(`${this.baseUrl}/games`).pipe(catchError(this.handleError<GameData[]>('getAllGames')));
     }
 
-    getGameById(id: string): Observable<Game> {
+    getGameById(id: string): Observable<GameData> {
         const params = new HttpParams().set('id', id);
-        return this.http.get<Game>(`${this.baseUrl}/games/${id}`, { params });
+        return this.http.get<GameData>(`${this.baseUrl}/games/${id}`, { params });
     }
 
     basicPost(message: Message): Observable<HttpResponse<string>> {
         return this.http.post(this.baseUrl + '/example/send', message, { observe: 'response', responseType: 'text' });
     }
 
-    addNewGame(game: Game) {
-        try {
-            this.http.post(this.baseUrl + '/games', game);
-        } catch (err) {
-            window.alert('An error has occured while adding a new game');
-        }
+    addNewGame(game: GameData): void {
+        this.http.post<GameData>('http://localhost:3000/api/games/send', game).subscribe();
     }
 
     deleteGame(id: string) {

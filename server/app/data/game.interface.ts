@@ -1,13 +1,17 @@
-export interface BaseGame {
+import { Vec2 } from './vec2';
+
+export interface GameData {
+    id: string;
     name: string;
-    originalImage: string;
-    modifiedImage: string;
-    differenceImage: string;
+    originalImage: ImageBitmap;
+    modifiedImage: ImageBitmap;
+    differenceImage: ImageData;
     nbDifferences: number;
-    differences: unknown[][];
+    differences: Vec2[][];
     isDifficult: boolean;
 }
 
-export interface Game extends BaseGame {
+/* export interface GameData extends BaseGame {
     id: string;
 }
+*/

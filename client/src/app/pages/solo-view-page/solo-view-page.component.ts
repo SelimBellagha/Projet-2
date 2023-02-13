@@ -37,7 +37,7 @@ export class SoloViewPageComponent implements OnInit, AfterViewInit {
         this.username = this.loginService.getFormData();
         this.startTimer();
         this.nbDifferencesFound = 0;
-        const game = this.displayService.loadGame('1');
+        const game = this.displayService.loadGame();
         if (game === undefined) {
             return;
         }
