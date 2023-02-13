@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { GameData } from '@app/interfaces/game-data';
 import { Vec2 } from '@app/interfaces/vec2';
+import { Verification } from '@app/interfaces/verification';
+import { DifferenceVerificationService } from './difference-verification.service';
 import { DEFAULT_HEIGHT, DEFAULT_WIDTH } from './draw.service';
 
 const PIXEL_SIZE = 4;
@@ -15,6 +17,8 @@ export class GameManagerService {
     gameData: GameData;
     lastDifferenceFound: number = 0;
     locked: boolean;
+
+    constructor(private differenceVerification: DifferenceVerificationService) {}
 
     initalizeGame(gameData: GameData) {
         if (gameData) {
@@ -35,7 +39,7 @@ export class GameManagerService {
     async onPositionClicked(position: Vec2): Promise<boolean> {
         if (!this.locked) {
             this.locked = true;
-            if (this.verifiyDifference(position)) {
+            if (await this.verifiyDifference(position)) {
                 this.playDifferenceAudio();
                 // Clignotement de tout les pixels faisant partie de la différence
                 await this.flashImages(this.gameData.differences[this.lastDifferenceFound]);
@@ -53,18 +57,16 @@ export class GameManagerService {
         return false;
     }
 
-    verifiyDifference(position: Vec2): boolean {
+    async verifiyDifference(position: Vec2): Promise<boolean> {
         // code temporaire
-        if (position) {
-            return false;
-        } else {
-            return false;
+        const verification: Verification = await this.differenceVerification.differenceVerification(position.x, position.y, 0);
+        if (verification.result) {
+            /* if (!this.differencesFound[verification.index]) {
+                this.differencesFound[verification.index] = true;
+            }*/
+            return true;
         }
-        /*
-            Fait ta requête ici, elle devrait retourner un bool et le numéro de l'erreur trouvée
-            Si le serveur retourne true, vérifie si la différence a déja été trouvée
-            Si true
-        */
+        return false;
     }
     async flashImages(pixels: Vec2[]): Promise<void> {
         this.flashPixels(pixels, this.originalImageCanvas);

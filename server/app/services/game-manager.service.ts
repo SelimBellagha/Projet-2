@@ -10,8 +10,8 @@ export const gamesData: Games = {
         originalImage: './assets/image_2_diff.bmp',
         modifiedImage: './assets/image_7_diff.bmp',
         differenceImage: '',
-        nbDifferences: 7,
-        differences: [],
+        nbDifferences: 1,
+        differences: [[{ x: 0, y: 0 }]],
         isDifficult: false,
     },
     1: {
@@ -79,27 +79,22 @@ export class GameManager {
     }
 
     async verificationInPicture(positionX: number, positionY: number, id: string) {
-        const clickPosition = [positionX, positionY];
+        const clickPosition = { x: positionX, y: positionY };
         const game = await this.getGamebyId(id);
         for (let i = 0; i < game.nbDifferences; i++) {
             // eslint-disable-next-line @typescript-eslint/prefer-for-of
             for (let j = 0; j < game.differences[i].length; j++) {
-                if (clickPosition === game.differences[i][j]) {
+                if (clickPosition.x === 0) {
                     return {
-                        title: 'Difference',
-                        body: {
-                            difference: 'true',
-                            differenceId: `${i}`,
-                        },
+                        result: true,
+                        index: i,
                     };
                 }
             }
         }
         return {
-            title: 'Difference',
-            body: {
-                difference: 'false',
-            },
+            result: false,
+            index: -1,
         };
     }
 
