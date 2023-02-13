@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/naming-convention */
 import { HttpClient, HttpParams, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { GameData } from '@app/interfaces/game.interface';
@@ -33,7 +32,7 @@ export class CommunicationService {
     }
 
     addNewGame(game: GameData): void {
-        this.http.post<GameData>('http://localhost:3000/api/games/send', game).subscribe((response) => console.log(response));
+        this.http.post<GameData>('http://localhost:3000/api/games/send', game).subscribe();
     }
 
     deleteGame(id: string) {

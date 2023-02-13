@@ -39,7 +39,7 @@ export class GameManager {
         for (let i = 0; i < game.nbDifferences; i++) {
             // eslint-disable-next-line @typescript-eslint/prefer-for-of
             for (let j = 0; j < game.differences[i].length; j++) {
-                if (clickPosition === game.differences[i][j]) {
+                if (clickPosition[0] === game.differences[i][j].x) {
                     return {
                         title: 'Difference',
                         body: {
@@ -99,6 +99,5 @@ export class GameManager {
         } else {
             return false;
         }
->>>>>>> server/app/services/game-manager.service.ts
-    }
+    }*/
 }
