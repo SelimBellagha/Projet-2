@@ -1,3 +1,4 @@
+/* eslint-disable deprecation/deprecation */
 import { HttpException } from '@app/classes/http.exception';
 import { DateController } from '@app/controllers/date.controller';
 import { ExampleController } from '@app/controllers/example.controller';
@@ -9,6 +10,8 @@ import { StatusCodes } from 'http-status-codes';
 import * as swaggerJSDoc from 'swagger-jsdoc';
 import * as swaggerUi from 'swagger-ui-express';
 import { Service } from 'typedi';
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+import bodyParser = require('body-parser');
 import { DifferenceVerificationController } from './controllers/difference-verification.controller';
 
 @Service()
@@ -56,6 +59,7 @@ export class Application {
 
     private config(): void {
         // Middlewares configuration
+        this.app.use(bodyParser({ limit: '50mb' }));
         this.app.use(express.json());
         this.app.use(express.urlencoded({ extended: true }));
         this.app.use(cookieParser());

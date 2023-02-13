@@ -26,6 +26,7 @@ export class DifferenceDetectionService {
         const originalImageBmp: ImageBitmap = await createImageBitmap(imageData1);
         const modifiedImageBmp: ImageBitmap = await createImageBitmap(imageData2);
         return {
+            id: 'temp',
             name: 'temp',
             originalImage: originalImageBmp,
             modifiedImage: modifiedImageBmp,

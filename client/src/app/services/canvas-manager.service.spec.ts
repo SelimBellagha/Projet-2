@@ -37,6 +37,7 @@ describe('CanvasManagerService', () => {
         const imageDataStub = new ImageData(CANVAS_WIDTH, CANVAS_HEIGHT);
         const imageBitmabStub = await createImageBitmap(imageDataStub);
         const gameDataStub: GameData = {
+            id: 'temp',
             name: 'temp',
             originalImage: imageBitmabStub,
             modifiedImage: imageBitmabStub,

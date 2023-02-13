@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 type Game = {
+    id: string;
     title: string;
     difficulty: string;
     image: string;
@@ -8,41 +9,49 @@ type Game = {
 
 const GAMES_LIST: Game[] = [
     {
+        id: '0',
         title: 'Jeu 1',
         difficulty: 'Facile',
         image: 'https://www.jardiner-malin.fr/wp-content/uploads/2015/02/tilleul-arbre.jpg',
     },
     {
+        id: '1',
         title: 'Jeu 2',
         difficulty: 'Moyen',
         image: 'https://www.jardiner-malin.fr/wp-content/uploads/2015/02/tilleul-arbre.jpg',
     },
     {
+        id: '2',
         title: 'Jeu 3',
         difficulty: 'Facile',
         image: 'https://www.jardiner-malin.fr/wp-content/uploads/2015/02/tilleul-arbre.jpg',
     },
     {
+        id: '3',
         title: 'Jeu 4',
         difficulty: 'Difficile',
         image: 'https://www.jardiner-malin.fr/wp-content/uploads/2015/02/tilleul-arbre.jpg',
     },
     {
+        id: '4',
         title: 'Jeu 5',
         difficulty: 'Moyen',
         image: 'https://www.jardiner-malin.fr/wp-content/uploads/2015/02/tilleul-arbre.jpg',
     },
     {
+        id: '5',
         title: 'Jeu 6',
         difficulty: 'Difficile',
         image: 'https://www.jardiner-malin.fr/wp-content/uploads/2015/02/tilleul-arbre.jpg',
     },
     {
+        id: '6',
         title: 'Jeu 7',
         difficulty: 'Difficile',
         image: 'https://www.jardiner-malin.fr/wp-content/uploads/2015/02/tilleul-arbre.jpg',
     },
     {
+        id: '7',
         title: 'Jeu 8',
         difficulty: 'Moyen',
         image: 'https://www.jardiner-malin.fr/wp-content/uploads/2015/02/tilleul-arbre.jpg',

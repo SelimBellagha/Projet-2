@@ -24,8 +24,8 @@ export class SoloViewPageComponent implements OnInit {
     ngOnInit() {
         this.username = this.loginService.getFormData();
         this.startTimer();
-        this.displayService.loadGame('1');
-        if (this.displayService.loadGame('1') === undefined) {
+        this.displayService.loadGame();
+        if (this.displayService.loadGame() === undefined) {
             return;
         }
         this.gameName = this.displayService.game.name;
