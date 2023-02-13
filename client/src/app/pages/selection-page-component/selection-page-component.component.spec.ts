@@ -42,14 +42,12 @@ describe('SelectionPageComponentComponent', () => {
     });
 
     it('clicking on previous should call previous()', () => {
-        component.hasPrevious = true;
-
+        component.hasNext = false;
+        fixture.detectChanges();
         // eslint-disable-next-line no-console
-        console.log(component.hasPrevious);
-
         const previousInput: HTMLInputElement = document.getElementById('previousInput') as HTMLInputElement;
         const previousSpy = spyOn(component, 'previous');
-        previousInput.click();
+        previousInput?.click();
         expect(previousSpy).toHaveBeenCalled();
     });
 });
