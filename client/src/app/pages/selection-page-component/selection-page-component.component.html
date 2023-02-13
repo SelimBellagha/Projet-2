@@ -10,16 +10,16 @@
     </div>
     <div class="buttons-align">
         <div *ngIf="hasnext === false" class="buttons">
-            <button (click)="previous()" id="previousInput">Précédent</button>
+            <button id="previousInput" (click)="previous()">Précédent</button>
             <button disabled="disabled">Suivant</button>
         </div>
         <div *ngIf="hasprevious === false" class="buttons">
             <button disabled="disabled">Précédent</button>
-            <button (click)="next()">Suivant</button>
+            <button id="nextInput" (click)="next()">Suivant</button>
         </div>
         <div *ngIf="hasnext === true && hasprevious === true" class="buttons">
-            <button (click)="previous()" id="nextInput">Précédent</button>
-            <button (click)="next()">Suivant</button>
+            <button (click)="previous()" id="previousInput">Précédent</button>
+            <button (click)="next()" id="nextInput">Suivant</button>
         </div>
     </div>
 </body>

@@ -2,7 +2,6 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { SelectionPageComponentComponent } from './selection-page-component.component';
-import SpyObj = jasmine.SpyObj;
 
 describe('SelectionPageComponentComponent', () => {
     let component: SelectionPageComponentComponent;
@@ -16,6 +15,7 @@ describe('SelectionPageComponentComponent', () => {
         }).compileComponents();
 
         fixture = TestBed.createComponent(SelectionPageComponentComponent);
+        router = TestBed.inject(Router);
         component = fixture.componentInstance;
         fixture.detectChanges();
     });
@@ -32,31 +32,25 @@ describe('SelectionPageComponentComponent', () => {
         expect(routerSpy).toHaveBeenCalledWith(['/home']);
     });
 
-    it(' clicking on acceuil button should navigate to home Page', () => {
-        const routerSpy = spyOn(router, 'navigate');
-
-        component.goToHomePage();
-        expect(routerSpy).toHaveBeenCalled();
-        expect(routerSpy).toHaveBeenCalledWith(['/home']);
-    });
-
-    it(' clicking on acceuil button should navigate to home Page', () => {
-        const routerSpy = spyOn(router, 'navigate');
-
-        component.goToHomePage();
-        expect(routerSpy).toHaveBeenCalled();
-        expect(routerSpy).toHaveBeenCalledWith(['/loginPage']);
-    });
-
     it('clicking on suivant should call next()', () => {
-        const nextinput: HTMLInputElement = document.getElementById('previousInput') as HTMLInputElement;
-        nextinput?.click();
-        expect(component.next).toHaveBeenCalled();
+        component.hasnext = true;
+        // component.hasprevious = true;
+        const nextSpy = spyOn(component, 'next');
+        const nextInput: HTMLInputElement = document.getElementById('nextInput') as HTMLInputElement;
+        nextInput?.click();
+        expect(nextSpy).toHaveBeenCalled();
     });
 
     it('clicking on previous should call previous()', () => {
-        const previousinput: HTMLInputElement = document.getElementById('previousInput') as HTMLInputElement;
-        previousinput?.click();
-        expect(component.previous).toHaveBeenCalled();
+        component.hasnext = false;
+        component.hasprevious = true;
+
+        // eslint-disable-next-line no-console
+        console.log(component.hasprevious);
+
+        const previousInput: HTMLInputElement = document.getElementById('previousInput') as HTMLInputElement;
+        const previousSpy = spyOn(component, 'previous');
+        previousInput?.click();
+        expect(previousSpy).toHaveBeenCalled();
     });
 });
