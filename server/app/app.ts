@@ -12,6 +12,7 @@ import * as swaggerUi from 'swagger-ui-express';
 import { Service } from 'typedi';
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 import bodyParser = require('body-parser');
+import { DifferenceVerificationController } from './controllers/difference-verification.controller';
 
 @Service()
 export class Application {
@@ -19,10 +20,12 @@ export class Application {
     private readonly internalError: number = StatusCodes.INTERNAL_SERVER_ERROR;
     private readonly swaggerOptions: swaggerJSDoc.Options;
 
+    // eslint-disable-next-line max-params
     constructor(
         private readonly exampleController: ExampleController,
         private readonly dateController: DateController,
         private gamesController: GameController,
+        private differenceController: DifferenceVerificationController,
     ) {
         this.app = express();
 
@@ -47,6 +50,7 @@ export class Application {
         this.app.use('/api/example', this.exampleController.router);
         this.app.use('/api/date', this.dateController.router);
         this.app.use('/api/games', this.gamesController.router);
+        this.app.use('/api/difference', this.differenceController.router);
         this.app.use('/', (req, res) => {
             res.redirect('/api/docs');
         });
