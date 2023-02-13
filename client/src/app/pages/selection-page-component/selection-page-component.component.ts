@@ -1,62 +1,13 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-type Game = {
+import { DisplayGameService } from '@app/services/display-game.service';
+
+export type Game = {
     id: string;
     title: string;
     difficulty: string;
     image: string;
 };
-
-const GAMES_LIST: Game[] = [
-    {
-        id: '0',
-        title: 'Jeu 1',
-        difficulty: 'Facile',
-        image: 'https://www.jardiner-malin.fr/wp-content/uploads/2015/02/tilleul-arbre.jpg',
-    },
-    {
-        id: '1',
-        title: 'Jeu 2',
-        difficulty: 'Moyen',
-        image: 'https://www.jardiner-malin.fr/wp-content/uploads/2015/02/tilleul-arbre.jpg',
-    },
-    {
-        id: '2',
-        title: 'Jeu 3',
-        difficulty: 'Facile',
-        image: 'https://www.jardiner-malin.fr/wp-content/uploads/2015/02/tilleul-arbre.jpg',
-    },
-    {
-        id: '3',
-        title: 'Jeu 4',
-        difficulty: 'Difficile',
-        image: 'https://www.jardiner-malin.fr/wp-content/uploads/2015/02/tilleul-arbre.jpg',
-    },
-    {
-        id: '4',
-        title: 'Jeu 5',
-        difficulty: 'Moyen',
-        image: 'https://www.jardiner-malin.fr/wp-content/uploads/2015/02/tilleul-arbre.jpg',
-    },
-    {
-        id: '5',
-        title: 'Jeu 6',
-        difficulty: 'Difficile',
-        image: 'https://www.jardiner-malin.fr/wp-content/uploads/2015/02/tilleul-arbre.jpg',
-    },
-    {
-        id: '6',
-        title: 'Jeu 7',
-        difficulty: 'Difficile',
-        image: 'https://www.jardiner-malin.fr/wp-content/uploads/2015/02/tilleul-arbre.jpg',
-    },
-    {
-        id: '7',
-        title: 'Jeu 8',
-        difficulty: 'Moyen',
-        image: 'https://www.jardiner-malin.fr/wp-content/uploads/2015/02/tilleul-arbre.jpg',
-    },
-];
 
 const display = 4;
 
@@ -67,15 +18,15 @@ const display = 4;
 })
 export class SelectionPageComponentComponent {
     componentNumber: number = 0;
-    games = GAMES_LIST;
     hasPrevious: boolean = false;
     hasNext: boolean = true;
     firstGame: number = 0;
     lastGame: number = display;
     marge: number = display;
+    games: Game[] = this.displayGames.games;
     gamesDisplayed = this.games.slice(this.firstGame, this.lastGame);
 
-    constructor(private router: Router) {}
+    constructor(private router: Router, private displayGames: DisplayGameService) {}
 
     goToHomePage(): void {
         this.router.navigate(['/home']);

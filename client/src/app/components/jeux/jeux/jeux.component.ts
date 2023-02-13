@@ -12,14 +12,13 @@ export class JeuxComponent {
     @Input() customTitle: string;
     @Input() customDifficulty: string;
     @Input() isConfigurationMode: boolean;
-    @Input() customPhoto: ImageBitmap;
+    @Input() customPhoto: string;
     @Input() customId: string;
 
     constructor(private router: Router, private displayService: DisplayGameService) {}
 
     goToLoginPage(): void {
-        this.displayService.setGameId(this.customId);
-        this.displayService.loadGame();
+        this.displayService.loadGame(Number(this.customId));
         this.router.navigate(['/loginPage']);
     }
 }

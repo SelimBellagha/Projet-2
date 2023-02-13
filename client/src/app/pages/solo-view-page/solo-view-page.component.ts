@@ -10,9 +10,9 @@ import { LoginFormService } from '@app/services/login-form.service';
 })
 export class SoloViewPageComponent implements OnInit {
     username: string;
-    gameName: string;
-    difficulty: string;
-    nbDifferences: number;
+    gameName: string = this.displayService.game.name;
+    difficulty: string = this.displayService.convertDifficulty(this.displayService.game);
+    nbDifferences: number = this.displayService.game.nbDifferences;
     minutes: number = 0;
     secondes1: number = 0;
     secondes2: number = 0;
@@ -24,17 +24,6 @@ export class SoloViewPageComponent implements OnInit {
     ngOnInit() {
         this.username = this.loginService.getFormData();
         this.startTimer();
-        this.displayService.loadGame();
-        if (this.displayService.loadGame() === undefined) {
-            return;
-        }
-        this.gameName = this.displayService.game.name;
-        if (this.displayService.game.isDifficult) {
-            this.difficulty = 'Niveau: difficile';
-        } else {
-            this.difficulty = 'Niveau: facile';
-        }
-        this.nbDifferences = this.displayService.game.nbDifferences;
     }
 
     returnSelectionPage(): void {
