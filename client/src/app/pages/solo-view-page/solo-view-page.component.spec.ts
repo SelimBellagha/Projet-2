@@ -126,7 +126,8 @@ describe('SoloViewPageComponent', () => {
     it('timer should start', () => {
         // const log = new LoginFormService();
         // const start_time = new SoloViewPageComponent(log);
-        const timerTest = 5000;
+        const timerTest = 5;
+        const waitTime = 5000;
 
         const time = component.secondes1;
         expect(time).toBeGreaterThanOrEqual(0);
@@ -138,7 +139,7 @@ describe('SoloViewPageComponent', () => {
             // expect(time).toBeGreaterThanOrEqual(timerTest);
             // eslint-disable-next-line @typescript-eslint/no-magic-numbers
             const time2 = component.secondes1;
-            expect(time2).toBeGreaterThanOrEqual(timerTest);
+            expect(time2).toBeGreaterThanOrEqual(waitTime);
         }, timerTest);
         // expect(mouseServiceSpy.onMouseUp).toHaveBeenCalled();
     });
