@@ -121,6 +121,7 @@ describe('SoloViewPageComponent', () => {
         component.nbDifferences = 1;
         await component.onClick(mouseEvent);
         expect(spy).toHaveBeenCalled();
+    });
 
     it('timer should start', () => {
         // const log = new LoginFormService();
