@@ -24,15 +24,22 @@ export class GameManagerService {
         if (gameData) {
             this.gameData = gameData;
             this.differencesFound = new Array<boolean>(gameData.nbDifferences).fill(false);
-            this.lastDifferenceFound = 1; // change this
+            this.lastDifferenceFound = -1; // change this
             this.locked = false;
+            console.log(gameData);
         }
     }
 
-    putImages(): void {
+    async putImages(): Promise<void> {
         if (this.gameData) {
-            this.originalImageCanvas.drawImage(this.gameData.originalImage, 0, 0);
-            this.modifiedImageCanvas.drawImage(this.gameData.modifiedImage, 0, 0);
+            console.log('putting');
+            const testImage = new Image();
+            testImage.src = this.gameData.originalImage;
+            await testImage.decode();
+            this.originalImageCanvas.drawImage(testImage, 0, 0);
+            testImage.src = this.gameData.modifiedImage;
+            await testImage.decode();
+            this.modifiedImageCanvas.drawImage(testImage, 0, 0);
         }
     }
 
@@ -61,9 +68,10 @@ export class GameManagerService {
         // code temporaire
         const verification: Verification = await this.differenceVerification.differenceVerification(position.x, position.y, 0);
         if (verification.result) {
-            /* if (!this.differencesFound[verification.index]) {
+            if (!this.differencesFound[verification.index]) {
                 this.differencesFound[verification.index] = true;
-            }*/
+                this.lastDifferenceFound = verification.index;
+            }
             return true;
         }
         return false;

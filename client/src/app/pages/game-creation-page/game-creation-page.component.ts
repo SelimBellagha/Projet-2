@@ -40,7 +40,8 @@ export class GameCreationPageComponent implements AfterViewInit {
         // lancer la validation des erreurs avec le service créer
         this.canvasManager.launchVerification(this.radius).then((gameData) => {
             this.currentGameData = gameData;
-
+            this.currentGameData.originalImage = this.leftCanvas.nativeElement.toDataURL('image/bmp');
+            this.currentGameData.modifiedImage = this.rightCanvas.nativeElement.toDataURL('image/bmp');
             this.popUpWindow.nativeElement.style.display = 'block';
         });
     }
@@ -73,6 +74,7 @@ export class GameCreationPageComponent implements AfterViewInit {
             window.alert('posting the game to server');
             this.currentGameData.name = name;
             this.commService.addNewGame(this.currentGameData);
+            console.log(this.currentGameData.modifiedImage);
             this.goToConfiguration();
         } else {
             window.alert('name not valid');

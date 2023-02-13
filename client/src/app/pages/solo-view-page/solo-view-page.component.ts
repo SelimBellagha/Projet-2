@@ -41,6 +41,7 @@ export class SoloViewPageComponent implements OnInit, AfterViewInit {
         if (game === undefined) {
             return;
         }
+        this.gameManager.initalizeGame(game);
         this.gameName = this.displayService.game.name;
         if (this.displayService.game.isDifficult) {
             this.difficulty = 'Niveau: difficile';
