@@ -24,6 +24,7 @@ export class SoloViewPageComponent implements OnInit, AfterViewInit {
     secondes2: number = 0;
     minutes1: number = 0;
     minutes2: number = 0;
+    intervalID: number;
 
     constructor(
         private router: Router,
@@ -62,7 +63,7 @@ export class SoloViewPageComponent implements OnInit, AfterViewInit {
         const decimalMax = 9;
         const centaineMax = 5;
         const timerInterval = 1000;
-        setInterval(() => {
+        this.intervalID = window.setInterval(() => {
             if (this.secondes2 === centaineMax && this.secondes1 === decimalMax) {
                 this.secondes2 = 0;
                 this.secondes1 = 0;
@@ -84,8 +85,12 @@ export class SoloViewPageComponent implements OnInit, AfterViewInit {
         this.timer();
     }
 
+    stopTimer() {
+        clearInterval(this.intervalID);
+    }
+
     endGame(): void {
-        // stopTimer
+        this.stopTimer();
         this.gameManager.playWinAudio();
         this.popUpWindow.nativeElement.style.display = 'block';
     }
