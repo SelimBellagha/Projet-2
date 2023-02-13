@@ -2,6 +2,7 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
+import { GameData } from '@app/interfaces/game.interface';
 import { CanvasManagerService } from '@app/services/canvas-manager.service';
 import { GameCreationPageComponent } from './game-creation-page.component';
 import SpyObj = jasmine.SpyObj;
@@ -100,6 +101,7 @@ describe('GameCreationPageComponent', () => {
     it('onSave should go to configuration page if name is valid', () => {
         const inputMock = { value: 'ValidName' } as HTMLInputElement;
         const spy = spyOn(component, 'goToConfiguration');
+        component.currentGameData = { name: 'mock' } as GameData;
         component.onSave(inputMock);
         expect(spy).toHaveBeenCalled();
     });
