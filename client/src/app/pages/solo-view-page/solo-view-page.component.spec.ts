@@ -31,7 +31,7 @@ describe('SoloViewPageComponent', () => {
         component.startTimer();
         expect(timerSpy).toHaveBeenCalled();
         setTimeout(() => {
-            // eslint-disable-next-line no-console
+            //  eslint-disable-next-line no-console
             // expect(time).toBeGreaterThanOrEqual(timerTest);
             // eslint-disable-next-line @typescript-eslint/no-magic-numbers
             const time2 = component.secondes1;
