@@ -121,5 +121,24 @@ describe('SoloViewPageComponent', () => {
         component.nbDifferences = 1;
         await component.onClick(mouseEvent);
         expect(spy).toHaveBeenCalled();
+
+    it('timer should start', () => {
+        // const log = new LoginFormService();
+        // const start_time = new SoloViewPageComponent(log);
+        const timerTest = 5000;
+
+        const time = component.secondes1;
+        expect(time).toBeGreaterThanOrEqual(0);
+        const timerSpy = spyOn(component, 'startTimer');
+        component.startTimer();
+        expect(timerSpy).toHaveBeenCalled();
+        setTimeout(() => {
+            //  eslint-disable-next-line no-console
+            // expect(time).toBeGreaterThanOrEqual(timerTest);
+            // eslint-disable-next-line @typescript-eslint/no-magic-numbers
+            const time2 = component.secondes1;
+            expect(time2).toBeGreaterThanOrEqual(timerTest);
+        }, timerTest);
+        // expect(mouseServiceSpy.onMouseUp).toHaveBeenCalled();
     });
 });
