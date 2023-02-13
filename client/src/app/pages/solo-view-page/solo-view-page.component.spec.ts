@@ -126,7 +126,7 @@ describe('SoloViewPageComponent', () => {
     it('timer should start', () => {
         // const log = new LoginFormService();
         // const start_time = new SoloViewPageComponent(log);
-        const timerTest = 5;
+        const timerTest = 4;
         const waitTime = 5000;
 
         const time = component.secondes1;
