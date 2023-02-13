@@ -68,12 +68,12 @@ const display = 4;
 export class SelectionPageComponentComponent {
     componentNumber: number = 0;
     games = GAMES_LIST;
-    hasprevious: boolean = false;
-    hasnext: boolean = true;
-    firstgame: number = 0;
-    lastgame: number = display;
+    hasPrevious: boolean = false;
+    hasNext: boolean = true;
+    firstGame: number = 0;
+    lastGame: number = display;
     marge: number = display;
-    gamesDisplayed = this.games.slice(this.firstgame, this.lastgame);
+    gamesDisplayed = this.games.slice(this.firstGame, this.lastGame);
 
     constructor(private router: Router) {}
 
@@ -82,24 +82,24 @@ export class SelectionPageComponentComponent {
     }
 
     next(): void {
-        this.gamesDisplayed = this.games.slice(this.lastgame, this.lastgame + this.marge);
-        this.firstgame = this.lastgame;
-        this.lastgame = this.lastgame + this.marge;
-        this.hasprevious = true;
+        this.gamesDisplayed = this.games.slice(this.lastGame, this.lastGame + this.marge);
+        this.firstGame = this.lastGame;
+        this.lastGame = this.lastGame + this.marge;
+        this.hasPrevious = true;
 
-        if (this.lastgame >= this.games.length) {
-            this.hasnext = false;
+        if (this.lastGame >= this.games.length) {
+            this.hasNext = false;
         }
     }
 
     previous() {
-        this.gamesDisplayed = this.games.slice(this.firstgame - this.marge, this.firstgame);
-        this.lastgame = this.firstgame;
-        this.firstgame = this.firstgame - this.marge;
-        this.hasnext = true;
+        this.gamesDisplayed = this.games.slice(this.firstGame - this.marge, this.firstGame);
+        this.lastGame = this.firstGame;
+        this.firstGame = this.firstGame - this.marge;
+        this.hasNext = true;
 
-        if (this.firstgame === 0) {
-            this.hasprevious = false;
+        if (this.firstGame === 0) {
+            this.hasPrevious = false;
         }
     }
 }
