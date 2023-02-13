@@ -74,7 +74,6 @@ export class GameCreationPageComponent implements AfterViewInit {
             window.alert('posting the game to server');
             this.currentGameData.name = name;
             this.commService.addNewGame(this.currentGameData);
-            console.log(this.currentGameData.modifiedImage);
             this.goToConfiguration();
         } else {
             window.alert('name not valid');

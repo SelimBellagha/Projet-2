@@ -26,13 +26,11 @@ export class GameManagerService {
             this.differencesFound = new Array<boolean>(gameData.nbDifferences).fill(false);
             this.lastDifferenceFound = -1; // change this
             this.locked = false;
-            console.log(gameData);
         }
     }
 
     async putImages(): Promise<void> {
         if (this.gameData) {
-            console.log('putting');
             const testImage = new Image();
             testImage.src = this.gameData.originalImage;
             await testImage.decode();

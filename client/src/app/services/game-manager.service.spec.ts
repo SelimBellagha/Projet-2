@@ -1,6 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { GameData } from '@app/interfaces/game-data';
 
+import { HttpClientModule } from '@angular/common/http';
 import { CanvasTestHelper } from '@app/classes/canvas-test-helper';
 import { Vec2 } from '@app/interfaces/vec2';
 import { GameManagerService } from './game-manager.service';
@@ -13,7 +14,9 @@ describe('GameManagerService', () => {
     const whiteValue = 255;
 
     beforeEach(() => {
-        TestBed.configureTestingModule({});
+        TestBed.configureTestingModule({
+            imports: [HttpClientModule],
+        });
         service = TestBed.inject(GameManagerService);
         service.originalImageCanvas = CanvasTestHelper.createCanvas(CANVAS_WIDTH, CANVAS_HEIGHT).getContext('2d') as CanvasRenderingContext2D;
         service.modifiedImageCanvas = CanvasTestHelper.createCanvas(CANVAS_WIDTH, CANVAS_HEIGHT).getContext('2d') as CanvasRenderingContext2D;
