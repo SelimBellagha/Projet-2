@@ -139,8 +139,8 @@ describe('SoloViewPageComponent', () => {
             // expect(time).toBeGreaterThanOrEqual(timerTest);
             // eslint-disable-next-line @typescript-eslint/no-magic-numbers
             const time2 = component.secondes1;
-            expect(time2).toBeGreaterThanOrEqual(waitTime);
-        }, timerTest);
+            expect(time2).toBeGreaterThanOrEqual(timerTest);
+        }, waitTime);
         // expect(mouseServiceSpy.onMouseUp).toHaveBeenCalled();
     });
 });
