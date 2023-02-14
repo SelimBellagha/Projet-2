@@ -8,25 +8,33 @@
     </div>
 
     <div class="main-container">
-        <div *ngFor="let game of games">
+        <div *ngFor="let game of gamesDisplayed">
             <app-jeux [customTitle]="game.title" [customDifficulty]="game.difficulty" [isConfigurationMode]="true"></app-jeux>
         </div>
     </div>
     <div class="buttons-align">
-        <div *ngIf="hasnext === true && hasprevious === true">
+        <div *ngIf="hasNextPage === false">
+            <button disabled="disabled" >Précédent</button>
+            <button disabled="disabled" >Suivant</button>
+        </div>
+
+
+    <div *ngIf="hasNextPage === true">
+        <div *ngIf="hasNext === true && hasPrevious === true">
             <button (click)="previous()" >Précédent</button>
             <button (click)="next()" >Suivant</button>
         </div>
 
-        <div *ngIf="hasprevious === false">
+        <div *ngIf="hasPrevious === false">
             <button disabled="disabled">Précédent</button>
             <button (click)="next()" >Suivant</button>
         </div>
         
-        <div *ngIf="hasnext === false">
+        <div *ngIf="hasNext === false">
             <button (click)="previous()" >Précédent</button>
             <button disabled="disabled">Suivant</button>
         </div>
+    </div>
     </div>
     
     <div class="button-container">
