@@ -15,12 +15,12 @@ export class GameManagerService {
     modifiedImageCanvas: CanvasRenderingContext2D;
     differencesFound: boolean[];
     gameData: GameData;
-    lastDifferenceFound: number = 0;
+    lastDifferenceFound: number = 1;
     locked: boolean;
 
     constructor(private differenceVerification: DifferenceVerificationService) {}
 
-    initalizeGame(gameData: GameData) {
+    initializeGame(gameData: GameData) {
         if (gameData) {
             this.gameData = gameData;
             this.differencesFound = new Array<boolean>(gameData.nbDifferences).fill(false);
@@ -44,13 +44,13 @@ export class GameManagerService {
     async onPositionClicked(position: Vec2): Promise<boolean> {
         if (!this.locked) {
             this.locked = true;
-            if (await this.verifiyDifference(position)) {
+            if (await this.verifyDifference(position)) {
+                this.locked = false;
                 this.playDifferenceAudio();
                 // Clignotement de tout les pixels faisant partie de la différence
                 await this.flashImages(this.gameData.differences[this.lastDifferenceFound]);
                 // Changer les pixels de droite pour qu'ils soient comme à gauche
                 this.replacePixels(this.gameData.differences[this.lastDifferenceFound]);
-                this.locked = false;
                 return true;
             } else {
                 // Écrire Erreur sur le canvas à la position
@@ -62,17 +62,20 @@ export class GameManagerService {
         return false;
     }
 
-    async verifiyDifference(position: Vec2): Promise<boolean> {
+    async verifyDifference(position: Vec2): Promise<boolean> {
         // code temporaire
         const verification: Verification = await this.differenceVerification.differenceVerification(position.x, position.y, 0);
         if (verification.result) {
             if (!this.differencesFound[verification.index]) {
                 this.differencesFound[verification.index] = true;
                 this.lastDifferenceFound = verification.index;
+                return true;
+            } else {
+                return false;
             }
-            return true;
+        } else {
+            return false;
         }
-        return false;
     }
     async flashImages(pixels: Vec2[]): Promise<void> {
         this.flashPixels(pixels, this.originalImageCanvas);
