@@ -49,6 +49,7 @@ export class SoloViewPageComponent implements OnInit, AfterViewInit {
         } else {
             this.difficulty = 'Niveau: facile';
         }
+
         this.nbDifferences = this.displayService.game.nbDifferences;
     }
 
@@ -112,5 +113,14 @@ export class SoloViewPageComponent implements OnInit, AfterViewInit {
     }
     onClosingPopUp(): void {
         this.router.navigate(['/home']);
+    }
+
+    goToHomePage() {
+        this.popUpWindow.nativeElement.style.display = 'none';
+        this.router.navigate(['home']);
+    }
+
+    goToCongratulations() {
+        this.popUpWindow.nativeElement.style.display = 'block';
     }
 }
