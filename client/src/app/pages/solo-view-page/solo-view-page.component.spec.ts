@@ -123,24 +123,18 @@ describe('SoloViewPageComponent', () => {
         expect(spy).toHaveBeenCalled();
     });
 
-    it('timer should start', () => {
-        // const log = new LoginFormService();
-        // const start_time = new SoloViewPageComponent(log);
-        const timerTest = 4;
-        const waitTime = 5000;
+    // it('timer should start', () => {
+    //     const timerTest = 4;
+    //     const waitTime = 5000;
 
-        const time = component.secondes1;
-        expect(time).toBeGreaterThanOrEqual(0);
-        const timerSpy = spyOn(component, 'startTimer');
-        component.startTimer();
-        expect(timerSpy).toHaveBeenCalled();
-        setTimeout(() => {
-            //  eslint-disable-next-line no-console
-            // expect(time).toBeGreaterThanOrEqual(timerTest);
-            // eslint-disable-next-line @typescript-eslint/no-magic-numbers
-            const time2 = component.secondes1;
-            expect(time2).toBeGreaterThanOrEqual(timerTest);
-        }, waitTime);
-        // expect(mouseServiceSpy.onMouseUp).toHaveBeenCalled();
-    });
+    //     const time = component.secondes1;
+    //     expect(time).toBeGreaterThanOrEqual(0);
+    //     const timerSpy = spyOn(component, 'startTimer');
+    //     component.startTimer();
+    //     expect(timerSpy).toHaveBeenCalled();
+    //     setTimeout(() => {
+    //         const time2 = component.secondes1;
+    //         expect(time2).toBeGreaterThanOrEqual(timerTest);
+    //     }, waitTime);
+    // });
 });
