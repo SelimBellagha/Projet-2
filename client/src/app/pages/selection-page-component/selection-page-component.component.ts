@@ -55,7 +55,7 @@ const GAMES_LIST: Game[] = [
         title: 'Jeu 8',
         difficulty: 'Moyen',
         image: 'https://www.jardiner-malin.fr/wp-content/uploads/2015/02/tilleul-arbre.jpg',
-    },
+    }
 ];
 
 const display = 4;
@@ -69,16 +69,26 @@ export class SelectionPageComponentComponent {
     componentNumber: number = 0;
     games = GAMES_LIST;
     hasPrevious: boolean = false;
-    hasNext: boolean = true;
+    hasNext: boolean = false;
+    hasNextPage : boolean = false;
     firstGame: number = 0;
     lastGame: number = display;
     marge: number = display;
     gamesDisplayed = this.games.slice(this.firstGame, this.lastGame);
 
-    constructor(private router: Router) {}
+    constructor(private router: Router) {
+        this.nextPage();
+    }
 
     goToHomePage(): void {
         this.router.navigate(['/home']);
+    }
+
+    nextPage(): void {
+        if(this.games.length > display ) {
+            this.hasNextPage = true;
+            this.hasNext = true;
+        }
     }
 
     next(): void {
