@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { GameData } from '@app/interfaces/game.interface';
 import { Game } from '@app/pages/selection-page-component/selection-page-component.component';
+import { firstValueFrom } from 'rxjs';
 import { CommunicationService } from './communication.service';
 
 @Injectable({
@@ -17,8 +18,10 @@ export class DisplayGameService {
         return this.comm.getGameById(`${gameId}`).subscribe((game) => (this.game = game));
     }
 
-    loadAllGames() {
-        this.comm.getAllGames().subscribe((game) => (this.tempGames = game));
+    async loadAllGames() {
+        // this.comm.getAllGames().subscribe((game) => (this.tempGames = game));
+        const source = this.comm.getAllGames();
+        this.tempGames = await firstValueFrom(source);
         this.convertAllGames();
     }
 

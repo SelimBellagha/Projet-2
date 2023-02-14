@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { DisplayGameService } from '@app/services/display-game.service';
 
@@ -16,7 +16,7 @@ const display = 4;
     templateUrl: './selection-page-component.component.html',
     styleUrls: ['./selection-page-component.component.scss'],
 })
-export class SelectionPageComponentComponent {
+export class SelectionPageComponentComponent implements OnInit {
     componentNumber: number = 0;
     hasPrevious: boolean = false;
     hasNext: boolean = true;
@@ -28,13 +28,12 @@ export class SelectionPageComponentComponent {
 
     constructor(private router: Router, private displayGames: DisplayGameService) {}
 
-    // eslint-disable-next-line @angular-eslint/use-lifecycle-interface
-    ngOnInit() {
-        this.checkGames();
+    async ngOnInit() {
+        await this.checkGames();
     }
 
-    checkGames() {
-        this.displayGames.loadAllGames();
+    async checkGames() {
+        await this.displayGames.loadAllGames();
         if (this.displayGames.games !== undefined) {
             this.games = this.displayGames.games;
             this.gamesDisplayed = this.games.slice(this.firstGame, this.lastGame);
