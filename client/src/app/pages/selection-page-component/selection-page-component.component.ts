@@ -23,10 +23,23 @@ export class SelectionPageComponentComponent {
     firstGame: number = 0;
     lastGame: number = display;
     marge: number = display;
-    games: Game[] = this.displayGames.games;
-    gamesDisplayed = this.games.slice(this.firstGame, this.lastGame);
+    games: Game[];
+    gamesDisplayed: Game[];
 
     constructor(private router: Router, private displayGames: DisplayGameService) {}
+
+    // eslint-disable-next-line @angular-eslint/use-lifecycle-interface
+    ngOnInit() {
+        this.checkGames();
+    }
+
+    checkGames() {
+        this.displayGames.loadAllGames();
+        if (this.displayGames.games !== undefined) {
+            this.games = this.displayGames.games;
+            this.gamesDisplayed = this.games.slice(this.firstGame, this.lastGame);
+        }
+    }
 
     goToHomePage(): void {
         this.router.navigate(['/home']);

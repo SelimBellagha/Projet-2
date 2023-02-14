@@ -8,18 +8,18 @@ import { CommunicationService } from './communication.service';
 })
 export class DisplayGameService {
     game: GameData;
-    games: Game[];
-    tempGames: GameData[];
+    games: Game[] = [];
+    tempGames: GameData[] = [];
     gameId: string;
     constructor(private comm: CommunicationService) {}
 
     loadGame(gameId: number) {
-        // this.comm.getGameById(this.gameId).subscribe((game) => (this.game = game));
         return this.comm.getGameById(`${gameId}`).subscribe((game) => (this.game = game));
     }
 
     loadAllGames() {
         this.comm.getAllGames().subscribe((game) => (this.tempGames = game));
+        this.convertAllGames();
     }
 
     convertDifficulty(game: GameData) {
@@ -31,15 +31,19 @@ export class DisplayGameService {
     }
 
     convertAllGames() {
-        for (const game of this.tempGames) {
-            const a: Game = {
+        const tempArray: Game[] = [];
+        // eslint-disable-next-line @typescript-eslint/prefer-for-of
+        for (let i = 0; i < this.tempGames.length; i++) {
+            const game = this.tempGames[i];
+            const gameInformation: Game = {
                 id: game.id,
                 title: game.name,
                 difficulty: this.convertDifficulty(game),
                 image: game.originalImage,
             };
-            this.games.push(a);
+            tempArray.push(gameInformation);
         }
+        this.games = tempArray;
     }
 
     setGameId(id: string) {

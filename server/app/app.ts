@@ -10,9 +10,9 @@ import { StatusCodes } from 'http-status-codes';
 import * as swaggerJSDoc from 'swagger-jsdoc';
 import * as swaggerUi from 'swagger-ui-express';
 import { Service } from 'typedi';
+import { DifferenceVerificationController } from './controllers/difference-verification.controller';
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 import bodyParser = require('body-parser');
-import { DifferenceVerificationController } from './controllers/difference-verification.controller';
 
 @Service()
 export class Application {

@@ -4,12 +4,12 @@
 }
 
 .title {
-  font-family: 'Times New Roman';
-  font-style: italic;
-  text-align: center;
+    font-family: 'Times New Roman';
+    font-style: italic;
+    text-align: center;
 }
 
-.main-container { 
+.main-container {
     position: relative;
     background-color: #fffafa;
     border: 1px dashed #000000;
@@ -21,23 +21,22 @@
 
 .main-button {
     position: absolute;
-    left:    0;
-    top:   0;
+    left: 0;
+    top: 0;
     margin-top: 5px;
     margin-left: 5px;
     text-align: center;
     font-weight: bold;
     height: 30px;
     width: 100px;
-    background-color: #6DA093;
+    background-color: #6da093;
     color: white;
     border-radius: 10px;
-    border-color: #6DA093;
-    font-family: 'Oleo Script Swash Caps';   
+    border-color: #6da093;
+    font-family: 'Oleo Script Swash Caps';
     font-size: 15px;
 }
 
 .buttons-align {
-  text-align: right;
+    text-align: right;
 }
-
