@@ -47,14 +47,32 @@ describe('GameController', async () => {
             .then((response) => {
                 chai.expect(response.body.message).to.equal(error.message);
             });
-    });
+    });*/
 
     it('should return game from game service on valid get request to root', async () => {
-        gameService.getGamebyId.withArgs('1').resolves(baseGame);
-        const res = await supertest(expressApp).get('/api/games/1').send(baseGame).set('Accept', 'application/json').expect(HTTP_STATUS_OK);
-        expect(res.body).to.deep.equal(baseGame);
+        const gamesData: GameData[] = [
+            {
+                id: '0',
+                name: 'game1',
+                originalImage: '',
+                modifiedImage: '',
+                nbDifferences: 8,
+                differences: [],
+                isDifficult: false,
+            },
+            {
+                id: '1',
+                name: 'game2',
+                originalImage: '',
+                modifiedImage: '',
+                nbDifferences: 8,
+                differences: [],
+                isDifficult: false,
+            },
+        ];
+        gameService.getGamebyId.withArgs('1').resolves(gamesData[1]);
+        return supertest(expressApp).get('/api/games/1').send(gamesData[1]).set('Accept', 'application/json').expect(HTTP_STATUS_OK);
     });
-    */
 
     it('should store game in the array on valid post request to /send', async () => {
         const game: GameData = {
@@ -69,5 +87,5 @@ describe('GameController', async () => {
         return supertest(expressApp).post('/api/games/send').send(game).set('Accept', 'application/json').expect(HTTP_STATUS_CREATED);
     });
 
-    it('should return error on invalid post request to /send', async () => {});
+    /* it('should return error on invalid post request to /send', async () => {});*/
 });
