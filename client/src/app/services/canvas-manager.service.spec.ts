@@ -41,7 +41,7 @@ describe('CanvasManagerService', () => {
             name: 'temp',
             originalImage: 'test',
             modifiedImage: 'test',
-            differenceImage: new ImageData(CANVAS_WIDTH, CANVAS_HEIGHT),
+            // differenceImage: new ImageData(CANVAS_WIDTH, CANVAS_HEIGHT),
             nbDifferences: 0,
             differences: [],
             isDifficult: true,
@@ -63,7 +63,7 @@ describe('CanvasManagerService', () => {
         const bitmap = await createImageBitmap(imageValid);
         expect(service.validateImageSize(bitmap)).toBeTrue();
     });
-    it('isFileValid shoul return false if file is null or undefined', () => {
+    it('isFileValid should return false if file is null or undefined', () => {
         const file: File = null as unknown as File;
         const file2: File = undefined as unknown as File;
         expect(service.isFileValid(file)).toBeFalse();

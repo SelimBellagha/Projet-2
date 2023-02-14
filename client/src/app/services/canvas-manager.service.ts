@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { GameData } from '@app/interfaces/game-data';
+import { Vec2 } from '@app/interfaces/vec2';
 import { DifferenceDetectionService } from './difference-detection.service';
 import { DEFAULT_HEIGHT, DEFAULT_WIDTH } from './draw.service';
 
@@ -83,7 +84,9 @@ export class CanvasManagerService {
         const leftImageData = this.leftCanvasContext.getImageData(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT);
         const rightImageData = this.rightCanvasContext.getImageData(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT);
         const gameData: GameData = await this.differenceDetector.launchDifferenceDetection(leftImageData, rightImageData, radius);
-        this.modalCanvasContext.putImageData(gameData.differenceImage, 0, 0);
+        const pixelDifferences: Vec2[] = this.differenceDetector.findDifferences(leftImageData, rightImageData);
+        const differenceImageData: ImageData = this.differenceDetector.createDifferenceImage(pixelDifferences, radius);
+        this.modalCanvasContext.putImageData(differenceImageData, 0, 0);
         return gameData;
     }
 }
