@@ -5,20 +5,20 @@ body {
     padding: 1%;
 }
 
-.quit-button{
+.quit-button {
     position: absolute;
-    left:    0;
-    top:   0;
+    left: 0;
+    top: 0;
     margin: 5px 0 10px 5px;
     text-align: center;
     font-weight: bold;
     height: 30px;
     width: 15%;
-    background-color: #6DA093;
+    background-color: #6da093;
     color: white;
     border-radius: 10px;
-    border-color: #6DA093;
-    font-family: 'Oleo Script Swash Caps';   
+    border-color: #6da093;
+    font-family: 'Oleo Script Swash Caps';
     font-size: 15px;
 }
 
@@ -26,14 +26,14 @@ body {
     display: flex;
 }
 
-.main-container { 
+.main-container {
     position: relative;
     background-color: #fffafa;
     border: dotted salmon;
     border-radius: 5px;
     max-height: 90%;
     padding: 2%;
-    margin :5% 0 4%;
+    margin: 5% 0 4%;
 }
 
 .game-info {
@@ -46,8 +46,7 @@ body {
     border-color: red;
     border-radius: 6px;
     font-weight: bold;
-   color: red;
-
+    color: red;
 }
 
 .timer {
@@ -80,57 +79,57 @@ body {
 
 .chat-container {
     display: inline-block;
-    position:relative;
+    position: relative;
     background-color: whitesmoke;
-    font-family: "Ubuntu-Italic", "Lucida Sans", helvetica;
+    font-family: 'Ubuntu-Italic', 'Lucida Sans', helvetica;
     width: 90%;
-	height: auto;
+    height: auto;
     border: 8px solid #666;
     margin-top: 2%;
     border-radius: 20px;
-	-webkit-border-radius: 20px;
-	-moz-border-radius: 20px;
+    -webkit-border-radius: 20px;
+    -moz-border-radius: 20px;
 }
 
 .chat-container::before {
     content: ' ';
-	position: absolute;
-	width: 0;
-	height: 0;
-  left: -40px;
-	right: auto;
-  top: -8px;
-	bottom: auto;
-	border: 32px solid;
-	border-color: #666 transparent transparent transparent;
+    position: absolute;
+    width: 0;
+    height: 0;
+    left: -40px;
+    right: auto;
+    top: -8px;
+    bottom: auto;
+    border: 32px solid;
+    border-color: #666 transparent transparent transparent;
 }
 
 .chat-container::after {
     content: ' ';
-	position: absolute;
-	width: 0;
-	height: 0;
-  left: -20px;
-	right: auto;
-  top: 0px;
-	bottom: auto;
-	border: 30px solid;
-	border-color: whitesmoke transparent transparent transparent;
+    position: absolute;
+    width: 0;
+    height: 0;
+    left: -20px;
+    right: auto;
+    top: 0px;
+    bottom: auto;
+    border: 30px solid;
+    border-color: whitesmoke transparent transparent transparent;
 }
 
 .message-box {
     padding: 1em;
-      text-align: left;
+    text-align: left;
     line-height: 1em;
-  }
-  .message-box p{
+}
+.message-box p {
     -webkit-margin-before: 0em;
     -webkit-margin-after: 0em;
-  }
+}
 
-  .message-title {
+.message-title {
     text-align: center;
-  }
+}
 
 canvas {
     border: black solid 2px;
@@ -138,41 +137,43 @@ canvas {
 }
 
 .congrats {
-    text-align: center ;
+    text-align: center;
     font-weight: bold;
-    font-family:serif;
+    font-family: serif;
     font-style: italic;
-    font-size:xx-large;
+    font-size: xx-large;
 }
 
 .close-button {
     text-align: right;
-  }
+}
 
 .modal {
-    display:none; 
-    position:fixed;
+    display: none;
+    position: fixed;
     z-index: 1;
     left: 0;
     top: 0;
-    width: 100%; 
+    width: 100%;
     height: 100%;
     background-image: url('../../../assets/images/confettis.gif');
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.4);
     align-self: center;
     visibility: visible;
     -webkit-animation: fadeIn 1s;
     animation: fadeIn 1s;
-  }
-  .modal-content {
+}
+.modal-content {
     background-color: #ede1db;
-    margin:5%  auto;
+    margin: 5% auto;
     padding: 20px;
     border: 1px solid #888;
-    width: 50%; 
-  }
+    width: 50%;
+}
 
-  .modal-content::after {
-    content: "";
+.modal-content::after {
+    content: '';
     position: absolute;
     top: 100%;
     left: 50%;
@@ -180,14 +181,26 @@ canvas {
     border-width: 5px;
     border-style: solid;
     border-color: #555 transparent transparent transparent;
-  }
+}
 
-  @-webkit-keyframes fadeIn {
-    from {opacity: 0;} 
-    to {opacity: 1;}
-  }
-  
-  @keyframes fadeIn {
-    from {opacity: 0;}
-    to {opacity:1 ;}
-  }
+.close-button {
+    text-align: right;
+}
+
+@-webkit-keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}

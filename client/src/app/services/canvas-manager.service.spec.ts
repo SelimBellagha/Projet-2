@@ -34,12 +34,13 @@ describe('CanvasManagerService', () => {
     });
 
     it('launchVerification should call launchDifferenceDetection from the service', async () => {
-        const imageDataStub = new ImageData(CANVAS_WIDTH, CANVAS_HEIGHT);
-        const imageBitmabStub = await createImageBitmap(imageDataStub);
+        // const imageDataStub = new ImageData(CANVAS_WIDTH, CANVAS_HEIGHT);
+        // const imageBitmabStub = await createImageBitmap(imageDataStub);
         const gameDataStub: GameData = {
+            id: 'temp',
             name: 'temp',
-            originalImage: imageBitmabStub,
-            modifiedImage: imageBitmabStub,
+            originalImage: 'test',
+            modifiedImage: 'test',
             differenceImage: new ImageData(CANVAS_WIDTH, CANVAS_HEIGHT),
             nbDifferences: 0,
             differences: [],
@@ -198,6 +199,4 @@ describe('CanvasManagerService', () => {
         await service.changeRightBackground(imageValid as unknown as File);
         expect(spyRight).toHaveBeenCalled();
     });
-
-    // TODO: Test change Backgrounds with files and refactor the code?
 });
