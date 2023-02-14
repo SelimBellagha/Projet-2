@@ -8,23 +8,35 @@ import { StatusCodes } from 'http-status-codes';
 import { createStubInstance, SinonStubbedInstance } from 'sinon';
 import * as supertest from 'supertest';
 import { Container } from 'typedi';
+// import sinon = require('sinon');
 
 const HTTP_STATUS_OK = StatusCodes.OK;
 const HTTP_STATUS_CREATED = StatusCodes.CREATED;
-// const HTTP_SERVER_ERROR = StatusCodes.INTERNAL_SERVER_ERROR;
-// const HTTP_NOT_FOUND = StatusCodes.NOT_FOUND;
+const HTTP_SERVER_ERROR = StatusCodes.INTERNAL_SERVER_ERROR;
+const HTTP_NOT_FOUND = StatusCodes.NOT_FOUND;
 
 describe('GameController', async () => {
-    const baseGame = {
-        id: '1',
-        name: 'testGame',
-        originalImage: '',
-        modifiedImage: '',
-        nbDifferences: 8,
-        differences: [],
-        isDifficult: false,
-    } as GameData;
     let gameService: SinonStubbedInstance<GameManager>;
+    const gamesData = [
+        {
+            id: '0',
+            name: 'game1',
+            originalImage: '',
+            modifiedImage: '',
+            nbDifferences: 8,
+            differences: [],
+            isDifficult: false,
+        },
+        {
+            id: '1',
+            name: 'game2',
+            originalImage: '',
+            modifiedImage: '',
+            nbDifferences: 8,
+            differences: [],
+            isDifficult: false,
+        },
+    ] as GameData[];
     let expressApp: Express.Application;
 
     beforeEach(async () => {
@@ -34,44 +46,30 @@ describe('GameController', async () => {
     });
 
     it('should return an array of games on valid get request to /games', async () => {
-        gameService.getAllGames.resolves([baseGame, baseGame]);
-        return supertest(expressApp).get('/api/games/').send([baseGame, baseGame]).set('Accept', 'application/json').expect(HTTP_STATUS_OK);
+        gameService.getAllGames.resolves(gamesData);
+        return supertest(expressApp).get('/api/games/').send(gamesData).set('Accept', 'application/json').expect(HTTP_STATUS_OK);
     });
-    /*
+
     it('should return 500 error on invalid get request to /games', async () => {
-        const error = new Error('server error');
-        gameService.getAllGames.rejects(error);
-        return supertest(expressApp)
-            .get('/api/games')
-            .expect(HTTP_SERVER_ERROR)
-            .then((response) => {
-                chai.expect(response.body.message).to.equal(error.message);
-            });
-    });*/
+        const error = new Error('service error');
+        gameService.getAllGames.throws(error);
+        return supertest(expressApp).get('/api/games/').send(error.message).expect(HTTP_SERVER_ERROR);
+    });
 
     it('should return game from game service on valid get request to root', async () => {
-        const gamesData: GameData[] = [
-            {
-                id: '0',
-                name: 'game1',
-                originalImage: '',
-                modifiedImage: '',
-                nbDifferences: 8,
-                differences: [],
-                isDifficult: false,
-            },
-            {
-                id: '1',
-                name: 'game2',
-                originalImage: '',
-                modifiedImage: '',
-                nbDifferences: 8,
-                differences: [],
-                isDifficult: false,
-            },
-        ];
         gameService.getGamebyId.withArgs('1').resolves(gamesData[1]);
         return supertest(expressApp).get('/api/games/1').send(gamesData[1]).set('Accept', 'application/json').expect(HTTP_STATUS_OK);
+    });
+
+    it('should return 404 not found if game not found', async () => {
+        gameService.getGamebyId.withArgs('2').resolves(undefined);
+        return supertest(expressApp).get('/api/games/2').expect(HTTP_NOT_FOUND);
+    });
+
+    it('should return 500 error on invalid get request to /:id', async () => {
+        const error = new Error('service error');
+        gameService.getGamebyId.withArgs('2').throws(error);
+        return supertest(expressApp).get('/api/games/2').send(error.message).expect(HTTP_SERVER_ERROR);
     });
 
     it('should store game in the array on valid post request to /send', async () => {
@@ -87,5 +85,18 @@ describe('GameController', async () => {
         return supertest(expressApp).post('/api/games/send').send(game).set('Accept', 'application/json').expect(HTTP_STATUS_CREATED);
     });
 
-    /* it('should return error on invalid post request to /send', async () => {});*/
+    it('should return 500 error on invalid post request to /send', async () => {
+        const game: GameData = {
+            id: '1',
+            name: 'testGame',
+            originalImage: '',
+            modifiedImage: '',
+            nbDifferences: 8,
+            differences: [],
+            isDifficult: false,
+        };
+        const error = new Error('service error');
+        gameService.addGame.withArgs(game).throws(error);
+        return supertest(expressApp).post('/api/games/send').send(error.message).expect(HTTP_SERVER_ERROR);
+    });
 });
