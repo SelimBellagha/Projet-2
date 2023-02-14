@@ -8,7 +8,7 @@
     </div>
 
     <div class="main-container">
-        <div *ngFor="let game of gamesDisplayed">
+        <div *ngFor="let game of games">
             <app-jeux [customTitle]="game.title" [customDifficulty]="game.difficulty" [isConfigurationMode]="true"></app-jeux>
         </div>
     </div>
