@@ -28,7 +28,7 @@ describe('GameManagerService', () => {
 
     it('initilaize game should correctly initialize game parameters', () => {
         const gameMock = { nbDifferences: 2 };
-        service.initalizeGame(gameMock as GameData);
+        service.initializeGame(gameMock as GameData);
         expect(service.gameData).toEqual(gameMock as GameData);
         expect(service.differencesFound.length).toEqual(gameMock.nbDifferences);
     });

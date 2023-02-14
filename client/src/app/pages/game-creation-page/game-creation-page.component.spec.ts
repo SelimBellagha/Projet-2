@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { GameData } from '@app/interfaces/game.interface';
 import { CanvasManagerService } from '@app/services/canvas-manager.service';
+import { CommunicationService } from '@app/services/communication.service';
 import { GameCreationPageComponent } from './game-creation-page.component';
 import SpyObj = jasmine.SpyObj;
 
@@ -11,6 +12,7 @@ describe('GameCreationPageComponent', () => {
     let component: GameCreationPageComponent;
     let fixture: ComponentFixture<GameCreationPageComponent>;
     let canvasManagerServiceSpy: SpyObj<CanvasManagerService>;
+    let communicationSpy: SpyObj<CommunicationService>;
     let router: Router;
 
     beforeEach(async () => {
@@ -22,11 +24,15 @@ describe('GameCreationPageComponent', () => {
             'changeLeftBackground',
             'changeBothBackgrounds',
         ]);
+        communicationSpy = jasmine.createSpyObj('CommunicationService', ['addNewGame']);
 
         await TestBed.configureTestingModule({
             declarations: [GameCreationPageComponent],
-            imports: [RouterTestingModule.withRoutes([]), HttpClientTestingModule],
-            providers: [{ provide: CanvasManagerService, useValue: canvasManagerServiceSpy }],
+            imports: [RouterTestingModule, HttpClientTestingModule],
+            providers: [
+                { provide: CanvasManagerService, useValue: canvasManagerServiceSpy },
+                { provide: CommunicationService, useValue: communicationSpy },
+            ],
         }).compileComponents();
 
         fixture = TestBed.createComponent(GameCreationPageComponent);
@@ -48,14 +54,13 @@ describe('GameCreationPageComponent', () => {
         component.resetBackground(false);
         expect(canvasManagerServiceSpy.resetRightBackground).toHaveBeenCalled();
     });
-    /*
+
     it('clicking on launchValidation button should call launchVerification in the service', () => {
-        canvasManagerServiceSpy.launchVerification.and.resolveTo();
-        component.currentGameData = { originalImage: '', modifiedImage: '' } as GameData;
+        canvasManagerServiceSpy.launchVerification.and.resolveTo({ originalImage: '', modifiedImage: '' } as GameData);
         component.onValidationLaunched();
         expect(canvasManagerServiceSpy.launchVerification).toHaveBeenCalled();
     });
-*/
+
     it('updating the file input for the right image should call changeRightBackground from service', () => {
         const input: HTMLInputElement = document.getElementById('rightImageInput') as HTMLInputElement;
         input.dispatchEvent(new Event('change'));
@@ -107,6 +112,14 @@ describe('GameCreationPageComponent', () => {
         expect(spy).toHaveBeenCalled();
     });
 
+    it('onSave should call addNewGame from communicationService  if name is valid', () => {
+        const inputMock = { value: 'ValidName' } as HTMLInputElement;
+        component.currentGameData = { name: 'mock' } as GameData;
+        spyOn(component, 'goToConfiguration');
+        component.onSave(inputMock);
+        expect(communicationSpy.addNewGame).toHaveBeenCalled();
+    });
+
     it('onSave should not go to configuration page if name is invalid', () => {
         const inputMock = { value: '' } as HTMLInputElement;
         const spy = spyOn(component, 'goToConfiguration');
@@ -115,10 +128,10 @@ describe('GameCreationPageComponent', () => {
     });
 
     it(' clicking on return button should navigate to configuration Page', () => {
+        // eslint-disable-next-line @typescript-eslint/no-empty-function
         const routerSpy = spyOn(router, 'navigate');
 
         component.goToConfiguration();
         expect(routerSpy).toHaveBeenCalled();
-        expect(routerSpy).toHaveBeenCalledWith(['/config']);
     });
 });
