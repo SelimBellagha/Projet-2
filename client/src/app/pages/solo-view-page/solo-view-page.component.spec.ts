@@ -2,6 +2,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
+import { GameData } from '@app/interfaces/game.interface';
 import { DisplayGameService } from '@app/services/display-game.service';
 import { GameManagerService } from '@app/services/game-manager.service';
 import { LoginFormService } from '@app/services/login-form.service';
@@ -17,10 +18,29 @@ describe('SoloViewPageComponent', () => {
     let router: Router;
 
     const username = 'testName';
+    const gameMock1 = {
+        id: '0',
+        name: 'mock',
+        originalImage: 'mock',
+        modifiedImage: 'mock',
+        nbDifferences: 1,
+        differences: [],
+        isDifficult: true,
+    };
+    /*
+    const gameMock2 = {
+        id: '1',
+        name: 'mock',
+        originalImage: 'mock',
+        modifiedImage: 'mock',
+        nbDifferences: 1,
+        differences: [],
+        isDifficult: false,
+    };*/
 
     beforeEach(async () => {
-        gameManagerSpy = jasmine.createSpyObj('GameManagerService', ['onPositionClicked', 'putImages', 'playWinAudio', 'initalizeGame']);
-        displayServiceSpy = jasmine.createSpyObj('DisplayGameService', ['loadGame']);
+        gameManagerSpy = jasmine.createSpyObj('GameManagerService', ['onPositionClicked', 'putImages', 'playWinAudio', 'initializeGame']);
+        displayServiceSpy = jasmine.createSpyObj('DisplayGameService', ['loadGame', 'convertDifficulty'], { game: gameMock1 as unknown as GameData });
         loginServiceSpy = jasmine.createSpyObj('LoginFormService', ['getFormData']);
 
         loginServiceSpy.getFormData.and.returnValue(username);
@@ -49,7 +69,21 @@ describe('SoloViewPageComponent', () => {
         expect(loginServiceSpy.getFormData).toHaveBeenCalled();
         expect(component.username).toEqual(username);
     });
-
+    /*
+    it('On initialization, initializeGame from gameManager should be called', () => {
+        displayServiceSpy.loadGame.and.returnValue(gameMock1 as unknown as GameData);
+        component.ngOnInit();
+        expect(gameManagerSpy.initializeGame).toHaveBeenCalled();
+    });
+    it('On initialization, game parameters should be instanciated', () => {
+        displayServiceSpy.loadGame.and.returnValue(gameMock2 as unknown as GameData);
+        displayServiceSpy.game.isDifficult = false;
+        component.ngOnInit();
+        expect(component.gameName).toEqual(gameMock2.name);
+        expect(component.nbDifferences).toEqual(gameMock2.nbDifferences);
+        expect(component.difficulty).toEqual('Niveau: facile');
+    });
+    */
     it(' clicking on return button should navigate to configuration Page', () => {
         const routerSpy = spyOn(router, 'navigate');
 

@@ -39,7 +39,7 @@ export class SoloViewPageComponent implements OnInit, AfterViewInit {
         this.startTimer();
         this.nbDifferencesFound = 0;
         if (this.displayService.game) {
-            this.gameManager.initalizeGame(this.displayService.game);
+            this.gameManager.initializeGame(this.displayService.game);
             this.gameName = this.displayService.game.name;
             this.difficulty = this.displayService.convertDifficulty(this.displayService.game);
             this.nbDifferences = this.displayService.game.nbDifferences;

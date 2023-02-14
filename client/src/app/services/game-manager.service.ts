@@ -20,7 +20,7 @@ export class GameManagerService {
 
     constructor(private differenceVerification: DifferenceVerificationService) {}
 
-    initalizeGame(gameData: GameData) {
+    initializeGame(gameData: GameData) {
         if (gameData) {
             this.gameData = gameData;
             this.differencesFound = new Array<boolean>(gameData.nbDifferences).fill(false);
@@ -44,7 +44,7 @@ export class GameManagerService {
     async onPositionClicked(position: Vec2): Promise<boolean> {
         if (!this.locked) {
             this.locked = true;
-            if (await this.verifiyDifference(position)) {
+            if (await this.verifyDifference(position)) {
                 this.locked = false;
                 this.playDifferenceAudio();
                 // Clignotement de tout les pixels faisant partie de la différence
@@ -62,7 +62,7 @@ export class GameManagerService {
         return false;
     }
 
-    async verifiyDifference(position: Vec2): Promise<boolean> {
+    async verifyDifference(position: Vec2): Promise<boolean> {
         // code temporaire
         const verification: Verification = await this.differenceVerification.differenceVerification(position.x, position.y, +this.gameData.id);
         if (verification.result) {

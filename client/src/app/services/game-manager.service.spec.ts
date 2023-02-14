@@ -1,10 +1,12 @@
-import { TestBed } from '@angular/core/testing';
-import { GameData } from '@app/interfaces/game-data';
-
 import { HttpClientModule } from '@angular/common/http';
+import { TestBed } from '@angular/core/testing';
 import { CanvasTestHelper } from '@app/classes/canvas-test-helper';
+import { GameData } from '@app/interfaces/game-data';
 import { Vec2 } from '@app/interfaces/vec2';
+import { Verification } from '@app/interfaces/verification';
+import { DifferenceVerificationService } from './difference-verification.service';
 import { GameManagerService } from './game-manager.service';
+import SpyObj = jasmine.SpyObj;
 
 describe('GameManagerService', () => {
     let service: GameManagerService;
@@ -12,10 +14,14 @@ describe('GameManagerService', () => {
     const CANVAS_HEIGHT = 480;
     const PIXEL_SIZE = 4;
     const whiteValue = 255;
+    let differenceVerificationSpy: SpyObj<DifferenceVerificationService>;
 
     beforeEach(() => {
+        differenceVerificationSpy = jasmine.createSpyObj('DifferenceVerificationService', ['differenceVerification']);
+
         TestBed.configureTestingModule({
             imports: [HttpClientModule],
+            providers: [{ provide: DifferenceVerificationService, useValue: differenceVerificationSpy }],
         });
         service = TestBed.inject(GameManagerService);
         service.originalImageCanvas = CanvasTestHelper.createCanvas(CANVAS_WIDTH, CANVAS_HEIGHT).getContext('2d') as CanvasRenderingContext2D;
@@ -28,7 +34,7 @@ describe('GameManagerService', () => {
 
     it('initilaize game should correctly initialize game parameters', () => {
         const gameMock = { nbDifferences: 2 };
-        service.initalizeGame(gameMock as GameData);
+        service.initializeGame(gameMock as GameData);
         expect(service.gameData).toEqual(gameMock as GameData);
         expect(service.differencesFound.length).toEqual(gameMock.nbDifferences);
     });
@@ -95,5 +101,69 @@ describe('GameManagerService', () => {
         imageData = service.originalImageCanvas.getImageData(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT).data;
         const afterSize = imageData.filter((x) => x !== 0).length;
         expect(afterSize).toBeGreaterThan(beforeSize);
+    });
+
+    it('putImages should call drawImage on both of the canvases', async () => {
+        const mockSource = '../assets/tests/image_7_diff.bmp';
+        service.gameData = { originalImage: mockSource, modifiedImage: mockSource } as GameData;
+        const originalCanvasSpy = spyOn(service.originalImageCanvas, 'drawImage');
+        const modifiedCanvasSpy = spyOn(service.modifiedImageCanvas, 'drawImage');
+        await service.putImages();
+        expect(originalCanvasSpy).toHaveBeenCalled();
+        expect(modifiedCanvasSpy).toHaveBeenCalled();
+    });
+
+    it('verifyDifference should call differenceVerification from service', () => {
+        const position: Vec2 = { x: 0, y: 0 };
+        service.gameData = { id: 0 } as unknown as GameData;
+        differenceVerificationSpy.differenceVerification.and.resolveTo({ result: false, index: -1 });
+        service.verifyDifference(position);
+        expect(differenceVerificationSpy.differenceVerification).toHaveBeenCalled();
+    });
+
+    it('verifyDifference should return true if position is in a difference that is not found yet', async () => {
+        service.gameData = { id: 0 } as unknown as GameData;
+        const position: Vec2 = { x: 0, y: 0 };
+        const result: Verification = { result: true, index: 0 };
+        service.differencesFound = [false, false];
+        differenceVerificationSpy.differenceVerification.and.resolveTo(result);
+        expect(await service.verifyDifference(position)).toBeTrue();
+    });
+    it('verifyDifference should return false if position is in a difference that is already found ', async () => {
+        const position: Vec2 = { x: 0, y: 0 };
+        service.gameData = { id: 0 } as unknown as GameData;
+        const result: Verification = { result: true, index: 0 };
+        service.differencesFound = [false, false];
+        differenceVerificationSpy.differenceVerification.and.resolveTo(result);
+        await service.verifyDifference(position);
+        expect(await service.verifyDifference(position)).toBeFalse();
+    });
+
+    it('onPositionClicked should return false if service is locked', async () => {
+        const position: Vec2 = { x: 0, y: 0 };
+        service.locked = true;
+        expect(await service.onPositionClicked(position)).toBeFalse();
+    });
+    it('onPositionClicked should call errorMessage if position is not in a difference that is not found', async () => {
+        const position: Vec2 = { x: 0, y: 0 };
+        spyOn(service, 'verifyDifference').and.resolveTo(false);
+        const spy = spyOn(service, 'drawError');
+        service.locked = false;
+        await service.onPositionClicked(position);
+        expect(spy).toHaveBeenCalled();
+    });
+    it('onPositionClicked should call playDifferenceAudio, flashImages and replacePixels if position is verified', async () => {
+        const position: Vec2 = { x: 0, y: 0 };
+        spyOn(service, 'verifyDifference').and.resolveTo(true);
+        service.gameData = { differences: [[]] } as unknown as GameData;
+        service.lastDifferenceFound = 0;
+        const spy1 = spyOn(service, 'playDifferenceAudio');
+        const spy2 = spyOn(service, 'flashImages').and.resolveTo();
+        const spy3 = spyOn(service, 'replacePixels').and.resolveTo();
+        service.locked = false;
+        await service.onPositionClicked(position);
+        expect(spy1).toHaveBeenCalled();
+        expect(spy2).toHaveBeenCalled();
+        expect(spy3).toHaveBeenCalled();
     });
 });
