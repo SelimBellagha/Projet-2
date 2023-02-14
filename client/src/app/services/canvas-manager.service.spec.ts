@@ -19,7 +19,11 @@ describe('CanvasManagerService', () => {
         imageValid.src = '../assets/tests/image_2_diff.bmp';
         imageWrongSize.src = '../assets/tests/image_wrong_res.bmp';
 
-        differenceDetectionServiceSpy = jasmine.createSpyObj('DifferenceDetectionService', ['launchDifferenceDetection']);
+        differenceDetectionServiceSpy = jasmine.createSpyObj('DifferenceDetectionService', [
+            'launchDifferenceDetection',
+            'findDifferences',
+            'createDifferenceImage',
+        ]);
         TestBed.configureTestingModule({
             providers: [{ provide: DifferenceDetectionService, useValue: differenceDetectionServiceSpy }],
         });
@@ -41,7 +45,7 @@ describe('CanvasManagerService', () => {
             name: 'temp',
             originalImage: 'test',
             modifiedImage: 'test',
-            differenceImage: new ImageData(CANVAS_WIDTH, CANVAS_HEIGHT),
+            // differenceImage: new ImageData(CANVAS_WIDTH, CANVAS_HEIGHT),
             nbDifferences: 0,
             differences: [],
             isDifficult: true,
@@ -50,6 +54,7 @@ describe('CanvasManagerService', () => {
             return gameDataStub;
         };
         differenceDetectionServiceSpy.launchDifferenceDetection.and.callFake(fakeDetection);
+        spyOn(service.modalCanvasContext, 'putImageData');
         service.launchVerification(0);
         expect(differenceDetectionServiceSpy.launchDifferenceDetection).toHaveBeenCalled();
     });
@@ -63,7 +68,7 @@ describe('CanvasManagerService', () => {
         const bitmap = await createImageBitmap(imageValid);
         expect(service.validateImageSize(bitmap)).toBeTrue();
     });
-    it('isFileValid shoul return false if file is null or undefined', () => {
+    it('isFileValid should return false if file is null or undefined', () => {
         const file: File = null as unknown as File;
         const file2: File = undefined as unknown as File;
         expect(service.isFileValid(file)).toBeFalse();

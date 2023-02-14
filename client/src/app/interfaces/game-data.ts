@@ -7,7 +7,7 @@ export interface GameData {
     // modifiedImage: ImageBitmap;
     originalImage: string;
     modifiedImage: string;
-    differenceImage: ImageData;
+    // differenceImage: ImageData;
     nbDifferences: number;
     differences: Vec2[][];
     isDifficult: boolean;

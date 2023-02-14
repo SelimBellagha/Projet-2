@@ -52,6 +52,7 @@ export class GameController {
             }
         });
 
+        /*
         // DELETE games/:id
         this.router.delete('/:id', async (req: Request, res: Response) => {
             try {
@@ -63,62 +64,6 @@ export class GameController {
                 }
             } catch (error) {
                 res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(error.message);
-            }
-        });
-
-        /*
-        this.router.post('/', async (req: Request, res: Response) => {
-            try {
-                if (!Object.keys(req.body).length) {
-                    res.status(StatusCodes.BAD_REQUEST).send();
-                    return;
-                }
-                const game = await this.gameService.addGame(req.body);
-                res.status(StatusCodes.CREATED).json(game);
-            } catch (error) {
-                res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error);
-            }
-        });
-        */
-
-        /*
-        this.router.get('/:id', async (req: Request, res: Response) => {
-            try {
-                const theGame = await this.gameService.getGamebyId(req.params.id);
-                if (theGame === undefined) {
-                    res.status(StatusCodes.NOT_FOUND).json("Nous avons pas trouvé le jeu selon l'id demandé");
-                }
-                res.status(StatusCodes.OK).json(theGame);
-            } catch (error) {
-                res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error);
-            }
-        });
-        */
-
-        /*
-        this.router.put('/:id', async (req: Request, res: Response) => {
-            try {
-                if (!Object.keys(req.body).length) {
-                    res.status(StatusCodes.BAD_REQUEST).send();
-                    return;
-                }
-                await this.gameService.updateGame(req.body);
-                res.status(StatusCodes.OK).json({ id: req.body.id });
-            } catch (error) {
-                res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error);
-            }
-        });
-
-        this.router.delete('/', async (req: Request, res: Response) => {
-            try {
-                const gameToDelete = await this.gameService.deleteGame(req.params.id);
-                if (!gameToDelete) {
-                    res.status(StatusCodes.NOT_FOUND).json('The requested game cannot be deleted as it does not exist');
-                } else {
-                    res.status(StatusCodes.OK).json('The game with the requested id has been deleted');
-                }
-            } catch (error) {
-                res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(error);
             }
         });
         */

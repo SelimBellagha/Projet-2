@@ -30,7 +30,7 @@ export class DifferenceDetectionService {
             name: 'temp',
             originalImage: 'temp',
             modifiedImage: 'temp',
-            differenceImage: differenceImageData,
+            // differenceImage: differenceImageData,
             nbDifferences: differencesArray.length,
             differences: differencesArray,
             isDifficult: difficulty,
