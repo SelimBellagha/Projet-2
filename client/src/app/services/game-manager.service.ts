@@ -15,7 +15,7 @@ export class GameManagerService {
     modifiedImageCanvas: CanvasRenderingContext2D;
     differencesFound: boolean[];
     gameData: GameData;
-    lastDifferenceFound: number = 1;
+    lastDifferenceFound: number = 0;
     locked: boolean;
 
     constructor(private differenceVerification: DifferenceVerificationService) {}
@@ -64,18 +64,15 @@ export class GameManagerService {
 
     async verifyDifference(position: Vec2): Promise<boolean> {
         // code temporaire
-        const verification: Verification = await this.differenceVerification.differenceVerification(position.x, position.y, 0);
+        const verification: Verification = await this.differenceVerification.differenceVerification(position.x, position.y, +this.gameData.id);
         if (verification.result) {
             if (!this.differencesFound[verification.index]) {
                 this.differencesFound[verification.index] = true;
                 this.lastDifferenceFound = verification.index;
                 return true;
-            } else {
-                return false;
             }
-        } else {
-            return false;
         }
+        return false;
     }
     async flashImages(pixels: Vec2[]): Promise<void> {
         this.flashPixels(pixels, this.originalImageCanvas);

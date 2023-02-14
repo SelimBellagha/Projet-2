@@ -115,12 +115,14 @@ describe('GameManagerService', () => {
 
     it('verifyDifference should call differenceVerification from service', () => {
         const position: Vec2 = { x: 0, y: 0 };
+        service.gameData = { id: 0 } as unknown as GameData;
         differenceVerificationSpy.differenceVerification.and.resolveTo({ result: false, index: -1 });
         service.verifyDifference(position);
         expect(differenceVerificationSpy.differenceVerification).toHaveBeenCalled();
     });
 
     it('verifyDifference should return true if position is in a difference that is not found yet', async () => {
+        service.gameData = { id: 0 } as unknown as GameData;
         const position: Vec2 = { x: 0, y: 0 };
         const result: Verification = { result: true, index: 0 };
         service.differencesFound = [false, false];
@@ -129,6 +131,7 @@ describe('GameManagerService', () => {
     });
     it('verifyDifference should return false if position is in a difference that is already found ', async () => {
         const position: Vec2 = { x: 0, y: 0 };
+        service.gameData = { id: 0 } as unknown as GameData;
         const result: Verification = { result: true, index: 0 };
         service.differencesFound = [false, false];
         differenceVerificationSpy.differenceVerification.and.resolveTo(result);

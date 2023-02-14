@@ -1,62 +1,13 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-type Game = {
+import { DisplayGameService } from '@app/services/display-game.service';
+
+export type Game = {
     id: string;
     title: string;
     difficulty: string;
     image: string;
 };
-
-const GAMES_LIST: Game[] = [
-    {
-        id: '0',
-        title: 'Jeu 1',
-        difficulty: 'Facile',
-        image: 'https://www.jardiner-malin.fr/wp-content/uploads/2015/02/tilleul-arbre.jpg',
-    },
-    {
-        id: '1',
-        title: 'Jeu 2',
-        difficulty: 'Moyen',
-        image: 'https://www.jardiner-malin.fr/wp-content/uploads/2015/02/tilleul-arbre.jpg',
-    },
-    {
-        id: '2',
-        title: 'Jeu 3',
-        difficulty: 'Facile',
-        image: 'https://www.jardiner-malin.fr/wp-content/uploads/2015/02/tilleul-arbre.jpg',
-    },
-    {
-        id: '3',
-        title: 'Jeu 4',
-        difficulty: 'Difficile',
-        image: 'https://www.jardiner-malin.fr/wp-content/uploads/2015/02/tilleul-arbre.jpg',
-    },
-    {
-        id: '4',
-        title: 'Jeu 5',
-        difficulty: 'Moyen',
-        image: 'https://www.jardiner-malin.fr/wp-content/uploads/2015/02/tilleul-arbre.jpg',
-    },
-    {
-        id: '5',
-        title: 'Jeu 6',
-        difficulty: 'Difficile',
-        image: 'https://www.jardiner-malin.fr/wp-content/uploads/2015/02/tilleul-arbre.jpg',
-    },
-    {
-        id: '6',
-        title: 'Jeu 7',
-        difficulty: 'Difficile',
-        image: 'https://www.jardiner-malin.fr/wp-content/uploads/2015/02/tilleul-arbre.jpg',
-    },
-    {
-        id: '7',
-        title: 'Jeu 8',
-        difficulty: 'Moyen',
-        image: 'https://www.jardiner-malin.fr/wp-content/uploads/2015/02/tilleul-arbre.jpg',
-    },
-];
 
 const display = 4;
 
@@ -65,19 +16,29 @@ const display = 4;
     templateUrl: './selection-page-component.component.html',
     styleUrls: ['./selection-page-component.component.scss'],
 })
-export class SelectionPageComponentComponent {
+export class SelectionPageComponentComponent implements OnInit {
     componentNumber: number = 0;
-    games = GAMES_LIST;
     hasPrevious: boolean = false;
     hasNext: boolean = false;
     hasNextPage: boolean = false;
     firstGame: number = 0;
     lastGame: number = display;
     marge: number = display;
-    gamesDisplayed = this.games.slice(this.firstGame, this.lastGame);
+    games: Game[];
+    gamesDisplayed: Game[];
 
-    constructor(private router: Router) {
-        this.nextPage();
+    constructor(private router: Router, private displayGames: DisplayGameService) {}
+
+    async ngOnInit() {
+        await this.checkGames();
+    }
+
+    async checkGames() {
+        await this.displayGames.loadAllGames();
+        if (this.displayGames.games !== undefined) {
+            this.games = this.displayGames.games;
+            this.gamesDisplayed = this.games.slice(this.firstGame, this.lastGame);
+        }
     }
 
     goToHomePage(): void {

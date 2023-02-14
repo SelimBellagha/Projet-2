@@ -1,12 +1,10 @@
 <div class="jeu">
-    <h2 class = "info-jeu">
-            {{customTitle}} - Niveau : {{customDifficulty}} 
-    </h2>    
+    <h2 class="info-jeu">{{ customTitle }} - Niveau : {{ customDifficulty }}</h2>
 
-    <div class ="info">
+    <div class="info">
         <div>
-            <p style="float:left"> 
-        <img class = "image-position" style="vertical-align:top" src="https://www.jardiner-malin.fr/wp-content/uploads/2015/02/tilleul-arbre.jpg" alt="Test">
+            <p style="float: left">
+                <img class="image-position" style="vertical-align: top" #image alt="Test" />
             </p>
 
         <div class = "top3" >TOP 3</div>
@@ -42,9 +40,16 @@
             <button (click)="goToLoginPage()"> Jouer</button>
             <button disabled="disabled"> Créer </button>
         </div>
-        <div *ngIf="isConfigurationMode" class = "buttons">
-            <button disabled="disabled" > Supprimer</button>
-            <button disabled="disabled"> Reinitialiser</button>
+
+        <div class="buttons">
+            <div *ngIf="!isConfigurationMode" class="buttons">
+                <button (click)="goToLoginPage()">Jouer</button>
+                <button disabled="disabled">Créer</button>
+            </div>
+            <div *ngIf="isConfigurationMode" class="buttons">
+                <button disabled="disabled">Supprimer</button>
+                <button disabled="disabled">Reinitialiser</button>
+            </div>
         </div>
     </div>
 </div>

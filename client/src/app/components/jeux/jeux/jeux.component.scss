@@ -1,8 +1,8 @@
 .jeu {
-  background-color: #ffa07a;
-  border: 1px solid black;
-  border-radius: 5px;
-  margin: 2%;
+    background-color: #ffa07a;
+    border: 1px solid black;
+    border-radius: 5px;
+    margin: 2%;
 }
 
 .image-position{
@@ -13,42 +13,43 @@
 }
 
 .flex-column {
-  margin-left: 60%;
+    margin-left: 60%;
 }
 
 .buttons {
-  text-align: right;
+    text-align: right;
 }
 
 button {
-  margin: 0 2% 2% 2%;
-  text-align: center;
-  font-weight: bold;
-  height: 30px;
-  width: 100px;
-  background-color: #3d7db1;
-  color: white;
-  border-radius: 10px;
-  border-color: #394b77;
-  font-family: 'Oleo Script Swash Caps';   
-  font-size: 15px;
-  cursor: pointer;
+    margin: 0 2% 2% 2%;
+    text-align: center;
+    font-weight: bold;
+    height: 30px;
+    width: 100px;
+    background-color: #3d7db1;
+    color: white;
+    border-radius: 10px;
+    border-color: #394b77;
+    font-family: 'Oleo Script Swash Caps';
+    font-size: 15px;
+    cursor: pointer;
 }
 
 .info-jeu {
-  text-align: center;
-  font-style: italic;
-  font-weight: bold;
+    text-align: center;
+    font-style: italic;
+    font-weight: bold;
 }
 
 .top3 {
-  font-weight: bold;
-  text-align: center;
+    font-weight: bold;
+    text-align: center;
 }
 
 .place {
-  border-collapse: collapse;
-  margin-bottom: 10px;
+    border: 1px solid black;
+    border-collapse: collapse;
+    margin-bottom: 10px;
 }
 
 th, td {

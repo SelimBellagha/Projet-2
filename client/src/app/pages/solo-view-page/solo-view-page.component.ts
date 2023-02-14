@@ -38,19 +38,12 @@ export class SoloViewPageComponent implements OnInit, AfterViewInit {
         this.username = this.loginService.getFormData();
         this.startTimer();
         this.nbDifferencesFound = 0;
-        const game = this.displayService.loadGame();
-        if (game === undefined) {
-            return;
+        if (this.displayService.game) {
+            this.gameManager.initializeGame(this.displayService.game);
+            this.gameName = this.displayService.game.name;
+            this.difficulty = this.displayService.convertDifficulty(this.displayService.game);
+            this.nbDifferences = this.displayService.game.nbDifferences;
         }
-        this.gameManager.initializeGame(game);
-        this.gameName = this.displayService.game.name;
-        if (this.displayService.game.isDifficult) {
-            this.difficulty = 'Niveau: difficile';
-        } else {
-            this.difficulty = 'Niveau: facile';
-        }
-
-        this.nbDifferences = this.displayService.game.nbDifferences;
     }
 
     returnSelectionPage(): void {

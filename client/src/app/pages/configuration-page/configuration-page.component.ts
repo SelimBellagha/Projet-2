@@ -1,40 +1,12 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
+import { DisplayGameService } from '@app/services/display-game.service';
 
 type Game = {
     title: string;
     difficulty: string;
     image: string;
 };
-
-const GAMES_LIST: Game[] = [
-    {
-        title: 'Jeu 1',
-        difficulty: 'Facile',
-        image: 'https://www.jardiner-malin.fr/wp-content/uploads/2015/02/tilleul-arbre.jpg',
-    },
-    {
-        title: 'Jeu 2',
-        difficulty: 'Moyen',
-        image: 'https://www.jardiner-malin.fr/wp-content/uploads/2015/02/tilleul-arbre.jpg',
-    },
-    {
-        title: 'Jeu 3',
-        difficulty: 'Facile',
-        image: 'https://www.jardiner-malin.fr/wp-content/uploads/2015/02/tilleul-arbre.jpg',
-    },
-    {
-        title: 'Jeu 4',
-        difficulty: 'Difficile',
-        image: 'https://www.jardiner-malin.fr/wp-content/uploads/2015/02/tilleul-arbre.jpg',
-    },
-    {
-        title: 'Jeu 5',
-        difficulty: 'Difficile',
-        image: 'https://www.jardiner-malin.fr/wp-content/uploads/2015/02/tilleul-arbre.jpg',
-    },
-];
-
 const display = 4;
 
 @Component({
@@ -42,19 +14,29 @@ const display = 4;
     templateUrl: './configuration-page.component.html',
     styleUrls: ['./configuration-page.component.scss'],
 })
-export class ConfigurationPageComponent {
+export class ConfigurationPageComponent implements OnInit {
     @ViewChild('popUpWindow') popUpWindow: ElementRef<HTMLDivElement>;
-    games = GAMES_LIST;
+    componentNumber: number = 0;
     hasPrevious: boolean = false;
-    hasNext: boolean = false;
-    hasNextPage: boolean = false;
+    hasNext: boolean = true;
     firstGame: number = 0;
     lastGame: number = display;
     marge: number = display;
-    gamesDisplayed = this.games.slice(this.firstGame, this.lastGame);
+    games: Game[];
+    gamesDisplayed: Game[];
 
-    constructor(private router: Router) {
-        this.nextPage();
+    constructor(private router: Router, private displayGames: DisplayGameService) {}
+
+    async ngOnInit() {
+        await this.checkGames();
+    }
+
+    async checkGames() {
+        await this.displayGames.loadAllGames();
+        if (this.displayGames.games !== undefined) {
+            this.games = this.displayGames.games;
+            this.gamesDisplayed = this.games.slice(this.firstGame, this.lastGame);
+        }
     }
 
     goToHomePage(): void {
@@ -87,7 +69,6 @@ export class ConfigurationPageComponent {
 
     nextPage(): void {
         if (this.games.length > display) {
-            this.hasNextPage = true;
             this.hasNext = true;
         }
     }
