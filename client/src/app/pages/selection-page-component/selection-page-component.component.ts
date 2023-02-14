@@ -19,7 +19,8 @@ const display = 4;
 export class SelectionPageComponentComponent implements OnInit {
     componentNumber: number = 0;
     hasPrevious: boolean = false;
-    hasNext: boolean = true;
+    hasNext: boolean = false;
+    hasNextPage: boolean = false;
     firstGame: number = 0;
     lastGame: number = display;
     marge: number = display;
@@ -42,6 +43,13 @@ export class SelectionPageComponentComponent implements OnInit {
 
     goToHomePage(): void {
         this.router.navigate(['/home']);
+    }
+
+    nextPage(): void {
+        if (this.games.length > display) {
+            this.hasNextPage = true;
+            this.hasNext = true;
+        }
     }
 
     next(): void {

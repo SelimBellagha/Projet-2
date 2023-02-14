@@ -19,7 +19,7 @@ describe('SoloViewPageComponent', () => {
     const username = 'testName';
 
     beforeEach(async () => {
-        gameManagerSpy = jasmine.createSpyObj('GameManagerService', ['onPositionClicked', 'putImages', 'playWinAudio']);
+        gameManagerSpy = jasmine.createSpyObj('GameManagerService', ['onPositionClicked', 'putImages', 'playWinAudio', 'initalizeGame']);
         displayServiceSpy = jasmine.createSpyObj('DisplayGameService', ['loadGame']);
         loginServiceSpy = jasmine.createSpyObj('LoginFormService', ['getFormData']);
 

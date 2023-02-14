@@ -45,12 +45,12 @@ export class GameManagerService {
         if (!this.locked) {
             this.locked = true;
             if (await this.verifiyDifference(position)) {
+                this.locked = false;
                 this.playDifferenceAudio();
                 // Clignotement de tout les pixels faisant partie de la différence
                 await this.flashImages(this.gameData.differences[this.lastDifferenceFound]);
                 // Changer les pixels de droite pour qu'ils soient comme à gauche
                 this.replacePixels(this.gameData.differences[this.lastDifferenceFound]);
-                this.locked = false;
                 return true;
             } else {
                 // Écrire Erreur sur le canvas à la position
@@ -69,8 +69,8 @@ export class GameManagerService {
             if (!this.differencesFound[verification.index]) {
                 this.differencesFound[verification.index] = true;
                 this.lastDifferenceFound = verification.index;
+                return true;
             }
-            return true;
         }
         return false;
     }

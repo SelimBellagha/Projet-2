@@ -38,10 +38,12 @@ export class SoloViewPageComponent implements OnInit, AfterViewInit {
         this.username = this.loginService.getFormData();
         this.startTimer();
         this.nbDifferencesFound = 0;
-        this.gameManager.initalizeGame(this.displayService.game);
-        this.gameName = this.displayService.game.name;
-        this.difficulty = this.displayService.convertDifficulty(this.displayService.game);
-        this.nbDifferences = this.displayService.game.nbDifferences;
+        if (this.displayService.game) {
+            this.gameManager.initalizeGame(this.displayService.game);
+            this.gameName = this.displayService.game.name;
+            this.difficulty = this.displayService.convertDifficulty(this.displayService.game);
+            this.nbDifferences = this.displayService.game.nbDifferences;
+        }
     }
 
     returnSelectionPage(): void {
@@ -104,5 +106,14 @@ export class SoloViewPageComponent implements OnInit, AfterViewInit {
     }
     onClosingPopUp(): void {
         this.router.navigate(['/home']);
+    }
+
+    goToHomePage() {
+        this.popUpWindow.nativeElement.style.display = 'none';
+        this.router.navigate(['home']);
+    }
+
+    goToCongratulations() {
+        this.popUpWindow.nativeElement.style.display = 'block';
     }
 }

@@ -1,3 +1,4 @@
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ConfigurationPageComponent } from './configuration-page.component';
@@ -9,7 +10,7 @@ describe('ConfigurationPageComponent', () => {
     beforeEach(async () => {
         await TestBed.configureTestingModule({
             declarations: [ConfigurationPageComponent],
-            imports: [RouterTestingModule],
+            imports: [RouterTestingModule, HttpClientTestingModule],
         }).compileComponents();
 
         fixture = TestBed.createComponent(ConfigurationPageComponent);

@@ -67,7 +67,13 @@ export class ConfigurationPageComponent implements OnInit {
         }
     }
 
-    goToConstants() {
+    nextPage(): void {
+        if (this.games.length > display) {
+            this.hasNext = true;
+        }
+    }
+
+    goToConstants(): void {
         this.popUpWindow.nativeElement.style.display = 'block';
     }
 

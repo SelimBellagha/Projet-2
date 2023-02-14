@@ -1,20 +1,34 @@
 <body class="container">
+    <button class="quit-button" (click)="returnSelectionPage()">Abandonner la partie</button>
+
     <div class="section">
-        <div class="score-text">
-            <p class="underline-title-text">Differences trouvées:</p>
-            <div>
-                <p class="player-score">{{ username }} : {{nbDifferencesFound}} </p>
-                <p class="player-score">Indices restants: X</p>
+        <div class="main-container">
+            <h2 class="game-info">{{ gameName }} - {{ difficulty }}</h2>
+            <p class="game-details">Mode classique</p>
+            <p class="game-details">L' image contient {{ nbDifferences }} différences</p>
+            <button class="indice">Obtenir un indice</button>
+        </div>
+
+        <div>
+            <canvas #originalImage #gridCanvas (click)="onClick($event)" width="640px" height="480px"></canvas>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="main-container">
+            <div class="game-details">
+                <p id="penalty">Pénalités pour utilisation d'indice : 00: XX</p>
+                <p>Indices restants: X</p>
+                <p>Differences trouvées: X</p>
                 <div class="timer">
                     <img src="../../../assets/images/stopwatch.png" class="watch-logo" />
-                    <div>{{ minutes2 }}{{ minutes1 }}</div>
-                    :
-                    <div>{{ secondes2 }}{{ secondes1 }}</div>
+                    <div>{{ minutes2 }}{{ minutes1 }}:{{ secondes2 }}{{ secondes1 }}</div>
                 </div>
             </div>
         </div>
+
         <div>
-            <canvas #originalImage #gridCanvas (click)="onClick($event)" width="640px" height="480px"></canvas>
+            <canvas #modifiedImage (click)="onClick($event)" width="640px" height="480px"></canvas>
         </div>
         <div class="button-container">
             <button (click)="returnSelectionPage()">Abandonner la partie</button>
@@ -25,33 +39,39 @@
             <p class="underline-title-text">Informations de la partie :</p>
             <div>
                 <ul>
-                    <li>{{gameName}}</li>
-                    <li>{{difficulty}}</li>
+                    <li>{{ gameName }}</li>
+                    <li>{{ difficulty }}</li>
                     <li>Mode de jeu Classique</li>
-                    <li>{{nbDifferences}} differences sur l'image</li>
-                    <li id = "penalty">Pénalités pour utilisation d'indice : 00: 15</li>
+                    <li>{{ nbDifferences }} differences sur l'image</li>
+                    <li id="penalty">Pénalités pour utilisation d'indice : 00: 15</li>
                 </ul>
             </div>
         </div>
         <div>
-            <canvas #modifiedImage (click)="onClick($event)" width="640px" height="480px"></canvas>
+            <!--<canvas #modifiedImage (click)="onClick($event)" width="640px" height="480px"></canvas>-->
         </div>
         <div class="button-container">
             <button>Demander un indice</button>
         </div>
     </div>
+
     <div class="section">
         <div class="chat-container">
-            <p class="title-chat-text" style="text-align: center">Messages</p>
-            <div class="message-container">les messages arriveront ici<br /><br /><br /><br />oui</div>
+            <div class="message-box">
+                <p class="message-title">Messages</p>
+                <hr />
+                <p>Bonne chance {{ username }} !</p>
+                <p>Messages du serveur</p>
+            </div>
         </div>
     </div>
+
     <div #popUpWindow class="modal">
         <div class="modal-content">
-            <P>Félicitation!</P>
+            <h1 class="congrats">Félicitations {{ username }} ! Vous avez trouvé toutes les différences !</h1>
             <div class="close-button">
-                <button (click)="onClosingPopUp()">Fermer</button>
-            </div>   
-        </div>      
+                <button id="close-button" (click)="goToHomePage()">Fermer</button>
+            </div>
+        </div>
     </div>
 </body>

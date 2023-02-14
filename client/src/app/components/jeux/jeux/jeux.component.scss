@@ -5,10 +5,11 @@
     margin: 2%;
 }
 
-.image-position {
-    width: 20%;
-    height: 30%;
-    margin-left: 3%;
+.image-position{
+  width: 60%;
+  height: 60%;
+  margin-left: 5%;
+ 
 }
 
 .flex-column {
@@ -47,4 +48,11 @@ button {
 
 .place {
     border: 1px solid black;
+    border-collapse: collapse;
+    margin-bottom: 10px;
+}
+
+th, td {
+  border: 2px solid black;
+  padding: 7px;
 }
