@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { DisplayGameService } from '@app/services/display-game.service';
 import { LoginFormService } from '@app/services/login-form.service';
@@ -9,6 +9,7 @@ import { LoginFormService } from '@app/services/login-form.service';
     styleUrls: ['./solo-view-page.component.scss'],
 })
 export class SoloViewPageComponent implements OnInit {
+    @ViewChild('popUpWindow') popUpWindow: ElementRef<HTMLDivElement>;
     username: string;
     gameName: string;
     difficulty: string;
@@ -90,7 +91,12 @@ export class SoloViewPageComponent implements OnInit {
         }, soundTime);
     }
 
-    goToSelectionPage() {
-        this.router.navigate(['/gameSelection']);
+    goToHomePage() {
+        this.popUpWindow.nativeElement.style.display = 'none';
+        this.router.navigate(['home']);
+    }
+
+    goToCongratulations() {
+        this.popUpWindow.nativeElement.style.display = 'block';
     }
 }

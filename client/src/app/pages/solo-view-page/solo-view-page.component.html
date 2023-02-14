@@ -6,7 +6,7 @@
             <h2 class="game-info">{{gameName}} - {{difficulty}} </h2>
             <p class = "game-details"> Mode classique </p>
             <p class = "game-details">L' image contient {{nbDifferences}} différences</p>
-            <button class= "indice">Obtenir un indice</button>  
+            <button class= "indice" (click)="goToCongratulations()">Obtenir un indice</button>  
         </div>
 
         <div>
@@ -44,6 +44,12 @@
         </div>
     </div>
     
-
-   
+    <div #popUpWindow class="modal">
+        <div class="modal-content">
+            <h1 class = "congrats">Félicitations {{username}} ! Vous avez trouvé toutes les différences !</h1>
+            <div class="close-button">
+                <button id="close-button" (click)="goToHomePage">Fermer</button>
+            </div>   
+        </div>      
+    </div>
 </body>
