@@ -19,7 +19,11 @@ describe('CanvasManagerService', () => {
         imageValid.src = '../assets/tests/image_2_diff.bmp';
         imageWrongSize.src = '../assets/tests/image_wrong_res.bmp';
 
-        differenceDetectionServiceSpy = jasmine.createSpyObj('DifferenceDetectionService', ['launchDifferenceDetection']);
+        differenceDetectionServiceSpy = jasmine.createSpyObj('DifferenceDetectionService', [
+            'launchDifferenceDetection',
+            'findDifferences',
+            'createDifferenceImage',
+        ]);
         TestBed.configureTestingModule({
             providers: [{ provide: DifferenceDetectionService, useValue: differenceDetectionServiceSpy }],
         });
@@ -50,6 +54,7 @@ describe('CanvasManagerService', () => {
             return gameDataStub;
         };
         differenceDetectionServiceSpy.launchDifferenceDetection.and.callFake(fakeDetection);
+        spyOn(service.modalCanvasContext, 'putImageData');
         service.launchVerification(0);
         expect(differenceDetectionServiceSpy.launchDifferenceDetection).toHaveBeenCalled();
     });
