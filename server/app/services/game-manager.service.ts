@@ -18,7 +18,7 @@ export class GameManager {
     }
 
     async addGame(newGame: GameData): Promise<GameData> {
-        const id = this.countProperties() + 1;
+        const id = this.countProperties();
         const gameId = String(id);
         newGame.id = gameId;
         this.gamesData[id] = newGame;
@@ -34,27 +34,22 @@ export class GameManager {
     }
 
     async verificationInPicture(positionX: number, positionY: number, id: string) {
-        const clickPosition = [positionX, positionY];
+        const clickPosition = { x: positionX, y: positionY };
         const game = await this.getGamebyId(id);
         for (let i = 0; i < game.nbDifferences; i++) {
             // eslint-disable-next-line @typescript-eslint/prefer-for-of
             for (let j = 0; j < game.differences[i].length; j++) {
-                if (clickPosition[0] === game.differences[i][j].x) {
+                if (clickPosition.x === game.differences[i][j].x && game.differences[i][j].y === clickPosition.y) {
                     return {
-                        title: 'Difference',
-                        body: {
-                            difference: 'true',
-                            differenceId: `${i}`,
-                        },
+                        result: true,
+                        index: i,
                     };
                 }
             }
         }
         return {
-            title: 'Difference',
-            body: {
-                difference: 'false',
-            },
+            result: false,
+            index: -1,
         };
     }
 

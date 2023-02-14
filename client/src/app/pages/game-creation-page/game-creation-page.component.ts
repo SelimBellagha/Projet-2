@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { GameData } from '@app/interfaces/game.interface';
 import { CanvasManagerService } from '@app/services/canvas-manager.service';
 import { CommunicationService } from '@app/services/communication.service';
-// Vérifier l'emplacement du bouton Sauvegarder avev Benjamin lundi!!!! (Marcy)
+
 @Component({
     selector: 'app-game-creation-page',
     templateUrl: './game-creation-page.component.html',
@@ -40,7 +40,8 @@ export class GameCreationPageComponent implements AfterViewInit {
         // lancer la validation des erreurs avec le service créer
         this.canvasManager.launchVerification(this.radius).then((gameData) => {
             this.currentGameData = gameData;
-
+            this.currentGameData.originalImage = this.leftCanvas.nativeElement.toDataURL('image/bmp');
+            this.currentGameData.modifiedImage = this.rightCanvas.nativeElement.toDataURL('image/bmp');
             this.popUpWindow.nativeElement.style.display = 'block';
         });
     }
@@ -71,7 +72,6 @@ export class GameCreationPageComponent implements AfterViewInit {
         const name = gameName.value;
         if (name) {
             window.alert('posting the game to server');
-            // TODO Implémenter la sauvegarde
             this.currentGameData.name = name;
             this.commService.addNewGame(this.currentGameData);
             this.goToConfiguration();
