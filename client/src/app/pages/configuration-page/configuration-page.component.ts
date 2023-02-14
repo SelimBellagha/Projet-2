@@ -27,12 +27,12 @@ const GAMES_LIST: Game[] = [
         title: 'Jeu 4',
         difficulty: 'Difficile',
         image: 'https://www.jardiner-malin.fr/wp-content/uploads/2015/02/tilleul-arbre.jpg',
-    } ,
+    },
     {
         title: 'Jeu 5',
         difficulty: 'Difficile',
         image: 'https://www.jardiner-malin.fr/wp-content/uploads/2015/02/tilleul-arbre.jpg',
-    } ,
+    },
 ];
 
 const display = 4;
@@ -86,19 +86,17 @@ export class ConfigurationPageComponent {
     }
 
     nextPage(): void {
-        if(this.games.length > display ) {
+        if (this.games.length > display) {
             this.hasNextPage = true;
             this.hasNext = true;
         }
     }
 
-    goToConstants() : void {
+    goToConstants(): void {
         this.popUpWindow.nativeElement.style.display = 'block';
     }
 
     onClosingPopUp(): void {
         this.popUpWindow.nativeElement.style.display = 'none';
     }
-
-    
 }
