@@ -26,6 +26,7 @@ export class SoloViewPageComponent implements OnInit, AfterViewInit {
     minutes2: number = 0;
     intervalID: number;
 
+    // eslint-disable-next-line max-params
     constructor(
         private router: Router,
         private loginService: LoginFormService,

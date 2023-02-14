@@ -34,7 +34,7 @@ export class CommunicationService {
     addNewGame(game: GameData): void {
         this.http.post<GameData>('http://localhost:3000/api/games/send', game).subscribe();
     }
-
+    /*
     deleteGame(id: string) {
         const params = new HttpParams().set('id', id);
         try {
@@ -43,6 +43,7 @@ export class CommunicationService {
             window.alert('An error has occured while deleting a game');
         }
     }
+    */
 
     private handleError<T>(request: string, result?: T): (error: Error) => Observable<T> {
         return () => of(result as T);
