@@ -18,7 +18,8 @@ export class ConfigurationPageComponent implements OnInit {
     @ViewChild('popUpWindow') popUpWindow: ElementRef<HTMLDivElement>;
     componentNumber: number = 0;
     hasPrevious: boolean = false;
-    hasNext: boolean = true;
+    hasNext: boolean = false;
+    hasNextPage: boolean = false;
     firstGame: number = 0;
     lastGame: number = display;
     marge: number = display;
@@ -36,6 +37,7 @@ export class ConfigurationPageComponent implements OnInit {
         if (this.displayGames.games !== undefined) {
             this.games = this.displayGames.games;
             this.gamesDisplayed = this.games.slice(this.firstGame, this.lastGame);
+            this.nextPage();
         }
     }
 
@@ -70,6 +72,7 @@ export class ConfigurationPageComponent implements OnInit {
     nextPage(): void {
         if (this.games.length > display) {
             this.hasNext = true;
+            this.hasNextPage = true;
         }
     }
 
