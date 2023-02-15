@@ -2,34 +2,44 @@
     <h1 class="title">Configuration</h1>
 
     <div>
-        <button (click)="goToHomePage()" class="return-button">Acceuil</button>
+        <button routerLink="/" class="return-button">Acceuil</button>
     </div>
 
     <div class="main-container">
         <div *ngFor="let game of gamesDisplayed">
-            <app-jeux [customTitle]="game.title" [customDifficulty]="game.difficulty" [isConfigurationMode]="true"></app-jeux>
+            <app-jeux
+                [customTitle]="game.title"
+                [customDifficulty]="game.difficulty"
+                [isConfigurationMode]="true"
+                [customPhoto]="game.image"
+            ></app-jeux>
         </div>
     </div>
     <div class="buttons-align">
-        <div *ngIf="hasnext === true && hasprevious === true">
-            <button id="previousInput" (click)="previous()">Précédent</button>
-            <button id="nextInput" (click)="next()">Suivant</button>
+        <div *ngIf="hasNextPage === false">
+            <button disabled="disabled" >Précédent</button>
+            <button disabled="disabled" >Suivant</button>
         </div>
 
-        <div *ngIf="hasprevious === false">
-            <button disabled="disabled">Précédent</button>
-            <button id="nextInput" (click)="next()">Suivant</button>
-        </div>
-
-        <div *ngIf="hasnext === false">
-            <button id="previousInput" (click)="previous()">Précédent</button>
-            <button disabled="disabled">Suivant</button>
+        <div *ngIf="hasNextPage === true">
+            <div *ngIf="hasNext === false" class="buttons">
+                <button (click)="previous()" id="previousInput">Précédent</button>
+                <button disabled="disabled">Suivant</button>
+            </div>
+            <div *ngIf="hasPrevious === false" class="buttons">
+                <button disabled="disabled">Précédent</button>
+                <button id="nextInput" (click)="next()">Suivant</button>
+            </div>
+            <div *ngIf="hasNext === true && hasPrevious === true" class="buttons">
+                <button (click)="previous()" id="previousInput">Précédent</button>
+                <button (click)="next()" id="nextInput">Suivant</button>
+            </div>
         </div>
     </div>
 
     <div class="button-container">
-        <button class="button-choice" id="creationInput" (click)="goToCreationPage()">Accéder à la Vue de création de jeu</button>
-        <button class="button-choice" id="constantInput" (click)="goToConstants()">Constantes de jeu</button>
+        <button class="button-choice" (click)="goToCreationPage()">Accéder à la Vue de création de jeu</button>
+        <button class="button-choice" (click)="goToConstants()">Constantes de jeu</button>
 
         <button class="button-choice">Accéder à l'historique des parties jouées</button>
         <button class="button-choice">Remettre les données à leur état initial</button>
@@ -46,3 +56,4 @@
         </div>
     </div>
 </body>
+

@@ -1,40 +1,12 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
+import { DisplayGameService } from '@app/services/display-game.service';
 
 type Game = {
     title: string;
     difficulty: string;
     image: string;
 };
-
-const GAMES_LIST: Game[] = [
-    {
-        title: 'Jeu 1',
-        difficulty: 'Facile',
-        image: 'https://www.jardiner-malin.fr/wp-content/uploads/2015/02/tilleul-arbre.jpg',
-    },
-    {
-        title: 'Jeu 2',
-        difficulty: 'Moyen',
-        image: 'https://www.jardiner-malin.fr/wp-content/uploads/2015/02/tilleul-arbre.jpg',
-    },
-    {
-        title: 'Jeu 3',
-        difficulty: 'Facile',
-        image: 'https://www.jardiner-malin.fr/wp-content/uploads/2015/02/tilleul-arbre.jpg',
-    },
-    {
-        title: 'Jeu 4',
-        difficulty: 'Difficile',
-        image: 'https://www.jardiner-malin.fr/wp-content/uploads/2015/02/tilleul-arbre.jpg',
-    },
-    {
-        title: 'Jeu 5',
-        difficulty: 'Facile',
-        image: 'https://www.jardiner-malin.fr/wp-content/uploads/2015/02/tilleul-arbre.jpg',
-    },
-];
-
 const display = 4;
 
 @Component({
@@ -42,47 +14,69 @@ const display = 4;
     templateUrl: './configuration-page.component.html',
     styleUrls: ['./configuration-page.component.scss'],
 })
-export class ConfigurationPageComponent {
+export class ConfigurationPageComponent implements OnInit {
     @ViewChild('popUpWindow') popUpWindow: ElementRef<HTMLDivElement>;
-    games = GAMES_LIST;
-    hasprevious: boolean = false;
-    hasnext: boolean = true;
-    firstgame: number = 0;
-    lastgame: number = display;
+    componentNumber: number = 0;
+    hasPrevious: boolean = false;
+    hasNext: boolean = false;
+    hasNextPage: boolean = false;
+    firstGame: number = 0;
+    lastGame: number = display;
     marge: number = display;
-    gamesDisplayed = this.games.slice(this.firstgame, this.lastgame);
+    games: Game[];
+    gamesDisplayed: Game[];
 
-    constructor(private router: Router) {}
+    constructor(private router: Router, private displayGames: DisplayGameService) {}
+
+    async ngOnInit() {
+        await this.checkGames();
+    }
+
+    async checkGames() {
+        await this.displayGames.loadAllGames();
+        if (this.displayGames.games !== undefined) {
+            this.games = this.displayGames.games;
+            this.gamesDisplayed = this.games.slice(this.firstGame, this.lastGame);
+            this.nextPage();
+        }
+    }
 
     goToHomePage(): void {
-        this.router.navigate(['/home']);
+        this.router.navigate(['home']);
     }
     goToCreationPage(): void {
-        this.router.navigate(['/gameCreation']);
+        this.router.navigate(['gameCreation']);
     }
     next(): void {
-        this.gamesDisplayed = this.games.slice(this.lastgame, this.lastgame + this.marge);
-        this.firstgame = this.lastgame;
-        this.lastgame = this.lastgame + this.marge;
-        this.hasprevious = true;
+        this.gamesDisplayed = this.games.slice(this.lastGame, this.lastGame + this.marge);
+        this.firstGame = this.lastGame;
+        this.lastGame = this.lastGame + this.marge;
+        this.hasPrevious = true;
 
-        if (this.lastgame >= this.games.length) {
-            this.hasnext = false;
+        if (this.lastGame >= this.games.length) {
+            this.hasNext = false;
         }
     }
 
-    previous(): void {
-        this.gamesDisplayed = this.games.slice(this.firstgame - this.marge, this.firstgame);
-        this.lastgame = this.firstgame;
-        this.firstgame = this.firstgame - this.marge;
-        this.hasnext = true;
+    previous() {
+        this.gamesDisplayed = this.games.slice(this.firstGame - this.marge, this.firstGame);
+        this.lastGame = this.firstGame;
+        this.firstGame = this.firstGame - this.marge;
+        this.hasNext = true;
 
-        if (this.firstgame === 0) {
-            this.hasprevious = false;
+        if (this.firstGame === 0) {
+            this.hasPrevious = false;
         }
     }
 
-    goToConstants() {
+    nextPage(): void {
+        if (this.games.length > display) {
+            this.hasNext = true;
+            this.hasNextPage = true;
+        }
+    }
+
+    goToConstants(): void {
         this.popUpWindow.nativeElement.style.display = 'block';
     }
 

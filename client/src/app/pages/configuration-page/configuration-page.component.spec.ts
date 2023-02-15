@@ -1,3 +1,4 @@
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -11,7 +12,7 @@ describe('ConfigurationPageComponent', () => {
     beforeEach(async () => {
         await TestBed.configureTestingModule({
             declarations: [ConfigurationPageComponent],
-            imports: [RouterTestingModule],
+            imports: [RouterTestingModule, HttpClientTestingModule],
         }).compileComponents();
 
         fixture = TestBed.createComponent(ConfigurationPageComponent);
@@ -28,12 +29,13 @@ describe('ConfigurationPageComponent', () => {
         const routerSpy = spyOn(router, 'navigate');
 
         component.goToHomePage();
-        expect(routerSpy).toHaveBeenCalledWith(['/home']);
+        expect(routerSpy).toHaveBeenCalledWith(['home']);
     });
 
     it('clicking on suivant should call next()', () => {
-        component.hasnext = true;
-        component.hasprevious = true;
+        component.hasNextPage = true;
+        component.hasNext = true;
+        component.hasPrevious = true;
         fixture.detectChanges();
         const nextSpy = spyOn(component, 'next');
         const nextInput: HTMLInputElement = document.getElementById('nextInput') as HTMLInputElement;
@@ -42,8 +44,9 @@ describe('ConfigurationPageComponent', () => {
     });
 
     it('on config page clicking on previous should call previous()', () => {
-        component.hasnext = true;
-        component.hasprevious = true;
+        component.hasNextPage = true;
+        component.hasNext = true;
+        component.hasPrevious = true;
         fixture.detectChanges();
         const previousInput: HTMLInputElement = document.getElementById('previousInput') as HTMLInputElement;
         const previousSpy = spyOn(component, 'previous');
@@ -55,7 +58,7 @@ describe('ConfigurationPageComponent', () => {
         const routerSpy = spyOn(router, 'navigate');
 
         component.goToCreationPage();
-        expect(routerSpy).toHaveBeenCalledWith(['/gameCreation']);
+        expect(routerSpy).toHaveBeenCalledWith(['gameCreation']);
     });
 
     it('should show the popup window on goToConstants()', () => {
