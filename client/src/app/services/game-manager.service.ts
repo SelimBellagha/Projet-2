@@ -142,21 +142,19 @@ export class GameManagerService {
         }
     }
 
-    playDifferenceAudio() {
-        const soundTime = 3000;
-        const audio = new Audio();
-        audio.src = '../../../assets/audio/DifferenceTrouvee.mp3';
-        audio.load();
-        audio.play();
-        setInterval(() => {
-            audio.pause();
-        }, soundTime);
-    }
-
     playWinAudio() {
         const soundTime = 3000;
+        this.playAudio('../../../assets/audio/Win.mp3', soundTime);
+    }
+    playDifferenceAudio() {
+        const soundTime = 3000;
+        this.playAudio('../../../assets/audio/DifferenceTrouvee.mp3', soundTime);
+    }
+
+    playAudio(src: string, time: number): void {
+        const soundTime = time;
         const audio = new Audio();
-        audio.src = '../../../assets/audio/Win.mp3';
+        audio.src = src;
         audio.load();
         audio.play();
         setInterval(() => {

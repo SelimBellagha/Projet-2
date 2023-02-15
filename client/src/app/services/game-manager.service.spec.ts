@@ -166,4 +166,16 @@ describe('GameManagerService', () => {
         expect(spy2).toHaveBeenCalled();
         expect(spy3).toHaveBeenCalled();
     });
+
+    it('playDifferenceAudio should call playAudio', () => {
+        const spy = spyOn(service, 'playAudio');
+        service.playDifferenceAudio();
+        expect(spy).toHaveBeenCalled();
+    });
+
+    it('playWinAudio should call playAudio', () => {
+        const spy = spyOn(service, 'playAudio');
+        service.playWinAudio();
+        expect(spy).toHaveBeenCalled();
+    });
 });

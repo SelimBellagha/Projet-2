@@ -128,9 +128,7 @@ describe('GameCreationPageComponent', () => {
     });
 
     it(' clicking on return button should navigate to configuration Page', () => {
-        // eslint-disable-next-line @typescript-eslint/no-empty-function
         const routerSpy = spyOn(router, 'navigate');
-
         component.goToConfiguration();
         expect(routerSpy).toHaveBeenCalled();
     });

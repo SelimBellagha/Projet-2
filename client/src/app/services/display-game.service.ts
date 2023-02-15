@@ -19,7 +19,6 @@ export class DisplayGameService {
     }
 
     async loadAllGames() {
-        // this.comm.getAllGames().subscribe((game) => (this.tempGames = game));
         const source = this.comm.getAllGames();
         this.tempGames = await firstValueFrom(source);
         this.convertAllGames();
