@@ -74,7 +74,7 @@ describe('MainPageComponent', () => {
         expect(routerSpy).toHaveBeenCalled();
         expect(routerSpy).toHaveBeenCalledWith(['/config']);
     });
-    it('goToConfiguration should navigate to configuration Page', () => {
+    it('goToGameSelection should navigate to selection Page', () => {
         const routerSpy = spyOn(router, 'navigate');
 
         component.goToGameSelection();
