@@ -22,7 +22,6 @@ describe('LoginPageComponent', () => {
 
     beforeEach(() => {
         fixture = TestBed.createComponent(LoginPageComponent);
-        // router = TestBed.inject(Router);
         component = fixture.componentInstance;
         fixture.detectChanges();
         router = TestBed.inject(Router);
