@@ -21,6 +21,12 @@ describe('ConfigurationPageComponent', () => {
         fixture.detectChanges();
     });
 
+    it('checkGames should be executed on initialization', () => {
+        const checkSpy = spyOn(component, 'checkGames');
+        component.ngOnInit();
+        expect(checkSpy).toHaveBeenCalled();
+    });
+
     it('should create', () => {
         expect(component).toBeTruthy();
     });
