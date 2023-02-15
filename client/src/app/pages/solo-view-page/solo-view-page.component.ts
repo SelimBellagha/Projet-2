@@ -46,9 +46,6 @@ export class SoloViewPageComponent implements OnInit, AfterViewInit {
         }
     }
 
-    returnSelectionPage(): void {
-        this.router.navigate(['/gameSelection']);
-    }
     ngAfterViewInit() {
         this.gameManager.modifiedImageCanvas = this.modifiedCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         this.gameManager.originalImageCanvas = this.originalCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
@@ -115,5 +112,8 @@ export class SoloViewPageComponent implements OnInit, AfterViewInit {
 
     goToCongratulations() {
         this.popUpWindow.nativeElement.style.display = 'block';
+    }
+    returnSelectionPage(): void {
+        this.router.navigate(['/gameSelection']);
     }
 }
