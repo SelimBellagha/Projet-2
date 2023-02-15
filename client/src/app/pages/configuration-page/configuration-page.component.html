@@ -31,7 +31,7 @@
                 <button id="nextInput" (click)="next()">Suivant</button>
             </div>
             <div *ngIf="hasNext === true && hasPrevious === true" class="buttons">
-                <button (click)="previous()">Précédent</button>
+                <button (click)="previous()" id="previousInput">Précédent</button>
                 <button (click)="next()" id="nextInput">Suivant</button>
             </div>
         </div>
@@ -56,3 +56,4 @@
         </div>
     </div>
 </body>
+
