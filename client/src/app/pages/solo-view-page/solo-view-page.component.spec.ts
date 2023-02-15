@@ -84,13 +84,6 @@ describe('SoloViewPageComponent', () => {
         expect(component.difficulty).toEqual('Niveau: facile');
     });
     */
-    it(' clicking on return button should navigate to configuration Page', () => {
-        const routerSpy = spyOn(router, 'navigate');
-
-        component.onClosingPopUp();
-        expect(routerSpy).toHaveBeenCalled();
-        expect(routerSpy).toHaveBeenCalledWith(['/home']);
-    });
 
     it(' clicking on return button should navigate to configuration Page', () => {
         const routerSpy = spyOn(router, 'navigate');
@@ -155,6 +148,25 @@ describe('SoloViewPageComponent', () => {
         component.nbDifferences = 1;
         await component.onClick(mouseEvent);
         expect(spy).toHaveBeenCalled();
+    });
+
+    it('goToHomePage should navigate to Home Page', () => {
+        const routerSpy = spyOn(router, 'navigate');
+        component.goToHomePage();
+        expect(routerSpy).toHaveBeenCalledOnceWith(['home']);
+    });
+
+    it('goToHomePage should navigate to Home Page', () => {
+        const routerSpy = spyOn(router, 'navigate');
+        component.goToHomePage();
+        expect(routerSpy).toHaveBeenCalledOnceWith(['home']);
+    });
+
+    it('goToCongratulations should update the display style of popup to block', () => {
+        const popUp = component.popUpWindow;
+        popUp.nativeElement.style.display = 'none';
+        component.goToCongratulations();
+        expect(popUp.nativeElement.style.display).toEqual('block');
     });
 
     // it('timer should start', () => {
