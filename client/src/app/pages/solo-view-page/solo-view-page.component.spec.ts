@@ -162,6 +162,13 @@ describe('SoloViewPageComponent', () => {
         expect(routerSpy).toHaveBeenCalledOnceWith(['home']);
     });
 
+    it('goToCongratulations should update the display style of popup to block', () => {
+        const popUp = component.popUpWindow;
+        popUp.nativeElement.style.display = 'none';
+        component.goToCongratulations();
+        expect(popUp.nativeElement.style.display).toEqual('block');
+    });
+
     // it('timer should start', () => {
     //     const timerTest = 4;
     //     const waitTime = 5000;

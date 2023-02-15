@@ -101,10 +101,6 @@ export class SoloViewPageComponent implements OnInit, AfterViewInit {
             }
         }
     }
-    onClosingPopUp(): void {
-        this.router.navigate(['/home']);
-    }
-
     goToHomePage() {
         this.popUpWindow.nativeElement.style.display = 'none';
         this.router.navigate(['home']);
