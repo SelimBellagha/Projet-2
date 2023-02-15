@@ -19,7 +19,7 @@
             <div class="game-details">
                 <p id="penalty">Pénalités pour utilisation d'indice : 00: XX</p>
                 <p>Indices restants: X</p>
-                <p>Differences trouvées: X</p>
+                <p>Differences trouvées: {{nbDifferencesFound}}</p>
                 <div class="timer">
                     <img src="../../../assets/images/stopwatch.png" class="watch-logo" />
                     <div>{{ minutes2 }}{{ minutes1 }}:{{ secondes2 }}{{ secondes1 }}</div>
@@ -30,31 +30,7 @@
         <div>
             <canvas #modifiedImage (click)="onClick($event)" width="640px" height="480px"></canvas>
         </div>
-        <div class="button-container">
-            <button (click)="returnSelectionPage()">Abandonner la partie</button>
-        </div>
     </div>
-    <div class="section">
-        <div class="game-information-text">
-            <p class="underline-title-text">Informations de la partie :</p>
-            <div>
-                <ul>
-                    <li>{{ gameName }}</li>
-                    <li>{{ difficulty }}</li>
-                    <li>Mode de jeu Classique</li>
-                    <li>{{ nbDifferences }} differences sur l'image</li>
-                    <li id="penalty">Pénalités pour utilisation d'indice : 00: 15</li>
-                </ul>
-            </div>
-        </div>
-        <div>
-            <!--<canvas #modifiedImage (click)="onClick($event)" width="640px" height="480px"></canvas>-->
-        </div>
-        <div class="button-container">
-            <button>Demander un indice</button>
-        </div>
-    </div>
-
     <div class="section">
         <div class="chat-container">
             <div class="message-box">
