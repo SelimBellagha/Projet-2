@@ -38,6 +38,7 @@ export class SelectionPageComponentComponent implements OnInit {
         if (this.displayGames.games !== undefined) {
             this.games = this.displayGames.games;
             this.gamesDisplayed = this.games.slice(this.firstGame, this.lastGame);
+            this.nextPage();
         }
     }
 
