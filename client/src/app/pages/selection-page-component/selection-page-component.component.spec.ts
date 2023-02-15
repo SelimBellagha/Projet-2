@@ -32,6 +32,13 @@ describe('SelectionPageComponentComponent', () => {
         expect(routerSpy).toHaveBeenCalled();
         expect(routerSpy).toHaveBeenCalledWith(['/home']);
     });
+
+    it('checkGames should be executed on initialization', () => {
+        const checkSpy = spyOn(component, 'checkGames');
+        component.ngOnInit();
+        expect(checkSpy).toHaveBeenCalled();
+    });
+
     /*
     it('clicking on suivant should call next()', () => {
         component.hasNext = true;
