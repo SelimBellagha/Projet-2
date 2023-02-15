@@ -23,6 +23,7 @@ describe('ConfigurationPageComponent', () => {
     it('should create', () => {
         expect(component).toBeTruthy();
     });
+
     it(' clicking on acceuil button should navigate to home Page', () => {
         const routerSpy = spyOn(router, 'navigate');
 
