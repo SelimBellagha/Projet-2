@@ -1,9 +1,7 @@
 <body class="container">
     <div class="top-bar">
         <button class="configuration" type="button" (click)="goToConfiguration()">Configuration</button>
-        <h2 class = "note-container"> 
-            Les images doivent être en format BMP 24-bit de taille 640x480 pixels
-        </h2>
+        <h2 class="note-container">Les images doivent être en format BMP 24-bit de taille 640x480 pixels</h2>
         <span>Emplacement pour les outils</span>
     </div>
 
@@ -30,7 +28,18 @@
             />
             <label class="lien" for="middleImageInput">Choose File for both</label>
             <button>Intervertir avant-plan</button>
+            <div class="toggle-button-cover">
+                <div class="button-cover">
+                    <h1>Cheat mode:</h1>
+                    <div class="button r" id="button-6">
+                        <input type="checkbox" class="checkbox" />
+                        <div class="knobs"></div>
+                        <div class="layer"></div>
+                    </div>
+                </div>
+            </div>
         </div>
+
         <div class="image-container">
             <h1>Image Modifiée</h1>
             <canvas #rightCanvas width="640px" height="480px"></canvas>
@@ -63,7 +72,7 @@
             <input id="radius-input-15" type="radio" name="radius" (click)="modifyRadius(15)" />
             <label for="radius-input-15">15 </label>
         </p>
-        <p class = "radius"> Current Radius: {{ radius }}</p> 
+        <p class="radius">Current Radius: {{ radius }}</p>
     </div>
 
     <button class="validation" (click)="onValidationLaunched()">Valider et créer</button>
@@ -75,14 +84,23 @@
                 <p>Nombre de différences: {{ currentGameData.nbDifferences }}</p>
                 <p *ngIf="currentGameData.isDifficult">Difficulté: Difficile</p>
                 <p *ngIf="!currentGameData.isDifficult">Difficulté: Facile</p>
-            <p class="modal-note" *ngIf="!(currentGameData.nbDifferences >= 3 && currentGameData.nbDifferences <=9)"> Le jeu doit avoir entre 3 et 9 différences pour être validé</p>
-            <button *ngIf="currentGameData.nbDifferences >= 3 && currentGameData.nbDifferences <=9" type="button" (click)="onSave(gameName)" class="modal-button">Sauvegarder</button>
-            <label for="gameName"><b>Entrez votre nom de partie:</b></label>
-            <input id="gameName" #gameName type="text" placeholder="Entrez Nom" />
-            <div class ="modal-buttons">
-                <button class="modal-button" type="button" (click)="onClosingPopUp()"> Fermer </button>  
+                <p class="modal-note" *ngIf="!(currentGameData.nbDifferences >= 3 && currentGameData.nbDifferences <= 9)">
+                    Le jeu doit avoir entre 3 et 9 différences pour être validé
+                </p>
+                <button
+                    *ngIf="currentGameData.nbDifferences >= 3 && currentGameData.nbDifferences <= 9"
+                    type="button"
+                    (click)="onSave(gameName)"
+                    class="modal-button"
+                >
+                    Sauvegarder
+                </button>
+                <label for="gameName"><b>Entrez votre nom de partie:</b></label>
+                <input id="gameName" #gameName type="text" placeholder="Entrez Nom" />
+                <div class="modal-buttons">
+                    <button class="modal-button" type="button" (click)="onClosingPopUp()">Fermer</button>
+                </div>
             </div>
-            </div>
-        </div>  
+        </div>
     </div>
 </body>
