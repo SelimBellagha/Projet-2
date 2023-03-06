@@ -31,8 +31,8 @@ export class CommunicationService {
         return this.http.post(this.baseUrl + '/example/send', message, { observe: 'response', responseType: 'text' });
     }
 
-    addNewGame(game: GameData): void {
-        this.http.post(`${this.baseUrl}/games/send`, game, { observe: 'response', responseType: 'text' }).subscribe();
+    addNewGame(game: GameData): Observable<GameData> {
+        this.http.post<GameData>(`${this.baseUrl}/games/send`, game);
     }
     /*
     deleteGame(id: string) {
