@@ -59,10 +59,7 @@ export class SoloViewPageComponent implements OnInit, AfterViewInit {
         this.socketManager.send('getRealTime');
         this.socketManager.on('getRealTime', (timerInfo: string[]) => {
             console.log(timerInfo);
-            // this.secondes1 = Number(timerInfo[0]);
-            // this.secondes2 = Number(timerInfo[1]);
-            // this.minutes1 = Number(timerInfo[2]);
-            // this.minutes2 = Number(timerInfo[3]);
+            // TODO verfier le temps lors d'un evenement
         });
     }
 
@@ -84,7 +81,6 @@ export class SoloViewPageComponent implements OnInit, AfterViewInit {
                 this.secondes1 = 0;
             } else {
                 this.secondes1++;
-                this.getRealTime();
             }
         }, timerInterval);
     }
