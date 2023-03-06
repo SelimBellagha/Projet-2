@@ -4,6 +4,12 @@ import { GameData } from '@app/interfaces/game.interface';
 import { CanvasManagerService } from '@app/services/canvas-manager.service';
 import { CommunicationService } from '@app/services/communication.service';
 
+export enum Tool {
+    Pencil,
+    Rectangle,
+    Eraser,
+}
+
 @Component({
     selector: 'app-game-creation-page',
     templateUrl: './game-creation-page.component.html',
@@ -23,6 +29,7 @@ export class GameCreationPageComponent implements AfterViewInit {
         this.canvasManager.leftCanvasContext = this.leftCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         this.canvasManager.rightCanvasContext = this.rightCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         this.canvasManager.modalCanvasContext = this.modalCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
+        this.canvasManager.init();
         this.canvasManager.resetLeftBackground();
         this.canvasManager.resetRightBackground();
     }
@@ -53,17 +60,40 @@ export class GameCreationPageComponent implements AfterViewInit {
     onUpdateRightImageInput(rightImageInput: HTMLInputElement): void {
         const file = rightImageInput.files?.item(0);
         this.canvasManager.changeRightBackground(file as File);
+        rightImageInput.value = '';
     }
 
     onUpdateLeftImageInput(leftImageInput: HTMLInputElement): void {
         const file = leftImageInput.files?.item(0);
         this.canvasManager.changeLeftBackground(file as File);
+        leftImageInput.value = '';
     }
 
     onUpdateMiddleImageInput(middleImageInput: HTMLInputElement): void {
         const file = middleImageInput.files?.item(0);
         this.canvasManager.changeBothBackgrounds(file as File);
+        middleImageInput.value = '';
     }
+
+    onSwap(): void {
+        this.canvasManager.swapForegrounds();
+    }
+    onDuplicate(leftImage: boolean): void {
+        if (leftImage) {
+            this.canvasManager.duplicateLeft();
+        } else {
+            this.canvasManager.duplicateRight();
+        }
+    }
+
+    onResetForeground(leftImage: boolean) {
+        if (leftImage) {
+            this.canvasManager.resetLeftForeground();
+        } else {
+            this.canvasManager.resetRightForeground();
+        }
+    }
+
     onClosingPopUp(): void {
         this.popUpWindow.nativeElement.style.display = 'none';
     }
@@ -82,5 +112,17 @@ export class GameCreationPageComponent implements AfterViewInit {
 
     goToConfiguration(): void {
         this.router.navigate(['/config']);
+    }
+
+    onMouseDown(event: MouseEvent): void {
+        // console.log('MouseDown');
+    }
+
+    onMouseMove(event: MouseEvent): void {
+        // console.log('MouseMove');
+    }
+
+    onMouseUp(event: MouseEvent): void {
+        // console.log('MouseUp');
     }
 }

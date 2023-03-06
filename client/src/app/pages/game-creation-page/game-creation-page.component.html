@@ -10,13 +10,13 @@
     <div class="images-area">
         <div class="image-container">
             <h1>Image Originale</h1>
-            <canvas #leftCanvas width="640px" height="480px"></canvas>
+            <canvas #leftCanvas width="640px" height="480px"(mousedown)="onMouseDown($event)" (mousemove)="onMouseMove($event)" (mouseup)="onMouseUp($event)"></canvas>
             <div class="buttons">
-                <input #leftImageInput id="leftImageInput" type="file" accept="image/bmp" hidden (change)="onUpdateLeftImageInput(leftImageInput)" />
+                <input #leftImageInput id="leftImageInput" type="file" accept="image/bmp" hidden (input)="onUpdateLeftImageInput(leftImageInput)" />
                 <label class="lien" for="leftImageInput">Choose File</label>
                 <button type="button" (click)="resetBackground(true)">Réinitialiser arrière-plan</button>
-                <button type="button">Réinitialiser avant-plan</button>
-                <button type="button">Dupliquer avant-plan</button>
+                <button type="button"(click)="onResetForeground(true)">Réinitialiser avant-plan</button>
+                <button type="button"(click)="onDuplicate(true)">Dupliquer avant-plan</button>
             </div>
         </div>
         <div class="middle-buttons">
@@ -26,10 +26,10 @@
                 type="file"
                 accept="image/bmp"
                 hidden
-                (change)="onUpdateMiddleImageInput(middleImageInput)"
+                (input)="onUpdateMiddleImageInput(middleImageInput)"
             />
             <label class="lien" for="middleImageInput">Choose File for both</label>
-            <button>Intervertir avant-plan</button>
+            <button (click)="onSwap()">Intervertir avant-plan</button>
         </div>
         <div class="image-container">
             <h1>Image Modifiée</h1>
@@ -41,12 +41,12 @@
                     type="file"
                     accept="image/bmp"
                     hidden
-                    (change)="onUpdateRightImageInput(rightImageInput)"
+                    (input)="onUpdateRightImageInput(rightImageInput)"
                 />
                 <label class="lien" for="rightImageInput">Choose File</label>
                 <button type="button" (click)="resetBackground(false)">Réinitialiser arrière-plan</button>
-                <button type="button">Réinitialiser avant-plan</button>
-                <button type="button">Dupliquer avant-plan</button>
+                <button type="button" (click)="onResetForeground(false)">Réinitialiser avant-plan</button>
+                <button type="button"(click)="onDuplicate(false)">Dupliquer avant-plan</button>
             </div>
         </div>
     </div>
