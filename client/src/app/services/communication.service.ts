@@ -32,7 +32,7 @@ export class CommunicationService {
     }
 
     addNewGame(game: GameData): void {
-        this.http.post<GameData>(`${this.baseUrl}/games/send`, game).subscribe();
+        this.http.post(`${this.baseUrl}/games/send`, game, { observe: 'response', responseType: 'text' }).subscribe();
     }
     /*
     deleteGame(id: string) {
