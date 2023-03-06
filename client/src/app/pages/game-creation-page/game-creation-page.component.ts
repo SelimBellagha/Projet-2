@@ -115,7 +115,9 @@ export class GameCreationPageComponent implements AfterViewInit {
     }
 
     onMouseDown(event: MouseEvent): void {
-        // console.log('MouseDown');
+        const clickPosition = { x: event.offsetX, y: event.offsetY };
+        this.canvasManager.onMouseDown(clickPosition);
+        console.log('MouseDown');
     }
 
     onMouseMove(event: MouseEvent): void {

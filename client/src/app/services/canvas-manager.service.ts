@@ -3,7 +3,7 @@ import { GameData } from '@app/interfaces/game-data';
 import { Vec2 } from '@app/interfaces/vec2';
 import { Tool } from '@app/pages/game-creation-page/game-creation-page.component';
 import { DifferenceDetectionService } from './difference-detection.service';
-import { DEFAULT_HEIGHT, DEFAULT_WIDTH } from './draw.service';
+import { DEFAULT_HEIGHT, DEFAULT_WIDTH, DrawService } from './draw.service';
 
 export const BMP_24BIT_FILE_SIZE = 921654;
 
@@ -21,7 +21,7 @@ export class CanvasManagerService {
 
     activeTool: Tool;
 
-    constructor(private differenceDetector: DifferenceDetectionService) {}
+    constructor(private differenceDetector: DifferenceDetectionService, private drawService: DrawService) {}
 
     init(): void {
         this.leftBackground = new OffscreenCanvas(DEFAULT_WIDTH, DEFAULT_HEIGHT);
@@ -29,17 +29,20 @@ export class CanvasManagerService {
         this.leftForeground = new OffscreenCanvas(DEFAULT_WIDTH, DEFAULT_HEIGHT);
         this.rightForeground = new OffscreenCanvas(DEFAULT_WIDTH, DEFAULT_HEIGHT);
         this.resetCanvases();
+        this.activeTool = Tool.Pencil;
     }
 
     setTool(tool: Tool) {
         this.activeTool = tool;
     }
 
-    onMouseDown(): void {
+    onMouseDown(clickPosition: Vec2): void {
         // Down = true
         switch (this.activeTool) {
             case Tool.Pencil:
                 // set le premier point
+                this.drawService.drawingContext = this.leftForeground.getContext('2d') as OffscreenCanvasRenderingContext2D;
+                this.drawService.drawLine(clickPosition, { x: clickPosition.x + 10, y: clickPosition.y + 10 });
                 break;
             case Tool.Rectangle:
                 // save l'image avant le rectangle
@@ -51,6 +54,7 @@ export class CanvasManagerService {
                 // error
                 break;
         }
+        this.updateDisplay();
     }
 
     onMouseMove(): void {
@@ -69,6 +73,7 @@ export class CanvasManagerService {
                 // error
                 break;
         }
+        // this.updateDisplay();
         // changer dernière position avecf pos courante
     }
 
@@ -101,12 +106,14 @@ export class CanvasManagerService {
 
     duplicateLeft(): void {
         const ctx = this.rightForeground.getContext('2d') as OffscreenCanvasRenderingContext2D;
+        ctx.globalCompositeOperation = 'copy';
         ctx.drawImage(this.leftForeground, 0, 0);
         this.updateDisplay();
     }
 
     duplicateRight(): void {
         const ctx = this.leftForeground.getContext('2d') as OffscreenCanvasRenderingContext2D;
+        ctx.globalCompositeOperation = 'copy';
         ctx.drawImage(this.rightForeground, 0, 0);
         this.updateDisplay();
     }
@@ -116,8 +123,11 @@ export class CanvasManagerService {
         const tempContext = tempCanvas.getContext('2d') as OffscreenCanvasRenderingContext2D;
         const leftContext = this.leftForeground.getContext('2d') as OffscreenCanvasRenderingContext2D;
         const rightContext = this.rightForeground.getContext('2d') as OffscreenCanvasRenderingContext2D;
+        tempContext.globalCompositeOperation = 'copy';
         tempContext.drawImage(this.leftForeground, 0, 0);
-        leftContext.drawImage(this.rightBackground, 0, 0);
+        leftContext.globalCompositeOperation = 'copy';
+        leftContext.drawImage(this.rightForeground, 0, 0);
+        rightContext.globalCompositeOperation = 'copy';
         rightContext.drawImage(tempCanvas, 0, 0);
         this.updateDisplay();
     }
@@ -131,15 +141,25 @@ export class CanvasManagerService {
 
     resetRightForeground(): void {
         const ctx = this.rightForeground.getContext('2d') as OffscreenCanvasRenderingContext2D;
+        ctx.save();
         ctx.fillStyle = 'rgba(0,0,0,0)';
+        ctx.globalCompositeOperation = 'copy';
         ctx.fillRect(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT);
+        ctx.fillStyle = 'rgba(0,255,0,1)';
+        ctx.fillRect(0, 0, 20, 20);
+        ctx.restore();
         this.updateDisplay();
     }
 
     resetLeftForeground(): void {
         const ctx = this.leftForeground.getContext('2d') as OffscreenCanvasRenderingContext2D;
+        ctx.save();
         ctx.fillStyle = 'rgba(0,0,0,0)';
+        ctx.globalCompositeOperation = 'copy';
         ctx.fillRect(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT);
+        ctx.fillStyle = 'rgba(255,0,0,1)';
+        ctx.fillRect(400, 400, DEFAULT_WIDTH, DEFAULT_HEIGHT);
+        ctx.restore();
         this.updateDisplay();
     }
 
