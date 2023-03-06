@@ -5,6 +5,8 @@ import { Vec2 } from '@app/interfaces/vec2';
 import { DisplayGameService } from '@app/services/display-game.service';
 import { GameManagerService } from '@app/services/game-manager.service';
 import { LoginFormService } from '@app/services/login-form.service';
+import { SocketClientService } from '@app/services/socket-client-service.service';
+
 @Component({
     selector: 'app-solo-view-page',
     templateUrl: './solo-view-page.component.html',
@@ -32,6 +34,7 @@ export class SoloViewPageComponent implements OnInit, AfterViewInit {
         private loginService: LoginFormService,
         private displayService: DisplayGameService,
         private gameManager: GameManagerService,
+        private socketManager: SocketClientService,
     ) {}
 
     ngOnInit() {
@@ -50,6 +53,14 @@ export class SoloViewPageComponent implements OnInit, AfterViewInit {
         this.gameManager.modifiedImageCanvas = this.modifiedCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         this.gameManager.originalImageCanvas = this.originalCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         this.gameManager.putImages();
+    }
+
+    getRealTime() {
+        this.socketManager.send('getRealTime');
+        // eslint-disable-next-line no-unused-vars
+        this.socketManager.on('getRealTime', (timerInfo: string[]) => {
+            // TODO verfier le temps lors d'un evenement
+        });
     }
 
     timer() {
@@ -74,9 +85,11 @@ export class SoloViewPageComponent implements OnInit, AfterViewInit {
         }, timerInterval);
     }
 
-    startTimer() {
+    startTimer = () => {
+        this.socketManager.connect();
+        this.socketManager.send('startTimer');
         this.timer();
-    }
+    };
 
     stopTimer() {
         clearInterval(this.intervalID);
