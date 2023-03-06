@@ -5,6 +5,8 @@ import { Vec2 } from '@app/interfaces/vec2';
 import { DisplayGameService } from '@app/services/display-game.service';
 import { GameManagerService } from '@app/services/game-manager.service';
 import { LoginFormService } from '@app/services/login-form.service';
+import { SocketClientService } from '@app/services/socket-client-service.service';
+
 @Component({
     selector: 'app-solo-view-page',
     templateUrl: './solo-view-page.component.html',
@@ -32,6 +34,7 @@ export class SoloViewPageComponent implements OnInit, AfterViewInit {
         private loginService: LoginFormService,
         private displayService: DisplayGameService,
         private gameManager: GameManagerService,
+        private socketManager: SocketClientService,
     ) {}
 
     ngOnInit() {
@@ -52,6 +55,17 @@ export class SoloViewPageComponent implements OnInit, AfterViewInit {
         this.gameManager.putImages();
     }
 
+    getRealTime() {
+        this.socketManager.send('getRealTime');
+        this.socketManager.on('getRealTime', (timerInfo: string[]) => {
+            console.log(timerInfo);
+            // this.secondes1 = Number(timerInfo[0]);
+            // this.secondes2 = Number(timerInfo[1]);
+            // this.minutes1 = Number(timerInfo[2]);
+            // this.minutes2 = Number(timerInfo[3]);
+        });
+    }
+
     timer() {
         const decimalMax = 9;
         const centaineMax = 5;
@@ -70,13 +84,16 @@ export class SoloViewPageComponent implements OnInit, AfterViewInit {
                 this.secondes1 = 0;
             } else {
                 this.secondes1++;
+                this.getRealTime();
             }
         }, timerInterval);
     }
 
-    startTimer() {
+    startTimer = () => {
+        this.socketManager.connect();
+        this.socketManager.send('startTimer');
         this.timer();
-    }
+    };
 
     stopTimer() {
         clearInterval(this.intervalID);
