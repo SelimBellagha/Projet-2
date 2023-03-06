@@ -57,8 +57,8 @@ export class SoloViewPageComponent implements OnInit, AfterViewInit {
 
     getRealTime() {
         this.socketManager.send('getRealTime');
+        // eslint-disable-next-line no-unused-vars
         this.socketManager.on('getRealTime', (timerInfo: string[]) => {
-            console.log(timerInfo);
             // TODO verfier le temps lors d'un evenement
         });
     }

@@ -7,6 +7,7 @@ import { TimerManager } from './timer-manager.service';
 
 @Service()
 export class SocketServerManager {
+    // eslint-disable-next-line @typescript-eslint/no-magic-numbers
     timerInterval = 1000;
     private sio: io.Server;
     constructor(server: http.Server, private timerManager: TimerManager) {
