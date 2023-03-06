@@ -52,7 +52,6 @@ export class DrawService {
         }
     }
     drawLine(startPosition: Vec2, endPosition: Vec2): void {
-        /*
         this.drawingContext.save();
         this.drawingContext.beginPath();
         this.drawingContext.moveTo(startPosition.x, startPosition.y);
@@ -60,6 +59,12 @@ export class DrawService {
         this.drawingContext.lineWidth = 3;
         this.drawingContext.lineTo(endPosition.x, endPosition.y);
         this.drawingContext.stroke();
-        this.drawingContext.restore();*/
+        this.drawingContext.restore();
+    }
+
+    drawRectangle(startPosition: Vec2, endPosition: Vec2): void {
+        this.drawingContext.save();
+        this.drawingContext.fillStyle = 'rgba(0,0,0,1)';
+        this.drawingContext.fillRect(startPosition.x, startPosition.y, endPosition.x - startPosition.x, endPosition.y - startPosition.y);
     }
 }

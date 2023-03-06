@@ -4,6 +4,7 @@ import { Vec2 } from '@app/interfaces/vec2';
 import { Tool } from '@app/pages/game-creation-page/game-creation-page.component';
 import { DifferenceDetectionService } from './difference-detection.service';
 import { DEFAULT_HEIGHT, DEFAULT_WIDTH, DrawService } from './draw.service';
+import { MouseHandlerService } from './mouse-handler.service';
 
 export const BMP_24BIT_FILE_SIZE = 921654;
 
@@ -18,10 +19,14 @@ export class CanvasManagerService {
     rightBackground: OffscreenCanvas;
     leftForeground: OffscreenCanvas;
     rightForeground: OffscreenCanvas;
-
+    tempRectangleCanvas: OffscreenCanvas;
     activeTool: Tool;
 
-    constructor(private differenceDetector: DifferenceDetectionService, private drawService: DrawService) {}
+    constructor(
+        private differenceDetector: DifferenceDetectionService,
+        private drawService: DrawService,
+        private mouseHandler: MouseHandlerService,
+    ) {}
 
     init(): void {
         this.leftBackground = new OffscreenCanvas(DEFAULT_WIDTH, DEFAULT_HEIGHT);
@@ -29,22 +34,32 @@ export class CanvasManagerService {
         this.leftForeground = new OffscreenCanvas(DEFAULT_WIDTH, DEFAULT_HEIGHT);
         this.rightForeground = new OffscreenCanvas(DEFAULT_WIDTH, DEFAULT_HEIGHT);
         this.resetCanvases();
-        this.activeTool = Tool.Pencil;
+        this.activeTool = Tool.Rectangle;
+        this.tempRectangleCanvas = new OffscreenCanvas(DEFAULT_WIDTH, DEFAULT_HEIGHT);
     }
 
     setTool(tool: Tool) {
         this.activeTool = tool;
     }
 
-    onMouseDown(clickPosition: Vec2): void {
+    onMouseDown(clickPosition: Vec2, isLeftImage: boolean): void {
         // Down = true
+        this.mouseHandler.setFirstClick(clickPosition, isLeftImage);
+        if (isLeftImage) {
+            this.drawService.drawingContext = this.leftForeground.getContext('2d') as OffscreenCanvasRenderingContext2D;
+        } else {
+            this.drawService.drawingContext = this.rightForeground.getContext('2d') as OffscreenCanvasRenderingContext2D;
+        }
+        const ctx = this.tempRectangleCanvas.getContext('2d') as OffscreenCanvasRenderingContext2D;
         switch (this.activeTool) {
             case Tool.Pencil:
                 // set le premier point
-                this.drawService.drawingContext = this.leftForeground.getContext('2d') as OffscreenCanvasRenderingContext2D;
-                this.drawService.drawLine(clickPosition, { x: clickPosition.x + 10, y: clickPosition.y + 10 });
                 break;
             case Tool.Rectangle:
+                ctx.save();
+                ctx.globalCompositeOperation = 'copy';
+                ctx.drawImage(isLeftImage ? this.leftForeground : this.rightForeground, 0, 0);
+                ctx.restore();
                 // save l'image avant le rectangle
                 break;
             case Tool.Eraser:
@@ -57,43 +72,53 @@ export class CanvasManagerService {
         this.updateDisplay();
     }
 
-    onMouseMove(): void {
-        switch (this.activeTool) {
-            case Tool.Pencil:
-                // faire un trait depuis le dernier point
-                break;
-            case Tool.Rectangle:
-                // reset l'image à la dernière save
-                // dessiner un rectangle de pt de départ à point courant
-                break;
-            case Tool.Eraser:
-                // mettre la position courant transparent + size
-                break;
-            default:
-                // error
-                break;
+    onMouseMove(mousePosition: Vec2, isLeftImage: boolean): void {
+        if (this.mouseHandler.isLeftButtonDown && isLeftImage === this.mouseHandler.isLeftCanvasSelected) {
+            switch (this.activeTool) {
+                case Tool.Pencil:
+                    // faire un trait depuis le dernier point
+                    this.drawService.drawLine(mousePosition, this.mouseHandler.currentPosition);
+                    break;
+                case Tool.Rectangle:
+                    this.drawService.drawingContext.save();
+                    this.drawService.drawingContext.globalCompositeOperation = 'copy';
+                    this.drawService.drawingContext.drawImage(this.tempRectangleCanvas, 0, 0);
+                    this.drawService.drawingContext.restore();
+                    this.drawService.drawRectangle(this.mouseHandler.firstPosition, mousePosition);
+                    // reset l'image à la dernière save
+                    // dessiner un rectangle de pt de départ à point courant
+                    break;
+                case Tool.Eraser:
+                    // mettre la position courant transparent + size
+                    break;
+                default:
+                    // error
+                    break;
+            }
         }
-        // this.updateDisplay();
-        // changer dernière position avecf pos courante
+        this.updateDisplay();
+        this.mouseHandler.updatePosition(mousePosition);
     }
 
-    onMouseUp(): void {
-        // down = false
-        // Save l'avant plan courant
-        // Switch prob pas nécéssaire
-        switch (this.activeTool) {
-            case Tool.Pencil:
-                //
-                break;
-            case Tool.Rectangle:
-                //
-                break;
-            case Tool.Eraser:
-                //
-                break;
-            default:
-                // error
-                break;
+    onMouseUp(isLeftImage: boolean): void {
+        if (isLeftImage === this.mouseHandler.isLeftCanvasSelected) {
+            this.mouseHandler.endClick();
+            // Save l'avant plan courant
+            // Switch prob pas nécéssaire
+            switch (this.activeTool) {
+                case Tool.Pencil:
+                    //
+                    break;
+                case Tool.Rectangle:
+                    //
+                    break;
+                case Tool.Eraser:
+                    //
+                    break;
+                default:
+                    // error
+                    break;
+            }
         }
     }
 
@@ -106,15 +131,19 @@ export class CanvasManagerService {
 
     duplicateLeft(): void {
         const ctx = this.rightForeground.getContext('2d') as OffscreenCanvasRenderingContext2D;
+        ctx.save();
         ctx.globalCompositeOperation = 'copy';
         ctx.drawImage(this.leftForeground, 0, 0);
+        ctx.restore();
         this.updateDisplay();
     }
 
     duplicateRight(): void {
         const ctx = this.leftForeground.getContext('2d') as OffscreenCanvasRenderingContext2D;
+        ctx.save();
         ctx.globalCompositeOperation = 'copy';
         ctx.drawImage(this.rightForeground, 0, 0);
+        ctx.restore();
         this.updateDisplay();
     }
 
@@ -123,12 +152,16 @@ export class CanvasManagerService {
         const tempContext = tempCanvas.getContext('2d') as OffscreenCanvasRenderingContext2D;
         const leftContext = this.leftForeground.getContext('2d') as OffscreenCanvasRenderingContext2D;
         const rightContext = this.rightForeground.getContext('2d') as OffscreenCanvasRenderingContext2D;
+        leftContext.save();
+        rightContext.save();
         tempContext.globalCompositeOperation = 'copy';
         tempContext.drawImage(this.leftForeground, 0, 0);
         leftContext.globalCompositeOperation = 'copy';
         leftContext.drawImage(this.rightForeground, 0, 0);
         rightContext.globalCompositeOperation = 'copy';
         rightContext.drawImage(tempCanvas, 0, 0);
+        leftContext.restore();
+        rightContext.restore();
         this.updateDisplay();
     }
 
@@ -145,7 +178,8 @@ export class CanvasManagerService {
         ctx.fillStyle = 'rgba(0,0,0,0)';
         ctx.globalCompositeOperation = 'copy';
         ctx.fillRect(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT);
-        ctx.fillStyle = 'rgba(0,255,0,1)';
+        ctx.fillStyle = 'rgba(0,0,255,1)';
+        ctx.globalCompositeOperation = 'copy';
         ctx.fillRect(0, 0, 20, 20);
         ctx.restore();
         this.updateDisplay();
@@ -157,8 +191,6 @@ export class CanvasManagerService {
         ctx.fillStyle = 'rgba(0,0,0,0)';
         ctx.globalCompositeOperation = 'copy';
         ctx.fillRect(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT);
-        ctx.fillStyle = 'rgba(255,0,0,1)';
-        ctx.fillRect(400, 400, DEFAULT_WIDTH, DEFAULT_HEIGHT);
         ctx.restore();
         this.updateDisplay();
     }

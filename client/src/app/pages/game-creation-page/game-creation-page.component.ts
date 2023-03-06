@@ -1,5 +1,6 @@
 import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
+import { MouseButton } from '@app/components/play-area/play-area.component';
 import { GameData } from '@app/interfaces/game.interface';
 import { CanvasManagerService } from '@app/services/canvas-manager.service';
 import { CommunicationService } from '@app/services/communication.service';
@@ -114,17 +115,21 @@ export class GameCreationPageComponent implements AfterViewInit {
         this.router.navigate(['/config']);
     }
 
-    onMouseDown(event: MouseEvent): void {
+    onMouseDown(event: MouseEvent, isLeftImage: boolean): void {
+        if (event.button === MouseButton.Left) {
+            const clickPosition = { x: event.offsetX, y: event.offsetY };
+            this.canvasManager.onMouseDown(clickPosition, isLeftImage);
+        }
+    }
+
+    onMouseMove(event: MouseEvent, isLeftImage: boolean): void {
         const clickPosition = { x: event.offsetX, y: event.offsetY };
-        this.canvasManager.onMouseDown(clickPosition);
-        console.log('MouseDown');
+        this.canvasManager.onMouseMove(clickPosition, isLeftImage);
     }
 
-    onMouseMove(event: MouseEvent): void {
-        // console.log('MouseMove');
-    }
-
-    onMouseUp(event: MouseEvent): void {
-        // console.log('MouseUp');
+    onMouseUp(event: MouseEvent, isLeftImage: boolean): void {
+        if (event.button === MouseButton.Left) {
+            this.canvasManager.onMouseUp(isLeftImage);
+        }
     }
 }
