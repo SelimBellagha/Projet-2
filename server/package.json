@@ -28,7 +28,9 @@
             "**/*.spec.ts",
             "app/index.ts",
             "app/server.ts",
-            "app/app.ts"
+            "app/app.ts",
+            "app/services/timer-manager.service.ts",
+            "app/services/socket-server-manager.service.ts"
         ],
         "require": [
             "ts-node/register",
