@@ -35,6 +35,10 @@ export class GameCreationPageComponent implements AfterViewInit {
         this.canvasManager.resetRightBackground();
     }
 
+    changeTool(tool: Tool) {
+        this.canvasManager.setTool(tool);
+    }
+
     resetBackground(leftPicture: boolean): void {
         // Remettre le fond en blanc
         if (leftPicture) {

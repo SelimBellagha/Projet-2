@@ -42,6 +42,14 @@ export class CanvasManagerService {
         this.activeTool = tool;
     }
 
+    setColor(color: string) {
+        this.drawService.color = color;
+    }
+
+    setWidth(width: number) {
+        this.drawService.width = width;
+    }
+
     onMouseDown(clickPosition: Vec2, isLeftImage: boolean): void {
         // Down = true
         this.mouseHandler.setFirstClick(clickPosition, isLeftImage);
@@ -64,6 +72,7 @@ export class CanvasManagerService {
                 break;
             case Tool.Eraser:
                 // mettre la position courant transparent + size
+                this.drawService.erase(clickPosition);
                 break;
             default:
                 // error
@@ -90,6 +99,7 @@ export class CanvasManagerService {
                     break;
                 case Tool.Eraser:
                     // mettre la position courant transparent + size
+                    this.drawService.erase(mousePosition);
                     break;
                 default:
                     // error
@@ -174,24 +184,13 @@ export class CanvasManagerService {
 
     resetRightForeground(): void {
         const ctx = this.rightForeground.getContext('2d') as OffscreenCanvasRenderingContext2D;
-        ctx.save();
-        ctx.fillStyle = 'rgba(0,0,0,0)';
-        ctx.globalCompositeOperation = 'copy';
-        ctx.fillRect(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT);
-        ctx.fillStyle = 'rgba(0,0,255,1)';
-        ctx.globalCompositeOperation = 'copy';
-        ctx.fillRect(0, 0, 20, 20);
-        ctx.restore();
+        ctx.clearRect(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT);
         this.updateDisplay();
     }
 
     resetLeftForeground(): void {
         const ctx = this.leftForeground.getContext('2d') as OffscreenCanvasRenderingContext2D;
-        ctx.save();
-        ctx.fillStyle = 'rgba(0,0,0,0)';
-        ctx.globalCompositeOperation = 'copy';
-        ctx.fillRect(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT);
-        ctx.restore();
+        ctx.clearRect(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT);
         this.updateDisplay();
     }
 

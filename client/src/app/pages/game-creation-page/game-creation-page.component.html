@@ -3,6 +3,11 @@
         <button class="configuration" type="button" (click)="goToConfiguration()">Configuration</button>
         <h2 class="note-container">Les images doivent être en format BMP 24-bit de taille 640x480 pixels</h2>
         <span>Emplacement pour les outils</span>
+        <div>
+            <button (click)="changeTool(0)">Pencil</button>
+            <button (click)="changeTool(1)">Rectangle</button>
+            <button (click)="changeTool(2)">Eraser</button>
+        </div>
     </div>
 
     <div class="images-area">

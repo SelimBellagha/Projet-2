@@ -11,52 +11,15 @@ export const DEFAULT_HEIGHT = 480;
 export class DrawService {
     context: CanvasRenderingContext2D;
     drawingContext: OffscreenCanvasRenderingContext2D;
-    private canvasSize: Vec2 = { x: DEFAULT_WIDTH, y: DEFAULT_HEIGHT };
+    color: string = 'red';
+    width: number = 8;
 
-    get width(): number {
-        return this.canvasSize.x;
-    }
-
-    get height(): number {
-        return this.canvasSize.y;
-    }
-
-    // TODO : pas de valeurs magiques!! Faudrait avoir une meilleure manière de le faire
-    /* eslint-disable @typescript-eslint/no-magic-numbers */
-    drawGrid() {
-        this.context.beginPath();
-        this.context.strokeStyle = 'black';
-        this.context.lineWidth = 3;
-
-        this.context.moveTo((this.width * 3) / 10, (this.height * 4) / 10);
-        this.context.lineTo((this.width * 7) / 10, (this.height * 4) / 10);
-
-        this.context.moveTo((this.width * 3) / 10, (this.height * 6) / 10);
-        this.context.lineTo((this.width * 7) / 10, (this.height * 6) / 10);
-
-        this.context.moveTo((this.width * 4) / 10, (this.height * 3) / 10);
-        this.context.lineTo((this.width * 4) / 10, (this.height * 7) / 10);
-
-        this.context.moveTo((this.width * 6) / 10, (this.height * 3) / 10);
-        this.context.lineTo((this.width * 6) / 10, (this.height * 7) / 10);
-
-        this.context.stroke();
-    }
-
-    drawWord(word: string) {
-        const startPosition: Vec2 = { x: 175, y: 100 };
-        const step = 20;
-        this.context.font = '20px system-ui';
-        for (let i = 0; i < word.length; i++) {
-            this.context.fillText(word[i], startPosition.x + step * i, startPosition.y);
-        }
-    }
     drawLine(startPosition: Vec2, endPosition: Vec2): void {
         this.drawingContext.save();
         this.drawingContext.beginPath();
         this.drawingContext.moveTo(startPosition.x, startPosition.y);
-        this.drawingContext.strokeStyle = 'black';
-        this.drawingContext.lineWidth = 3;
+        this.drawingContext.strokeStyle = this.color;
+        this.drawingContext.lineWidth = this.width;
         this.drawingContext.lineTo(endPosition.x, endPosition.y);
         this.drawingContext.stroke();
         this.drawingContext.restore();
@@ -64,7 +27,20 @@ export class DrawService {
 
     drawRectangle(startPosition: Vec2, endPosition: Vec2): void {
         this.drawingContext.save();
-        this.drawingContext.fillStyle = 'rgba(0,0,0,1)';
+        this.drawingContext.fillStyle = this.color;
         this.drawingContext.fillRect(startPosition.x, startPosition.y, endPosition.x - startPosition.x, endPosition.y - startPosition.y);
+    }
+
+    erase(position: Vec2): void {
+        this.drawingContext.save();
+        this.drawingContext.globalCompositeOperation = 'destination-over';
+        this.drawingContext.fillStyle = 'rgba(0,0,0,0)';
+        this.drawingContext.clearRect(
+            Math.max(position.x - this.width, 0),
+            Math.max(position.y - this.width, 0),
+            Math.min(DEFAULT_WIDTH - position.x + this.width, this.width * 2),
+            Math.min(DEFAULT_HEIGHT - position.y + this.width, this.width * 2),
+        );
+        this.drawingContext.restore();
     }
 }
