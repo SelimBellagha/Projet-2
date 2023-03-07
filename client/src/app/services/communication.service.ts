@@ -32,7 +32,7 @@ export class CommunicationService {
     }
 
     addNewGame(game: GameData): Observable<GameData> {
-        this.http.post<GameData>(`${this.baseUrl}/games/send`, game);
+        return this.http.post<GameData>(`${this.baseUrl}/games/send`, game);
     }
     /*
     deleteGame(id: string) {

@@ -15,7 +15,7 @@ export class DisplayGameService {
     constructor(private comm: CommunicationService) {}
 
     loadGame(gameId: number) {
-        return this.comm.getGameById(`${gameId}`).subscribe((game) => (this.game = game));
+        return this.comm.getGameById(`${gameId}`).subscribe((game: GameData) => (this.game = game));
     }
 
     async loadAllGames() {

@@ -46,7 +46,7 @@ export class GameController {
             try {
                 const game: GameData = req.body;
                 const newGame = await this.gameService.addGame(game);
-                res.status(StatusCodes.CREATED).json(newGame);
+                res.status(StatusCodes.CREATED).send(newGame);
             } catch (error) {
                 res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(error.message);
             }
