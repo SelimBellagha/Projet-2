@@ -45,8 +45,8 @@ export class GameController {
         this.router.post('/send', async (req: Request, res: Response) => {
             try {
                 const game: GameData = req.body;
-                const newGame = await this.gameService.addGame(game);
-                res.status(StatusCodes.CREATED).send(newGame);
+                await this.gameService.addGame(game);
+                res.status(StatusCodes.CREATED).json('The game was added');
             } catch (error) {
                 res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(error.message);
             }
