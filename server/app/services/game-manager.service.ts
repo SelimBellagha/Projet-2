@@ -3,7 +3,17 @@ import { Service } from 'typedi';
 
 @Service()
 export class GameManager {
-    gamesData: GameData[] = [];
+    gamesData: GameData[] = [
+        {
+            id: '0',
+            name: 'GameOne',
+            originalImage: '',
+            modifiedImage: '',
+            nbDifferences: 5,
+            differences: [],
+            isDifficult: false,
+        },
+    ];
 
     countProperties() {
         return this.gamesData.length;
@@ -22,6 +32,7 @@ export class GameManager {
         const gameId = String(id);
         newGame.id = gameId;
         this.gamesData[id] = newGame;
+        console.log(this.gamesData[id]);
     }
     /*
     async deleteGame(id: string): Promise<null | void> {
