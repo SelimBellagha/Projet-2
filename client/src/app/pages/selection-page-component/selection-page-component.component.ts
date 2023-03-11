@@ -7,6 +7,7 @@ export type Game = {
     title: string;
     difficulty: string;
     image: string;
+    playerInGame: string;
 };
 
 const display = 4;
@@ -38,6 +39,7 @@ export class SelectionPageComponentComponent implements OnInit {
         if (this.displayGames.games !== undefined) {
             this.games = this.displayGames.games;
             this.gamesDisplayed = this.games.slice(this.firstGame, this.lastGame);
+            this.checkPlayers();
             this.nextPage();
         }
     }
@@ -72,6 +74,17 @@ export class SelectionPageComponentComponent implements OnInit {
 
         if (this.firstGame === 0) {
             this.hasPrevious = false;
+        }
+    }
+
+    checkPlayers() {
+        for (const game of this.gamesDisplayed) {
+            console.log(game);
+            if (game.playerInGame === '0') {
+                game.playerInGame = 'Créer';
+            } else {
+                game.playerInGame = 'Rejoindre';
+            }
         }
     }
 }
