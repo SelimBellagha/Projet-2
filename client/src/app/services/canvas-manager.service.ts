@@ -49,6 +49,9 @@ export class CanvasManagerService {
     setWidth(width: number) {
         this.drawService.width = width;
     }
+    enableSquare(enable: boolean) {
+        this.drawService.isSquareEnabled = enable;
+    }
 
     onMouseDown(clickPosition: Vec2, isLeftImage: boolean): void {
         // Down = true
@@ -130,6 +133,14 @@ export class CanvasManagerService {
                     break;
             }
         }
+    }
+
+    undoAction(): void {
+        console.log('undo');
+    }
+
+    redoAction(): void {
+        console.log('redo');
     }
 
     updateDisplay(): void {

@@ -13,6 +13,7 @@ export class DrawService {
     drawingContext: OffscreenCanvasRenderingContext2D;
     color: string = 'red';
     width: number = 8;
+    isSquareEnabled: boolean = false;
 
     drawLine(startPosition: Vec2, endPosition: Vec2): void {
         this.drawingContext.save();

@@ -1,7 +1,8 @@
-import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, HostListener, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { MouseButton } from '@app/components/play-area/play-area.component';
 import { GameData } from '@app/interfaces/game.interface';
+import { Inputs } from '@app/interfaces/inputs';
 import { CanvasManagerService } from '@app/services/canvas-manager.service';
 import { CommunicationService } from '@app/services/communication.service';
 
@@ -24,7 +25,51 @@ export class GameCreationPageComponent implements AfterViewInit {
 
     radius: number = 3;
     currentGameData: GameData;
+    inputsStates: Inputs = { isShiftPressed: false, isControlPressed: false, isZPressed: false };
     constructor(private router: Router, private canvasManager: CanvasManagerService, private commService: CommunicationService) {}
+
+    @HostListener('document:keydown', ['$event'])
+    handleKeyDown(event: KeyboardEvent) {
+        switch (event.code) {
+            case 'ShiftRight':
+            case 'ShiftLeft':
+                this.inputsStates.isShiftPressed = true;
+                this.canvasManager.enableSquare(true);
+                break;
+            case 'ControlLeft':
+            case 'ControlRight':
+                this.inputsStates.isControlPressed = true;
+                break;
+            case 'KeyZ':
+                this.inputsStates.isZPressed = true;
+                if (this.inputsStates.isControlPressed) {
+                    if (this.inputsStates.isShiftPressed) {
+                        this.canvasManager.redoAction();
+                    } else {
+                        this.canvasManager.undoAction();
+                    }
+                }
+                break;
+        }
+    }
+
+    @HostListener('document:keyup', ['$event'])
+    handleKeyUp(event: KeyboardEvent) {
+        switch (event.code) {
+            case 'ShiftRight':
+            case 'ShiftLeft':
+                this.inputsStates.isShiftPressed = false;
+                this.canvasManager.enableSquare(false);
+                break;
+            case 'ControlLeft':
+            case 'ControlRight':
+                this.inputsStates.isControlPressed = false;
+                break;
+            case 'KeyZ':
+                this.inputsStates.isZPressed = false;
+                break;
+        }
+    }
 
     ngAfterViewInit(): void {
         this.canvasManager.leftCanvasContext = this.leftCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
@@ -135,5 +180,8 @@ export class GameCreationPageComponent implements AfterViewInit {
         if (event.button === MouseButton.Left) {
             this.canvasManager.onMouseUp(isLeftImage);
         }
+    }
+    onMouseEnter(event: MouseEvent, isLeftImage: boolean): void {
+        //
     }
 }

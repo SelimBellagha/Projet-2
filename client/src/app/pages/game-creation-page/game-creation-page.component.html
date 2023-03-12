@@ -20,6 +20,7 @@
                 (mousedown)="onMouseDown($event, true)"
                 (mousemove)="onMouseMove($event, true)"
                 (mouseup)="onMouseUp($event, true)"
+                (mouseenter)="onMouseEnter($event, true)"
             ></canvas>
             <div class="buttons">
                 <input #leftImageInput id="leftImageInput" type="file" accept="image/bmp" hidden (input)="onUpdateLeftImageInput(leftImageInput)" />
