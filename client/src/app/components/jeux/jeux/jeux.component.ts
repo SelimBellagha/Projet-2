@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, ElementRef, Input, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { DisplayGameService } from '@app/services/display-game.service';
-import { SocketClientService } from '@app/services/socket-client-service.service';
+import { LoginFormService } from '@app/services/login-form.service';
 
 @Component({
     selector: 'app-jeux',
@@ -17,7 +17,8 @@ export class JeuxComponent implements AfterViewInit {
     @Input() multiplayerButton: string;
     @ViewChild('image') image: ElementRef<HTMLImageElement>;
 
-    constructor(private router: Router, private displayService: DisplayGameService, private socketService: SocketClientService) {}
+    // eslint-disable-next-line max-params
+    constructor(private router: Router, private displayService: DisplayGameService, private loginService: LoginFormService) {}
 
     ngAfterViewInit(): void {
         this.image.nativeElement.src = this.customPhoto;
@@ -28,23 +29,23 @@ export class JeuxComponent implements AfterViewInit {
         this.router.navigate(['/loginPage']);
     }
 
+    playSolo() {
+        this.loginService.setGameType(false);
+        this.loginService.setPlayerType(false);
+        this.goToLoginPage();
+    }
+
     playMultiplayer(): void {
-        this.socketService.connect();
-        this.socketService.send('handleGame', { roomName: this.customId });
-        this.socketService.on('roomCreated', (data: { roomName: string }) => {
-            if (data.roomName === this.customId) {
-                console.log('the room was created');
-            }
-        });
-        this.socketService.on('roomJoined', (data: { roomName: string }) => {
-            if (data.roomName === this.customId) {
-                console.log('you joined the room');
-            }
-        });
-        this.socketService.on('roomFull', (data: { roomName: string }) => {
-            if (data.roomName === this.customId) {
-                console.log('the room is full');
-            }
-        });
+        this.loginService.setGameId(this.customId);
+        if (this.multiplayerButton === 'Créer') {
+            this.loginService.setGameType(true);
+            this.loginService.setPlayerType(true);
+            this.goToLoginPage();
+        } else {
+            this.loginService.setGameType(true);
+            this.loginService.setPlayerType(false);
+            this.router.navigate(['/loginPage']);
+            this.goToLoginPage();
+        }
     }
 }

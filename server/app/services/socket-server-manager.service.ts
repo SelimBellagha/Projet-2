@@ -1,4 +1,6 @@
 /* eslint-disable @typescript-eslint/naming-convention */
+import { Lobby } from '@app/classes/lobby';
+import { Player } from '@app/data/player';
 import * as http from 'http';
 import * as io from 'socket.io';
 import { Socket } from 'socket.io';
@@ -7,6 +9,7 @@ import { TimerManager } from './timer-manager.service';
 
 @Service()
 export class SocketServerManager {
+    lobbys = new Map<string, Lobby>();
     // eslint-disable-next-line @typescript-eslint/no-magic-numbers
     timerInterval = 1000;
     private sio: io.Server;
@@ -26,34 +29,61 @@ export class SocketServerManager {
                 socket.emit('getRealTime', timerInfo);
             });
 
-            socket.on('handleGame', (data: { roomName: string }) => {
-                const room = this.sio.sockets.adapter.rooms.get(data.roomName);
+            socket.on('createLobby', (data: { gameId: string; playerName: string }) => {
+                const host: Player = {
+                    playerName: data.playerName,
+                    socketId: socket.id,
+                };
+                const sId = socket.id;
+                const newLobby = new Lobby(host, data.gameId);
+                this.lobbys.set(sId, newLobby);
+                socket.join(sId);
+            });
 
-                if (room) {
-                    console.log(room);
-                    if (room.size < 2) {
-                        socket.join(data.roomName);
-                        socket.emit('roomJoined', { roomName: data.roomName });
-                    } else {
-                        socket.emit('roomFull', { roomName: data.roomName });
-                    }
-                } else {
-                    socket.join(data.roomName);
-                    socket.emit('roomCreated', { roomName: data.roomName });
+            socket.on('joinQueue', (data: { gameId: string; playerName: string }) => {
+                const roomId = this.getRoom(data.gameId);
+                const lobby = this.lobbys.get(roomId);
+                if (this.sio.sockets.adapter.rooms.get(roomId) && lobby) {
+                    lobby.addInQueue(data.playerName, socket.id);
+                    socket.to(lobby.getHost().socketId).emit('updateQueue', { newQueue: JSON.stringify(Array.from(lobby.getQueue().entries())) });
                 }
             });
 
-            socket.on('checkPlayersInGame', (data: { roomName: string }) => {
-                const room = this.sio.sockets.adapter.rooms.get(data.roomName);
-                console.log(data);
+            socket.on('checkPlayersInGame', (data: { gameId: string }) => {
+                const roomId = this.getRoom(data.gameId);
+                const room = this.sio.sockets.adapter.rooms.get(roomId);
                 if (room) {
-                    console.log(room.size);
                     socket.emit('playersInGame', { playersNumber: String(room.size) });
                 } else {
-                    console.log('no');
                     socket.emit('playersInGame', { playersNumber: '0' });
                 }
             });
+
+            socket.on('disconnect', () => {
+                this.lobbys.delete(socket.id);
+            });
+
+            socket.on('removeFromQueue', (data: { socketId: string; gameId: string }) => {
+                const roomId = this.getRoom(data.gameId);
+                const lobby = this.lobbys.get(roomId);
+                if (lobby) {
+                    lobby.deleteFromQueue(data.socketId);
+                    socket.to(lobby.getHost().socketId).emit('updateQueue', { newQueue: JSON.stringify(Array.from(lobby.getQueue().entries())) });
+                }
+            });
+
+            socket.on('addToRoom', (data: { socketId: string }) => {
+                this.sio.sockets[data.socketId].join('socket.id');
+            });
         });
+    }
+
+    getRoom(gameId: string): string {
+        for (const [key, value] of this.lobbys) {
+            if (value.gameId === gameId && !value.checkSecondPlayer()) {
+                return key;
+            }
+        }
+        return '';
     }
 }
