@@ -37,12 +37,9 @@ export class Lobby {
         return this.queue;
     }
 
-    addPlayer(name: string, id: string) {
-        const playerToAdd: Player = {
-            playerName: `${name}`,
-            socketId: `${id}`,
-        };
+    addPlayer(playerToAdd: Player) {
         this.secondPlayer = playerToAdd;
+        this.queue.delete(playerToAdd.socketId);
     }
 
     checkSecondPlayer() {

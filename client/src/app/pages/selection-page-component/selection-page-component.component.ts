@@ -85,7 +85,6 @@ export class SelectionPageComponentComponent implements OnInit {
 
     checkPlayers() {
         for (const game of this.gamesDisplayed) {
-            console.log(game);
             if (game.playerInGame === '0') {
                 game.playerInGame = 'Créer';
             } else {

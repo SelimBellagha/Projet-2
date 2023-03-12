@@ -68,12 +68,26 @@ export class SocketServerManager {
                 const lobby = this.lobbys.get(roomId);
                 if (lobby) {
                     lobby.deleteFromQueue(data.socketId);
-                    socket.to(lobby.getHost().socketId).emit('updateQueue', { newQueue: JSON.stringify(Array.from(lobby.getQueue().entries())) });
+                    socket.to(data.socketId).emit('refused');
+                    this.sio.to(lobby.getHost().socketId).emit('updateQueue', { newQueue: JSON.stringify(Array.from(lobby.getQueue().entries())) });
                 }
             });
 
             socket.on('addToRoom', (data: { socketId: string }) => {
-                this.sio.sockets[data.socketId].join('socket.id');
+                const lobby = this.lobbys.get(socket.id);
+                if (lobby) {
+                    const playerToAdd = lobby.getQueue().get(data.socketId);
+                    if (playerToAdd) {
+                        lobby.addPlayer(playerToAdd);
+                        const playerToAddSocket = this.sio.sockets.sockets.get(playerToAdd.socketId);
+                        playerToAddSocket?.join(socket.id);
+                        for (const key of lobby.getQueue().keys()) {
+                            socket.to(key).emit('refused');
+                        }
+                        lobby.clearQueue();
+                        this.sio.to(socket.id).emit('goToGame', { socketId: socket.id });
+                    }
+                }
             });
         });
     }
