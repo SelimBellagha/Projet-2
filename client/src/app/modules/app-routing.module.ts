@@ -6,6 +6,7 @@ import { GamePageComponent } from '@app/pages/game-page/game-page.component';
 import { LoginPageComponent } from '@app/pages/login-page/login-page.component';
 import { MainPageComponent } from '@app/pages/main-page/main-page.component';
 import { MaterialPageComponent } from '@app/pages/material-page/material-page.component';
+import { SalleAttenteComponent } from '@app/pages/salle-attente/salle-attente.component';
 import { SelectionPageComponentComponent } from '@app/pages/selection-page-component/selection-page-component.component';
 import { SoloViewPageComponent } from '@app/pages/solo-view-page/solo-view-page.component';
 
@@ -19,6 +20,7 @@ const routes: Routes = [
     { path: 'soloView', component: SoloViewPageComponent },
     { path: 'gameSelection', component: SelectionPageComponentComponent },
     { path: 'loginPage', component: LoginPageComponent },
+    { path: 'salleAttente', component: SalleAttenteComponent },
     { path: '**', redirectTo: '/home' },
 ];
 @NgModule({

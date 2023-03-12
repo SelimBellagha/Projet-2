@@ -1,12 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { DisplayGameService } from '@app/services/display-game.service';
+import { SocketClientService } from '@app/services/socket-client-service.service';
 
 export type Game = {
     id: string;
     title: string;
     difficulty: string;
     image: string;
+    playerInGame: string;
 };
 
 const display = 4;
@@ -27,9 +29,14 @@ export class SelectionPageComponentComponent implements OnInit {
     games: Game[];
     gamesDisplayed: Game[];
 
-    constructor(private router: Router, private displayGames: DisplayGameService) {}
+    constructor(private router: Router, private displayGames: DisplayGameService, private socketManager: SocketClientService) {}
 
     async ngOnInit() {
+        if (this.socketManager.isSocketAlive()) {
+            this.socketManager.disconnect();
+        } else {
+            this.socketManager.connect();
+        }
         await this.checkGames();
     }
 
@@ -38,6 +45,7 @@ export class SelectionPageComponentComponent implements OnInit {
         if (this.displayGames.games !== undefined) {
             this.games = this.displayGames.games;
             this.gamesDisplayed = this.games.slice(this.firstGame, this.lastGame);
+            this.checkPlayers();
             this.nextPage();
         }
     }
@@ -72,6 +80,16 @@ export class SelectionPageComponentComponent implements OnInit {
 
         if (this.firstGame === 0) {
             this.hasPrevious = false;
+        }
+    }
+
+    checkPlayers() {
+        for (const game of this.gamesDisplayed) {
+            if (game.playerInGame === '0') {
+                game.playerInGame = 'Créer';
+            } else {
+                game.playerInGame = 'Rejoindre';
+            }
         }
     }
 }

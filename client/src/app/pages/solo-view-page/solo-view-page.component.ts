@@ -86,7 +86,6 @@ export class SoloViewPageComponent implements OnInit, AfterViewInit {
     }
 
     startTimer = () => {
-        this.socketManager.connect();
         this.socketManager.send('startTimer');
         this.timer();
     };
