@@ -1,5 +1,5 @@
 <body class="container">
-    <button class="quit-button" (click)="returnSelectionPage()">Abandonner la partie</button>
+    <button class="quit-button" (click)="goToGiveUp()">Abandonner la partie</button>
 
     <div class="section">
         <div class="main-container">
@@ -55,19 +55,25 @@
                  <textarea class="chat-input"></textarea>
                  <input type="submit" value="Send" class="message-send" />
 
-                 <div class = "attachment">
-                    <a href="#" class="fa fa-thumbs-up"></a>
-                 </div>
             </div>
         </div>
     </div>
 
-    <div #popUpWindow class="modal">
+    <div #popUpWindow class="modal" id ="congratulations">
         <div class="modal-content">
-            <h1 class="congrats">Félicitations {{ username }} ! Vous avez trouvé toutes les différences !</h1>
-            <div class="close-button">
-                <button id="close-button" (click)="goToHomePage()">Fermer</button>
+            <h1 class="title">Félicitations {{ username }} ! Vous avez trouvé toutes les différences !</h1>
+            <div>
+                <button id= "end" class="button-pop" (click)="goToHomePage()">Fermer</button>
             </div>
         </div>
     </div>
 
+    <div #popUpWindowGiveUp class="modal">
+        <div class="modal-content">
+            <h1 class="title"> Êtes-vous sûr de quitter la partie ?</h1>
+            <div>
+                <button class="button-pop" id= "button-stay" (click)="goToStay()">Continuer la partie </button>
+                <button class="button-pop" id= "button-home" (click)="goToHomePage()"> Quitter la partie</button>
+            </div>
+        </div>
+    </div>

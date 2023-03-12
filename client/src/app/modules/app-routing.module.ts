@@ -20,7 +20,7 @@ const routes: Routes = [
     { path: 'soloView', component: SoloViewPageComponent },
     { path: 'gameSelection', component: SelectionPageComponentComponent },
     { path: 'loginPage', component: LoginPageComponent },
-    { path: 'oneVSone', component: OneVsOnePageComponent  },
+    { path: 'oneVSone', component: OneVsOnePageComponent },
     { path: '**', redirectTo: '/home' },
 ];
 @NgModule({

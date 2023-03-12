@@ -11,6 +11,7 @@ export class JeuxComponent implements AfterViewInit {
     @Input() customTitle: string;
     @Input() customDifficulty: string;
     @Input() isConfigurationMode: boolean;
+    @Input() isOneVSOne: boolean;
     @Input() customPhoto: string;
     @Input() customId: string;
     @ViewChild('image') image: ElementRef<HTMLImageElement>;
@@ -24,5 +25,10 @@ export class JeuxComponent implements AfterViewInit {
     goToLoginPage(): void {
         this.displayService.loadGame(Number(this.customId));
         this.router.navigate(['/loginPage']);
+    }
+
+    goToLoginPageOneVSOne() {
+        this.isOneVSOne = true;
+        this.goToLoginPage();
     }
 }

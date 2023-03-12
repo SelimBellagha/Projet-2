@@ -54,8 +54,8 @@ body {
 }
 
 .watch-logo {
-    width: 8%;
-    height: 15%;
+    width: 5%;
+    margin-top: 10px;
 }
 
 .timer {
@@ -137,7 +137,7 @@ canvas {
     background-color: white;
 }
 
-.congrats {
+.title{
     text-align: center;
     font-weight: bold;
     font-family: serif;
@@ -145,8 +145,33 @@ canvas {
     font-size: xx-large;
 }
 
-.close-button {
-    text-align: right;
+
+.button-pop {
+    margin-left: 20%;
+    text-align: center;
+    font-weight: bold;
+    height: 5%;
+    width: 20%;
+    border-radius: 6px;
+    font-family:'Franklin Gothic Medium';
+    font-size: 20px;
+}
+
+#end {
+    margin-left: 40%;
+    background-color: green;
+    border-color: rgb(2, 97, 2);
+}
+
+#button-stay {
+    background-color: green;
+    border-color: rgb(2, 97, 2);
+}
+
+#button-home {
+    background-color: red;
+    border-color: rgb(198, 2, 2);
+    
 }
 
 .modal {
@@ -157,7 +182,6 @@ canvas {
     top: 0;
     width: 100%;
     height: 100%;
-    background-image: url('../../../assets/images/confettis.gif');
     overflow: auto;
     background-color: rgba(0, 0, 0, 0.4);
     align-self: center;
@@ -165,9 +189,14 @@ canvas {
     -webkit-animation: fadeIn 1s;
     animation: fadeIn 1s;
 }
+
+#congratulations {
+    background-image: url('../../../assets/images/confettis.gif');
+}
 .modal-content {
+    border: black solid 10px;
     background-color: #ede1db;
-    margin: 5% auto;
+    margin: 15% auto;
     padding: 20px;
     border: 1px solid #888;
     width: 50%;
