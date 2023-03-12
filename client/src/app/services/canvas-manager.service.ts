@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { CanvasAction } from '@app/interfaces/canvas-action';
 import { GameData } from '@app/interfaces/game-data';
 import { Vec2 } from '@app/interfaces/vec2';
 import { Tool } from '@app/pages/game-creation-page/game-creation-page.component';
@@ -21,6 +22,8 @@ export class CanvasManagerService {
     rightForeground: OffscreenCanvas;
     tempRectangleCanvas: OffscreenCanvas;
     activeTool: Tool;
+    actionsDone: CanvasAction[] = [];
+    actionsUnDone: CanvasAction[] = [];
 
     constructor(
         private differenceDetector: DifferenceDetectionService,
@@ -34,6 +37,8 @@ export class CanvasManagerService {
         this.leftForeground = new OffscreenCanvas(DEFAULT_WIDTH, DEFAULT_HEIGHT);
         this.rightForeground = new OffscreenCanvas(DEFAULT_WIDTH, DEFAULT_HEIGHT);
         this.resetCanvases();
+        this.actionsDone = [];
+        this.saveAction();
         this.activeTool = Tool.Rectangle;
         this.tempRectangleCanvas = new OffscreenCanvas(DEFAULT_WIDTH, DEFAULT_HEIGHT);
     }
@@ -118,6 +123,7 @@ export class CanvasManagerService {
     onMouseUp(isLeftImage: boolean): void {
         if (isLeftImage === this.mouseHandler.isLeftCanvasSelected) {
             this.mouseHandler.endClick();
+            this.saveAction();
             // Save l'avant plan courant
             // Switch prob pas nécéssaire
             switch (this.activeTool) {
@@ -136,13 +142,31 @@ export class CanvasManagerService {
             }
         }
     }
+    saveAction(): void {
+        const action = {
+            leftCanvasImage: this.leftForeground.getContext('2d')?.getImageData(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT) as ImageData,
+            rightCanvasImage: this.rightForeground.getContext('2d')?.getImageData(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT) as ImageData,
+        };
+        this.actionsDone.push(action);
+        this.actionsUnDone = [];
+    }
 
     undoAction(): void {
-        console.log('undo');
+        if (this.actionsDone.length > 1) {
+            this.actionsUnDone.push(this.actionsDone.pop() as CanvasAction);
+        }
+        this.leftForeground.getContext('2d')?.putImageData(this.actionsDone[this.actionsDone.length - 1].leftCanvasImage, 0, 0);
+        this.rightForeground.getContext('2d')?.putImageData(this.actionsDone[this.actionsDone.length - 1].rightCanvasImage, 0, 0);
+        this.updateDisplay();
     }
 
     redoAction(): void {
-        console.log('redo');
+        if (this.actionsUnDone.length > 0) {
+            this.actionsDone.push(this.actionsUnDone.pop() as CanvasAction);
+            this.leftForeground.getContext('2d')?.putImageData(this.actionsDone[this.actionsDone.length - 1].leftCanvasImage, 0, 0);
+            this.rightForeground.getContext('2d')?.putImageData(this.actionsDone[this.actionsDone.length - 1].rightCanvasImage, 0, 0);
+            this.updateDisplay();
+        }
     }
 
     updateDisplay(): void {
@@ -159,6 +183,7 @@ export class CanvasManagerService {
         ctx.drawImage(this.leftForeground, 0, 0);
         ctx.restore();
         this.updateDisplay();
+        this.saveAction();
     }
 
     duplicateRight(): void {
@@ -168,6 +193,7 @@ export class CanvasManagerService {
         ctx.drawImage(this.rightForeground, 0, 0);
         ctx.restore();
         this.updateDisplay();
+        this.saveAction();
     }
 
     swapForegrounds(): void {
@@ -186,6 +212,7 @@ export class CanvasManagerService {
         leftContext.restore();
         rightContext.restore();
         this.updateDisplay();
+        this.saveAction();
     }
 
     resetCanvases(): void {
@@ -199,12 +226,14 @@ export class CanvasManagerService {
         const ctx = this.rightForeground.getContext('2d') as OffscreenCanvasRenderingContext2D;
         ctx.clearRect(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT);
         this.updateDisplay();
+        this.saveAction();
     }
 
     resetLeftForeground(): void {
         const ctx = this.leftForeground.getContext('2d') as OffscreenCanvasRenderingContext2D;
         ctx.clearRect(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT);
         this.updateDisplay();
+        this.saveAction();
     }
 
     async changeRightBackground(file: File): Promise<void> {
