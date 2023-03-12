@@ -1,6 +1,7 @@
 import { AfterViewInit, Component, ElementRef, Input, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { DisplayGameService } from '@app/services/display-game.service';
+import { LoginFormService } from '@app/services/login-form.service';
 
 @Component({
     selector: 'app-jeux',
@@ -14,9 +15,11 @@ export class JeuxComponent implements AfterViewInit {
     @Input() isOneVSOne: boolean;
     @Input() customPhoto: string;
     @Input() customId: string;
+    @Input() multiplayerButton: string;
     @ViewChild('image') image: ElementRef<HTMLImageElement>;
 
-    constructor(private router: Router, private displayService: DisplayGameService) {}
+    // eslint-disable-next-line max-params
+    constructor(private router: Router, private displayService: DisplayGameService, private loginService: LoginFormService) {}
 
     ngAfterViewInit(): void {
         this.image.nativeElement.src = this.customPhoto;
@@ -27,8 +30,23 @@ export class JeuxComponent implements AfterViewInit {
         this.router.navigate(['/loginPage']);
     }
 
-    goToLoginPageOneVSOne() {
-        this.isOneVSOne = true;
+    playSolo() {
+        this.loginService.setGameType(false);
+        this.loginService.setPlayerType(false);
         this.goToLoginPage();
+    }
+
+    playMultiplayer(): void {
+        this.loginService.setGameId(this.customId);
+        if (this.multiplayerButton === 'Créer') {
+            this.loginService.setGameType(true);
+            this.loginService.setPlayerType(true);
+            this.goToLoginPage();
+        } else {
+            this.loginService.setGameType(true);
+            this.loginService.setPlayerType(false);
+            this.router.navigate(['/loginPage']);
+            this.goToLoginPage();
+        }
     }
 }

@@ -1,0 +1,13 @@
+<div class="container">
+    <div class="flexbox1">
+        <button class="cancel-button" (click)="goToGameSelection()">Annuler</button>
+        <p class="waiting-text">En attente de joueurs <span class="dot-1">.</span><span class="dot-2">.</span><span class="dot-3">.</span></p>
+    </div>
+    <div class="flexbox2">
+        <div *ngIf="host" class="join-container">
+            <div *ngFor="let player of playerQueue.values()">
+                <app-join-bar [nomJoueur]="player.playerName" [socketId]="player.socketId"></app-join-bar>
+            </div>
+        </div>
+    </div>
+</div>
