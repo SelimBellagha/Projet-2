@@ -29,7 +29,18 @@ export class DrawService {
     drawRectangle(startPosition: Vec2, endPosition: Vec2): void {
         this.drawingContext.save();
         this.drawingContext.fillStyle = this.color;
-        this.drawingContext.fillRect(startPosition.x, startPosition.y, endPosition.x - startPosition.x, endPosition.y - startPosition.y);
+        let xLength = endPosition.x - startPosition.x;
+        let yLength = endPosition.y - startPosition.y;
+
+        if (this.isSquareEnabled) {
+            if (Math.abs(xLength) >= Math.abs(yLength)) {
+                xLength = xLength > 0 ? Math.abs(yLength) : -Math.abs(yLength);
+            } else {
+                yLength = yLength > 0 ? Math.abs(xLength) : -Math.abs(xLength);
+            }
+        }
+
+        this.drawingContext.fillRect(startPosition.x, startPosition.y, xLength, yLength);
     }
 
     erase(position: Vec2): void {

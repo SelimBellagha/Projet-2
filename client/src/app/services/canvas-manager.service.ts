@@ -51,6 +51,8 @@ export class CanvasManagerService {
     }
     enableSquare(enable: boolean) {
         this.drawService.isSquareEnabled = enable;
+        if (this.activeTool === Tool.Rectangle && this.mouseHandler.isLeftButtonDown)
+            this.onMouseMove(this.mouseHandler.currentPosition, this.mouseHandler.isLeftCanvasSelected);
     }
 
     onMouseDown(clickPosition: Vec2, isLeftImage: boolean): void {
