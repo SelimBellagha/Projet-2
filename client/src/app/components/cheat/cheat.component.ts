@@ -43,8 +43,8 @@ export class CheatComponent {
         const pixelDifferences = this.gameManager.gameData.differences;
 
         for (let i = 0; i < this.gameManager.gameData.nbDifferences; i++) {
-            this.gameManager.flashPixelsCheat(pixelDifferences[i], canvasModifier);
-            this.gameManager.flashPixelsCheat(pixelDifferences[i], canvasOriginal);
+            this.gameManager.flashPixelsCheat(pixelDifferences, canvasModifier);
+            this.gameManager.flashPixelsCheat(pixelDifferences, canvasOriginal);
             this.gameManager.wait(QUART_SECOND);
         }
     }

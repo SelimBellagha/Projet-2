@@ -103,12 +103,12 @@ export class GameManagerService {
     async wait(ms: number): Promise<void> {
         await new Promise((res) => setTimeout(res, ms));
     }
-    async flashPixelsCheat(pixels: Vec2[], canvas: CanvasRenderingContext2D): Promise<void> {
+    async flashPixelsCheat(pixels: Vec2[][], canvas: CanvasRenderingContext2D): Promise<void> {
         const originalImageData = canvas.getImageData(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT);
         const flashingOriginalImageData = canvas.getImageData(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT);
 
         for (let i = 0; i < this.gameData.nbDifferences; i++) {
-            pixels.forEach((pixelPosition) => {
+            pixels[i].forEach((pixelPosition) => {
                 const pixelStartPosition = PIXEL_SIZE * (pixelPosition.x + pixelPosition.y * DEFAULT_WIDTH);
                 flashingOriginalImageData.data[pixelStartPosition] = 0;
                 flashingOriginalImageData.data[pixelStartPosition + 1] = 0;
