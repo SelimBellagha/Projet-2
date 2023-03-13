@@ -279,7 +279,7 @@ body {
 
 .layer {
     width: 100%;
-    background-color: #b4ddd6;
+    background-color: #eed1d1;
     transition: 0.3s ease all;
     z-index: 1;
 }
@@ -302,7 +302,8 @@ body {
     text-align: center;
     line-height: 1;
     padding: 9px 4px;
-    background-color: #03a9f4;
+    content: 'NO';
+    background-color: #f44336;
     border-radius: 50%;
 }
 
@@ -318,12 +319,12 @@ body {
 }
 
 #button-6 .checkbox:checked + .knobs:before {
-    content: 'NO';
-    background-color: #f44336;
+    content: 'YES';
+    background-color: #70df8a;
     transform: rotateZ(180deg);
 }
 
 #button-6 .checkbox:checked ~ .layer {
-    background-color: #fcebeb;
+    background-color: #daf6e2;
     transform: rotateZ(180deg);
 }

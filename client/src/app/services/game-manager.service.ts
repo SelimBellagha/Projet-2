@@ -7,6 +7,7 @@ import { DEFAULT_HEIGHT, DEFAULT_WIDTH } from './draw.service';
 
 const PIXEL_SIZE = 4;
 const ONE_SECOND = 1000;
+const QUART_SECOND = 250;
 @Injectable({
     providedIn: 'root',
 })
@@ -101,6 +102,26 @@ export class GameManagerService {
 
     async wait(ms: number): Promise<void> {
         await new Promise((res) => setTimeout(res, ms));
+    }
+    async flashPixelsCheat(pixels: Vec2[], canvas: CanvasRenderingContext2D): Promise<void> {
+        const originalImageData = canvas.getImageData(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT);
+        const flashingOriginalImageData = canvas.getImageData(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT);
+
+        pixels.forEach((pixelPosition) => {
+            const pixelStartPosition = PIXEL_SIZE * (pixelPosition.x + pixelPosition.y * DEFAULT_WIDTH);
+            flashingOriginalImageData.data[pixelStartPosition] = 0;
+            flashingOriginalImageData.data[pixelStartPosition + 1] = 0;
+            flashingOriginalImageData.data[pixelStartPosition + 2] = 0;
+            flashingOriginalImageData.data[pixelStartPosition + 3] = 255;
+        });
+        // fait
+        canvas.putImageData(flashingOriginalImageData, 0, 0);
+        await this.wait(QUART_SECOND);
+        canvas.putImageData(originalImageData, 0, 0);
+        await this.wait(QUART_SECOND);
+        canvas.putImageData(flashingOriginalImageData, 0, 0);
+        await this.wait(QUART_SECOND);
+        canvas.putImageData(originalImageData, 0, 0);
     }
 
     replacePixels(pixels: Vec2[]): void {
