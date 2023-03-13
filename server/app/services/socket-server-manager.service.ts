@@ -85,8 +85,36 @@ export class SocketServerManager {
                             socket.to(key).emit('refused');
                         }
                         lobby.clearQueue();
-                        this.sio.to(socket.id).emit('goToGame', { socketId: socket.id });
+                        this.sio.to(socket.id).emit('goToGame', { roomId: socket.id });
+                        this.sio
+                            .to(socket.id)
+                            .emit('username', { hostUsername: lobby.getHost().playerName, inviteUsername: lobby.getSecondPlayer().playerName });
                     }
+                }
+            });
+
+            socket.on('differenceFound', (data: { roomId: string; differenceId: number }) => {
+                const lobby = this.lobbys.get(data.roomId);
+                if (lobby) {
+                    if (lobby.getHost().socketId === socket.id) {
+                        lobby.nbDifferencesHost++;
+                    } else {
+                        lobby.nbDifferencesInvite++;
+                    }
+                    this.sio.to(data.roomId).emit('differenceUpdate', {
+                        nbDifferenceHost: lobby?.nbDifferencesHost,
+                        nbDifferenceInvite: lobby?.nbDifferencesInvite,
+                        differenceId: data.differenceId,
+                    });
+                }
+            });
+
+            socket.on('giveUp', (data: { roomId: string }) => {
+                const lobby = this.lobbys.get(data.roomId);
+                if (socket.id === data.roomId && lobby) {
+                    this.sio.to(lobby.secondPlayer.socketId).emit('win');
+                } else {
+                    socket.to(data.roomId).emit('win');
                 }
             });
         });

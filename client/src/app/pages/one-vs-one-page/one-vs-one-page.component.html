@@ -6,7 +6,7 @@
             <h2 class="game-info">{{ gameName }} - {{ difficulty }}</h2>
             <p class="game-details">Mode classique</p>
             <p class="game-details">L' image contient {{ nbDifferences }} différences</p>
-            <button class="indice">Obtenir un indice</button>  
+            <button class="indice">Obtenir un indice</button>
         </div>
 
         <div>
@@ -17,9 +17,9 @@
     <div class="section">
         <div class="main-container">
             <div class="game-details">
-                <p id="penalty">Pénalités pour utilisation d'indice : 00: XX -  Indices restants: X </p>
-                <p>{{user1}} : {{nbDifferencesFoundUser1}} différences trouvées </p>
-                <p>{{user2}} : {{nbDifferencesFoundUser2}} différences trouvées  </p>
+                <p id="penalty">Pénalités pour utilisation d'indice : 00: XX - Indices restants: X</p>
+                <p>{{ user1 }} : {{ nbDifferencesFoundUser1 }} différences trouvées</p>
+                <p>{{ user2 }} : {{ nbDifferencesFoundUser2 }} différences trouvées</p>
                 <div class="timer">
                     <img src="../../../assets/images/stopwatch.png" class="watch-logo" />
                     <div>{{ minutes2 }}{{ minutes1 }}:{{ secondes2 }}{{ secondes1 }}</div>
@@ -36,44 +36,54 @@
             <div class="message-box">
                 <p class="message-title">Messages</p>
                 <hr />
-                <div class = "message-box-holder">
-                    <div class ="name">info </div>
-                    <div class = "messages-box server"> Bienvenue {{ user1 }}  et {{user2}}! </div>
+                <div class="message-box-holder">
+                    <div class="name">info</div>
+                    <div class="messages-box server">Bienvenue {{ user1 }} et {{ user2 }}!</div>
                 </div>
 
-                <div class = "message-box-holder">
-                    <div class ="name sender"> {{user1}}  </div>
-                    <div class = "messages-box"> Hey Selim </div>
+                <div class="message-box-holder">
+                    <div class="name sender">{{ user1 }}</div>
+                    <div class="messages-box">Hey Selim</div>
                 </div>
 
-                <div class = "message-box-holder">
-                    <div class ="name"> {{user2}} </div>
-                    <div class = "messages-box server"> Hey Yahya </div>
+                <div class="message-box-holder">
+                    <div class="name">{{ user2 }}</div>
+                    <div class="messages-box server">Hey Yahya</div>
                 </div>
 
                 <div class="chat-input-holder">
-                 <textarea class="chat-input"></textarea>
-                 <input type="submit" value="Send" class="message-send" />
+                    <textarea class="chat-input"></textarea>
+                    <input type="submit" value="Send" class="message-send" />
+                </div>
+            </div>
+        </div>
 
+        <div #popUpWindowWin class="modal" id="congratulations">
+            <div class="modal-content">
+                <h1 class="title">Félicitations {{ username }} ! Vous avez trouvé toutes les différences !</h1>
+                <div>
+                    <button id="end" class="button-pop" (click)="goToHomePage()">Fermer</button>
+                </div>
+            </div>
+        </div>
+
+        <div #popUpWindowLose class="modal">
+            <div class="modal-content">
+                <h1 class="title">Dommage {{ username }} ! Vous avez n'avais pas été assez rapide ...</h1>
+                <div>
+                    <button id="end" class="button-pop" (click)="goToHomePage()">Fermer</button>
+                </div>
+            </div>
+        </div>
+
+        <div #popUpWindowGiveUp class="modal">
+            <div class="modal-content">
+                <h1 class="title">Êtes-vous sûr de vouloir quitter la partie ?</h1>
+                <div>
+                    <button class="button-pop" id="button-stay" (click)="goToStay()">Continuer la partie</button>
+                    <button class="button-pop" id="button-home" (click)="giveUp()">Quitter la partie</button>
+                </div>
             </div>
         </div>
     </div>
-
-    <div #popUpWindow class="modal" id ="congratulations">
-        <div class="modal-content">
-            <h1 class="title">Félicitations {{ username }} ! Vous avez trouvé toutes les différences !</h1>
-            <div>
-                <button id= "end" class="button-pop" (click)="goToHomePage()">Fermer</button>
-            </div>
-        </div>
-    </div>
-
-    <div #popUpWindowGiveUp class="modal">
-        <div class="modal-content">
-            <h1 class="title"> Êtes-vous sûr de quitter la partie ?</h1>
-            <div>
-                <button class="button-pop" id= "button-stay" (click)="goToStay()">Continuer la partie </button>
-                <button class="button-pop" id= "button-home" (click)="goToHomePage()"> Quitter la partie</button>
-            </div>
-        </div>
-    </div>
+</body>
