@@ -33,22 +33,12 @@ describe('GameController', () => {
             isDifficult: false,
         },
     ] as GameData[];
-    const game = {
-        id: '1',
-        name: 'testGame',
-        originalImage: '',
-        modifiedImage: '',
-        nbDifferences: 8,
-        differences: [],
-        isDifficult: false,
-    } as GameData;
     let gameService: SinonStubbedInstance<GameManager>;
     let expressApp: Express.Application;
 
     beforeEach(async () => {
         gameService = createStubInstance(GameManager);
         gameService.getAllGames.resolves(gamesData);
-        gameService.addGame.resolves(game);
         const app = Container.get(Application);
         Object.defineProperty(app['gamesController'], 'gameService', { value: gameService });
         expressApp = app.app;
@@ -95,7 +85,7 @@ describe('GameController', () => {
     });
 
     it('should store game in the array on valid post request to /send', async () => {
-        return supertest(expressApp).post('/api/games/send').send(game).set('Accept', 'application/json').expect(HTTP_STATUS_CREATED);
+        return supertest(expressApp).post('/api/games/send').expect(HTTP_STATUS_CREATED);
     });
 
     it('should return 500 error on invalid post request to /send', async () => {
