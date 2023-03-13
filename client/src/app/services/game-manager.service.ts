@@ -107,13 +107,15 @@ export class GameManagerService {
         const originalImageData = canvas.getImageData(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT);
         const flashingOriginalImageData = canvas.getImageData(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT);
 
-        pixels.forEach((pixelPosition) => {
-            const pixelStartPosition = PIXEL_SIZE * (pixelPosition.x + pixelPosition.y * DEFAULT_WIDTH);
-            flashingOriginalImageData.data[pixelStartPosition] = 0;
-            flashingOriginalImageData.data[pixelStartPosition + 1] = 0;
-            flashingOriginalImageData.data[pixelStartPosition + 2] = 0;
-            flashingOriginalImageData.data[pixelStartPosition + 3] = 255;
-        });
+        for (let i = 0; i < this.gameData.nbDifferences; i++) {
+            pixels.forEach((pixelPosition) => {
+                const pixelStartPosition = PIXEL_SIZE * (pixelPosition.x + pixelPosition.y * DEFAULT_WIDTH);
+                flashingOriginalImageData.data[pixelStartPosition] = 0;
+                flashingOriginalImageData.data[pixelStartPosition + 1] = 0;
+                flashingOriginalImageData.data[pixelStartPosition + 2] = 0;
+                flashingOriginalImageData.data[pixelStartPosition + 3] = 255;
+            });
+        }
         // fait
         canvas.putImageData(flashingOriginalImageData, 0, 0);
         await this.wait(QUART_SECOND);

@@ -1,4 +1,4 @@
-import { Component, HostListener, OnInit } from '@angular/core';
+import { Component, HostListener } from '@angular/core';
 import { GameManagerService } from '@app/services/game-manager.service';
 
 const QUART_SECOND = 5000;
@@ -10,15 +10,13 @@ const QUART_SECOND = 5000;
 })
 
 // const btn = document.getElementById('btn');
-export class CheatComponent implements OnInit {
+export class CheatComponent {
     constructor(private gameManager: GameManagerService) {}
 
     // eslint-disable-next-line @typescript-eslint/member-ordering
     toggle = true;
     // eslint-disable-next-line @typescript-eslint/member-ordering
     status = 'Enable Cheat';
-
-    ngOnInit(): void {}
 
     onClick(): void {
         {
