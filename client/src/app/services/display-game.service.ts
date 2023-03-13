@@ -33,7 +33,7 @@ export class DisplayGameService {
         }
     }
 
-    convertAllGames() {
+    async convertAllGames() {
         const tempArray: Game[] = [];
         // eslint-disable-next-line @typescript-eslint/prefer-for-of
         for (let i = 0; i < this.tempGames.length; i++) {
