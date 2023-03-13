@@ -33,7 +33,7 @@ export class ConfigurationPageComponent implements OnInit {
     }
 
     async checkGames() {
-        await this.displayGames.loadAllGames();
+        await this.displayGames.loadAllGames().then(() => console.log('games fetched'));
         if (this.displayGames.games !== undefined) {
             this.games = this.displayGames.games;
             this.gamesDisplayed = this.games.slice(this.firstGame, this.lastGame);
