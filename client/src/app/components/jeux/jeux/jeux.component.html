@@ -37,7 +37,7 @@
 
         <div class="buttons">
             <div *ngIf="!isConfigurationMode" class="buttons">
-                <button (click)="goToLoginPage()">Jouer</button>
+                <button (click)="playSolo()">Jouer</button>
                 <button (click)="playMultiplayer()">{{ multiplayerButton }}</button>
             </div>
             <div *ngIf="isConfigurationMode" class="buttons">
