@@ -7,7 +7,7 @@ import { environment } from 'src/environments/environment';
 })
 export class SocketClientService {
     socket: Socket;
-    private readonly baseUrl: string = environment.serverUrl;
+    private readonly baseUrl: string = environment.serverUrlSocket;
 
     isSocketAlive() {
         return this.socket && this.socket.connected;
