@@ -28,12 +28,12 @@ export class ConfigurationPageComponent implements OnInit {
 
     constructor(private router: Router, private displayGames: DisplayGameService) {}
 
-    async ngOnInit() {
-        await this.checkGames();
+    ngOnInit() {
+        this.checkGames();
     }
 
     async checkGames() {
-        await this.displayGames.loadAllGames();
+        // await this.displayGames.loadAllGames();
         if (this.displayGames.games !== undefined) {
             this.games = this.displayGames.games;
             this.gamesDisplayed = this.games.slice(this.firstGame, this.lastGame);
