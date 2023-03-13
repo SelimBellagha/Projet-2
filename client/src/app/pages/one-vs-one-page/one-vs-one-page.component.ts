@@ -168,7 +168,7 @@ export class OneVsOnePageComponent implements OnInit, AfterViewInit {
     }
 
     winCheck() {
-        if (this.nbDifferencesFoundUser1 === this.nbDifferenceToWin || this.nbDifferencesFoundUser1 === this.nbDifferenceToWin) {
+        if (this.nbDifferencesFoundUser1 === this.nbDifferenceToWin || this.nbDifferencesFoundUser2 === this.nbDifferenceToWin) {
             if (this.nbDifferencesFoundUser1 === this.nbDifferenceToWin && this.socketService.socket.id === this.roomId) {
                 this.winGame();
             } else if (this.nbDifferencesFoundUser2 === this.nbDifferenceToWin && this.socketService.socket.id !== this.roomId) {
