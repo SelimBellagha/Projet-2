@@ -144,14 +144,28 @@ export class GameCreationPageComponent implements AfterViewInit {
         }
     }
 
+    onUndo(): void {
+        this.canvasManager.undoAction();
+    }
+
+    onRedo(): void {
+        this.canvasManager.redoAction();
+    }
+
+    onSetWidth(width: string): void {
+        this.canvasManager.setWidth(Number(width));
+    }
+
+    onChangeColor(color: string) {
+        this.canvasManager.setColor(color);
+    }
     onClosingPopUp(): void {
         this.popUpWindow.nativeElement.style.display = 'none';
     }
 
     onSave(gameName: HTMLInputElement): void {
         const name = gameName.value;
-        if (name) {
-            window.alert('posting the game to server');
+        if (name && !name.includes(' ')) {
             this.currentGameData.name = name;
             this.commService.addNewGame(this.currentGameData);
             this.goToConfiguration();

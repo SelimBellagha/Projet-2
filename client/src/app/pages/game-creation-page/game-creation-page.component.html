@@ -2,11 +2,16 @@
     <div class="top-bar">
         <button class="configuration" type="button" (click)="goToConfiguration()">Configuration</button>
         <h2 class="note-container">Les images doivent être en format BMP 24-bit de taille 640x480 pixels</h2>
-        <span>Emplacement pour les outils</span>
         <div>
             <button (click)="changeTool(0)">Pencil</button>
             <button (click)="changeTool(1)">Rectangle</button>
             <button (click)="changeTool(2)">Eraser</button>
+            <button (click)="onRedo()">Redo</button>
+            <button (click)="onUndo()">Undo</button>
+            <input #widthPicker (change)="onSetWidth(widthPicker.value)" type="range" id="width" name="width" min="2" max="40" step="2" value="8" />
+            <label for="width  ">width</label>
+            <label for="colorpicker">Color Picker:</label>
+            <input #colorPicker (change)="onChangeColor(colorPicker.value)" type="color" id="colorpicker" value="#ff0000" />
         </div>
     </div>
 

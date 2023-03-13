@@ -21,6 +21,7 @@ export class DrawService {
         this.drawingContext.moveTo(startPosition.x, startPosition.y);
         this.drawingContext.strokeStyle = this.color;
         this.drawingContext.lineWidth = this.width;
+        this.drawingContext.lineCap = 'round';
         this.drawingContext.lineTo(endPosition.x, endPosition.y);
         this.drawingContext.stroke();
         this.drawingContext.restore();
