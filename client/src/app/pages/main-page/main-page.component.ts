@@ -1,7 +1,8 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommunicationService } from '@app/services/communication.service';
+import { SocketClientService } from '@app/services/socket-client-service.service';
 import { Message } from '@common/message';
 import { BehaviorSubject } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -11,11 +12,17 @@ import { map } from 'rxjs/operators';
     templateUrl: './main-page.component.html',
     styleUrls: ['./main-page.component.scss'],
 })
-export class MainPageComponent {
+export class MainPageComponent implements OnInit {
     readonly title: string = 'LOG2990';
     message: BehaviorSubject<string> = new BehaviorSubject<string>('');
 
-    constructor(private readonly communicationService: CommunicationService, private router: Router) {}
+    constructor(private readonly communicationService: CommunicationService, private router: Router, private socketManager: SocketClientService) {}
+
+    ngOnInit(): void {
+        if (!this.socketManager.isSocketAlive()) {
+            this.socketManager.connect();
+        }
+    }
 
     sendTimeToServer(): void {
         const newTimeMessage: Message = {

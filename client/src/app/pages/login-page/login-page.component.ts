@@ -27,7 +27,11 @@ export class LoginPageComponent {
             window.alert('Nom de joueur invalide: entrez un nom non vide');
         } else {
             this.onClickSubmit(name);
-            this.router.navigate(['/soloView']);
+            if (this.loginService.getGameType() === false) {
+                this.router.navigate(['/soloView']);
+            } else {
+                this.router.navigate(['/salleAttente']);
+            }
         }
     }
 }

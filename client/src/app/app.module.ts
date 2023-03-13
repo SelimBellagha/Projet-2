@@ -17,6 +17,9 @@ import { GameCreationPageComponent } from './pages/game-creation-page/game-creat
 import { LoginPageComponent } from './pages/login-page/login-page.component';
 import { SelectionPageComponentComponent } from './pages/selection-page-component/selection-page-component.component';
 import { SoloViewPageComponent } from './pages/solo-view-page/solo-view-page.component';
+import { OneVsOnePageComponent } from './pages/one-vs-one-page/one-vs-one-page.component';
+import { SalleAttenteComponent } from './pages/salle-attente/salle-attente.component';
+import { JoinBarComponent } from './components/join-bar/join-bar.component';
 
 /**
  * Main module that is used in main.ts.
@@ -38,6 +41,9 @@ import { SoloViewPageComponent } from './pages/solo-view-page/solo-view-page.com
         SelectionPageComponentComponent,
         JeuxComponent,
         LoginPageComponent,
+        OneVsOnePageComponent,
+        SalleAttenteComponent,
+        JoinBarComponent,
     ],
     imports: [AppMaterialModule, AppRoutingModule, BrowserAnimationsModule, BrowserModule, FormsModule, HttpClientModule],
     providers: [],
