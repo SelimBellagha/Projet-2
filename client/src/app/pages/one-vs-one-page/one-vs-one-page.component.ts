@@ -19,6 +19,7 @@ export class OneVsOnePageComponent implements OnInit, AfterViewInit {
     @ViewChild('popUpWindowLose') popUpWindowLose: ElementRef<HTMLDivElement>;
     @ViewChild('popUpWindowGiveUp') popUpWindowGiveUp: ElementRef<HTMLDivElement>;
     username: string;
+    username2: string;
     gameName: string;
     difficulty: string;
     nbDifferences: number;
@@ -47,12 +48,17 @@ export class OneVsOnePageComponent implements OnInit, AfterViewInit {
     ) {}
 
     ngOnInit() {
+        this.roomId = this.loginService.getRoomId();
         this.socketService.on('username', (data: { hostUsername: string; inviteUsername: string }) => {
             this.user1 = data.hostUsername;
             this.user2 = data.inviteUsername;
+            if (this.socketService.socket.id === this.roomId) {
+                this.username2 = this.user2;
+            } else {
+                this.username2 = this.user1;
+            }
         });
         this.username = this.loginService.getFormData();
-        this.roomId = this.loginService.getRoomId();
         this.startTimer();
         this.nbDifferencesFoundUser1 = 0;
         this.nbDifferencesFoundUser2 = 0;
