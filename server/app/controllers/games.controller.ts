@@ -28,7 +28,6 @@ export class GameController {
 
         // GET games/:id
         this.router.get('/:id', async (req: Request, res: Response) => {
-            // const id: number = parseInt(req.params.id, 10);
             try {
                 const game: GameData = await this.gameService.getGamebyId(req.params.id);
                 if (game) {
