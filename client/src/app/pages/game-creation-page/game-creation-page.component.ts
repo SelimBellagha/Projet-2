@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { GameData } from '@app/interfaces/game.interface';
 import { CanvasManagerService } from '@app/services/canvas-manager.service';
 import { CommunicationService } from '@app/services/communication.service';
+import { DisplayGameService } from '@app/services/display-game.service';
 
 @Component({
     selector: 'app-game-creation-page',
@@ -17,7 +18,13 @@ export class GameCreationPageComponent implements AfterViewInit {
 
     radius: number = 3;
     currentGameData: GameData;
-    constructor(private router: Router, private canvasManager: CanvasManagerService, private commService: CommunicationService) {}
+    // eslint-disable-next-line max-params
+    constructor(
+        private router: Router,
+        private canvasManager: CanvasManagerService,
+        private commService: CommunicationService,
+        private displayGames: DisplayGameService,
+    ) {}
 
     ngAfterViewInit(): void {
         this.canvasManager.leftCanvasContext = this.leftCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
@@ -68,14 +75,13 @@ export class GameCreationPageComponent implements AfterViewInit {
         this.popUpWindow.nativeElement.style.display = 'none';
     }
 
-    onSave(gameName: HTMLInputElement): void {
+    async onSave(gameName: HTMLInputElement): Promise<void> {
         const name = gameName.value;
         if (name) {
             window.alert('posting the game to server');
             this.currentGameData.name = name;
             this.commService.addNewGame(this.currentGameData);
-            // eslint-disable-next-line no-console
-            console.log(this.currentGameData);
+            await this.displayGames.loadAllGames();
             this.goToConfiguration();
         } else {
             window.alert('name not valid');
