@@ -17,12 +17,11 @@ export class GameManager {
         return this.gamesData[id];
     }
 
-    async addGame(newGame: GameData): Promise<GameData> {
+    async addGame(newGame: GameData): Promise<void> {
         const id = this.countProperties();
         const gameId = String(id);
         newGame.id = gameId;
         this.gamesData[id] = newGame;
-        return this.gamesData[id];
     }
     /*
     async deleteGame(id: string): Promise<null | void> {
