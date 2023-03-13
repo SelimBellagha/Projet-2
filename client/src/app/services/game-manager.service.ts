@@ -6,6 +6,7 @@ import { DifferenceVerificationService } from './difference-verification.service
 import { DEFAULT_HEIGHT, DEFAULT_WIDTH } from './draw.service';
 
 const PIXEL_SIZE = 4;
+const FLASH_TIME = 250;
 const ONE_SECOND = 1000;
 @Injectable({
     providedIn: 'root',
@@ -48,9 +49,7 @@ export class GameManagerService {
                 this.locked = false;
                 this.playDifferenceAudio();
                 // Clignotement de tout les pixels faisant partie de la différence
-                await this.flashImages(this.gameData.differences[this.lastDifferenceFound]);
-                // Changer les pixels de droite pour qu'ils soient comme à gauche
-                this.replacePixels(this.gameData.differences[this.lastDifferenceFound]);
+                this.flashImages(this.gameData.differences[this.lastDifferenceFound]);
                 return true;
             } else {
                 // Écrire Erreur sur le canvas à la position
@@ -77,6 +76,8 @@ export class GameManagerService {
     async flashImages(pixels: Vec2[]): Promise<void> {
         this.flashPixels(pixels, this.originalImageCanvas);
         await this.flashPixels(pixels, this.modifiedImageCanvas);
+        // Changer les pixels de droite pour qu'ils soient comme à gauche
+        this.replacePixels(this.gameData.differences[this.lastDifferenceFound]);
     }
     async flashPixels(pixels: Vec2[], canvas: CanvasRenderingContext2D): Promise<void> {
         const originalImageData = canvas.getImageData(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT);
@@ -90,13 +91,12 @@ export class GameManagerService {
             flashingOriginalImageData.data[pixelStartPosition + 3] = 255;
         });
         // fait
-        canvas.putImageData(flashingOriginalImageData, 0, 0);
-        await this.wait(ONE_SECOND);
-        canvas.putImageData(originalImageData, 0, 0);
-        await this.wait(ONE_SECOND);
-        canvas.putImageData(flashingOriginalImageData, 0, 0);
-        await this.wait(ONE_SECOND);
-        canvas.putImageData(originalImageData, 0, 0);
+        for (let i = 0; i <= 3; i++) {
+            canvas.putImageData(flashingOriginalImageData, 0, 0);
+            await this.wait(FLASH_TIME);
+            canvas.putImageData(originalImageData, 0, 0);
+            await this.wait(FLASH_TIME);
+        }
     }
 
     async wait(ms: number): Promise<void> {
