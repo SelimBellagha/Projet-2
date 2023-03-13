@@ -137,14 +137,13 @@ canvas {
     background-color: white;
 }
 
-.title{
+.title {
     text-align: center;
     font-weight: bold;
     font-family: serif;
     font-style: italic;
     font-size: xx-large;
 }
-
 
 .button-pop {
     margin-left: 20%;
@@ -153,7 +152,7 @@ canvas {
     height: 5%;
     width: 20%;
     border-radius: 6px;
-    font-family:'Franklin Gothic Medium';
+    font-family: 'Franklin Gothic Medium';
     font-size: 20px;
 }
 
@@ -171,7 +170,6 @@ canvas {
 #button-home {
     background-color: red;
     border-color: rgb(198, 2, 2);
-    
 }
 
 .modal {
@@ -237,10 +235,10 @@ canvas {
 
 .message-box-holder {
     width: 100%;
-  margin: 0 0 15px;
-  display: flex;
-  flex-flow: column;
-  align-items: flex-end;
+    margin: 0 0 15px;
+    display: flex;
+    flex-flow: column;
+    align-items: flex-end;
 }
 
 .name {
@@ -259,16 +257,16 @@ canvas {
     padding: 6px 10px;
     border-radius: 6px 0 6px 0;
     position: relative;
-    background: rgba(100, 170, 0, .1);
-    border: 2px solid rgba(100, 170, 0, .1);
+    background: rgba(100, 170, 0, 0.1);
+    border: 2px solid rgba(100, 170, 0, 0.1);
     color: #6c6c6c;
     font-size: 12px;
 }
 
 .server {
-    background: rgba(0, 114, 135, .1);
-  border: 2px solid rgba(0, 114, 135, .1);
-  align-self: flex-start;
+    background: rgba(0, 114, 135, 0.1);
+    border: 2px solid rgba(0, 114, 135, 0.1);
+    align-self: flex-start;
 }
 
 .server::after {
@@ -277,7 +275,7 @@ canvas {
     top: -22px;
     left: 9px;
     border: 10px solid transparent;
-    border-bottom: 10px solid rgba(0, 114, 135, .2);
+    border-bottom: 10px solid rgba(0, 114, 135, 0.2);
     border-left: none;
 }
 
@@ -285,32 +283,32 @@ canvas {
 
 .chat-input-holder {
     display: flex;
-    border-top: 1px solid rgba(0, 0, 0, .1);
-  }
-  
-  .chat-input {
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.chat-input {
     resize: none;
     padding: 5px 10px;
     height: 40px;
     font-family: 'Lato', sans-serif;
-      font-size: 14px;
+    font-size: 14px;
     color: #999999;
     flex: 1;
     border: none;
-    background: rgba(0, 0, 0, .05);
-     border-bottom: 1px solid rgba(0, 0, 0, .05);
-  }
-  
-  .chat-input:focus, .message-send:focus {
-    outline: none;
-  }
-  
-  .message-send::-moz-focus-inner {
-      border:0;
-      padding:0;
-  }
+    background: rgba(0, 0, 0, 0.05);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
 
-  
+.chat-input:focus,
+.message-send:focus {
+    outline: none;
+}
+
+.message-send::-moz-focus-inner {
+    border: 0;
+    padding: 0;
+}
+
 .message-send {
     background: #9cc900;
     background: -moz-linear-gradient(180deg, #ff9500, #d68b00);
@@ -323,7 +321,4 @@ canvas {
     padding: 0 15px;
     border: none;
     text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.3);
-  }
-  
-
-  
+}

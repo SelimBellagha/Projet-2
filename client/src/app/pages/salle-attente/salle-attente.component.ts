@@ -35,8 +35,9 @@ export class SalleAttenteComponent implements OnInit {
     }
 
     acceptListen() {
-        this.socketService.on('goToGame', () => {
-            // this.router.navigate(['/1v1']);
+        this.socketService.on('goToGame', (data: { roomId: string }) => {
+            this.router.navigate(['/oneVSone']);
+            this.loginService.setRoomId(data.roomId);
         });
     }
 

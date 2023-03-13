@@ -5,6 +5,7 @@ import { Vec2 } from '@app/interfaces/vec2';
 import { DisplayGameService } from '@app/services/display-game.service';
 import { GameManagerService } from '@app/services/game-manager.service';
 import { LoginFormService } from '@app/services/login-form.service';
+import { SocketClientService } from '@app/services/socket-client-service.service';
 
 @Component({
     selector: 'app-one-vs-one-page',
@@ -14,13 +15,14 @@ import { LoginFormService } from '@app/services/login-form.service';
 export class OneVsOnePageComponent implements OnInit, AfterViewInit {
     @ViewChild('modifiedImage') modifiedCanvas: ElementRef<HTMLCanvasElement>;
     @ViewChild('originalImage') originalCanvas: ElementRef<HTMLCanvasElement>;
-    @ViewChild('popUpWindow') popUpWindow: ElementRef<HTMLDivElement>;
+    @ViewChild('popUpWindowWin') popUpWindowWin: ElementRef<HTMLDivElement>;
+    @ViewChild('popUpWindowLose') popUpWindowLose: ElementRef<HTMLDivElement>;
     @ViewChild('popUpWindowGiveUp') popUpWindowGiveUp: ElementRef<HTMLDivElement>;
     username: string;
+    username2: string;
     gameName: string;
     difficulty: string;
     nbDifferences: number;
-    nbDifferencesFound: number;
     minutes: number = 0;
     secondes1: number = 0;
     secondes2: number = 0;
@@ -29,34 +31,65 @@ export class OneVsOnePageComponent implements OnInit, AfterViewInit {
     intervalID: number;
 
     /// //Les données statiques
-    user1: string = 'Yahya';
-    user2: string = 'Selim';
+    user1: string;
+    user2: string;
     nbDifferencesFoundUser1: number;
     nbDifferencesFoundUser2: number;
+    roomId: string;
+    nbDifferenceToWin: number;
 
+    // eslint-disable-next-line max-params
     constructor(
         private router: Router,
         private loginService: LoginFormService,
         private displayService: DisplayGameService,
         private gameManager: GameManagerService,
+        private socketService: SocketClientService,
     ) {}
 
     ngOnInit() {
+        this.roomId = this.loginService.getRoomId();
+        this.socketService.on('username', (data: { hostUsername: string; inviteUsername: string }) => {
+            this.user1 = data.hostUsername;
+            this.user2 = data.inviteUsername;
+            if (this.socketService.socket.id === this.roomId) {
+                this.username2 = this.user2;
+            } else {
+                this.username2 = this.user1;
+            }
+        });
         this.username = this.loginService.getFormData();
         this.startTimer();
-        this.nbDifferencesFound = 0;
+        this.nbDifferencesFoundUser1 = 0;
+        this.nbDifferencesFoundUser2 = 0;
         if (this.displayService.game) {
             this.gameManager.initializeGame(this.displayService.game);
             this.gameName = this.displayService.game.name;
             this.difficulty = this.displayService.convertDifficulty(this.displayService.game);
             this.nbDifferences = this.displayService.game.nbDifferences;
+            this.nbDifferenceToWin = Math.ceil(this.nbDifferences / 2);
         }
     }
 
-    ngAfterViewInit() {
+    async ngAfterViewInit() {
         this.gameManager.modifiedImageCanvas = this.modifiedCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         this.gameManager.originalImageCanvas = this.originalCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         this.gameManager.putImages();
+        await this.socketService.on(
+            'differenceUpdate',
+            async (data: { nbDifferenceHost: number; nbDifferenceInvite: number; differenceId: number }) => {
+                this.nbDifferencesFoundUser1 = data.nbDifferenceHost;
+                this.nbDifferencesFoundUser2 = data.nbDifferenceInvite;
+                if (!(this.gameManager.lastDifferenceFound === data.differenceId)) {
+                    await this.gameManager.flashImages(this.gameManager.gameData.differences[data.differenceId]);
+                    await this.gameManager.replacePixels(this.gameManager.gameData.differences[data.differenceId]);
+                }
+                this.winCheck();
+            },
+        );
+        this.socketService.on('win', () => {
+            this.winGame();
+        });
     }
 
     timer() {
@@ -89,19 +122,25 @@ export class OneVsOnePageComponent implements OnInit, AfterViewInit {
         clearInterval(this.intervalID);
     }
 
-    endGame(): void {
+    loseGame() {
         this.stopTimer();
-        this.gameManager.playWinAudio();
-        this.popUpWindow.nativeElement.style.display = 'block';
+        this.popUpWindowLose.nativeElement.style.display = 'block';
     }
 
+    winGame(): void {
+        this.stopTimer();
+        this.gameManager.playWinAudio();
+        this.popUpWindowWin.nativeElement.style.display = 'block';
+    }
     goToHomePage() {
-        this.popUpWindow.nativeElement.style.display = 'none';
+        this.popUpWindowWin.nativeElement.style.display = 'none';
+        this.popUpWindowLose.nativeElement.style.display = 'none';
         this.router.navigate(['home']);
     }
 
-    goToCongratulations() {
-        this.popUpWindow.nativeElement.style.display = 'block';
+    giveUp() {
+        this.socketService.send('giveUp', { roomId: this.roomId });
+        this.goToHomePage();
     }
 
     goToGiveUp() {
@@ -122,11 +161,20 @@ export class OneVsOnePageComponent implements OnInit, AfterViewInit {
             const mousePosition: Vec2 = { x: event.offsetX, y: event.offsetY };
             if (await this.gameManager.onPositionClicked(mousePosition)) {
                 // Incrementer le cpt de differences
-                this.nbDifferencesFound++;
-                if (this.nbDifferences === this.nbDifferencesFound) {
-                    this.endGame();
-                }
+                this.socketService.send('differenceFound', { roomId: this.roomId, differenceId: this.gameManager.lastDifferenceFound });
                 // Si on a tout trouvé, finir le jeu.
+            }
+        }
+    }
+
+    winCheck() {
+        if (this.nbDifferencesFoundUser1 === this.nbDifferenceToWin || this.nbDifferencesFoundUser1 === this.nbDifferenceToWin) {
+            if (this.nbDifferencesFoundUser1 === this.nbDifferenceToWin && this.socketService.socket.id === this.roomId) {
+                this.winGame();
+            } else if (this.nbDifferencesFoundUser2 === this.nbDifferenceToWin && this.socketService.socket.id !== this.roomId) {
+                this.winGame();
+            } else {
+                this.loseGame();
             }
         }
     }

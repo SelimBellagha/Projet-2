@@ -4,8 +4,9 @@ import { Injectable } from '@angular/core';
     providedIn: 'root',
 })
 export class LoginFormService {
+    private roomId: string;
     private username: string;
-    private multiplayer: boolean;
+    private multiplayer: boolean = false;
     private host: boolean;
     private gameId: string;
 
@@ -39,5 +40,13 @@ export class LoginFormService {
 
     getGameId() {
         return this.gameId;
+    }
+
+    getRoomId() {
+        return this.roomId;
+    }
+
+    setRoomId(id: string) {
+        this.roomId = id;
     }
 }

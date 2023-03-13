@@ -6,6 +6,8 @@ export class Lobby {
     queue: Map<string, Player>;
     secondPlayer: Player;
     gameId: string;
+    nbDifferencesHost = 0;
+    nbDifferencesInvite = 0;
 
     constructor(host: Player, gameId: string) {
         this.host = host;
@@ -40,6 +42,10 @@ export class Lobby {
     addPlayer(playerToAdd: Player) {
         this.secondPlayer = playerToAdd;
         this.queue.delete(playerToAdd.socketId);
+    }
+
+    getSecondPlayer() {
+        return this.secondPlayer;
     }
 
     checkSecondPlayer() {
