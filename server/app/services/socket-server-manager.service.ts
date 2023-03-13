@@ -53,7 +53,7 @@ export class SocketServerManager {
                 const roomId = this.getRoom(data.gameId);
                 const room = this.sio.sockets.adapter.rooms.get(roomId);
                 if (room) {
-                    socket.emit('playersInGame', { playersNumber: String(room.size) });
+                    socket.emit('playersInGame', { playersNumber: `${room.size}` });
                 } else {
                     socket.emit('playersInGame', { playersNumber: '0' });
                 }

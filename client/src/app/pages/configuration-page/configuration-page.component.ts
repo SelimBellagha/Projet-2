@@ -1,6 +1,7 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { DisplayGameService } from '@app/services/display-game.service';
+import { SocketClientService } from '@app/services/socket-client-service.service';
 
 type Game = {
     title: string;
@@ -26,9 +27,12 @@ export class ConfigurationPageComponent implements OnInit {
     games: Game[];
     gamesDisplayed: Game[];
 
-    constructor(private router: Router, private displayGames: DisplayGameService) {}
+    constructor(private router: Router, private displayGames: DisplayGameService, private socketManager: SocketClientService) {}
 
     async ngOnInit() {
+        if (!this.socketManager.isSocketAlive()) {
+            this.socketManager.connect();
+        }
         await this.checkGames();
     }
 

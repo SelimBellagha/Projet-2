@@ -58,7 +58,7 @@ export class DisplayGameService {
     async getPlayersInGame(gameId: string): Promise<string> {
         return new Promise<string>((resolve) => {
             // eslint-disable-next-line object-shorthand
-            this.socketService.send('checkPlayersInGame', { gameId: gameId });
+            this.socketService.send('checkPlayersInGame', { gameId });
             this.socketService.on('playersInGame', (data: { playersNumber: string }) => {
                 resolve(data.playersNumber);
             });
