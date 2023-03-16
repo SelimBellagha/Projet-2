@@ -43,7 +43,7 @@ export class SalleAttenteComponent implements OnInit {
 
     refuseListen() {
         this.socketService.on('refused', () => {
-            this.router.navigate(['/home']);
+            this.router.navigate(['/gameSelection']);
         });
     }
 }
