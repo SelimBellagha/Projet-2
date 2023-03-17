@@ -55,4 +55,14 @@ export class DrawService {
         );
         this.drawingContext.restore();
     }
+
+    setColor(color: string): void {
+        this.color = color;
+    }
+    setWidth(width: number): void {
+        this.width = width;
+    }
+    enableSquare(enable: boolean): void {
+        this.isSquareEnabled = enable;
+    }
 }

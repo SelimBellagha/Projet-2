@@ -80,4 +80,16 @@ describe('DrawService', () => {
         service.drawRectangle(startPositionMock, endPositionMock);
         expect(fillRectSpy).toHaveBeenCalledOnceWith(startPositionMock.x, startPositionMock.y, 1, 1);
     });
+    it('setColor should change color attribute', () => {
+        service.setColor('blue');
+        expect(service.color).toEqual('blue');
+    });
+    it('setWidth should change width attribute', () => {
+        service.setWidth(2);
+        expect(service.width).toEqual(2);
+    });
+    it('enableSquare should change isSquareEnabled attribute', () => {
+        service.enableSquare(true);
+        expect(service.isSquareEnabled).toBeTrue();
+    });
 });

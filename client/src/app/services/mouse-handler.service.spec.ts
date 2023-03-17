@@ -19,7 +19,7 @@ describe('MouseHandlerService', () => {
         service.setFirstClick(positionMock, true);
         expect(service.firstPosition).toEqual(positionMock);
         expect(service.currentPosition).toEqual(positionMock);
-        expect(service.isLeftCanvasSelected).toBe(true);
+        expect(service.isLeftSelected).toBe(true);
         expect(service.isLeftButtonDown).toBeTrue();
     });
     it('updatePosition should change current position', () => {
@@ -30,5 +30,21 @@ describe('MouseHandlerService', () => {
     it('endClick should set isLeftButtonDOwnToFalse ', () => {
         service.endClick();
         expect(service.isLeftButtonDown).toBeFalse();
+    });
+    it('getCurrentPosition shoul return current position ', () => {
+        service.currentPosition = { x: 1, y: 2 };
+        expect(service.getCurrentPosition()).toEqual({ x: 1, y: 2 });
+    });
+    it('getFirstPosition shoul return first position ', () => {
+        service.firstPosition = { x: 1, y: 2 };
+        expect(service.getFirstPosition()).toEqual({ x: 1, y: 2 });
+    });
+    it('isLeftCanvasSelected should return isLeftSelected', () => {
+        service.isLeftSelected = false;
+        expect(service.isLeftCanvasSelected()).toBeFalse();
+    });
+    it('endClick should set isLeftButtonDOwnToFalse ', () => {
+        service.isLeftButtonDown = false;
+        expect(service.isButtonDown()).toBeFalse();
     });
 });

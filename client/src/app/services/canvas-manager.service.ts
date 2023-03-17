@@ -39,7 +39,7 @@ export class CanvasManagerService {
         this.resetCanvases();
         this.actionsDone = [];
         this.saveAction();
-        this.activeTool = Tool.Rectangle;
+        this.activeTool = Tool.Pencil;
         this.tempRectangleCanvas = new OffscreenCanvas(DEFAULT_WIDTH, DEFAULT_HEIGHT);
     }
 
@@ -48,16 +48,16 @@ export class CanvasManagerService {
     }
 
     setColor(color: string) {
-        this.drawService.color = color;
+        this.drawService.setColor(color);
     }
 
     setWidth(width: number) {
-        this.drawService.width = width;
+        this.drawService.setWidth(width);
     }
     enableSquare(enable: boolean) {
-        this.drawService.isSquareEnabled = enable;
-        if (this.activeTool === Tool.Rectangle && this.mouseHandler.isLeftButtonDown)
-            this.onMouseMove(this.mouseHandler.currentPosition, this.mouseHandler.isLeftCanvasSelected);
+        this.drawService.enableSquare(enable);
+        if (this.activeTool === Tool.Rectangle && this.mouseHandler.isButtonDown())
+            this.onMouseMove(this.mouseHandler.currentPosition, this.mouseHandler.isLeftCanvasSelected());
     }
 
     onMouseDown(clickPosition: Vec2, isLeftImage: boolean): void {
@@ -70,9 +70,6 @@ export class CanvasManagerService {
         }
         const ctx = this.tempRectangleCanvas.getContext('2d') as OffscreenCanvasRenderingContext2D;
         switch (this.activeTool) {
-            case Tool.Pencil:
-                // set le premier point
-                break;
             case Tool.Rectangle:
                 ctx.save();
                 ctx.globalCompositeOperation = 'copy';
@@ -85,34 +82,27 @@ export class CanvasManagerService {
                 this.drawService.erase(clickPosition);
                 break;
             default:
-                // error
                 break;
         }
         this.updateDisplay();
     }
 
     onMouseMove(mousePosition: Vec2, isLeftImage: boolean): void {
-        if (this.mouseHandler.isLeftButtonDown && isLeftImage === this.mouseHandler.isLeftCanvasSelected) {
+        if (this.mouseHandler.isButtonDown() && isLeftImage === this.mouseHandler.isLeftCanvasSelected()) {
             switch (this.activeTool) {
                 case Tool.Pencil:
                     // faire un trait depuis le dernier point
-                    this.drawService.drawLine(mousePosition, this.mouseHandler.currentPosition);
+                    this.drawService.drawLine(mousePosition, this.mouseHandler.getCurrentPosition());
                     break;
                 case Tool.Rectangle:
                     this.drawService.drawingContext.save();
                     this.drawService.drawingContext.globalCompositeOperation = 'copy';
                     this.drawService.drawingContext.drawImage(this.tempRectangleCanvas, 0, 0);
                     this.drawService.drawingContext.restore();
-                    this.drawService.drawRectangle(this.mouseHandler.firstPosition, mousePosition);
-                    // reset l'image à la dernière save
-                    // dessiner un rectangle de pt de départ à point courant
+                    this.drawService.drawRectangle(this.mouseHandler.getFirstPosition(), mousePosition);
                     break;
                 case Tool.Eraser:
-                    // mettre la position courant transparent + size
                     this.drawService.erase(mousePosition);
-                    break;
-                default:
-                    // error
                     break;
             }
             this.mouseHandler.updatePosition(mousePosition);
@@ -121,25 +111,9 @@ export class CanvasManagerService {
     }
 
     onMouseUp(isLeftImage: boolean): void {
-        if (isLeftImage === this.mouseHandler.isLeftCanvasSelected) {
+        if (isLeftImage === this.mouseHandler.isLeftCanvasSelected()) {
             this.mouseHandler.endClick();
             this.saveAction();
-            // Save l'avant plan courant
-            // Switch prob pas nécéssaire
-            switch (this.activeTool) {
-                case Tool.Pencil:
-                    //
-                    break;
-                case Tool.Rectangle:
-                    //
-                    break;
-                case Tool.Eraser:
-                    //
-                    break;
-                default:
-                    // error
-                    break;
-            }
         }
     }
     saveAction(): void {
