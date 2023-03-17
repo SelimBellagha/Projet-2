@@ -16,8 +16,10 @@ export class GameManagerService {
     modifiedImageCanvas: CanvasRenderingContext2D;
     differencesFound: boolean[];
     gameData: GameData;
+    // cheatMode: cheatMode;
     lastDifferenceFound: number = 0;
     locked: boolean;
+    state: boolean = false;
 
     constructor(private differenceVerification: DifferenceVerificationService) {}
 
@@ -103,6 +105,28 @@ export class GameManagerService {
     async wait(ms: number): Promise<void> {
         await new Promise((res) => setTimeout(res, ms));
     }
+    // giveHint(): void {
+    //     const canvasModifier = this.modifiedImageCanvas;
+    //     const canvasOriginal = this.originalImageCanvas;
+    //     const pixelDifferences = this.gameData.differences;
+
+    //     this.flashPixelsCheat(pixelDifferences, canvasModifier);
+    //     this.flashPixelsCheat(pixelDifferences, canvasOriginal);
+    // }
+    // onClick(): void {
+    //     {
+    //         // this.cheatMode.giveHint();
+    //         this.cheatMode.toggle = !this.cheatMode.toggle;
+    //         // this.status = this.toggle ? 'Enable Cheat' : 'Disable Cheat';
+    //     }
+    // }
+    // getToogle(): boolean {
+    //     return this.cheatMode.toggle;
+    // }
+
+    stateChanger(): void {
+        this.state = !this.state;
+    }
     async flashPixelsCheat(pixels: Vec2[][], canvas: CanvasRenderingContext2D): Promise<void> {
         const originalImageData = canvas.getImageData(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT);
         const flashingOriginalImageData = canvas.getImageData(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT);
@@ -116,14 +140,15 @@ export class GameManagerService {
                 flashingOriginalImageData.data[pixelStartPosition + 3] = 255;
             });
         }
-        // fait
-        canvas.putImageData(flashingOriginalImageData, 0, 0);
-        await this.wait(QUART_SECOND);
-        canvas.putImageData(originalImageData, 0, 0);
-        await this.wait(QUART_SECOND);
-        canvas.putImageData(flashingOriginalImageData, 0, 0);
-        await this.wait(QUART_SECOND);
-        canvas.putImageData(originalImageData, 0, 0);
+        while (this.state) {
+            canvas.putImageData(flashingOriginalImageData, 0, 0);
+            await this.wait(QUART_SECOND);
+            canvas.putImageData(originalImageData, 0, 0);
+            await this.wait(QUART_SECOND);
+            canvas.putImageData(flashingOriginalImageData, 0, 0);
+            await this.wait(QUART_SECOND);
+            canvas.putImageData(originalImageData, 0, 0);
+        }
     }
 
     replacePixels(pixels: Vec2[]): void {

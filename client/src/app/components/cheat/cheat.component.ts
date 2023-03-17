@@ -1,7 +1,7 @@
 import { Component, HostListener } from '@angular/core';
 import { GameManagerService } from '@app/services/game-manager.service';
 
-const QUART_SECOND = 5000;
+// const QUART_SECOND = 5000;
 
 @Component({
     selector: 'app-cheat',
@@ -14,18 +14,17 @@ export class CheatComponent {
     constructor(private gameManager: GameManagerService) {}
 
     // eslint-disable-next-line @typescript-eslint/member-ordering
-    toggle = true;
+    toggle = false;
     // eslint-disable-next-line @typescript-eslint/member-ordering
     status = 'Enable Cheat';
 
     onClick(): void {
         {
             this.toggle = !this.toggle;
+            this.gameManager.stateChanger();
             this.status = this.toggle ? 'Enable Cheat' : 'Disable Cheat';
             this.giveHint();
         }
-        // btn.style.backgroundColor = 'salmon';
-        // btn.style.color = 'white';
     }
     // eslint-disable-next-line @typescript-eslint/member-ordering
     @HostListener('document:keyup', ['$event'])
@@ -38,14 +37,18 @@ export class CheatComponent {
     }
 
     giveHint(): void {
-        const canvasModifier = this.gameManager.modifiedImageCanvas;
-        const canvasOriginal = this.gameManager.originalImageCanvas;
-        const pixelDifferences = this.gameManager.gameData.differences;
+        if (this.toggle) {
+            const canvasModifier = this.gameManager.modifiedImageCanvas;
+            const canvasOriginal = this.gameManager.originalImageCanvas;
+            const pixelDifferences = this.gameManager.gameData.differences;
 
-        for (let i = 0; i < this.gameManager.gameData.nbDifferences; i++) {
             this.gameManager.flashPixelsCheat(pixelDifferences, canvasModifier);
             this.gameManager.flashPixelsCheat(pixelDifferences, canvasOriginal);
-            this.gameManager.wait(QUART_SECOND);
+        } else {
+            return;
         }
+    }
+    getToogle(): boolean {
+        return this.toggle;
     }
 }
