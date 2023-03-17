@@ -115,9 +115,9 @@ export class CanvasManagerService {
                     // error
                     break;
             }
+            this.mouseHandler.updatePosition(mousePosition);
         }
         this.updateDisplay();
-        this.mouseHandler.updatePosition(mousePosition);
     }
 
     onMouseUp(isLeftImage: boolean): void {

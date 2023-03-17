@@ -2,10 +2,11 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
+import { MouseButton } from '@app/components/play-area/play-area.component';
 import { GameData } from '@app/interfaces/game.interface';
 import { CanvasManagerService } from '@app/services/canvas-manager.service';
 import { CommunicationService } from '@app/services/communication.service';
-import { GameCreationPageComponent } from './game-creation-page.component';
+import { GameCreationPageComponent, Tool } from './game-creation-page.component';
 import SpyObj = jasmine.SpyObj;
 
 describe('GameCreationPageComponent', () => {
@@ -23,6 +24,21 @@ describe('GameCreationPageComponent', () => {
             'changeRightBackground',
             'changeLeftBackground',
             'changeBothBackgrounds',
+            'init',
+            'setTool',
+            'swapForegrounds',
+            'duplicateLeft',
+            'duplicateRight',
+            'resetLeftForeground',
+            'resetRightForeground',
+            'undoAction',
+            'redoAction',
+            'setWidth',
+            'setColor',
+            'onMouseUp',
+            'onMouseDown',
+            'onMouseMove',
+            'enableSquare',
         ]);
         communicationSpy = jasmine.createSpyObj('CommunicationService', ['addNewGame']);
 
@@ -63,17 +79,17 @@ describe('GameCreationPageComponent', () => {
 
     it('updating the file input for the right image should call changeRightBackground from service', () => {
         const input: HTMLInputElement = document.getElementById('rightImageInput') as HTMLInputElement;
-        input.dispatchEvent(new Event('change'));
+        input.dispatchEvent(new Event('input'));
         expect(canvasManagerServiceSpy.changeRightBackground).toHaveBeenCalled();
     });
     it('updating the file input for the left image should call changeLeftBackground from service', () => {
         const input: HTMLInputElement = document.getElementById('leftImageInput') as HTMLInputElement;
-        input.dispatchEvent(new Event('change'));
+        input.dispatchEvent(new Event('input'));
         expect(canvasManagerServiceSpy.changeLeftBackground).toHaveBeenCalled();
     });
     it('updating the file input for the right image should call changeRightBackground from service', () => {
         const input: HTMLInputElement = document.getElementById('middleImageInput') as HTMLInputElement;
-        input.dispatchEvent(new Event('change'));
+        input.dispatchEvent(new Event('input'));
         expect(canvasManagerServiceSpy.changeBothBackgrounds).toHaveBeenCalled();
     });
 
@@ -131,5 +147,164 @@ describe('GameCreationPageComponent', () => {
         const routerSpy = spyOn(router, 'navigate');
         component.goToConfiguration();
         expect(routerSpy).toHaveBeenCalled();
+    });
+    it('changeTool should call setTool from canvasManager ', () => {
+        component.changeTool(Tool.Eraser);
+        expect(canvasManagerServiceSpy.setTool).toHaveBeenCalled();
+    });
+
+    it('onSwap should call swapForegrounds from canvasManager ', () => {
+        component.onSwap();
+        expect(canvasManagerServiceSpy.swapForegrounds).toHaveBeenCalled();
+    });
+    it(' onDuplicate should call duplicateLeft from canvasManager if parameter leftImage is true', () => {
+        component.onDuplicate(true);
+        expect(canvasManagerServiceSpy.duplicateLeft).toHaveBeenCalled();
+    });
+    it(' onDuplicate should call duplicateRight from canvasManager if parameter leftImage is false', () => {
+        component.onDuplicate(false);
+        expect(canvasManagerServiceSpy.duplicateRight).toHaveBeenCalled();
+    });
+    it(' onResetForeground should call resetleftForeground from canvasManager if parameter leftImage is true', () => {
+        component.onResetForeground(true);
+        expect(canvasManagerServiceSpy.resetLeftForeground).toHaveBeenCalled();
+    });
+    it(' onResetForeground should call resetRightForeground from canvasManager if parameter leftImage is false', () => {
+        component.onResetForeground(false);
+        expect(canvasManagerServiceSpy.resetRightForeground).toHaveBeenCalled();
+    });
+    it('onUndo should call undoAction from canvasManager ', () => {
+        component.onUndo();
+        expect(canvasManagerServiceSpy.undoAction).toHaveBeenCalled();
+    });
+    it(' onRedo should call redoAction from canvasManager', () => {
+        component.onRedo();
+        expect(canvasManagerServiceSpy.redoAction).toHaveBeenCalled();
+    });
+    it(' onSetWidth should call setWwidth from canvasManager', () => {
+        component.onSetWidth('1');
+        expect(canvasManagerServiceSpy.setWidth).toHaveBeenCalled();
+    });
+    it('onChangeColor should call setColor from canvasManager ', () => {
+        component.onChangeColor('red');
+        expect(canvasManagerServiceSpy.setColor).toHaveBeenCalled();
+    });
+    it('onMouseDown should call onMouseDown from canvasManager if button pressed is left button ', () => {
+        const eventMock = { button: MouseButton.Left, offsetX: 0, offsetY: 0 } as MouseEvent;
+        component.onMouseDown(eventMock, true);
+        expect(canvasManagerServiceSpy.onMouseDown).toHaveBeenCalled();
+    });
+    it('onMouseDown should not call onMouseDown from canvasManager if button pressed is not left button ', () => {
+        const eventMock = { button: MouseButton.Right, offsetX: 0, offsetY: 0 } as MouseEvent;
+        component.onMouseDown(eventMock, true);
+        expect(canvasManagerServiceSpy.onMouseDown).toHaveBeenCalledTimes(0);
+    });
+    it('onMouseMove should call onMouseMove from canvasManager', () => {
+        const eventMock = { button: MouseButton.Left, offsetX: 0, offsetY: 0 } as MouseEvent;
+        component.onMouseMove(eventMock, true);
+        expect(canvasManagerServiceSpy.onMouseMove).toHaveBeenCalled();
+    });
+    it('onMouseUp should call onMouseUp from canvasManager if button unpressed is left button ', () => {
+        const eventMock = { button: MouseButton.Left, offsetX: 0, offsetY: 0 } as MouseEvent;
+        component.onMouseUp(eventMock, true);
+        expect(canvasManagerServiceSpy.onMouseUp).toHaveBeenCalled();
+    });
+    it('onMouseUp should not call onMouseUp from canvasManager if button unpressed is not left button ', () => {
+        const eventMock = { button: MouseButton.Right, offsetX: 0, offsetY: 0 } as MouseEvent;
+        component.onMouseUp(eventMock, true);
+        expect(canvasManagerServiceSpy.onMouseUp).toHaveBeenCalledTimes(0);
+    });
+    it('handleKeyDown should call enableSquare if key pressed is ShiftRight or ShiftLeft', () => {
+        const buttonEventMock = {
+            code: 'ShiftRight',
+        } as KeyboardEvent;
+        component.handleKeyDown(buttonEventMock);
+        expect(canvasManagerServiceSpy.enableSquare).toHaveBeenCalled();
+        const buttonEventMock2 = {
+            code: 'ShiftLeft',
+        } as KeyboardEvent;
+        component.handleKeyDown(buttonEventMock2);
+        expect(canvasManagerServiceSpy.enableSquare).toHaveBeenCalledTimes(2);
+    });
+
+    it('handleKeyUp should call enableSquare if key pressed is ShiftRight or ShiftLeft', () => {
+        const buttonEventMock = {
+            code: 'ShiftRight',
+        } as KeyboardEvent;
+        component.handleKeyUp(buttonEventMock);
+        expect(canvasManagerServiceSpy.enableSquare).toHaveBeenCalled();
+        const buttonEventMock2 = {
+            code: 'ShiftLeft',
+        } as KeyboardEvent;
+        component.handleKeyUp(buttonEventMock2);
+        expect(canvasManagerServiceSpy.enableSquare).toHaveBeenCalledTimes(2);
+    });
+
+    it('handleKeyDown should set isControlPressed to true if key pressed is ControlRight or ControlLeft', () => {
+        const buttonEventMock = {
+            code: 'ControlRight',
+        } as KeyboardEvent;
+        component.handleKeyDown(buttonEventMock);
+        expect(component.inputsStates.isControlPressed).toBeTrue();
+        component.inputsStates.isControlPressed = false;
+        const buttonEventMock2 = {
+            code: 'ControlLeft',
+        } as KeyboardEvent;
+        component.handleKeyDown(buttonEventMock2);
+        expect(component.inputsStates.isControlPressed).toBeTrue();
+    });
+    it('handleKeyUp should set isControlPressed to false if key pressed is ControlRight or ControlLeft', () => {
+        component.inputsStates.isControlPressed = true;
+        const buttonEventMock = {
+            code: 'ControlRight',
+        } as KeyboardEvent;
+        component.handleKeyUp(buttonEventMock);
+        expect(component.inputsStates.isControlPressed).toBeFalse();
+        component.inputsStates.isControlPressed = true;
+        const buttonEventMock2 = {
+            code: 'ControlLeft',
+        } as KeyboardEvent;
+        component.handleKeyUp(buttonEventMock2);
+        expect(component.inputsStates.isControlPressed).toBeFalse();
+    });
+    it('handleKeyDown should call enableSquare if key pressed is ShiftRight or ShiftLeft', () => {
+        const buttonEventMock = {
+            code: 'ShiftRight',
+        } as KeyboardEvent;
+        component.handleKeyDown(buttonEventMock);
+        expect(canvasManagerServiceSpy.enableSquare).toHaveBeenCalled();
+        const buttonEventMock2 = {
+            code: 'ShiftLeft',
+        } as KeyboardEvent;
+        component.handleKeyDown(buttonEventMock2);
+        expect(canvasManagerServiceSpy.enableSquare).toHaveBeenCalledTimes(2);
+    });
+    it('handleKeyDown should call redoAction if key pressed is Z and Control and Shift are pressed', () => {
+        const buttonEventMock = {
+            code: 'KeyZ',
+        } as KeyboardEvent;
+        component.inputsStates.isControlPressed = true;
+        component.inputsStates.isShiftPressed = true;
+        component.handleKeyDown(buttonEventMock);
+        expect(canvasManagerServiceSpy.redoAction).toHaveBeenCalled();
+    });
+    it('handleKeyDown should call undoAction if key pressed is Z and Control is pressed but Shift isnt', () => {
+        const buttonEventMock = {
+            code: 'KeyZ',
+        } as KeyboardEvent;
+        component.inputsStates.isControlPressed = true;
+        component.inputsStates.isShiftPressed = false;
+        component.handleKeyDown(buttonEventMock);
+        expect(canvasManagerServiceSpy.undoAction).toHaveBeenCalled();
+    });
+    it('handleKeyDown should call nothing if key pressed is Z but Control and Shift arent pressed', () => {
+        const buttonEventMock = {
+            code: 'KeyZ',
+        } as KeyboardEvent;
+        component.inputsStates.isControlPressed = false;
+        component.inputsStates.isShiftPressed = false;
+        component.handleKeyDown(buttonEventMock);
+        expect(canvasManagerServiceSpy.undoAction).toHaveBeenCalledTimes(0);
+        expect(canvasManagerServiceSpy.redoAction).toHaveBeenCalledTimes(0);
     });
 });

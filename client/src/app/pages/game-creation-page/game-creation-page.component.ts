@@ -41,7 +41,6 @@ export class GameCreationPageComponent implements AfterViewInit {
                 this.inputsStates.isControlPressed = true;
                 break;
             case 'KeyZ':
-                this.inputsStates.isZPressed = true;
                 if (this.inputsStates.isControlPressed) {
                     if (this.inputsStates.isShiftPressed) {
                         this.canvasManager.redoAction();
@@ -64,9 +63,6 @@ export class GameCreationPageComponent implements AfterViewInit {
             case 'ControlLeft':
             case 'ControlRight':
                 this.inputsStates.isControlPressed = false;
-                break;
-            case 'KeyZ':
-                this.inputsStates.isZPressed = false;
                 break;
         }
     }
@@ -195,6 +191,7 @@ export class GameCreationPageComponent implements AfterViewInit {
             this.canvasManager.onMouseUp(isLeftImage);
         }
     }
+
     onMouseEnter(event: MouseEvent, isLeftImage: boolean): void {
         //
     }
