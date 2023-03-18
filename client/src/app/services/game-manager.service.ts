@@ -7,7 +7,7 @@ import { DEFAULT_HEIGHT, DEFAULT_WIDTH } from './draw.service';
 
 const PIXEL_SIZE = 4;
 const ONE_SECOND = 1000;
-const QUART_SECOND = 250;
+const QUART_SECOND = 200;
 @Injectable({
     providedIn: 'root',
 })
@@ -147,6 +147,9 @@ export class GameManagerService {
             await this.wait(QUART_SECOND);
             canvas.putImageData(flashingOriginalImageData, 0, 0);
             await this.wait(QUART_SECOND);
+            canvas.putImageData(originalImageData, 0, 0);
+            await this.wait(QUART_SECOND);
+            canvas.putImageData(flashingOriginalImageData, 0, 0);
             canvas.putImageData(originalImageData, 0, 0);
         }
     }
