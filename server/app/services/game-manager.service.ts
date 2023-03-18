@@ -1,15 +1,17 @@
 import { GameData } from '@app/data/game.interface';
 import { Service } from 'typedi';
 const fs = require('fs');
+const path = require("path");
 
 @Service()
 export class GameManager {
     gamesData: GameData[] = [];
     tempGame: GameData;
-    jsonPath = "C:/Users/asimi/OneDrive/Desktop/projet2/LOG2990-109/server/app/data/games.json";
-
-    countProperties() {
-        return this.gamesData.length;
+    jsonPath = path.join(__dirname + "../../../../../app/data/games.json");
+    idCount: number = 1;
+    async countProperties() {
+        const games = await this.getAllGames();
+        return games.length;
     }
 
     async getAllGames(): Promise<GameData[]> {
@@ -22,24 +24,16 @@ export class GameManager {
         const gamesData = await this.getAllGames();
         const game = gamesData.find((games) => games.id === id);
         return game!;
-        /*
-        this.tempGame.id = game?.id!;
-        this.tempGame.name = game?.name!;
-        this.tempGame.originalImage = game?.originalImage!;
-        this.tempGame.modifiedImage = game?.modifiedImage!;
-        this.tempGame.nbDifferences = game?.nbDifferences!;
-        this.tempGame.differences = game?.differences!;
-        this.tempGame.isDifficult = game?.isDifficult!;
-        return this.tempGame;*/
-        // return this.gamesData[id];
     }
 
     async addGame(newGame: GameData): Promise<void> {
         const allGames = await this.getAllGames();
-        const id = this.countProperties();
-        const gameId = String(id);
+        /*let id = 0;
+        this.countProperties().then((foundId) => (id = foundId) );*/
+        this.idCount++;
+        const gameId = String(this.idCount);
         newGame.id = gameId;
-        this.gamesData[id] = newGame;
+        this.gamesData[gameId] = newGame;
         allGames.push(newGame);
         this.writeToJsonFile(this.jsonPath, JSON.stringify( {allGames} ));
     }
