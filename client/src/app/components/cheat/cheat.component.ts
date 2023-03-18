@@ -48,7 +48,7 @@ export class CheatComponent {
             return;
         }
     }
-    getToogle(): boolean {
+    getToggle(): boolean {
         return this.toggle;
     }
 }
