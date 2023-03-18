@@ -49,16 +49,13 @@ body {
     color: red;
 }
 
-.timer {
-    vertical-align: middle;
-}
-
 .watch-logo {
     width: 5%;
     margin-top: 10px;
 }
 
 .timer {
+    vertical-align: middle;
     display: flex;
     align-items: center;
 }
@@ -78,58 +75,34 @@ body {
 }
 
 .chat-container {
-    display: inline-block;
     position: relative;
+    display: flex;
+    flex-flow: column;
     background-color: whitesmoke;
     font-family: 'Ubuntu-Italic', 'Lucida Sans', helvetica;
     width: 90%;
-    height: 90%;
+    height: 93%;
     border: 8px solid #666;
     margin-top: 2%;
     border-radius: 20px;
     -webkit-border-radius: 20px;
     -moz-border-radius: 20px;
-    scroll-behavior: auto;
 }
 
-.chat-container::before {
-    content: ' ';
-    position: absolute;
-    width: 0;
-    height: 0;
-    left: -40px;
-    right: auto;
-    top: -8px;
-    bottom: auto;
-    border: 32px solid;
-    border-color: #666 transparent transparent transparent;
-}
-
-.chat-container::after {
-    content: ' ';
-    position: absolute;
-    width: 0;
-    height: 0;
-    left: -20px;
-    right: auto;
-    top: 0px;
-    bottom: auto;
-    border: 30px solid;
-    border-color: whitesmoke transparent transparent transparent;
-}
-
-.message-box {
-    padding: 1em;
+.main-message-box {
+    padding: 0 3px 0 3px;
     text-align: left;
-    line-height: 1em;
-}
-.message-box p {
-    -webkit-margin-before: 0em;
-    -webkit-margin-after: 0em;
+    line-height: 15px;
+    overflow: auto;
+    display: flex;
+    flex-flow: row wrap;
+    align-content: flex-start;
+    flex:1;    
 }
 
 .message-title {
     text-align: center;
+    padding-top: 10px;
 }
 
 canvas {
@@ -235,7 +208,7 @@ canvas {
 
 .message-box-holder {
     width: 100%;
-    margin: 0 0 15px;
+    margin: 5px 0 0 0;
     display: flex;
     flex-flow: column;
     align-items: flex-end;
@@ -243,17 +216,24 @@ canvas {
 
 .name {
     font-size: 12px;
-    margin: 0 0 15px;
     color: #30649c;
     align-self: flex-start;
     font-weight: bold;
 }
 
-.sender {
-    padding-left: 85%;
+.line {
+    border:3px solid  #666;
 }
 
-.messages-box {
+.event {
+color: red;
+}
+
+.sender {
+    padding-left: 87%;
+}
+
+.messages{
     padding: 6px 10px;
     border-radius: 6px 0 6px 0;
     position: relative;
@@ -264,25 +244,26 @@ canvas {
 }
 
 .server {
+    background: rgb(253, 246, 248);
+    border: 2px solid red;
+    align-self: flex-start;
+}
+
+.receiver {
     background: rgba(0, 114, 135, 0.1);
     border: 2px solid rgba(0, 114, 135, 0.1);
     align-self: flex-start;
 }
 
-.server::after {
-    right: auto;
-    bottom: auto;
-    top: -22px;
-    left: 9px;
+.server::after, .receiver::after{
     border: 10px solid transparent;
     border-bottom: 10px solid rgba(0, 114, 135, 0.2);
-    border-left: none;
 }
 
 //
 
 .chat-input-holder {
-    display: flex;
+    display:flex;
     border-top: 1px solid rgba(0, 0, 0, 0.1);
 }
 
@@ -297,6 +278,7 @@ canvas {
     border: none;
     background: rgba(0, 0, 0, 0.05);
     border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    position: relative;
 }
 
 .chat-input:focus,
@@ -310,6 +292,8 @@ canvas {
 }
 
 .message-send {
+    border-bottom-right-radius: 15%;
+    border: none;
     background: #9cc900;
     background: -moz-linear-gradient(180deg, #ff9500, #d68b00);
     background: -webkit-linear-gradient(180deg, #ff9500, #d68b00);
@@ -319,6 +303,5 @@ canvas {
     color: white;
     font-size: 12px;
     padding: 0 15px;
-    border: none;
     text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.3);
 }

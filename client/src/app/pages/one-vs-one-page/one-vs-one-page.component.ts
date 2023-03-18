@@ -29,8 +29,6 @@ export class OneVsOnePageComponent implements OnInit, AfterViewInit {
     minutes1: number = 0;
     minutes2: number = 0;
     intervalID: number;
-
-    /// //Les données statiques
     user1: string;
     user2: string;
     nbDifferencesFoundUser1: number;
