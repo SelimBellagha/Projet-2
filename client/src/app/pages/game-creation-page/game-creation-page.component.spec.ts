@@ -18,19 +18,14 @@ describe('GameCreationPageComponent', () => {
 
     beforeEach(async () => {
         canvasManagerServiceSpy = jasmine.createSpyObj('CanvasManagerService', [
-            'resetLeftBackground',
-            'resetRightBackground',
+            'resetBackground',
             'launchVerification',
-            'changeRightBackground',
-            'changeLeftBackground',
-            'changeBothBackgrounds',
+            'changeBackgrounds',
             'init',
             'setTool',
             'swapForegrounds',
-            'duplicateLeft',
-            'duplicateRight',
-            'resetLeftForeground',
-            'resetRightForeground',
+            'duplicate',
+            'resetForeground',
             'undoAction',
             'redoAction',
             'setWidth',
@@ -61,14 +56,14 @@ describe('GameCreationPageComponent', () => {
         expect(component).toBeTruthy();
     });
 
-    it('clicking on left reset background button should call resetLeftBackground in the service', () => {
+    it('clicking on left reset background button should call resetBackground from canvasManager', () => {
         component.resetBackground(true);
-        expect(canvasManagerServiceSpy.resetLeftBackground).toHaveBeenCalled();
+        expect(canvasManagerServiceSpy.resetBackground).toHaveBeenCalledOnceWith(true);
     });
 
-    it('clicking on right reset background button should call resetRightBackground in the service', () => {
+    it('clicking on right reset background button should call resetBackground from canvasManager', () => {
         component.resetBackground(false);
-        expect(canvasManagerServiceSpy.resetRightBackground).toHaveBeenCalled();
+        expect(canvasManagerServiceSpy.resetBackground).toHaveBeenCalledOnceWith(false);
     });
 
     it('clicking on launchValidation button should call launchVerification in the service', () => {
@@ -77,20 +72,20 @@ describe('GameCreationPageComponent', () => {
         expect(canvasManagerServiceSpy.launchVerification).toHaveBeenCalled();
     });
 
-    it('updating the file input for the right image should call changeRightBackground from service', () => {
+    it('updating the file input for the right image should call changeBackgrounds from canvasManager', () => {
         const input: HTMLInputElement = document.getElementById('rightImageInput') as HTMLInputElement;
         input.dispatchEvent(new Event('input'));
-        expect(canvasManagerServiceSpy.changeRightBackground).toHaveBeenCalled();
+        expect(canvasManagerServiceSpy.changeBackgrounds).toHaveBeenCalled();
     });
-    it('updating the file input for the left image should call changeLeftBackground from service', () => {
+    it('updating the file input for the left image should call changeBackgrounds from canvasManager', () => {
         const input: HTMLInputElement = document.getElementById('leftImageInput') as HTMLInputElement;
         input.dispatchEvent(new Event('input'));
-        expect(canvasManagerServiceSpy.changeLeftBackground).toHaveBeenCalled();
+        expect(canvasManagerServiceSpy.changeBackgrounds).toHaveBeenCalled();
     });
-    it('updating the file input for the right image should call changeRightBackground from service', () => {
+    it('updating the file input for the right image should call changeBackgrounds from canvasManager', () => {
         const input: HTMLInputElement = document.getElementById('middleImageInput') as HTMLInputElement;
         input.dispatchEvent(new Event('input'));
-        expect(canvasManagerServiceSpy.changeBothBackgrounds).toHaveBeenCalled();
+        expect(canvasManagerServiceSpy.changeBackgrounds).toHaveBeenCalled();
     });
 
     it('onClosingPopUp should hide the popUp window', () => {
@@ -157,21 +152,21 @@ describe('GameCreationPageComponent', () => {
         component.onSwap();
         expect(canvasManagerServiceSpy.swapForegrounds).toHaveBeenCalled();
     });
-    it(' onDuplicate should call duplicateLeft from canvasManager if parameter leftImage is true', () => {
+    it(' onDuplicate should call duplicate from canvasManager with left set to true if parameter leftImage is true', () => {
         component.onDuplicate(true);
-        expect(canvasManagerServiceSpy.duplicateLeft).toHaveBeenCalled();
+        expect(canvasManagerServiceSpy.duplicate).toHaveBeenCalledWith(true);
     });
-    it(' onDuplicate should call duplicateRight from canvasManager if parameter leftImage is false', () => {
+    it(' onDuplicate should call duplicate from canvasManagerwith left set to false if parameter leftImage is false', () => {
         component.onDuplicate(false);
-        expect(canvasManagerServiceSpy.duplicateRight).toHaveBeenCalled();
+        expect(canvasManagerServiceSpy.duplicate).toHaveBeenCalledWith(false);
     });
     it(' onResetForeground should call resetleftForeground from canvasManager if parameter leftImage is true', () => {
         component.onResetForeground(true);
-        expect(canvasManagerServiceSpy.resetLeftForeground).toHaveBeenCalled();
+        expect(canvasManagerServiceSpy.resetForeground).toHaveBeenCalledWith(true);
     });
     it(' onResetForeground should call resetRightForeground from canvasManager if parameter leftImage is false', () => {
         component.onResetForeground(false);
-        expect(canvasManagerServiceSpy.resetRightForeground).toHaveBeenCalled();
+        expect(canvasManagerServiceSpy.resetForeground).toHaveBeenCalledOnceWith(false);
     });
     it('onUndo should call undoAction from canvasManager ', () => {
         component.onUndo();

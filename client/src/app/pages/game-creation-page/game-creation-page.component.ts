@@ -72,8 +72,6 @@ export class GameCreationPageComponent implements AfterViewInit {
         this.canvasManager.rightCanvasContext = this.rightCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         this.canvasManager.modalCanvasContext = this.modalCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         this.canvasManager.init();
-        this.canvasManager.resetLeftBackground();
-        this.canvasManager.resetRightBackground();
     }
 
     changeTool(tool: Tool) {
@@ -82,11 +80,7 @@ export class GameCreationPageComponent implements AfterViewInit {
 
     resetBackground(leftPicture: boolean): void {
         // Remettre le fond en blanc
-        if (leftPicture) {
-            this.canvasManager.resetLeftBackground();
-        } else {
-            this.canvasManager.resetRightBackground();
-        }
+        this.canvasManager.resetBackground(leftPicture);
     }
 
     onValidationLaunched(): void {
@@ -102,42 +96,40 @@ export class GameCreationPageComponent implements AfterViewInit {
     modifyRadius(newRadius: number): void {
         this.radius = newRadius;
     }
-
+    /*
     onUpdateRightImageInput(rightImageInput: HTMLInputElement): void {
         const file = rightImageInput.files?.item(0);
-        this.canvasManager.changeRightBackground(file as File);
+        this.canvasManager.changeBackgrounds(file as File, false, true);
         rightImageInput.value = '';
     }
 
     onUpdateLeftImageInput(leftImageInput: HTMLInputElement): void {
         const file = leftImageInput.files?.item(0);
-        this.canvasManager.changeLeftBackground(file as File);
+        this.canvasManager.changeBackgrounds(file as File, true, false);
         leftImageInput.value = '';
     }
 
     onUpdateMiddleImageInput(middleImageInput: HTMLInputElement): void {
         const file = middleImageInput.files?.item(0);
-        this.canvasManager.changeBothBackgrounds(file as File);
+        this.canvasManager.changeBackgrounds(file as File, true, true);
         middleImageInput.value = '';
+    }*/
+
+    onUpdateInput(imageInput: HTMLInputElement, changeLeft: boolean, changeRight: boolean): void {
+        const file = imageInput.files?.item(0);
+        this.canvasManager.changeBackgrounds(file as File, changeLeft, changeRight);
+        imageInput.value = '';
     }
 
     onSwap(): void {
         this.canvasManager.swapForegrounds();
     }
     onDuplicate(leftImage: boolean): void {
-        if (leftImage) {
-            this.canvasManager.duplicateLeft();
-        } else {
-            this.canvasManager.duplicateRight();
-        }
+        this.canvasManager.duplicate(leftImage);
     }
 
     onResetForeground(leftImage: boolean) {
-        if (leftImage) {
-            this.canvasManager.resetLeftForeground();
-        } else {
-            this.canvasManager.resetRightForeground();
-        }
+        this.canvasManager.resetForeground(leftImage);
     }
 
     onUndo(): void {
@@ -190,9 +182,5 @@ export class GameCreationPageComponent implements AfterViewInit {
         if (event.button === MouseButton.Left) {
             this.canvasManager.onMouseUp(isLeftImage);
         }
-    }
-
-    onMouseEnter(event: MouseEvent, isLeftImage: boolean): void {
-        //
     }
 }

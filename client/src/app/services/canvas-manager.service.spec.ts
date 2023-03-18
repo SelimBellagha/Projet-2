@@ -110,8 +110,8 @@ describe('CanvasManagerService', () => {
         expect(service.isFileValid(fileMock as File)).toBeTrue();
     });
 
-    it('resetLeftBackground should put all the backgroundcanvas pixels to white', () => {
-        service.resetLeftBackground();
+    it('resetBackground should put all the backgroundCanvas pixels to white', () => {
+        service.resetBackground(true);
         const differences = (service.leftBackground.getContext('2d') as OffscreenCanvasRenderingContext2D)
             .getImageData(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT)
             .data.filter((x) => {
@@ -119,8 +119,8 @@ describe('CanvasManagerService', () => {
             });
         expect(differences.length).toEqual(0);
     });
-    it('resetRightBackground should put all the background canvas pixels to white', () => {
-        service.resetRightBackground();
+    it('resetBackground should put all the background canvas pixels to white', () => {
+        service.resetBackground(false);
         const differences = (service.rightBackground.getContext('2d') as OffscreenCanvasRenderingContext2D)
             .getImageData(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT)
             .data.filter((x) => {
@@ -129,18 +129,18 @@ describe('CanvasManagerService', () => {
         expect(differences.length).toEqual(0);
     });
 
-    it('changeRightBackground should not change  background canvas if file is in invalid format', () => {
+    it('changeBackground should not change  background canvas if file is in invalid format', () => {
         const context = service.rightBackground.getContext('2d') as OffscreenCanvasRenderingContext2D;
         let imageData = context.getImageData(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT).data;
         const beforeSize = imageData.filter((x) => x !== whiteValue).length;
-        service.changeRightBackground(null as unknown as File);
+        service.changeBackgrounds(null as unknown as File, false, true);
         imageData = context.getImageData(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT).data;
         const afterSize = imageData.filter((x) => x !== whiteValue).length;
         expect(afterSize).toEqual(beforeSize);
     });
-    it('changeRightBackground should call notifyFileError if file is in invalid format', () => {
+    it('changeBackground should call notifyFileError if file is in invalid format', () => {
         const spy = spyOn(service, 'notifyFileError');
-        service.changeRightBackground(null as unknown as File);
+        service.changeBackgrounds(null as unknown as File, true, true);
         expect(spy).toHaveBeenCalled();
     });
 
@@ -148,15 +148,10 @@ describe('CanvasManagerService', () => {
         const context = service.leftBackground.getContext('2d') as OffscreenCanvasRenderingContext2D;
         let imageData = context.getImageData(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT).data;
         const beforeSize = imageData.filter((x) => x !== whiteValue).length;
-        service.changeLeftBackground(null as unknown as File);
+        service.changeBackgrounds(null as unknown as File, true, false);
         imageData = context.getImageData(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT).data;
         const afterSize = imageData.filter((x) => x !== whiteValue).length;
         expect(afterSize).toEqual(beforeSize);
-    });
-    it('changeLeftBackground should call notifyFileError if file is in invalid format', () => {
-        const spy = spyOn(service, 'notifyFileError');
-        service.changeLeftBackground(null as unknown as File);
-        expect(spy).toHaveBeenCalled();
     });
 
     it('changeBothBackground should not change any of the canvas if file is in invalid format', () => {
@@ -168,7 +163,7 @@ describe('CanvasManagerService', () => {
         imageData = rightContext.getImageData(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT).data;
         const beforeSizeRight = imageData.filter((x) => x !== whiteValue).length;
 
-        service.changeBothBackgrounds(null as unknown as File);
+        service.changeBackgrounds(null as unknown as File, true, true);
 
         imageData = leftContext.getImageData(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT).data;
         const afterSizeLeft = imageData.filter((x) => x !== whiteValue).length;
@@ -178,22 +173,17 @@ describe('CanvasManagerService', () => {
         expect(afterSizeLeft).toEqual(beforeSizeLeft);
         expect(afterSizeRight).toEqual(beforeSizeRight);
     });
-    it('changeBothBackground should call notifyFileError if file is in invalid format', () => {
-        const spy = spyOn(service, 'notifyFileError');
-        service.changeBothBackgrounds(null as unknown as File);
-        expect(spy).toHaveBeenCalled();
-    });
 
     it('changeBothBackground should call notifyFileError if file is in wrong size', async () => {
         const spy = spyOn(service, 'notifyFileError');
         spyOn(service, 'validateImageSize').and.returnValue(false);
         spyOn(service, 'isFileValid').and.returnValue(true);
         await imageValid.decode();
-        await service.changeBothBackgrounds(imageValid as unknown as File);
+        await service.changeBackgrounds(imageValid as unknown as File, true, true);
         expect(spy).toHaveBeenCalled();
     });
 
-    it('changeBothBackground should call drawImage on both background canvases if file is valid', async () => {
+    it('changeBackgrounds should call drawImage on both background canvases if file is valid, and changeRight and left are set to true', async () => {
         const leftContext = service.leftBackground.getContext('2d') as OffscreenCanvasRenderingContext2D;
         const rightContext = service.rightBackground.getContext('2d') as OffscreenCanvasRenderingContext2D;
 
@@ -202,27 +192,27 @@ describe('CanvasManagerService', () => {
         spyOn(service, 'validateImageSize').and.returnValue(true);
         spyOn(service, 'isFileValid').and.returnValue(true);
         await imageValid.decode();
-        await service.changeBothBackgrounds(imageValid as unknown as File);
+        await service.changeBackgrounds(imageValid as unknown as File, true, true);
         expect(spyLeft).toHaveBeenCalled();
         expect(spyRight).toHaveBeenCalled();
     });
 
-    it('changeLeftBackground should call notifyFileError if file is in wrong size', async () => {
+    it('changeBackgrounds should call notifyFileError if file is in wrong size', async () => {
         const spy = spyOn(service, 'notifyFileError');
         spyOn(service, 'validateImageSize').and.returnValue(false);
         spyOn(service, 'isFileValid').and.returnValue(true);
         await imageValid.decode();
-        await service.changeLeftBackground(imageValid as unknown as File);
+        await service.changeBackgrounds(imageValid as unknown as File, true, false);
         expect(spy).toHaveBeenCalled();
     });
 
-    it('changeLeftBackground should call drawImage on left canvas if file is valid', async () => {
+    it('changeLeftBackground should call drawImage on left canvas if file is valid and changeLeft parameter is true', async () => {
         const leftContext = service.leftBackground.getContext('2d') as OffscreenCanvasRenderingContext2D;
         const spyLeft = spyOn(leftContext, 'drawImage');
         spyOn(service, 'validateImageSize').and.returnValue(true);
         spyOn(service, 'isFileValid').and.returnValue(true);
         await imageValid.decode();
-        await service.changeLeftBackground(imageValid as unknown as File);
+        await service.changeBackgrounds(imageValid as unknown as File, true, false);
         expect(spyLeft).toHaveBeenCalled();
     });
 
@@ -231,7 +221,7 @@ describe('CanvasManagerService', () => {
         spyOn(service, 'validateImageSize').and.returnValue(false);
         spyOn(service, 'isFileValid').and.returnValue(true);
         await imageValid.decode();
-        await service.changeRightBackground(imageValid as unknown as File);
+        await service.changeBackgrounds(imageValid as unknown as File, false, true);
         expect(spy).toHaveBeenCalled();
     });
 
@@ -241,7 +231,7 @@ describe('CanvasManagerService', () => {
         spyOn(service, 'validateImageSize').and.returnValue(true);
         spyOn(service, 'isFileValid').and.returnValue(true);
         await imageValid.decode();
-        await service.changeRightBackground(imageValid as unknown as File);
+        await service.changeBackgrounds(imageValid as unknown as File, false, true);
         expect(spyRight).toHaveBeenCalled();
     });
 
@@ -327,15 +317,15 @@ describe('CanvasManagerService', () => {
         expect(leftSpy).toHaveBeenCalledTimes(2);
         expect(rightSpy).toHaveBeenCalledTimes(2);
     });
-    it('duplicateLeft should call drawImage on the right foreground', () => {
+    it('duplicate should call drawImage on the right foreground if leftImage is true', () => {
         const spy = spyOn(service.rightForeground.getContext('2d') as OffscreenCanvasRenderingContext2D, 'drawImage');
-        service.duplicateLeft();
+        service.duplicate(true);
         expect(spy).toHaveBeenCalled();
     });
 
-    it('duplicateRight should call drawImage on the left foreground', () => {
+    it('duplicate should call drawImage on the left foreground if leftImage is false', () => {
         const spy = spyOn(service.leftForeground.getContext('2d') as OffscreenCanvasRenderingContext2D, 'drawImage');
-        service.duplicateRight();
+        service.duplicate(false);
         expect(spy).toHaveBeenCalled();
     });
 
@@ -350,30 +340,26 @@ describe('CanvasManagerService', () => {
         expect(rightContext.getImageData(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT).data).toEqual(originalLeft);
     });
     it('resetCanvases should call reset on both foregrounds and backgrounds', () => {
-        const spyBackLeft = spyOn(service, 'resetLeftBackground');
-        const spyBackRight = spyOn(service, 'resetRightBackground');
-        const spyFrontLeft = spyOn(service, 'resetLeftForeground');
-        const spyFrontRight = spyOn(service, 'resetRightForeground');
+        const spyBack = spyOn(service, 'resetBackground');
+        const spyFront = spyOn(service, 'resetForeground');
         service.resetCanvases();
-        expect(spyBackLeft).toHaveBeenCalled();
-        expect(spyBackRight).toHaveBeenCalled();
-        expect(spyFrontLeft).toHaveBeenCalled();
-        expect(spyFrontRight).toHaveBeenCalled();
+        expect(spyBack).toHaveBeenCalledTimes(2);
+        expect(spyFront).toHaveBeenCalledTimes(2);
     });
-    it('resetRightForeground should clear right foreground', () => {
+    it('resetForeground should clear right foreground if left parameter is false', () => {
         const rightContext = service.rightForeground.getContext('2d') as OffscreenCanvasRenderingContext2D;
         rightContext.fillRect(1, 1, 1, 1);
-        service.resetRightForeground();
+        service.resetForeground(false);
         const length = rightContext.getImageData(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT).data.filter((x) => {
             return x !== 0;
         }).length;
         expect(length).toEqual(0);
     });
 
-    it('resetLeftForeground should clear left foreground', () => {
+    it('resetForeground should clear left foreground if left parameter is true', () => {
         const leftContext = service.leftForeground.getContext('2d') as OffscreenCanvasRenderingContext2D;
         leftContext.fillRect(1, 1, 1, 1);
-        service.resetLeftForeground();
+        service.resetForeground(true);
         const length = leftContext.getImageData(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT).data.filter((x) => {
             return x !== 0;
         }).length;

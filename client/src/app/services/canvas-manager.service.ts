@@ -61,7 +61,6 @@ export class CanvasManagerService {
     }
 
     onMouseDown(clickPosition: Vec2, isLeftImage: boolean): void {
-        // Down = true
         this.mouseHandler.setFirstClick(clickPosition, isLeftImage);
         if (isLeftImage) {
             this.drawService.drawingContext = this.leftForeground.getContext('2d') as OffscreenCanvasRenderingContext2D;
@@ -75,10 +74,8 @@ export class CanvasManagerService {
                 ctx.globalCompositeOperation = 'copy';
                 ctx.drawImage(isLeftImage ? this.leftForeground : this.rightForeground, 0, 0);
                 ctx.restore();
-                // save l'image avant le rectangle
                 break;
             case Tool.Eraser:
-                // mettre la position courant transparent + size
                 this.drawService.erase(clickPosition);
                 break;
             default:
@@ -91,7 +88,6 @@ export class CanvasManagerService {
         if (this.mouseHandler.isButtonDown() && isLeftImage === this.mouseHandler.isLeftCanvasSelected()) {
             switch (this.activeTool) {
                 case Tool.Pencil:
-                    // faire un trait depuis le dernier point
                     this.drawService.drawLine(mousePosition, this.mouseHandler.getCurrentPosition());
                     break;
                 case Tool.Rectangle:
@@ -149,7 +145,7 @@ export class CanvasManagerService {
         this.rightCanvasContext.drawImage(this.rightBackground, 0, 0);
         this.rightCanvasContext.drawImage(this.rightForeground, 0, 0);
     }
-
+    /*
     duplicateLeft(): void {
         const ctx = this.rightForeground.getContext('2d') as OffscreenCanvasRenderingContext2D;
         ctx.save();
@@ -159,12 +155,25 @@ export class CanvasManagerService {
         this.updateDisplay();
         this.saveAction();
     }
-
+    
     duplicateRight(): void {
         const ctx = this.leftForeground.getContext('2d') as OffscreenCanvasRenderingContext2D;
         ctx.save();
         ctx.globalCompositeOperation = 'copy';
         ctx.drawImage(this.rightForeground, 0, 0);
+        ctx.restore();
+        this.updateDisplay();
+        this.saveAction();
+    }*/
+
+    duplicate(left: boolean): void {
+        const copy = left ? this.leftForeground : this.rightForeground;
+        const target = left ? this.rightForeground : this.leftForeground;
+
+        const ctx = target.getContext('2d') as OffscreenCanvasRenderingContext2D;
+        ctx.save();
+        ctx.globalCompositeOperation = 'copy';
+        ctx.drawImage(copy, 0, 0);
         ctx.restore();
         this.updateDisplay();
         this.saveAction();
@@ -190,66 +199,29 @@ export class CanvasManagerService {
     }
 
     resetCanvases(): void {
-        this.resetLeftBackground();
-        this.resetRightBackground();
-        this.resetLeftForeground();
-        this.resetRightForeground();
+        this.resetBackground(true);
+        this.resetBackground(false);
+        this.resetForeground(true);
+        this.resetForeground(false);
     }
-
-    resetRightForeground(): void {
-        const ctx = this.rightForeground.getContext('2d') as OffscreenCanvasRenderingContext2D;
+    resetForeground(left: boolean) {
+        const ctx = (left ? this.leftForeground : this.rightForeground).getContext('2d') as OffscreenCanvasRenderingContext2D;
         ctx.clearRect(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT);
         this.updateDisplay();
         this.saveAction();
     }
-
-    resetLeftForeground(): void {
-        const ctx = this.leftForeground.getContext('2d') as OffscreenCanvasRenderingContext2D;
-        ctx.clearRect(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT);
-        this.updateDisplay();
-        this.saveAction();
-    }
-
-    async changeRightBackground(file: File): Promise<void> {
+    async changeBackgrounds(file: File, changeLeft: boolean, changeRight: boolean): Promise<void> {
         if (this.isFileValid(file)) {
             await createImageBitmap(file).then((image) => {
                 if (this.validateImageSize(image)) {
-                    const ctx = this.rightBackground.getContext('2d') as OffscreenCanvasRenderingContext2D;
-                    ctx.drawImage(image, 0, 0);
-                    this.updateDisplay();
-                } else {
-                    this.notifyFileError();
-                }
-            });
-        } else {
-            this.notifyFileError();
-        }
-    }
-
-    async changeLeftBackground(file: File): Promise<void> {
-        if (this.isFileValid(file)) {
-            await createImageBitmap(file).then((image) => {
-                if (this.validateImageSize(image)) {
-                    const ctx = this.leftBackground.getContext('2d') as OffscreenCanvasRenderingContext2D;
-                    ctx.drawImage(image, 0, 0);
-                    this.updateDisplay();
-                } else {
-                    this.notifyFileError();
-                }
-            });
-        } else {
-            this.notifyFileError();
-        }
-    }
-
-    async changeBothBackgrounds(file: File): Promise<void> {
-        if (this.isFileValid(file)) {
-            await createImageBitmap(file).then((image) => {
-                if (this.validateImageSize(image)) {
-                    const ctx1 = this.leftBackground.getContext('2d') as OffscreenCanvasRenderingContext2D;
-                    ctx1.drawImage(image, 0, 0);
-                    const ctx2 = this.rightBackground.getContext('2d') as OffscreenCanvasRenderingContext2D;
-                    ctx2.drawImage(image, 0, 0);
+                    if (changeLeft) {
+                        const ctx1 = this.leftBackground.getContext('2d') as OffscreenCanvasRenderingContext2D;
+                        ctx1.drawImage(image, 0, 0);
+                    }
+                    if (changeRight) {
+                        const ctx2 = this.rightBackground.getContext('2d') as OffscreenCanvasRenderingContext2D;
+                        ctx2.drawImage(image, 0, 0);
+                    }
                     this.updateDisplay();
                 } else {
                     this.notifyFileError();
@@ -268,14 +240,8 @@ export class CanvasManagerService {
         window.alert("Fichier invalide: l'image doit être en format BMP 24-bit et de taille 640x480");
     }
 
-    resetLeftBackground(): void {
-        const ctx = this.leftBackground.getContext('2d') as OffscreenCanvasRenderingContext2D;
-        ctx.fillStyle = '#FFFFFF';
-        ctx.fillRect(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT);
-        this.updateDisplay();
-    }
-    resetRightBackground(): void {
-        const ctx = this.rightBackground.getContext('2d') as OffscreenCanvasRenderingContext2D;
+    resetBackground(left: boolean): void {
+        const ctx = (left ? this.leftBackground : this.rightBackground).getContext('2d') as OffscreenCanvasRenderingContext2D;
         ctx.fillStyle = '#FFFFFF';
         ctx.fillRect(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT);
         this.updateDisplay();
