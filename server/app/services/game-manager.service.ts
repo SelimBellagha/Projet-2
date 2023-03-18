@@ -21,6 +21,8 @@ export class GameManager {
     async getGamebyId(id: string): Promise<GameData> {
         const gamesData = await this.getAllGames();
         const game = gamesData.find((games) => games.id === id);
+        return game!;
+        /*
         this.tempGame.id = game?.id!;
         this.tempGame.name = game?.name!;
         this.tempGame.originalImage = game?.originalImage!;
@@ -28,7 +30,7 @@ export class GameManager {
         this.tempGame.nbDifferences = game?.nbDifferences!;
         this.tempGame.differences = game?.differences!;
         this.tempGame.isDifficult = game?.isDifficult!;
-        return this.tempGame;
+        return this.tempGame;*/
         // return this.gamesData[id];
     }
 
