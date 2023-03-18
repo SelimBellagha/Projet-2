@@ -1,28 +1,54 @@
 import { GameData } from '@app/data/game.interface';
 import { Service } from 'typedi';
+const fs = require('fs');
 
 @Service()
 export class GameManager {
     gamesData: GameData[] = [];
+    tempGame: GameData;
+    jsonPath = "C:/Users/asimi/OneDrive/Desktop/projet2/LOG2990-109/server/app/data/games.json";
 
     countProperties() {
         return this.gamesData.length;
     }
 
     async getAllGames(): Promise<GameData[]> {
-        return this.gamesData;
+        const fileBuffer = await this.readJsonFile(this.jsonPath);
+        return JSON.parse(fileBuffer).allGames;
+        // return this.gamesData;
     }
 
     async getGamebyId(id: string): Promise<GameData> {
-        return this.gamesData[id];
+        const gamesData = await this.getAllGames();
+        const game = gamesData.find((games) => games.id === id);
+        this.tempGame.id = game?.id!;
+        this.tempGame.name = game?.name!;
+        this.tempGame.originalImage = game?.originalImage!;
+        this.tempGame.modifiedImage = game?.modifiedImage!;
+        this.tempGame.nbDifferences = game?.nbDifferences!;
+        this.tempGame.differences = game?.differences!;
+        this.tempGame.isDifficult = game?.isDifficult!;
+        return this.tempGame;
+        // return this.gamesData[id];
     }
 
     async addGame(newGame: GameData): Promise<void> {
+        const allGames = await this.getAllGames();
         const id = this.countProperties();
         const gameId = String(id);
         newGame.id = gameId;
         this.gamesData[id] = newGame;
+        allGames.push(newGame);
+        this.writeToJsonFile(this.jsonPath, JSON.stringify( {allGames} ));
     }
+
+    async writeToJsonFile(path: string, data: string) {
+        return await fs.promises.writeFile(path, data);
+    }
+
+    async readJsonFile (path: string) {
+        return await fs.promises.readFile(path);
+      }
     /*
     async deleteGame(id: string): Promise<null | void> {
         const gameToDelete = await this.getGamebyId(id);
