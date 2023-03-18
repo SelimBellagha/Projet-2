@@ -1,13 +1,13 @@
 import { GameData } from '@app/data/game.interface';
 import { Service } from 'typedi';
-const fs = require('fs');
-const path = require("path");
+import * as fs from 'fs';
+import * as path from 'path';
 
 @Service()
 export class GameManager {
     gamesData: GameData[] = [];
     tempGame: GameData;
-    jsonPath = path.join(__dirname + "../../../../../app/data/games.json");
+    jsonPath = path.join(__dirname + '../../../../../app/data/games.json');
     idCount: number = 1;
     async countProperties() {
         const games = await this.getAllGames();
@@ -16,8 +16,7 @@ export class GameManager {
 
     async getAllGames(): Promise<GameData[]> {
         const fileBuffer = await this.readJsonFile(this.jsonPath);
-        return JSON.parse(fileBuffer).allGames;
-        // return this.gamesData;
+        return JSON.parse(fileBuffer.toString()).allGames;
     }
 
     async getGamebyId(id: string): Promise<GameData> {
@@ -28,25 +27,22 @@ export class GameManager {
 
     async addGame(newGame: GameData): Promise<void> {
         const allGames = await this.getAllGames();
-        /*let id = 0;
-        this.countProperties().then((foundId) => (id = foundId) );*/
         this.idCount++;
         const gameId = String(this.idCount);
         newGame.id = gameId;
         this.gamesData[gameId] = newGame;
         allGames.push(newGame);
-        this.writeToJsonFile(this.jsonPath, JSON.stringify( {allGames} ));
+        this.writeToJsonFile(this.jsonPath, JSON.stringify({ allGames }));
     }
 
-    async writeToJsonFile(path: string, data: string) {
-        return await fs.promises.writeFile(path, data);
+    async writeToJsonFile(filePath: string, data: string) {
+        return await fs.promises.writeFile(filePath, data);
     }
 
-    async readJsonFile (path: string) {
-        return await fs.promises.readFile(path);
-      }
-    /*
-    async deleteGame(id: string): Promise<null | void> {
+    async readJsonFile(filePath: string) {
+        return await fs.promises.readFile(filePath);
+    }
+    /* async deleteGame(id: string): Promise<null | void> {
         const gameToDelete = await this.getGamebyId(id);
         if (!gameToDelete) {
             return null;

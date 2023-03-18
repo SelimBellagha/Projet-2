@@ -37,6 +37,6 @@ export class LoginPageComponent {
     }
 
     validateUsername(name: string): boolean {
-        return this.isValidUsername = (name !== '' && (name.trim().length > 0));
+        return (this.isValidUsername = name !== '' && name.trim().length > 0);
     }
 }
