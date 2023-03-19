@@ -4,6 +4,7 @@ import { MouseButton } from '@app/components/play-area/play-area.component';
 import { Vec2 } from '@app/interfaces/vec2';
 import { DisplayGameService } from '@app/services/display-game.service';
 import { GameManagerService } from '@app/services/game-manager.service';
+import { LobbyService } from '@app/services/lobby.service';
 import { LoginFormService } from '@app/services/login-form.service';
 import { SocketClientService } from '@app/services/socket-client-service.service';
 
@@ -43,10 +44,11 @@ export class OneVsOnePageComponent implements OnInit, AfterViewInit {
         private displayService: DisplayGameService,
         private gameManager: GameManagerService,
         private socketService: SocketClientService,
+        private lobbyService: LobbyService,
     ) {}
 
     ngOnInit() {
-        this.roomId = this.loginService.getRoomId();
+        this.roomId = this.lobbyService.roomId;
         this.socketService.on('username', (data: { hostUsername: string; inviteUsername: string }) => {
             this.user1 = data.hostUsername;
             this.user2 = data.inviteUsername;

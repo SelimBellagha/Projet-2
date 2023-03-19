@@ -39,6 +39,7 @@ export class DisplayGameService {
         for (let i = 0; i < this.tempGames.length; i++) {
             const game = this.tempGames[i];
             const playersInGame = await this.getPlayersInGame(game.id);
+            console.log(playersInGame);
             const gameInformation: Game = {
                 id: game.id,
                 title: game.name,

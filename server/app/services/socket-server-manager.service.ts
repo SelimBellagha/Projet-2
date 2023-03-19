@@ -29,21 +29,20 @@ export class SocketServerManager {
                 socket.emit('getRealTime', timerInfo);
             });
 
-            socket.on('createLobby', (data: { gameId: string; playerName: string }) => {
+            socket.on('createLobby', (data: { gameId: string; playerName: string; roomId: string }) => {
                 const host: Player = {
                     playerName: data.playerName,
                     socketId: socket.id,
                 };
-                const sId = socket.id;
                 const newLobby = new Lobby(host, data.gameId);
-                this.lobbys.set(sId, newLobby);
-                socket.join(sId);
+                this.lobbys.set(data.roomId, newLobby);
+                socket.join(data.roomId);
             });
 
             socket.on('joinQueue', (data: { gameId: string; playerName: string }) => {
                 const roomId = this.getRoom(data.gameId);
                 const lobby = this.lobbys.get(roomId);
-                if (this.sio.sockets.adapter.rooms.get(roomId) && lobby) {
+                if (lobby) {
                     lobby.addInQueue(data.playerName, socket.id);
                     socket.to(lobby.getHost().socketId).emit('updateQueue', { newQueue: JSON.stringify(Array.from(lobby.getQueue().entries())) });
                 }
@@ -64,32 +63,37 @@ export class SocketServerManager {
             });
 
             socket.on('removeFromQueue', (data: { socketId: string; gameId: string }) => {
-                const roomId = this.getRoom(data.gameId);
-                const lobby = this.lobbys.get(roomId);
+                const lobby = this.lobbys.get(data.gameId);
                 if (lobby) {
                     lobby.deleteFromQueue(data.socketId);
                     socket.to(data.socketId).emit('refused');
-                    this.sio.to(lobby.getHost().socketId).emit('updateQueue', { newQueue: JSON.stringify(Array.from(lobby.getQueue().entries())) });
+                    socket.emit('updateQueue', { newQueue: JSON.stringify(Array.from(lobby.getQueue().entries())) });
                 }
             });
 
-            socket.on('addToRoom', (data: { socketId: string }) => {
-                const lobby = this.lobbys.get(socket.id);
+            socket.on('addToRoom', (data: { opponentId: string; roomId: string }) => {
+                const lobby = this.lobbys.get(data.roomId);
                 if (lobby) {
-                    const playerToAdd = lobby.getQueue().get(data.socketId);
+                    const playerToAdd = lobby.getQueue().get(data.opponentId);
                     if (playerToAdd) {
                         lobby.addPlayer(playerToAdd);
                         const playerToAddSocket = this.sio.sockets.sockets.get(playerToAdd.socketId);
-                        playerToAddSocket?.join(socket.id);
+                        playerToAddSocket?.join(data.roomId);
                         for (const key of lobby.getQueue().keys()) {
                             socket.to(key).emit('refused');
                         }
                         lobby.clearQueue();
-                        this.sio.to(socket.id).emit('goToGame', { roomId: socket.id });
-                        this.sio
-                            .to(socket.id)
+                        this.sio.sockets.to(data.roomId).emit('goToGame', { roomId: data.roomId });
+                        socket
+                            .to(data.roomId)
                             .emit('username', { hostUsername: lobby.getHost().playerName, inviteUsername: lobby.getSecondPlayer().playerName });
                     }
+                }
+            });
+
+            socket.on('deleteRoom', (data: { roomId: string }) => {
+                if (this.lobbys.get(data.roomId)) {
+                    this.lobbys.delete(data.roomId);
                 }
             });
 

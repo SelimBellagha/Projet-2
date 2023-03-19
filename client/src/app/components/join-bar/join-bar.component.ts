@@ -1,6 +1,5 @@
 import { Component, Input } from '@angular/core';
-// import { Player } from '@app/interfaces/player';
-import { LoginFormService } from '@app/services/login-form.service';
+import { LobbyService } from '@app/services/lobby.service';
 import { SocketClientService } from '@app/services/socket-client-service.service';
 
 @Component({
@@ -12,13 +11,13 @@ export class JoinBarComponent {
     @Input() nomJoueur: string;
     @Input() socketId: string;
 
-    constructor(private socketService: SocketClientService, private loginService: LoginFormService) {}
+    constructor(private socketService: SocketClientService, private lobbyService: LobbyService) {}
 
     refusePlayer() {
-        this.socketService.send('removeFromQueue', { socketId: this.socketId, gameId: this.loginService.getGameId() });
+        this.socketService.send('removeFromQueue', { socketId: this.socketId, gameId: this.lobbyService.roomId });
     }
 
     acceptPlayer() {
-        this.socketService.send('addToRoom', { socketId: this.socketId });
+        this.socketService.send('addToRoom', { opponentId: this.socketId, roomId: this.lobbyService.roomId });
     }
 }
