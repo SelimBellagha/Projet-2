@@ -127,6 +127,7 @@ export class GameManagerService {
     stateChanger(): void {
         this.state = !this.state;
     }
+
     async flashPixelsCheat(pixels: Vec2[][], canvas: CanvasRenderingContext2D): Promise<void> {
         const originalImageData = canvas.getImageData(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT);
         const flashingOriginalImageData = canvas.getImageData(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT);

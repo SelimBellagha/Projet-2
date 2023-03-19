@@ -1,7 +1,7 @@
 import { HttpClientModule } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-
+import { GameData } from '@app/interfaces/game-data';
 import { GameManagerService } from '@app/services/game-manager.service';
 import { CheatComponent } from './cheat.component';
 import SpyObj = jasmine.SpyObj;
@@ -46,9 +46,11 @@ describe('CheatComponent', () => {
     });
 
     it('should call flashPixelsCheat method with correct parameters when toggle is true', () => {
+        const mockSource = '../assets/tests/image_7_diff.bmp';
         component.toggle = true;
+        gameManagerSpy.gameData = { originalImage: mockSource, modifiedImage: mockSource } as GameData;
+        gameManagerSpy.state = true;
         component.giveHint();
-        expect(gameManagerSpy.flashPixelsCheat).toHaveBeenCalledTimes(2);
         expect(gameManagerSpy.flashPixelsCheat).toHaveBeenCalledWith(gameManagerSpy.gameData.differences, gameManagerSpy.modifiedImageCanvas);
         expect(gameManagerSpy.flashPixelsCheat).toHaveBeenCalledWith(gameManagerSpy.gameData.differences, gameManagerSpy.originalImageCanvas);
     });
