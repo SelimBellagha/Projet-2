@@ -11,13 +11,14 @@
                 [customDifficulty]="game.difficulty"
                 [isConfigurationMode]="false"
                 [customPhoto]="game.image"
+                [multiplayerButton]="game.playerInGame"
             ></app-jeux>
         </div>
     </div>
     <div class="buttons-align">
         <div *ngIf="hasNextPage === false">
-            <button disabled="disabled" >Précédent</button>
-            <button disabled="disabled" >Suivant</button>
+            <button disabled="disabled">Précédent</button>
+            <button disabled="disabled">Suivant</button>
         </div>
 
         <div *ngIf="hasNextPage === true">

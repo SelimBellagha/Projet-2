@@ -1,10 +1,9 @@
 import { TestBed } from '@angular/core/testing';
-import { CanvasTestHelper } from '@app/classes/canvas-test-helper';
 import { DrawService } from '@app/services/draw.service';
 
 describe('DrawService', () => {
     let service: DrawService;
-    let ctxStub: CanvasRenderingContext2D;
+    let ctxStub: OffscreenCanvasRenderingContext2D;
 
     const CANVAS_WIDTH = 640;
     const CANVAS_HEIGHT = 480;
@@ -12,65 +11,85 @@ describe('DrawService', () => {
     beforeEach(() => {
         TestBed.configureTestingModule({});
         service = TestBed.inject(DrawService);
-        ctxStub = CanvasTestHelper.createCanvas(CANVAS_WIDTH, CANVAS_HEIGHT).getContext('2d') as CanvasRenderingContext2D;
-        service.context = ctxStub;
+        ctxStub = new OffscreenCanvas(CANVAS_WIDTH, CANVAS_HEIGHT).getContext('2d') as OffscreenCanvasRenderingContext2D;
+        service.drawingContext = ctxStub;
     });
 
     it('should be created', () => {
         expect(service).toBeTruthy();
     });
 
-    it(' width should return the width of the grid canvas', () => {
-        expect(service.width).toEqual(CANVAS_WIDTH);
+    it(' drawline should call lineTo on the canvas', () => {
+        const lineToSpy = spyOn(service.drawingContext, 'lineTo').and.callThrough();
+        const startPositionMock = { x: 2, y: 4 };
+        const endPositionMock = { x: 4, y: 4 };
+        service.drawLine(startPositionMock, endPositionMock);
+        expect(lineToSpy).toHaveBeenCalled();
     });
 
-    it(' height should return the height of the grid canvas', () => {
-        expect(service.height).toEqual(CANVAS_HEIGHT);
-    });
-
-    it(' drawWord should call fillText on the canvas', () => {
-        const fillTextSpy = spyOn(service.context, 'fillText').and.callThrough();
-        service.drawWord('test');
-        expect(fillTextSpy).toHaveBeenCalled();
-    });
-
-    it(' drawWord should not call fillText if word is empty', () => {
-        const fillTextSpy = spyOn(service.context, 'fillText').and.callThrough();
-        service.drawWord('');
-        expect(fillTextSpy).toHaveBeenCalledTimes(0);
-    });
-
-    it(' drawWord should call fillText as many times as letters in a word', () => {
-        const fillTextSpy = spyOn(service.context, 'fillText').and.callThrough();
-        const word = 'test';
-        service.drawWord(word);
-        expect(fillTextSpy).toHaveBeenCalledTimes(word.length);
-    });
-
-    it(' drawWord should color pixels on the canvas', () => {
-        let imageData = service.context.getImageData(0, 0, service.width, service.height).data;
+    it(' drawLine should color pixels on the canvas', () => {
+        let imageData = service.drawingContext.getImageData(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT).data;
         const beforeSize = imageData.filter((x) => x !== 0).length;
-        service.drawWord('test');
-        imageData = service.context.getImageData(0, 0, service.width, service.height).data;
+        const startPositionMock = { x: 2, y: 4 };
+        const endPositionMock = { x: 4, y: 4 };
+        service.drawLine(startPositionMock, endPositionMock);
+        imageData = service.drawingContext.getImageData(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT).data;
+        const afterSize = imageData.filter((x) => x !== 0).length;
+        expect(afterSize).toBeGreaterThan(beforeSize);
+    });
+    it(' erase should call clearRect on the canvas', () => {
+        const clearRectSpy = spyOn(service.drawingContext, 'clearRect').and.callThrough();
+        const startPositionMock = { x: 2, y: 4 };
+        service.erase(startPositionMock);
+        expect(clearRectSpy).toHaveBeenCalled();
+    });
+
+    it(' drawRectangle should fillRect on the canvas', () => {
+        const fillRectSpy = spyOn(service.drawingContext, 'fillRect').and.callThrough();
+        const startPositionMock = { x: 2, y: 4 };
+        const endPositionMock = { x: 8, y: 6 };
+        service.drawRectangle(startPositionMock, endPositionMock);
+        expect(fillRectSpy).toHaveBeenCalled();
+    });
+
+    it(' drawRectangle should color pixels on the canvas', () => {
+        let imageData = service.drawingContext.getImageData(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT).data;
+        const beforeSize = imageData.filter((x) => x !== 0).length;
+        const startPositionMock = { x: 2, y: 4 };
+        const endPositionMock = { x: 8, y: 6 };
+        service.drawRectangle(startPositionMock, endPositionMock);
+        imageData = service.drawingContext.getImageData(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT).data;
         const afterSize = imageData.filter((x) => x !== 0).length;
         expect(afterSize).toBeGreaterThan(beforeSize);
     });
 
-    it(' drawGrid should call moveTo and lineTo 4 times', () => {
-        const expectedCallTimes = 4;
-        const moveToSpy = spyOn(service.context, 'moveTo').and.callThrough();
-        const lineToSpy = spyOn(service.context, 'lineTo').and.callThrough();
-        service.drawGrid();
-        expect(moveToSpy).toHaveBeenCalledTimes(expectedCallTimes);
-        expect(lineToSpy).toHaveBeenCalledTimes(expectedCallTimes);
+    it(' drawRectangle should adjust rectangle x dimension if isSquareEnabled is true and y difference is smaller', () => {
+        service.isSquareEnabled = true;
+        const fillRectSpy = spyOn(service.drawingContext, 'fillRect').and.callThrough();
+        const startPositionMock = { x: 2, y: 4 };
+        const endPositionMock = { x: 8, y: 6 };
+        service.drawRectangle(startPositionMock, endPositionMock);
+        expect(fillRectSpy).toHaveBeenCalledOnceWith(startPositionMock.x, startPositionMock.y, 2, 2);
     });
 
-    it(' drawGrid should color pixels on the canvas', () => {
-        let imageData = service.context.getImageData(0, 0, service.width, service.height).data;
-        const beforeSize = imageData.filter((x) => x !== 0).length;
-        service.drawGrid();
-        imageData = service.context.getImageData(0, 0, service.width, service.height).data;
-        const afterSize = imageData.filter((x) => x !== 0).length;
-        expect(afterSize).toBeGreaterThan(beforeSize);
+    it(' drawRectangle should adjust rectangle y dimension if isSquareEnabled is true and x difference is smaller', () => {
+        service.isSquareEnabled = true;
+        const fillRectSpy = spyOn(service.drawingContext, 'fillRect').and.callThrough();
+        const startPositionMock = { x: 2, y: 4 };
+        const endPositionMock = { x: 3, y: 10 };
+        service.drawRectangle(startPositionMock, endPositionMock);
+        expect(fillRectSpy).toHaveBeenCalledOnceWith(startPositionMock.x, startPositionMock.y, 1, 1);
+    });
+    it('setColor should change color attribute', () => {
+        service.setColor('blue');
+        expect(service.color).toEqual('blue');
+    });
+    it('setWidth should change width attribute', () => {
+        service.setWidth(2);
+        expect(service.width).toEqual(2);
+    });
+    it('enableSquare should change isSquareEnabled attribute', () => {
+        service.enableSquare(true);
+        expect(service.isSquareEnabled).toBeTrue();
     });
 });

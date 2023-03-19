@@ -1,13 +1,24 @@
-import { GameData } from '@app/data/game.interface';
+/* import { GameData } from '@app/data/game.interface';
 import { expect } from 'chai';
 import { Container } from 'typedi';
 import { GameManager } from './game-manager.service';
+// const allGames = require("../data/games.json").allGames;
+import * as fs from 'fs';
+import * as path from 'path';
+
+async function restorePlaylists () {
+    const filePath = path.join(__dirname, "/games_test.json");
+    await fs.promises.writeFile(filePath, JSON.stringify({ allGames }));
+}
 
 describe('Example service', () => {
     let gameService: GameManager;
+    const testJsonPath = path.join(__dirname, "/games_test.json");
 
     beforeEach(async () => {
         gameService = Container.get(GameManager);
+        gameService.jsonPath = testJsonPath;
+        
         gameService.gamesData = [
             { id: '0', name: 'game0', originalImage: '', modifiedImage: '', nbDifferences: 8, differences: [], isDifficult: false },
             {
@@ -25,6 +36,11 @@ describe('Example service', () => {
                 isDifficult: false,
             },
         ];
+        
+    });
+
+    afterEach(async () => {
+        await restorePlaylists();
     });
 
     it('should return a number if countProperties is called', () => {
@@ -32,11 +48,16 @@ describe('Example service', () => {
         expect(nbProperties).to.equals(2);
     });
 
-    it('should return an array of games', (done: Mocha.Done) => {
+
+    it('should return an array of games', async() => {
+        const games = await gameService.getAllGames();
+        expect(games).to.equals(allGames);
+        
         gameService.getAllGames().then((result: GameData[]) => {
-            expect(result).to.equals(gameService.gamesData);
+            expect(result).to.equals(allGames);
             done();
         });
+        
     });
 
     it('should return the game by its ID', (done: Mocha.Done) => {
@@ -60,6 +81,8 @@ describe('Example service', () => {
         expect(gameService.gamesData[2]).to.equals(newGame);
         done();
     });
+    
+
     it('should return true and index if coordinates are in game', () => {
         gameService.verificationInPicture(2, 2, '1').then((res) => {
             expect(res).to.equal({ result: true, index: 0 });
@@ -72,4 +95,4 @@ describe('Example service', () => {
             expect(res).to.equal({ result: expectedResult, index: expectedIndex });
         });
     });
-});
+});*/

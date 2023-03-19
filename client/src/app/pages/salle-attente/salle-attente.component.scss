@@ -1,0 +1,76 @@
+.container {
+    min-height: 100vh;
+    height: auto;
+    background-color: #b5d8b5;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}
+.waiting-text {
+    font-size: 200%;
+    font-weight: bold;
+    text-align: center;
+    color: #333;
+}
+
+.cancel-button {
+    background-color: red;
+    color: white;
+    padding: 1%;
+    border: none;
+    cursor: pointer;
+    width: 15%;
+    margin-left: 2%;
+    margin-top: 0.5%;
+    opacity: 0.8;
+}
+
+.join-container {
+    position: absolute;
+    left: 33%;
+    background-color: white;
+    width: 35%;
+    height: 80%;
+    border-radius: 10%;
+    align-content: center;
+}
+
+.flexbox1 {
+    flex: 0.1 1 50%;
+}
+
+.flexbox2 {
+    flex: 2 1 100%;
+    align-items: center;
+}
+
+.dot-1,
+.dot-2,
+.dot-3 {
+    opacity: 0;
+    animation: dots 1s infinite;
+}
+
+.dot-1 {
+    animation-delay: 0ms;
+}
+
+.dot-2 {
+    animation-delay: 250ms;
+}
+
+.dot-3 {
+    animation-delay: 500ms;
+}
+
+@keyframes dots {
+    0% {
+        opacity: 0;
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+    }
+}

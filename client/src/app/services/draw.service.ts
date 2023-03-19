@@ -9,45 +9,60 @@ export const DEFAULT_HEIGHT = 480;
     providedIn: 'root',
 })
 export class DrawService {
-    context: CanvasRenderingContext2D;
-    private canvasSize: Vec2 = { x: DEFAULT_WIDTH, y: DEFAULT_HEIGHT };
+    drawingContext: OffscreenCanvasRenderingContext2D;
+    color: string = 'red';
+    width: number = 1;
+    isSquareEnabled: boolean = false;
 
-    get width(): number {
-        return this.canvasSize.x;
+    drawLine(startPosition: Vec2, endPosition: Vec2): void {
+        this.drawingContext.save();
+        this.drawingContext.beginPath();
+        this.drawingContext.moveTo(startPosition.x, startPosition.y);
+        this.drawingContext.strokeStyle = this.color;
+        this.drawingContext.lineWidth = this.width;
+        this.drawingContext.lineCap = 'round';
+        this.drawingContext.lineTo(endPosition.x, endPosition.y);
+        this.drawingContext.stroke();
+        this.drawingContext.restore();
     }
 
-    get height(): number {
-        return this.canvasSize.y;
-    }
+    drawRectangle(startPosition: Vec2, endPosition: Vec2): void {
+        this.drawingContext.save();
+        this.drawingContext.fillStyle = this.color;
+        let xLength = endPosition.x - startPosition.x;
+        let yLength = endPosition.y - startPosition.y;
 
-    // TODO : pas de valeurs magiques!! Faudrait avoir une meilleure manière de le faire
-    /* eslint-disable @typescript-eslint/no-magic-numbers */
-    drawGrid() {
-        this.context.beginPath();
-        this.context.strokeStyle = 'black';
-        this.context.lineWidth = 3;
-
-        this.context.moveTo((this.width * 3) / 10, (this.height * 4) / 10);
-        this.context.lineTo((this.width * 7) / 10, (this.height * 4) / 10);
-
-        this.context.moveTo((this.width * 3) / 10, (this.height * 6) / 10);
-        this.context.lineTo((this.width * 7) / 10, (this.height * 6) / 10);
-
-        this.context.moveTo((this.width * 4) / 10, (this.height * 3) / 10);
-        this.context.lineTo((this.width * 4) / 10, (this.height * 7) / 10);
-
-        this.context.moveTo((this.width * 6) / 10, (this.height * 3) / 10);
-        this.context.lineTo((this.width * 6) / 10, (this.height * 7) / 10);
-
-        this.context.stroke();
-    }
-
-    drawWord(word: string) {
-        const startPosition: Vec2 = { x: 175, y: 100 };
-        const step = 20;
-        this.context.font = '20px system-ui';
-        for (let i = 0; i < word.length; i++) {
-            this.context.fillText(word[i], startPosition.x + step * i, startPosition.y);
+        if (this.isSquareEnabled) {
+            if (Math.abs(xLength) >= Math.abs(yLength)) {
+                xLength = xLength > 0 ? Math.abs(yLength) : -Math.abs(yLength);
+            } else {
+                yLength = yLength > 0 ? Math.abs(xLength) : -Math.abs(xLength);
+            }
         }
+
+        this.drawingContext.fillRect(startPosition.x, startPosition.y, xLength, yLength);
+    }
+
+    erase(position: Vec2): void {
+        this.drawingContext.save();
+        this.drawingContext.globalCompositeOperation = 'destination-over';
+        this.drawingContext.fillStyle = 'rgba(0,0,0,0)';
+        this.drawingContext.clearRect(
+            Math.max(position.x - this.width, 0),
+            Math.max(position.y - this.width, 0),
+            Math.min(DEFAULT_WIDTH - position.x + this.width, this.width * 2),
+            Math.min(DEFAULT_HEIGHT - position.y + this.width, this.width * 2),
+        );
+        this.drawingContext.restore();
+    }
+
+    setColor(color: string): void {
+        this.color = color;
+    }
+    setWidth(width: number): void {
+        this.width = width;
+    }
+    enableSquare(enable: boolean): void {
+        this.isSquareEnabled = enable;
     }
 }

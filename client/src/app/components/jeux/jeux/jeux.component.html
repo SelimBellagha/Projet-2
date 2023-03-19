@@ -7,42 +7,43 @@
                 <img class="image-position" style="vertical-align: top" #image alt="Test" />
             </p>
 
-        <div class = "top3" >TOP 3</div>
-        <table class = "place">
-        <tr>
-            <th>No.</th>
-            <th>SOLO</th>
-            <th> 1 VS 1 </th>
-        </tr>
+            <div class="top3">TOP 3</div>
+            <table class="place">
+                <tr>
+                    <th>No.</th>
+                    <th>SOLO</th>
+                    <th>1 VS 1</th>
+                </tr>
 
-        <tr>
-            <td>🥇</td>
-            <td>0:30 Mario </td>
-            <td>1:15 Mickey</td>
-        </tr>
+                <tr>
+                    <td>🥇</td>
+                    <td>0:30 Mario</td>
+                    <td>1:15 Mickey</td>
+                </tr>
 
-        <tr>
-            <td>🥈</td>
-            <td>0:28 Luigi </td>
-            <td>1:01 Daisy </td>
-        </tr>
+                <tr>
+                    <td>🥈</td>
+                    <td>0:28 Luigi</td>
+                    <td>1:01 Daisy</td>
+                </tr>
 
-        <tr>
-            <td>🥉</td>
-            <td>0:30 Minnie </td>
-            <td class>0:55 Pluto </td>
-        </tr>
-        </table>
-    </div>
-
-    <div class="buttons">
-        <div *ngIf="!isConfigurationMode" class="buttons">
-            <button (click)="goToLoginPage()">Jouer</button>
-            <button disabled="disabled">Créer</button>
+                <tr>
+                    <td>🥉</td>
+                    <td>0:30 Minnie</td>
+                    <td class>0:55 Pluto</td>
+                </tr>
+            </table>
         </div>
-        <div *ngIf="isConfigurationMode" class="buttons">
-            <button disabled="disabled">Supprimer</button>
-            <button disabled="disabled">Reinitialiser</button>
+
+        <div class="buttons">
+            <div *ngIf="!isConfigurationMode" class="buttons">
+                <button (click)="playSolo()">Jouer</button>
+                <button (click)="playMultiplayer()">{{ multiplayerButton }}</button>
+            </div>
+            <div *ngIf="isConfigurationMode" class="buttons">
+                <button disabled="disabled">Supprimer</button>
+                <button disabled="disabled">Reinitialiser</button>
+            </div>
         </div>
     </div>
 </div>
