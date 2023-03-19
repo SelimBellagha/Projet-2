@@ -55,6 +55,9 @@ describe('GameManagerService', () => {
     //     service.gameData = { originalImage: mockSource, modifiedImage: mockSource } as GameData;
     //     service.state = false;
     //     service.flashPixelsCheat(service.gameData.differences, service.modifiedImageCanvas);
+    //     service.gameData = { originalImage: mockSource, modifiedImage: mockSource } as GameData;
+    //     // const originalCanvasSpy = spyOn(service.originalImageCanvas, 'drawImage');
+    //     // const modifiedCanvasSpy = spyOn(service.modifiedImageCanvas, 'drawImage');
 
     //     // Check that the putImageData function was called with the correct arguments
     //     expect(canvas.getImageData).toHaveBeenCalled();
