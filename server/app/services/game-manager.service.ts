@@ -2,13 +2,13 @@ import { GameData } from '@app/data/game.interface';
 import { Service } from 'typedi';
 import * as fs from 'fs';
 import * as path from 'path';
+import { v4 as uuidv4 } from 'uuid';
 
 @Service()
 export class GameManager {
     gamesData: GameData[] = [];
     tempGame: GameData;
     jsonPath = path.join(__dirname + '../../../../../app/data/games.json');
-    idCount: number = 1;
     async countProperties() {
         const games = await this.getAllGames();
         return games.length;
@@ -27,8 +27,7 @@ export class GameManager {
 
     async addGame(newGame: GameData): Promise<void> {
         const allGames = await this.getAllGames();
-        this.idCount++;
-        const gameId = String(this.idCount);
+        const gameId = String(uuidv4());
         newGame.id = gameId;
         this.gamesData[gameId] = newGame;
         allGames.push(newGame);
@@ -42,14 +41,19 @@ export class GameManager {
     async readJsonFile(filePath: string) {
         return await fs.promises.readFile(filePath);
     }
-    /* async deleteGame(id: string): Promise<null | void> {
-        const gameToDelete = await this.getGamebyId(id);
-        if (!gameToDelete) {
-            return null;
+
+    async deleteGame(id: string): Promise<boolean> {
+        const gamesData = await this.getAllGames();
+        const gameToDelete = gamesData.find((games) => games.id === id);
+        if (gameToDelete) {
+            const allGames = gamesData.filter((games) => games.id !== id);
+            const gamesToSave = JSON.stringify({ allGames });
+            await this.writeToJsonFile(this.jsonPath, gamesToSave);
+            return true;
+        } else {
+            return false;
         }
-        delete this.gamesData[id];
     }
-    */
 
     async verificationInPicture(positionX: number, positionY: number, id: string) {
         const clickPosition = { x: positionX, y: positionY };

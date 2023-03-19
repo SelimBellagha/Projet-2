@@ -60,7 +60,7 @@ xdescribe('DisplayGameService', () => {
     it('loadGame should call getGameById from communicationService', () => {
         const gameDataStub = { isDifficult: false } as GameData;
         communicationSpy.getGameById.and.returnValue(of(gameDataStub));
-        service.loadGame(0);
+        service.loadGame('0');
         expect(communicationSpy.getGameById).toHaveBeenCalled();
     });
 });

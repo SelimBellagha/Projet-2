@@ -15,7 +15,7 @@ export class DisplayGameService {
     gameId: string;
     constructor(private comm: CommunicationService, private socketService: SocketClientService) {}
 
-    loadGame(gameId: number) {
+    loadGame(gameId: string) {
         return this.comm.getGameById(`${gameId}`).subscribe((game: GameData) => (this.game = game));
     }
 
