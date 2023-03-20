@@ -2,7 +2,9 @@ import { AfterViewInit, Component, ElementRef, Input, ViewChild } from '@angular
 import { Router } from '@angular/router';
 import { CommunicationService } from '@app/services/communication.service';
 import { DisplayGameService } from '@app/services/display-game.service';
+import { LobbyService } from '@app/services/lobby.service';
 import { LoginFormService } from '@app/services/login-form.service';
+import { v4 as uuidv4 } from 'uuid';
 
 @Component({
     selector: 'app-jeux',
@@ -24,11 +26,13 @@ export class JeuxComponent implements AfterViewInit {
         private router: Router,
         private displayService: DisplayGameService,
         private loginService: LoginFormService,
+        private lobbyService: LobbyService,
         private comm: CommunicationService,
     ) {}
 
     ngAfterViewInit(): void {
         this.image.nativeElement.src = this.customPhoto;
+        this.lobbyService.host = false;
     }
 
     goToLoginPage(): void {
@@ -38,19 +42,20 @@ export class JeuxComponent implements AfterViewInit {
 
     playSolo() {
         this.loginService.setGameType(false);
-        this.loginService.setPlayerType(false);
+        // this.loginService.setPlayerType(false);
         this.goToLoginPage();
     }
 
     playMultiplayer(): void {
         this.loginService.setGameId(this.customId);
+        this.lobbyService.roomId = uuidv4();
         if (this.multiplayerButton === 'Créer') {
             this.loginService.setGameType(true);
-            this.loginService.setPlayerType(true);
+            this.lobbyService.host = true;
             this.goToLoginPage();
         } else {
             this.loginService.setGameType(true);
-            this.loginService.setPlayerType(false);
+            // this.loginService.setPlayerType(false);
             this.router.navigate(['/loginPage']);
             this.goToLoginPage();
         }

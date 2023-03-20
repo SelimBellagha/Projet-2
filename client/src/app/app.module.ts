@@ -11,16 +11,16 @@ import { AppComponent } from '@app/pages/app/app.component';
 import { GamePageComponent } from '@app/pages/game-page/game-page.component';
 import { MainPageComponent } from '@app/pages/main-page/main-page.component';
 import { MaterialPageComponent } from '@app/pages/material-page/material-page.component';
+import { CheatComponent } from './components/cheat/cheat.component';
 import { JeuxComponent } from './components/jeux/jeux/jeux.component';
+import { JoinBarComponent } from './components/join-bar/join-bar.component';
 import { ConfigurationPageComponent } from './pages/configuration-page/configuration-page.component';
 import { GameCreationPageComponent } from './pages/game-creation-page/game-creation-page.component';
 import { LoginPageComponent } from './pages/login-page/login-page.component';
-import { SelectionPageComponentComponent } from './pages/selection-page-component/selection-page-component.component';
-import { SoloViewPageComponent } from './pages/solo-view-page/solo-view-page.component';
-import { CheatComponent } from './components/cheat/cheat.component';
 import { OneVsOnePageComponent } from './pages/one-vs-one-page/one-vs-one-page.component';
 import { SalleAttenteComponent } from './pages/salle-attente/salle-attente.component';
-import { JoinBarComponent } from './components/join-bar/join-bar.component';
+import { SelectionPageComponentComponent } from './pages/selection-page-component/selection-page-component.component';
+import { SoloViewPageComponent } from './pages/solo-view-page/solo-view-page.component';
 
 /**
  * Main module that is used in main.ts.
