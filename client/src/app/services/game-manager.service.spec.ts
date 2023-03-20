@@ -207,4 +207,9 @@ describe('GameManagerService', () => {
         service.playWinAudio();
         expect(spy).toHaveBeenCalled();
     });
+    it('playWinAudio should call playErrorAudio', () => {
+        const spy = spyOn(service, 'playErrorAudio');
+        service.playErrorAudio();
+        expect(spy).toHaveBeenCalled();
+    });
 });
