@@ -15,10 +15,15 @@ describe('GameManagerService', () => {
     const PIXEL_SIZE = 4;
     const whiteValue = 255;
     let differenceVerificationSpy: SpyObj<DifferenceVerificationService>;
+    // let canvas: CanvasRenderingContext2D;
+    // const mockCanvas = document.createElement('canvas');
+    // const mockContext = mockCanvas.getContext('2d') as CanvasRenderingContext2D;
+    // const mockImageData = new ImageData(640, 480);
 
     beforeEach(() => {
         differenceVerificationSpy = jasmine.createSpyObj('DifferenceVerificationService', ['differenceVerification']);
-
+        // spyOn(mockContext, 'getImageData').and.returnValue(mockImageData);
+        // spyOn(mockContext, 'putImageData');
         TestBed.configureTestingModule({
             imports: [HttpClientModule],
             providers: [{ provide: DifferenceVerificationService, useValue: differenceVerificationSpy }],
@@ -42,6 +47,30 @@ describe('GameManagerService', () => {
         const spy = spyOn(service, 'flashPixels');
         await service.flashImages([]);
         expect(spy).toHaveBeenCalledTimes(2);
+    });
+
+    // it('should flash the given pixels on the canvas', async () => {
+    //     const mockSource = '../assets/tests/image_7_diff.bmp';
+
+    //     service.gameData = { originalImage: mockSource, modifiedImage: mockSource } as GameData;
+    //     service.state = false;
+    //     service.flashPixelsCheat(service.gameData.differences, service.modifiedImageCanvas);
+    //     service.gameData = { originalImage: mockSource, modifiedImage: mockSource } as GameData;
+    //     // const originalCanvasSpy = spyOn(service.originalImageCanvas, 'drawImage');
+    //     // const modifiedCanvasSpy = spyOn(service.modifiedImageCanvas, 'drawImage');
+
+    //     // Check that the putImageData function was called with the correct arguments
+    //     expect(canvas.getImageData).toHaveBeenCalled();
+    // });
+
+    it('should return the value of toggle', () => {
+        service.state = true;
+        service.stateChanger();
+        expect(service.state).toBe(false);
+
+        service.state = false;
+        service.stateChanger();
+        expect(service.state).toBe(true);
     });
 
     it('flashPixels should not change the final canvas', async () => {
