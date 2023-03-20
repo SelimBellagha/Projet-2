@@ -19,5 +19,6 @@ export class JoinBarComponent {
 
     acceptPlayer() {
         this.socketService.send('addToRoom', { opponentId: this.socketId, roomId: this.lobbyService.roomId });
+        this.lobbyService.addOpponent(this.nomJoueur, this.socketId);
     }
 }

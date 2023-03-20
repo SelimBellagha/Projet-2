@@ -49,15 +49,19 @@ export class OneVsOnePageComponent implements OnInit, AfterViewInit {
 
     ngOnInit() {
         this.roomId = this.lobbyService.roomId;
-        this.socketService.on('username', (data: { hostUsername: string; inviteUsername: string }) => {
-            this.user1 = data.hostUsername;
-            this.user2 = data.inviteUsername;
-            if (this.socketService.socket.id === this.roomId) {
-                this.username2 = this.user2;
-            } else {
-                this.username2 = this.user1;
-            }
-        });
+        if (this.lobbyService.host === false) {
+            this.socketService.on('getHostName', (data: { hostName: string }) => {
+                this.user1 = data.hostName;
+                this.username = data.hostName;
+                this.user2 = this.loginService.getFormData();
+                this.username2 = this.loginService.getFormData();
+            });
+        } else {
+            this.user1 = this.loginService.getFormData();
+            this.username = this.loginService.getFormData();
+            this.user2 = this.lobbyService.opponent.playerName;
+            this.username2 = this.lobbyService.opponent.playerName;
+        }
         this.username = this.loginService.getFormData();
         this.startTimer();
         this.nbDifferencesFoundUser1 = 0;
@@ -138,8 +142,8 @@ export class OneVsOnePageComponent implements OnInit, AfterViewInit {
     }
 
     giveUp() {
-        this.socketService.send('giveUp', { roomId: this.roomId });
         this.goToHomePage();
+        this.socketService.send('giveUp', { roomId: this.roomId });
     }
 
     goToGiveUp() {
@@ -167,10 +171,12 @@ export class OneVsOnePageComponent implements OnInit, AfterViewInit {
     }
 
     winCheck() {
+        console.log(this.nbDifferencesFoundUser1);
+        console.log(this.nbDifferencesFoundUser2);
         if (this.nbDifferencesFoundUser1 === this.nbDifferenceToWin || this.nbDifferencesFoundUser2 === this.nbDifferenceToWin) {
-            if (this.nbDifferencesFoundUser1 === this.nbDifferenceToWin && this.socketService.socket.id === this.roomId) {
+            if (this.nbDifferencesFoundUser1 === this.nbDifferenceToWin && this.lobbyService.host === true) {
                 this.winGame();
-            } else if (this.nbDifferencesFoundUser2 === this.nbDifferenceToWin && this.socketService.socket.id !== this.roomId) {
+            } else if (this.nbDifferencesFoundUser2 === this.nbDifferenceToWin && this.lobbyService.host !== false) {
                 this.winGame();
             } else {
                 this.loseGame();

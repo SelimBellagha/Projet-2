@@ -17,4 +17,11 @@ export class LobbyService {
             this.socketService.send('deleteLobby', { roomId: this.roomId });
         }
     }
+
+    addOpponent(opponentName: string, opponentId: string) {
+        this.opponent = {
+            playerName: opponentName,
+            socketId: opponentId,
+        };
+    }
 }

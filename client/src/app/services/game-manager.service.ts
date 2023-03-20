@@ -75,7 +75,7 @@ export class GameManagerService {
     }
     async flashImages(pixels: Vec2[]): Promise<void> {
         this.flashPixels(pixels, this.originalImageCanvas);
-        await this.flashPixels(pixels, this.modifiedImageCanvas);
+        this.flashPixels(pixels, this.modifiedImageCanvas);
         // Changer les pixels de droite pour qu'ils soient comme à gauche
         this.replacePixels(this.gameData.differences[this.lastDifferenceFound]);
     }

@@ -84,9 +84,7 @@ export class SocketServerManager {
                         }
                         lobby.clearQueue();
                         this.sio.sockets.to(data.roomId).emit('goToGame', { roomId: data.roomId });
-                        socket
-                            .to(data.roomId)
-                            .emit('username', { hostUsername: lobby.getHost().playerName, inviteUsername: lobby.getSecondPlayer().playerName });
+                        socket.to(data.roomId).emit('getHostName', { hostName: lobby.getHost().playerName });
                     }
                 }
             });
@@ -105,7 +103,7 @@ export class SocketServerManager {
                     } else {
                         lobby.nbDifferencesInvite++;
                     }
-                    this.sio.to(data.roomId).emit('differenceUpdate', {
+                    this.sio.sockets.to(data.roomId).emit('differenceUpdate', {
                         nbDifferenceHost: lobby?.nbDifferencesHost,
                         nbDifferenceInvite: lobby?.nbDifferencesInvite,
                         differenceId: data.differenceId,
