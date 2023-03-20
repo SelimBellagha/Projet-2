@@ -4,6 +4,7 @@ import { Vec2 } from '@app/interfaces/vec2';
 import { Verification } from '@app/interfaces/verification';
 import { DifferenceVerificationService } from './difference-verification.service';
 import { DEFAULT_HEIGHT, DEFAULT_WIDTH } from './draw.service';
+import { SocketClientService } from './socket-client-service.service';
 
 const PIXEL_SIZE = 4;
 const FLASH_TIME = 250;
@@ -19,7 +20,7 @@ export class GameManagerService {
     lastDifferenceFound: number = 0;
     locked: boolean;
 
-    constructor(private differenceVerification: DifferenceVerificationService) {}
+    constructor(private differenceVerification: DifferenceVerificationService, private socketService: SocketClientService) {}
 
     initializeGame(gameData: GameData) {
         if (gameData) {
@@ -48,6 +49,7 @@ export class GameManagerService {
             if (await this.verifyDifference(position)) {
                 this.locked = false;
                 this.playDifferenceAudio();
+                this.socketService.send('systemMessage', "Différence trouvée par le joueur : " );
                 // Clignotement de tout les pixels faisant partie de la différence
                 this.flashImages(this.gameData.differences[this.lastDifferenceFound]);
                 return true;
@@ -55,6 +57,7 @@ export class GameManagerService {
                 // Écrire Erreur sur le canvas à la position
                 // Bloquer les clics pendant 1 sec
                 await this.errorMessage(position);
+                this.socketService.send('systemMessage', "Erreur par le joueur : " );
             }
             this.locked = false;
         }

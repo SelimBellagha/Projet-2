@@ -20,6 +20,7 @@ import { SoloViewPageComponent } from './pages/solo-view-page/solo-view-page.com
 import { OneVsOnePageComponent } from './pages/one-vs-one-page/one-vs-one-page.component';
 import { SalleAttenteComponent } from './pages/salle-attente/salle-attente.component';
 import { JoinBarComponent } from './components/join-bar/join-bar.component';
+import { ChatBoxComponent } from './components/chat-box/chat-box.component';
 
 /**
  * Main module that is used in main.ts.
@@ -44,6 +45,7 @@ import { JoinBarComponent } from './components/join-bar/join-bar.component';
         OneVsOnePageComponent,
         SalleAttenteComponent,
         JoinBarComponent,
+        ChatBoxComponent,
     ],
     imports: [AppMaterialModule, AppRoutingModule, BrowserAnimationsModule, BrowserModule, FormsModule, HttpClientModule],
     providers: [],

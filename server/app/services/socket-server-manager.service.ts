@@ -5,6 +5,7 @@ import * as http from 'http';
 import * as io from 'socket.io';
 import { Socket } from 'socket.io';
 import { Service } from 'typedi';
+import { Message } from '@common/chatMessage';
 import { TimerManager } from './timer-manager.service';
 
 @Service()
@@ -23,6 +24,49 @@ export class SocketServerManager {
             socket.on('startTimer', () => {
                 this.timerManager.startTimer();
             });
+
+            socket.on('sendChatToServer', (message: Message) => {
+                const lobby = this.getLobbyFromSocketID(socket.id)
+                let socketOtherPlayer = undefined
+                const playerEmitter = this.getPlayerFromSocketId(socket.id)
+                if(!playerEmitter) return
+                if(lobby?.host.socketId === socket.id) {
+                     socketOtherPlayer = lobby?.secondPlayer.socketId
+                    if(!socketOtherPlayer) return
+                    message.isSender = false;
+                    message.name = playerEmitter.playerName
+                    this.sio.to(socketOtherPlayer).emit('receiveChatMessage', message);
+                    message.isSender = true;
+                    this.sio.to(socket.id).emit('receiveChatMessage', message);
+                }
+                else
+                {
+                    socketOtherPlayer = lobby?.host.socketId
+                    if(!socketOtherPlayer) return
+                    message.isSender = false;
+                    message.name = playerEmitter.playerName
+                    this.sio.to(socketOtherPlayer).emit('receiveChatMessage', message);
+                    message.isSender = true;
+                    this.sio.to(socket.id).emit('receiveChatMessage', message);
+                }
+            });
+
+            socket.on('systemMessage', (systemMessage: string) => {
+                const lobby = this.getLobbyFromSocketID(socket.id)
+                
+                let playerName = this.getPlayerFromSocketId(socket.id)?.playerName
+                if(!lobby) return;
+
+                if(systemMessage === " a abandonné la partie") {
+                    this.sio.to(lobby?.host.socketId).emit("receiveSystemMessage", playerName + systemMessage)
+                    this.sio.to(lobby?.secondPlayer.socketId).emit("receiveSystemMessage", playerName  + systemMessage)
+                    return 
+                }
+                this.sio.to(lobby?.host.socketId).emit("receiveSystemMessage", systemMessage + playerName)
+                this.sio.to(lobby?.secondPlayer.socketId).emit("receiveSystemMessage", systemMessage  + playerName)
+            });
+
+
 
             socket.on('getRealTime', () => {
                 const timerInfo = [this.timerManager.secondes1, this.timerManager.secondes2, this.timerManager.minutes1, this.timerManager.minutes2];
@@ -47,6 +91,7 @@ export class SocketServerManager {
                     socket.to(lobby.getHost().socketId).emit('updateQueue', { newQueue: JSON.stringify(Array.from(lobby.getQueue().entries())) });
                 }
             });
+            
 
             socket.on('checkPlayersInGame', (data: { gameId: string }) => {
                 const roomId = this.getRoom(data.gameId);
@@ -130,4 +175,22 @@ export class SocketServerManager {
         }
         return '';
     }
+
+    getLobbyFromSocketID(socketId: string) {
+        for (const lobby of this.lobbys) {
+            if(lobby[1].host.socketId === socketId) return lobby[1];
+            else if (lobby[1].secondPlayer.socketId === socketId) return lobby[1];
+        }
+        return
+    }
+
+    getPlayerFromSocketId(socketId: string){
+        for (const lobby of this.lobbys) {
+            if(lobby[1].host.socketId === socketId) return lobby[1].host;
+            else if (lobby[1].secondPlayer.socketId === socketId) return lobby[1].secondPlayer;
+        }
+        return
+
+    }
+
 }
