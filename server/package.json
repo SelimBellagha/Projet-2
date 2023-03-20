@@ -33,9 +33,7 @@
             "app/services/socket-server-manager.service.ts",
             "app/classes/lobby.ts",
             "app/services/socket-server-manager.service.ts",
-            "app/services/socket-server-manager.service.ts",
-            "app/services/game-manager.service.ts",
-            "app/controllers/games.controller.ts"
+            "app/services/socket-server-manager.service.ts"
         ],
         "require": [
             "ts-node/register",

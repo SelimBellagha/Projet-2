@@ -6,12 +6,15 @@ import { v4 as uuidv4 } from 'uuid';
 
 @Service()
 export class GameManager {
-    gamesData: GameData[] = [];
     tempGame: GameData;
     jsonPath = path.join(__dirname + '../../../../../app/data/games.json');
-    async countProperties() {
-        const games = await this.getAllGames();
-        return games.length;
+
+    async writeToJsonFile(filePath: string, data: string) {
+        return await fs.promises.writeFile(filePath, data);
+    }
+
+    async readJsonFile(filePath: string) {
+        return await fs.promises.readFile(filePath);
     }
 
     async getAllGames(): Promise<GameData[]> {
@@ -29,17 +32,8 @@ export class GameManager {
         const allGames = await this.getAllGames();
         const gameId = String(uuidv4());
         newGame.id = gameId;
-        this.gamesData[gameId] = newGame;
         allGames.push(newGame);
         this.writeToJsonFile(this.jsonPath, JSON.stringify({ allGames }));
-    }
-
-    async writeToJsonFile(filePath: string, data: string) {
-        return await fs.promises.writeFile(filePath, data);
-    }
-
-    async readJsonFile(filePath: string) {
-        return await fs.promises.readFile(filePath);
     }
 
     async deleteGame(id: string): Promise<boolean> {

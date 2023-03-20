@@ -73,7 +73,7 @@ describe('GameController', () => {
             });
     });
 
-    it('should return 404 not found if game not found', async () => {
+    it('should return 404 not found if game not found on get request to /:id', async () => {
         gameService.getGamebyId.withArgs('2').resolves(undefined);
         return supertest(expressApp).get('/api/games/2').expect(HTTP_NOT_FOUND);
     });
@@ -84,7 +84,7 @@ describe('GameController', () => {
         return supertest(expressApp).get('/api/games/2').send(error.message).expect(HTTP_SERVER_ERROR);
     });
 
-    it('should store game in the array on valid post request to /send', async () => {
+    it('should store game on valid post request to /send', async () => {
         return supertest(expressApp).post('/api/games/send').expect(HTTP_STATUS_CREATED);
     });
 
@@ -92,5 +92,20 @@ describe('GameController', () => {
         const error = new Error('service error');
         gameService.addGame.throws(error);
         return supertest(expressApp).post('/api/games/send').send(error.message).expect(HTTP_SERVER_ERROR);
+    });
+
+    it('should delete game on valid delete request to /:id', async () => {
+        return supertest(expressApp).delete('/api/games/1').expect(HTTP_STATUS_OK);
+    });
+
+    it('should return 404 not found if game not found on delete request to /:id', async () => {
+        gameService.deleteGame.withArgs('3').resolves(false);
+        return supertest(expressApp).delete('/api/games/3').expect(HTTP_NOT_FOUND);
+    });
+
+    it('should return 500 error on invalid delete request to /:id', async () => {
+        const error = new Error('service error');
+        gameService.deleteGame.throws(error);
+        return supertest(expressApp).delete('/api/games/1').send(error.message).expect(HTTP_SERVER_ERROR);
     });
 });
