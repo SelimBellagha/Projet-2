@@ -5,7 +5,6 @@ export interface GameData {
     name: string;
     originalImage: string;
     modifiedImage: string;
-    // differenceImage: ImageData;
     nbDifferences: number;
     differences: Vec2[][];
     isDifficult: boolean;

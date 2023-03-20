@@ -9,6 +9,7 @@ import { LoginFormService } from '@app/services/login-form.service';
 })
 export class LoginPageComponent {
     username: string;
+    isValidUsername: boolean;
     constructor(private router: Router, private loginService: LoginFormService) {}
 
     goToGameSelection(): void {
@@ -23,7 +24,7 @@ export class LoginPageComponent {
     goToGamePage(): void {
         const input = document.getElementById('username') as HTMLInputElement;
         const name = input?.value;
-        if (name === '') {
+        if (!this.validateUsername(name)) {
             window.alert('Nom de joueur invalide: entrez un nom non vide');
         } else {
             this.onClickSubmit(name);
@@ -33,5 +34,9 @@ export class LoginPageComponent {
                 this.router.navigate(['/salleAttente']);
             }
         }
+    }
+
+    validateUsername(name: string): boolean {
+        return (this.isValidUsername = name !== '' && name.trim().length > 0);
     }
 }

@@ -31,7 +31,7 @@ xdescribe('DifferenceVerificationService', () => {
         const idMock = 0;
         const xMock = 0;
         const yMock = 0;
-        service.differenceVerification(0, 0, 0);
+        service.differenceVerification(0, 0, '0');
         const request = httpMock.expectOne(`${baseUrl}/difference/${idMock}?ClickX=${xMock}&ClickY=${yMock}`);
         expect(request.request.method).toBe('GET');
         request.flush(expectedResult);

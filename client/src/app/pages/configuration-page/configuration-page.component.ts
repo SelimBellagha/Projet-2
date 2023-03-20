@@ -4,6 +4,7 @@ import { DisplayGameService } from '@app/services/display-game.service';
 import { SocketClientService } from '@app/services/socket-client-service.service';
 
 type Game = {
+    id: string;
     title: string;
     difficulty: string;
     image: string;

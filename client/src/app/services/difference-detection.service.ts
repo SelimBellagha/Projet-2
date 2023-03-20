@@ -23,14 +23,12 @@ export class DifferenceDetectionService {
         const differenceImageData: ImageData = this.createDifferenceImage(pixelDifferences, radius);
         const differencesArray = this.findNumberOfDifference(differenceImageData);
         const difficulty = this.getDifficulty(differencesArray);
-        // const originalImageBmp: ImageBitmap = await createImageBitmap(imageData1);
-        // const modifiedImageBmp: ImageBitmap = await createImageBitmap(imageData2);
+
         return {
             id: 'temp',
             name: 'temp',
             originalImage: 'temp',
             modifiedImage: 'temp',
-            // differenceImage: differenceImageData,
             nbDifferences: differencesArray.length,
             differences: differencesArray,
             isDifficult: difficulty,
