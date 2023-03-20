@@ -44,7 +44,6 @@ export class JeuxComponent implements AfterViewInit {
         } else {
             this.loginService.setGameType(true);
             this.loginService.setPlayerType(false);
-            this.router.navigate(['/loginPage']);
             this.goToLoginPage();
         }
     }
