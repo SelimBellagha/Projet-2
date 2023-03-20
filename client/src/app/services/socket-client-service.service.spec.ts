@@ -41,6 +41,7 @@ describe('SocketClientService', () => {
 
     it('should call socket.on with an event', () => {
         const event = 'helloWorld';
+        // eslint-disable-next-line @typescript-eslint/no-empty-function
         const action = () => {};
         const spy = spyOn(service.socket, 'on');
         service.on(event, action);
