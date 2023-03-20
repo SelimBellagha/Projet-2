@@ -41,9 +41,19 @@
                 <button (click)="playMultiplayer()">{{ multiplayerButton }}</button>
             </div>
             <div *ngIf="isConfigurationMode" class="buttons">
-                <button disabled="disabled">Supprimer</button>
+                <button (click)="goToPopUp()">Supprimer</button>
                 <button disabled="disabled">Reinitialiser</button>
             </div>
         </div>
     </div>
+    <div #popUpWindow class="modal">
+        <div class="modal-content">
+            <div class="deleteWarning">Êtes-vous sûrs de vouloir supprimer ce jeu?</div>
+            <div class="close-button">
+                <button (click)="deleteGame()">Oui</button>
+                <button (click)="onClosingPopUp()">Non</button>
+            </div>
+        </div>
+    </div>
 </div>
+

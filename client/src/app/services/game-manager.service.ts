@@ -63,7 +63,7 @@ export class GameManagerService {
 
     async verifyDifference(position: Vec2): Promise<boolean> {
         // code temporaire
-        const verification: Verification = await this.differenceVerification.differenceVerification(position.x, position.y, +this.gameData.id);
+        const verification: Verification = await this.differenceVerification.differenceVerification(position.x, position.y, this.gameData.id);
         if (verification.result) {
             if (!this.differencesFound[verification.index]) {
                 this.differencesFound[verification.index] = true;

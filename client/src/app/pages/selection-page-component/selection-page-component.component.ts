@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { DisplayGameService } from '@app/services/display-game.service';
 import { SocketClientService } from '@app/services/socket-client-service.service';
+
 export type Game = {
     id: string;
     title: string;
