@@ -4,6 +4,7 @@ import { MouseButton } from '@app/components/play-area/play-area.component';
 import { Vec2 } from '@app/interfaces/vec2';
 import { DisplayGameService } from '@app/services/display-game.service';
 import { GameManagerService } from '@app/services/game-manager.service';
+import { LobbyService } from '@app/services/lobby.service';
 import { LoginFormService } from '@app/services/login-form.service';
 import { SocketClientService } from '@app/services/socket-client-service.service';
 
@@ -43,19 +44,24 @@ export class OneVsOnePageComponent implements OnInit, AfterViewInit {
         private displayService: DisplayGameService,
         private gameManager: GameManagerService,
         private socketService: SocketClientService,
+        private lobbyService: LobbyService,
     ) {}
 
     ngOnInit() {
-        this.roomId = this.loginService.getRoomId();
-        this.socketService.on('username', (data: { hostUsername: string; inviteUsername: string }) => {
-            this.user1 = data.hostUsername;
-            this.user2 = data.inviteUsername;
-            if (this.socketService.socket.id === this.roomId) {
-                this.username2 = this.user2;
-            } else {
-                this.username2 = this.user1;
-            }
-        });
+        this.roomId = this.lobbyService.roomId;
+        if (this.lobbyService.host === false) {
+            this.socketService.on('getHostName', (data: { hostName: string }) => {
+                this.user1 = data.hostName;
+                this.username = data.hostName;
+                this.user2 = this.loginService.getFormData();
+                this.username2 = this.loginService.getFormData();
+            });
+        } else {
+            this.user1 = this.loginService.getFormData();
+            this.username = this.loginService.getFormData();
+            this.user2 = this.lobbyService.opponent.playerName;
+            this.username2 = this.lobbyService.opponent.playerName;
+        }
         this.username = this.loginService.getFormData();
         this.startTimer();
         this.nbDifferencesFoundUser1 = 0;
@@ -73,17 +79,14 @@ export class OneVsOnePageComponent implements OnInit, AfterViewInit {
         this.gameManager.modifiedImageCanvas = this.modifiedCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         this.gameManager.originalImageCanvas = this.originalCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         this.gameManager.putImages();
-        await this.socketService.on(
-            'differenceUpdate',
-            async (data: { nbDifferenceHost: number; nbDifferenceInvite: number; differenceId: number }) => {
-                this.nbDifferencesFoundUser1 = data.nbDifferenceHost;
-                this.nbDifferencesFoundUser2 = data.nbDifferenceInvite;
-                if (this.gameManager.lastDifferenceFound !== data.differenceId) {
-                    await this.gameManager.flashImages(this.gameManager.gameData.differences[data.differenceId]);
-                }
-                this.winCheck();
-            },
-        );
+        this.socketService.on('differenceUpdate', async (data: { nbDifferenceHost: number; nbDifferenceInvite: number; differenceId: number }) => {
+            this.nbDifferencesFoundUser1 = data.nbDifferenceHost;
+            this.nbDifferencesFoundUser2 = data.nbDifferenceInvite;
+            if (this.gameManager.lastDifferenceFound !== data.differenceId) {
+                this.gameManager.flashImages(this.gameManager.gameData.differences[data.differenceId]);
+            }
+            this.winCheck();
+        });
         this.socketService.on('win', () => {
             this.winGame();
         });
@@ -136,8 +139,8 @@ export class OneVsOnePageComponent implements OnInit, AfterViewInit {
     }
 
     giveUp() {
-        this.socketService.send('giveUp', { roomId: this.roomId });
         this.goToHomePage();
+        this.socketService.send('giveUp', { roomId: this.roomId });
     }
 
     goToGiveUp() {
@@ -166,9 +169,9 @@ export class OneVsOnePageComponent implements OnInit, AfterViewInit {
 
     winCheck() {
         if (this.nbDifferencesFoundUser1 === this.nbDifferenceToWin || this.nbDifferencesFoundUser2 === this.nbDifferenceToWin) {
-            if (this.nbDifferencesFoundUser1 === this.nbDifferenceToWin && this.socketService.socket.id === this.roomId) {
+            if (this.nbDifferencesFoundUser1 === this.nbDifferenceToWin && this.lobbyService.host === true) {
                 this.winGame();
-            } else if (this.nbDifferencesFoundUser2 === this.nbDifferenceToWin && this.socketService.socket.id !== this.roomId) {
+            } else if (this.nbDifferencesFoundUser2 === this.nbDifferenceToWin && this.lobbyService.host === false) {
                 this.winGame();
             } else {
                 this.loseGame();

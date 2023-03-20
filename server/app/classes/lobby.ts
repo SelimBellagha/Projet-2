@@ -3,7 +3,7 @@ import { Player } from '@app/data/player';
 
 export class Lobby {
     host: Player;
-    queue: Map<string, Player>;
+    queue = new Map<string, Player>();
     secondPlayer: Player;
     gameId: string;
     nbDifferencesHost = 0;
@@ -11,7 +11,6 @@ export class Lobby {
 
     constructor(host: Player, gameId: string) {
         this.host = host;
-        this.queue = new Map<string, Player>();
         this.gameId = gameId;
     }
 

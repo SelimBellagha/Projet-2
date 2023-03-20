@@ -11,7 +11,7 @@ export class DifferenceVerificationService {
 
     constructor(private readonly http: HttpClient) {}
 
-    async differenceVerification(clickX: number, clickY: number, id: number): Promise<Verification> {
+    async differenceVerification(clickX: number, clickY: number, id: string): Promise<Verification> {
         const params = new HttpParams().set('ClickX', clickX).set('ClickY', clickY);
         const source = this.http.get<Verification>(this.baseUrl + `/difference/${id}`, { params });
         const verif = await firstValueFrom(source);

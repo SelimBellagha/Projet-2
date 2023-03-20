@@ -30,10 +30,10 @@ export class GameController {
         this.router.get('/:id', async (req: Request, res: Response) => {
             try {
                 const game: GameData = await this.gameService.getGamebyId(req.params.id);
-                if (game) {
-                    res.status(StatusCodes.OK).send(game);
-                } else {
+                if (game === undefined) {
                     res.status(StatusCodes.NOT_FOUND).json('The requested game does not exist');
+                } else {
+                    res.status(StatusCodes.OK).json(game);
                 }
             } catch (error) {
                 res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(error.message);
@@ -51,12 +51,11 @@ export class GameController {
             }
         });
 
-        /*
         // DELETE games/:id
         this.router.delete('/:id', async (req: Request, res: Response) => {
             try {
                 const gameToDelete = await this.gameService.deleteGame(req.params.id);
-                if (gameToDelete === null) {
+                if (gameToDelete === false) {
                     res.status(StatusCodes.NOT_FOUND).json('The requested game cannot be deleted as it does not exist');
                 } else {
                     res.status(StatusCodes.OK).json('The game with the requested id has been deleted');
@@ -65,6 +64,5 @@ export class GameController {
                 res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(error.message);
             }
         });
-        */
     }
 }

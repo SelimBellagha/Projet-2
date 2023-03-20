@@ -34,16 +34,15 @@ export class CommunicationService {
     addNewGame(game: GameData): void {
         this.http.post(`${this.baseUrl}/games/send`, game).subscribe();
     }
-    /*
-    deleteGame(id: string) {
+
+    deleteGame(id: string): void {
         const params = new HttpParams().set('id', id);
         try {
-            this.http.delete(this.baseUrl + '/games', { params });
+            this.http.delete(`${this.baseUrl}/games/${id}`, { params }).subscribe();
         } catch (err) {
             window.alert('An error has occured while deleting a game');
         }
     }
-    */
 
     private handleError<T>(request: string, result?: T): (error: Error) => Observable<T> {
         return () => of(result as T);
