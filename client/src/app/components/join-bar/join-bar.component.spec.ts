@@ -37,7 +37,7 @@ describe('JoinBarComponent', () => {
         expect(socketServiceSpy.send).toHaveBeenCalledWith('removeFromQueue', { socketId: component.socketId, gameId: lobbyServiceSpy.roomId });
     });
 
-    it('should create', () => {
+    it('acceptPlayer should send a addToRoom event', () => {
         component.socketId = 'socketId';
         component.nomJoueur = 'playerName';
         lobbyServiceSpy.roomId = 'roomId';
