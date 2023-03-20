@@ -1,5 +1,6 @@
 import { AfterViewInit, Component, ElementRef, Input, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
+import { CommunicationService } from '@app/services/communication.service';
 import { DisplayGameService } from '@app/services/display-game.service';
 import { LobbyService } from '@app/services/lobby.service';
 import { LoginFormService } from '@app/services/login-form.service';
@@ -18,6 +19,7 @@ export class JeuxComponent implements AfterViewInit {
     @Input() customId: string;
     @Input() multiplayerButton: string;
     @ViewChild('image') image: ElementRef<HTMLImageElement>;
+    @ViewChild('popUpWindow') popUpWindow: ElementRef<HTMLDivElement>;
 
     // eslint-disable-next-line max-params
     constructor(
@@ -25,6 +27,7 @@ export class JeuxComponent implements AfterViewInit {
         private displayService: DisplayGameService,
         private loginService: LoginFormService,
         private lobbyService: LobbyService,
+        private comm: CommunicationService,
     ) {}
 
     ngAfterViewInit(): void {
@@ -33,7 +36,7 @@ export class JeuxComponent implements AfterViewInit {
     }
 
     goToLoginPage(): void {
-        this.displayService.loadGame(Number(this.customId));
+        this.displayService.loadGame(this.customId);
         this.router.navigate(['/loginPage']);
     }
 
@@ -56,5 +59,18 @@ export class JeuxComponent implements AfterViewInit {
             this.router.navigate(['/loginPage']);
             this.goToLoginPage();
         }
+    }
+
+    goToPopUp(): void {
+        this.popUpWindow.nativeElement.style.display = 'block';
+    }
+
+    deleteGame(): void {
+        this.comm.deleteGame(this.customId);
+        this.popUpWindow.nativeElement.style.display = 'none';
+    }
+
+    onClosingPopUp(): void {
+        this.popUpWindow.nativeElement.style.display = 'none';
     }
 }
