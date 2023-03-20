@@ -79,17 +79,14 @@ export class OneVsOnePageComponent implements OnInit, AfterViewInit {
         this.gameManager.modifiedImageCanvas = this.modifiedCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         this.gameManager.originalImageCanvas = this.originalCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         this.gameManager.putImages();
-        await this.socketService.on(
-            'differenceUpdate',
-            async (data: { nbDifferenceHost: number; nbDifferenceInvite: number; differenceId: number }) => {
-                this.nbDifferencesFoundUser1 = data.nbDifferenceHost;
-                this.nbDifferencesFoundUser2 = data.nbDifferenceInvite;
-                if (this.gameManager.lastDifferenceFound !== data.differenceId) {
-                    await this.gameManager.flashImages(this.gameManager.gameData.differences[data.differenceId]);
-                }
-                this.winCheck();
-            },
-        );
+        this.socketService.on('differenceUpdate', async (data: { nbDifferenceHost: number; nbDifferenceInvite: number; differenceId: number }) => {
+            this.nbDifferencesFoundUser1 = data.nbDifferenceHost;
+            this.nbDifferencesFoundUser2 = data.nbDifferenceInvite;
+            if (this.gameManager.lastDifferenceFound !== data.differenceId) {
+                this.gameManager.flashImages(this.gameManager.gameData.differences[data.differenceId]);
+            }
+            this.winCheck();
+        });
         this.socketService.on('win', () => {
             this.winGame();
         });
@@ -176,7 +173,7 @@ export class OneVsOnePageComponent implements OnInit, AfterViewInit {
         if (this.nbDifferencesFoundUser1 === this.nbDifferenceToWin || this.nbDifferencesFoundUser2 === this.nbDifferenceToWin) {
             if (this.nbDifferencesFoundUser1 === this.nbDifferenceToWin && this.lobbyService.host === true) {
                 this.winGame();
-            } else if (this.nbDifferencesFoundUser2 === this.nbDifferenceToWin && this.lobbyService.host !== false) {
+            } else if (this.nbDifferencesFoundUser2 === this.nbDifferenceToWin && this.lobbyService.host === false) {
                 this.winGame();
             } else {
                 this.loseGame();
