@@ -3,6 +3,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { DisplayGameService } from '@app/services/display-game.service';
+import { LobbyService } from '@app/services/lobby.service';
 import { LoginFormService } from '@app/services/login-form.service';
 import { JeuxComponent } from './jeux.component';
 import SpyObj = jasmine.SpyObj;
@@ -13,16 +14,19 @@ describe('JeuxComponent', () => {
     let router: Router;
     let displayServiceSpy: SpyObj<DisplayGameService>;
     let loginFormSpy: SpyObj<LoginFormService>;
+    let lobbyServiceSpy: SpyObj<LobbyService>;
 
     beforeEach(async () => {
         displayServiceSpy = jasmine.createSpyObj('DisplayGameService', ['loadGame']);
         loginFormSpy = jasmine.createSpyObj('LoginFormService', ['setGameType', 'setPlayerType', 'setGameId']);
+        lobbyServiceSpy = jasmine.createSpyObj('LobbyServiceSpy', ['host']);
         await TestBed.configureTestingModule({
             declarations: [JeuxComponent],
             imports: [RouterTestingModule, HttpClientTestingModule],
             providers: [
                 { provide: DisplayGameService, useValue: displayServiceSpy },
                 { provide: LoginFormService, useValue: loginFormSpy },
+                { provide: LobbyService, useValue: lobbyServiceSpy },
             ],
         }).compileComponents();
 
@@ -44,14 +48,13 @@ describe('JeuxComponent', () => {
         expect(routerSpy).toHaveBeenCalled();
         expect(routerSpy).toHaveBeenCalledWith(['/loginPage']);
         expect(displayServiceSpy.loadGame).toHaveBeenCalled();
-        expect(displayServiceSpy.loadGame).toHaveBeenCalledWith(0);
+        expect(displayServiceSpy.loadGame).toHaveBeenCalledWith('0');
     });
 
     it('PlaySolo should call GameType, PlayerType and goToLoginPage', () => {
         const spy = spyOn(component, 'goToLoginPage');
         component.playSolo();
         expect(loginFormSpy.setGameType).toHaveBeenCalled();
-        expect(loginFormSpy.setPlayerType).toHaveBeenCalled();
         expect(spy).toHaveBeenCalled();
     });
 
@@ -60,7 +63,7 @@ describe('JeuxComponent', () => {
         component.multiplayerButton = 'Créer';
         component.playMultiplayer();
         expect(loginFormSpy.setGameType).toHaveBeenCalledWith(true);
-        expect(loginFormSpy.setPlayerType).toHaveBeenCalledWith(true);
+        expect(lobbyServiceSpy.host).toEqual(true);
         expect(spy).toHaveBeenCalled();
     });
 

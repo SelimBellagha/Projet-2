@@ -42,7 +42,6 @@ export class JeuxComponent implements AfterViewInit {
 
     playSolo() {
         this.loginService.setGameType(false);
-        // this.loginService.setPlayerType(false);
         this.goToLoginPage();
     }
 
