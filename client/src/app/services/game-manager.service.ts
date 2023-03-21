@@ -101,7 +101,6 @@ export class GameManagerService {
             flashingOriginalImageData.data[pixelStartPosition + 2] = 0;
             flashingOriginalImageData.data[pixelStartPosition + 3] = 255;
         });
-        // fait
         for (let i = 0; i <= 3; i++) {
             canvas.putImageData(flashingOriginalImageData, 0, 0);
             await this.wait(FLASH_TIME);
