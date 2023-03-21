@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/member-ordering */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 /* eslint-disable no-unused-vars */
+// eslint-disable-next-line @typescript-eslint/ban-types
 type CallbackSignature = (params: unknown) => {};
 
 export class SocketTestHelper {
