@@ -9,7 +9,6 @@ import { LoginFormService } from '@app/services/login-form.service';
 })
 export class LoginPageComponent {
     username: string;
-    isValidUsername: boolean;
     constructor(private router: Router, private loginService: LoginFormService) {}
 
     goToGameSelection(): void {
@@ -37,6 +36,6 @@ export class LoginPageComponent {
     }
 
     validateUsername(name: string): boolean {
-        return (this.isValidUsername = name !== '' && name.trim().length > 0);
+        return name !== '' && name.trim().length > 0;
     }
 }

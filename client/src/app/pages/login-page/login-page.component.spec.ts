@@ -5,14 +5,14 @@ import { LoginFormService } from '@app/services/login-form.service';
 import { LoginPageComponent } from './login-page.component';
 import SpyObj = jasmine.SpyObj;
 
-xdescribe('LoginPageComponent', () => {
+describe('LoginPageComponent', () => {
     let component: LoginPageComponent;
     let fixture: ComponentFixture<LoginPageComponent>;
     let router: Router;
     let loginServiceSpy: SpyObj<LoginFormService>;
 
     beforeEach(async () => {
-        loginServiceSpy = jasmine.createSpyObj('LoginFormService', ['setFormData']);
+        loginServiceSpy = jasmine.createSpyObj('LoginFormService', ['setFormData', 'getGameType']);
         await TestBed.configureTestingModule({
             declarations: [LoginPageComponent],
             imports: [RouterTestingModule],
@@ -51,16 +51,43 @@ xdescribe('LoginPageComponent', () => {
         expect(alertSpy).toHaveBeenCalledWith('Nom de joueur invalide: entrez un nom non vide');
     });
 
-    it('goToGamePage should set the username if input valid and navigate to the game page', () => {
+    it('goToGamePage should call onClickSubmit and navigate to soloView if input is valid and game type is false', () => {
         const name = 'TestName';
         const input = document.createElement('input');
         input.id = 'username';
         input.value = name;
         spyOn(document, 'getElementById').and.returnValue(input);
+        spyOn(component, 'onClickSubmit');
+        loginServiceSpy.getGameType.and.returnValue(false);
         const routerSpy = spyOn(router, 'navigate');
         component.goToGamePage();
-        expect(component.username).toEqual(name);
-        expect(loginServiceSpy.setFormData).toHaveBeenCalledWith(name);
+        expect(component.onClickSubmit).toHaveBeenCalledWith(name);
         expect(routerSpy).toHaveBeenCalledWith(['/soloView']);
+    });
+
+    it('goToGamePage should call onClickSubmit and navigate to salleAttente if input is valid and game type is true', () => {
+        const name = 'TestName';
+        const input = document.createElement('input');
+        input.id = 'username';
+        input.value = name;
+        spyOn(document, 'getElementById').and.returnValue(input);
+        spyOn(component, 'onClickSubmit');
+        loginServiceSpy.getGameType.and.returnValue(true);
+        const routerSpy = spyOn(router, 'navigate');
+        component.goToGamePage();
+        expect(component.onClickSubmit).toHaveBeenCalledWith(name);
+        expect(routerSpy).toHaveBeenCalledWith(['/salleAttente']);
+    });
+
+    it('validateUsername should return false if name is an empty string', () => {
+        expect(component.validateUsername('')).toBe(false);
+    });
+
+    it('validateUsername should return false if name contains only whitespace characters', () => {
+        expect(component.validateUsername('   ')).toBe(false);
+    });
+
+    it('validateUsername should return true if name contains non-whitespace characters', () => {
+        expect(component.validateUsername('PlayerName')).toBe(true);
     });
 });

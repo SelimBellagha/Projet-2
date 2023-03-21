@@ -37,11 +37,7 @@ export class CommunicationService {
 
     deleteGame(id: string): void {
         const params = new HttpParams().set('id', id);
-        try {
-            this.http.delete(`${this.baseUrl}/games/${id}`, { params }).subscribe();
-        } catch (err) {
-            window.alert('An error has occured while deleting a game');
-        }
+        this.http.delete(`${this.baseUrl}/games/${id}`, { params }).subscribe();
     }
 
     private handleError<T>(request: string, result?: T): (error: Error) => Observable<T> {

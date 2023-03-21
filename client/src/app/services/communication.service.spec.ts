@@ -102,6 +102,14 @@ describe('CommunicationService', () => {
         req.flush(mockNewGame);
     });
 
+    it('should delete game from server', () => {
+        const gameId = '0';
+        service.deleteGame(gameId);
+        const req = httpMock.expectOne(`${baseUrl}/games/${gameId}?id=${gameId}`);
+        expect(req.request.method).toBe('DELETE');
+        req.flush({});
+    });
+
     it('should not return any message when sending a POST request (HttpClient called once)', () => {
         const sentMessage: Message = { body: 'Hello', title: 'World' };
         // subscribe to the mocked call
