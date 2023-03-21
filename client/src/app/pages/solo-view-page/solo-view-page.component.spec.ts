@@ -9,7 +9,7 @@ import { LoginFormService } from '@app/services/login-form.service';
 import { SoloViewPageComponent } from './solo-view-page.component';
 import SpyObj = jasmine.SpyObj;
 
-xdescribe('SoloViewPageComponent', () => {
+describe('SoloViewPageComponent', () => {
     let component: SoloViewPageComponent;
     let fixture: ComponentFixture<SoloViewPageComponent>;
     let gameManagerSpy: SpyObj<GameManagerService>;
@@ -69,21 +69,21 @@ xdescribe('SoloViewPageComponent', () => {
         expect(loginServiceSpy.getFormData).toHaveBeenCalled();
         expect(component.username).toEqual(username);
     });
-    /*
-    it('On initialization, initializeGame from gameManager should be called', () => {
-        displayServiceSpy.loadGame.and.returnValue(gameMock1 as unknown as GameData);
-        component.ngOnInit();
-        expect(gameManagerSpy.initializeGame).toHaveBeenCalled();
-    });
-    it('On initialization, game parameters should be instanciated', () => {
-        displayServiceSpy.loadGame.and.returnValue(gameMock2 as unknown as GameData);
-        displayServiceSpy.game.isDifficult = false;
-        component.ngOnInit();
-        expect(component.gameName).toEqual(gameMock2.name);
-        expect(component.nbDifferences).toEqual(gameMock2.nbDifferences);
-        expect(component.difficulty).toEqual('Niveau: facile');
-    });
-    */
+
+    // it('On initialization, initializeGame from gameManager should be called', () => {
+    //     displayServiceSpy.loadGame.and.returnValue(gameMock1 as unknown as GameData);
+    //     component.ngOnInit();
+    //     expect(gameManagerSpy.initializeGame).toHaveBeenCalled();
+    // });
+
+    // it('On initialization, game parameters should be instanciated', () => {
+    //     displayServiceSpy.loadGame.and.returnValue(gameMock2 as unknown as GameData);
+    //     displayServiceSpy.game.isDifficult = false;
+    //     component.ngOnInit();
+    //     expect(component.gameName).toEqual(gameMock2.name);
+    //     expect(component.nbDifferences).toEqual(gameMock2.nbDifferences);
+    //     expect(component.difficulty).toEqual('Niveau: facile');
+    // });
 
     it(' clicking on return button should navigate to configuration Page', () => {
         const routerSpy = spyOn(router, 'navigate');
@@ -169,18 +169,18 @@ xdescribe('SoloViewPageComponent', () => {
         expect(popUp.nativeElement.style.display).toEqual('block');
     });
 
-    // it('timer should start', () => {
-    //     const timerTest = 4;
-    //     const waitTime = 5000;
+    xit('timer should start', () => {
+        const timerTest = 4;
+        const waitTime = 5000;
 
-    //     const time = component.secondes1;
-    //     expect(time).toBeGreaterThanOrEqual(0);
-    //     const timerSpy = spyOn(component, 'startTimer');
-    //     component.startTimer();
-    //     expect(timerSpy).toHaveBeenCalled();
-    //     setTimeout(() => {
-    //         const time2 = component.secondes1;
-    //         expect(time2).toBeGreaterThanOrEqual(timerTest);
-    //     }, waitTime);
-    // });
+        const time = component.secondes1;
+        expect(time).toBeGreaterThanOrEqual(0);
+        const timerSpy = spyOn(component, 'startTimer');
+        component.startTimer();
+        expect(timerSpy).toHaveBeenCalled();
+        setTimeout(() => {
+            const time2 = component.secondes1;
+            expect(time2).toBeGreaterThanOrEqual(timerTest);
+        }, waitTime);
+    });
 });

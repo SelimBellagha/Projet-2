@@ -42,7 +42,6 @@ export class JeuxComponent implements AfterViewInit {
 
     playSolo() {
         this.loginService.setGameType(false);
-        // this.loginService.setPlayerType(false);
         this.goToLoginPage();
     }
 
@@ -55,8 +54,7 @@ export class JeuxComponent implements AfterViewInit {
             this.goToLoginPage();
         } else {
             this.loginService.setGameType(true);
-            // this.loginService.setPlayerType(false);
-            this.router.navigate(['/loginPage']);
+            this.loginService.setPlayerType(false);
             this.goToLoginPage();
         }
     }
