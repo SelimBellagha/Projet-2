@@ -101,17 +101,17 @@
                 <p class="modal-note" *ngIf="!(currentGameData.nbDifferences >= 3 && currentGameData.nbDifferences <= 9)">
                     Le jeu doit avoir entre 3 et 9 différences pour être validé
                 </p>
-                <button
+                <label for="gameName"><b>Entrez votre nom de partie:</b></label>
+                <input id="gameName" #gameName type="text" placeholder="Entrez Nom" />
+                <div class="modal-buttons">
+                    <button
                     *ngIf="currentGameData.nbDifferences >= 3 && currentGameData.nbDifferences <= 9"
                     type="button"
                     (click)="onSave(gameName)"
                     class="modal-button"
-                >
+                    >
                     Sauvegarder
-                </button>
-                <label for="gameName"><b>Entrez votre nom de partie:</b></label>
-                <input id="gameName" #gameName type="text" placeholder="Entrez Nom" />
-                <div class="modal-buttons">
+                    </button>
                     <button class="modal-button" type="button" (click)="onClosingPopUp()">Fermer</button>
                 </div>
             </div>
