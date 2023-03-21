@@ -52,7 +52,6 @@ export class GameManagerService {
                 this.locked = false;
                 this.playDifferenceAudio();
                 this.differenceCheatChanger();
-                this.wait(5);
                 this.differenceCheatChanger();
                 // this.flashPixelsCheat(this.gameData.differences, this.modifiedImageCanvas);
                 // this.flashPixelsCheat(this.gameData.differences, this.originalImageCanvas);
