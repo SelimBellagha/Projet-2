@@ -116,16 +116,6 @@ describe('SocketManager service tests', () => {
         }, RESPONSE_DELAY);
     });
 
-    // it('Receive a joinQueue event should emit a updateQueue event', (done) => {
-    //     const roomId = '2';
-    //     const playerName = 'playerName';
-    //     clientSocket.emit('createLobby', { gameId: '1', playerName, roomId });
-    //     clientSocket.emit('joinQueue', { gameId: '1', playerName });
-    //     clientSocket.on('updateQueue', (data: { newQueue: string }) => {
-    //         done();
-    //     });
-    // });
-
     it('Receive a disconnect event should delete the lobby', (done) => {
         const roomId = '2';
         clientSocket.emit('createLobby', { gameId: '1', playerName: 'name', roomId });
@@ -135,6 +125,23 @@ describe('SocketManager service tests', () => {
         clientSocket.disconnect();
         setTimeout(() => {
             expect(service.sio.sockets.adapter.rooms.get(roomId)).to.equal(undefined);
+        }, RESPONSE_DELAY);
+        done();
+    });
+
+    it('Receive a removeFromQueue event should remove player from queue', (done) => {
+        const playerName = 'playerName';
+        const socketId = 'socketId';
+        const roomId = '2';
+        const gameId = '1';
+        clientSocket.emit('createLobby', { gameId, playerName: 'name', roomId });
+        service.lobbys.get(roomId)?.addInQueue(playerName, socketId);
+        setTimeout(() => {
+            expect(service.lobbys.get(roomId)?.getQueue().size).to.equal(1);
+        }, RESPONSE_DELAY);
+        clientSocket.emit('removeFromQueue', { socketId, gameId });
+        setTimeout(() => {
+            expect(service.lobbys.get(roomId)?.getQueue().size).to.equal(0);
         }, RESPONSE_DELAY);
         done();
     });
