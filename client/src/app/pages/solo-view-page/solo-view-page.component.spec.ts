@@ -8,6 +8,7 @@ import { GameManagerService } from '@app/services/game-manager.service';
 import { LoginFormService } from '@app/services/login-form.service';
 import { SoloViewPageComponent } from './solo-view-page.component';
 import SpyObj = jasmine.SpyObj;
+const timeTest = 1000;
 
 describe('SoloViewPageComponent', () => {
     let component: SoloViewPageComponent;
@@ -74,7 +75,7 @@ describe('SoloViewPageComponent', () => {
         const initialSeconds1 = component.secondes1;
         jasmine.clock().install();
         component.timer();
-        jasmine.clock().tick(1000);
+        jasmine.clock().tick(timeTest);
         expect(component.secondes1).toBe(initialSeconds1 + 1);
         jasmine.clock().uninstall();
     });
@@ -82,7 +83,7 @@ describe('SoloViewPageComponent', () => {
         component.secondes1 = 9;
         jasmine.clock().install();
         component.timer();
-        jasmine.clock().tick(1000);
+        jasmine.clock().tick(timeTest);
         expect(component.secondes1).toBe(0);
         expect(component.secondes2).toBe(1);
         jasmine.clock().uninstall();
@@ -93,7 +94,7 @@ describe('SoloViewPageComponent', () => {
         jasmine.clock().install();
 
         component.timer();
-        jasmine.clock().tick(1000);
+        jasmine.clock().tick(timeTest);
         expect(component.minutes1).toBe(0);
         expect(component.minutes2).toBe(1);
         jasmine.clock().uninstall();
