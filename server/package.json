@@ -31,7 +31,6 @@
             "app/app.ts",
             "app/services/timer-manager.service.ts",
             "app/services/socket-server-manager.service.ts",
-            "app/classes/lobby.ts",
             "app/services/socket-server-manager.service.ts",
             "app/services/socket-server-manager.service.ts"
         ],
