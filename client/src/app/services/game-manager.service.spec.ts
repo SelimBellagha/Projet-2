@@ -177,9 +177,11 @@ describe('GameManagerService', () => {
         const position: Vec2 = { x: 0, y: 0 };
         spyOn(service, 'verifyDifference').and.resolveTo(false);
         const spy = spyOn(service, 'drawError');
+        const spy2 = spyOn(service, 'playErrorAudio');
         service.locked = false;
         await service.onPositionClicked(position);
         expect(spy).toHaveBeenCalled();
+        expect(spy2).toHaveBeenCalled();
     });
     xit('onPositionClicked should call playDifferenceAudio, flashImages and replacePixels if position is verified', async () => {
         const position: Vec2 = { x: 0, y: 0 };
@@ -207,4 +209,9 @@ describe('GameManagerService', () => {
         service.playWinAudio();
         expect(spy).toHaveBeenCalled();
     });
+    // it('playWinAudio should call playErrorAudio', () => {
+    //     const spy = spyOn(service, 'playErrorAudio');
+    //     service.playErrorAudio();
+    //     expect(spy).toHaveBeenCalled();
+    // });
 });
