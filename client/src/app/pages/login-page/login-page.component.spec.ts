@@ -18,9 +18,7 @@ describe('LoginPageComponent', () => {
             imports: [RouterTestingModule],
             providers: [{ provide: LoginFormService, useValue: loginServiceSpy }],
         }).compileComponents();
-    });
 
-    beforeEach(() => {
         fixture = TestBed.createComponent(LoginPageComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
