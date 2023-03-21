@@ -24,10 +24,9 @@ export class ChatBoxComponent implements OnInit {
         this.gameId = this.gameUtils.getGameId()    
 
         this.socketService.on('receiveChatMessage', (data: Message) => {
-         // this.messages.unshift(data);
-          //  this.messages.unshift(data.name);
-          this.messages.push(data);
+        this.messages.push(data);
         });
+        
         this.socketService.on('receiveSystemMessage', (systemMessage: string) => {
           const name = ""
             const message: Message = {
@@ -39,7 +38,7 @@ export class ChatBoxComponent implements OnInit {
                 
             };
             console.log(name)
-            this.messages.unshift(message);
+            this.messages.push(message);
         });
 
         

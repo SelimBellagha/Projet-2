@@ -31,16 +31,8 @@
             <canvas #modifiedImage (click)="onClick($event)" width="640px" height="480px"></canvas>
         </div>
     </div>
-    <div class="section">
-        <div class="chat-container">
-            <div class="message-box">
-                <p class="message-title">Messages</p>
-                <hr />
-                <p>Bonne chance {{ username }} !</p>
-                <p>Messages du serveur</p>
-            </div>
-        </div>
-    </div>
+
+    <app-chat-box></app-chat-box> 
 
     <div #popUpWindow class="modal">
         <div class="modal-content">

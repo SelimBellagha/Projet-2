@@ -50,14 +50,11 @@ export class GameManagerService {
                 this.locked = false;
                 this.playDifferenceAudio();
                 this.socketService.send('systemMessage', "Différence trouvée par le joueur : " );
-                // Clignotement de tout les pixels faisant partie de la différence
                 this.flashImages(this.gameData.differences[this.lastDifferenceFound]);
                 return true;
             } else {
-                // Écrire Erreur sur le canvas à la position
-                // Bloquer les clics pendant 1 sec
                 await this.errorMessage(position);
-                this.socketService.send('systemMessage', "Erreur par le joueur : " );
+                this.socketService.send('systemMessage', "Erreur faite par le joueur : " );
             }
             this.locked = false;
         }
