@@ -64,8 +64,9 @@ export class GameManagerService {
             } else {
                 // Écrire Erreur sur le canvas à la position
                 // Bloquer les clics pendant 1 sec
-                this.playErrorAudio();
+
                 await this.errorMessage(position);
+                this.playErrorAudio();
             }
             this.locked = false;
         }
@@ -156,7 +157,7 @@ export class GameManagerService {
             if (this.foundDifferenceCheat) {
                 const newOriginalImageData = canvas.getImageData(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT);
                 const newFlashingOriginalImageData = canvas.getImageData(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT);
-
+                this.replacePixels(this.gameData.differences[this.lastDifferenceFound]);
                 for (let i = 0; i < this.gameData.nbDifferences; i++) {
                     if (!this.differencesFound[i]) {
                         pixels[i].forEach((pixelPosition) => {
