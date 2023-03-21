@@ -1,17 +1,15 @@
 /* eslint-disable @typescript-eslint/no-magic-numbers */
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { LoginFormService } from '@app/services/login-form.service';
 import { SocketClientService } from '@app/services/socket-client-service.service';
 import { Message } from '@common/chatMessage';
-import {ActivatedRoute } from '@angular/router';
-
 
 @Component({
-  selector: 'app-chat-box',
-  templateUrl: './chat-box.component.html',
-  styleUrls: ['./chat-box.component.scss']
+    selector: 'app-chat-box',
+    templateUrl: './chat-box.component.html',
+    styleUrls: ['./chat-box.component.scss'],
 })
-
 export class ChatBoxComponent implements OnInit {
     gameId: string;
     messages: Message[] = [];
@@ -19,52 +17,44 @@ export class ChatBoxComponent implements OnInit {
     pageName: string | undefined;
 
     constructor(public route: ActivatedRoute, public socketService: SocketClientService, private gameUtils: LoginFormService) {
-        var snapshot = route.snapshot;
-    console.log(snapshot.routeConfig?.path); //This will give you the name of current active component
+        const snapshot = route.snapshot;
         this.pageName = snapshot.routeConfig?.path?.toString();
     }
 
     ngOnInit() {
-        if (!this.socketService.isSocketAlive()) {
-            this.socketService.connect();
-        }
-        this.gameId = this.gameUtils.getGameId()    
+        this.socketService.connect();
+        this.gameId = this.gameUtils.getGameId();
+        this.handleSockets();
+    }
 
+    handleSockets() {
         this.socketService.on('receiveChatMessage', (data: Message) => {
-        this.messages.push(data);
+            this.messages.push(data);
         });
-        
+
         this.socketService.on('receiveSystemMessage', (systemMessage: string) => {
-          const name = ""
+            const name = '';
             const message: Message = {
                 text: systemMessage,
                 roomId: this.gameId,
                 isSender: true,
                 isSystem: true,
-                name: name
-                
+                name,
             };
-            console.log(name)
             this.messages.push(message);
         });
 
         this.socketService.on('receiveSystemMessageSolo', (systemMessage: string) => {
-            const name = ""
-              const message: Message = {
-                  text: systemMessage,
-                  roomId: this.gameId,
-                  isSender: true,
-                  isSystem: true,
-                  name: name
-                  
-              };
-              console.log(name)
-              if(!this.isMultiplayerMode()) this.messages.push(message);
-          });
-
-
-
-        
+            const name = '';
+            const message: Message = {
+                text: systemMessage,
+                roomId: this.gameId,
+                isSender: true,
+                isSystem: true,
+                name,
+            };
+            if (!this.isMultiplayerMode()) this.messages.push(message);
+        });
     }
 
     onKeyDown(event: Event): void {
@@ -79,10 +69,10 @@ export class ChatBoxComponent implements OnInit {
             roomId: this.gameId,
             isSender: true,
             isSystem: false,
-            name: ""
-            };
+            name: '',
+        };
         this.message = '';
-        this.socketService.send('sendChatToServer', message);        
+        this.socketService.send('sendChatToServer', message);
     }
 
     getCurrentTime(): string {
@@ -97,7 +87,7 @@ export class ChatBoxComponent implements OnInit {
         return time < 10 ? `0${time}` : `${time}`;
     }
 
-    isMultiplayerMode(){
-        return this.pageName === "oneVSone";
+    isMultiplayerMode() {
+        return this.pageName === 'oneVSone';
     }
 }

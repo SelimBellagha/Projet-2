@@ -143,7 +143,7 @@ export class OneVsOnePageComponent implements OnInit, AfterViewInit {
 
     giveUp() {
         this.socketService.send('giveUp', { roomId: this.roomId });
-        this.socketService.send('systemMessage', " a abandonné la partie" );
+        this.socketService.send('systemMessage', ' a abandonné la partie');
         this.goToHomePage();
     }
 
@@ -171,11 +171,7 @@ export class OneVsOnePageComponent implements OnInit, AfterViewInit {
         }
     }
 
-    
-
     winCheck() {
-        console.log(this.nbDifferencesFoundUser1);
-        console.log(this.nbDifferencesFoundUser2);
         if (this.nbDifferencesFoundUser1 === this.nbDifferenceToWin || this.nbDifferencesFoundUser2 === this.nbDifferenceToWin) {
             if (this.nbDifferencesFoundUser1 === this.nbDifferenceToWin && this.lobbyService.host === true) {
                 this.winGame();

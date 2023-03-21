@@ -9,6 +9,7 @@ import { SocketClientService } from './socket-client-service.service';
 const PIXEL_SIZE = 4;
 const FLASH_TIME = 250;
 const ONE_SECOND = 1000;
+const EIGHT = 8;
 @Injectable({
     providedIn: 'root',
 })
@@ -46,18 +47,19 @@ export class GameManagerService {
     async onPositionClicked(position: Vec2): Promise<boolean> {
         if (!this.locked) {
             this.locked = true;
+            const now: Date = new Date();
+            const timeString: string = now.toTimeString().slice(0, EIGHT);
             if (await this.verifyDifference(position)) {
                 this.locked = false;
                 this.playDifferenceAudio();
-                this.socketService.send('systemMessage', "Différence trouvée par le joueur : " );
-                this.socketService.send('systemMessageSolo', "Différence trouvée ");
+                this.socketService.send('systemMessage', '[' + timeString + '] ' + 'Différence trouvée par le joueur : ');
+                this.socketService.send('systemMessageSolo', 'Différence trouvée ');
                 this.flashImages(this.gameData.differences[this.lastDifferenceFound]);
                 return true;
-            } else {    
+            } else {
                 await this.errorMessage(position);
-                this.socketService.send('systemMessage', "Erreur faite par le joueur : " );
-                this.socketService.send('systemMessageSolo', "Erreur ");
-
+                this.socketService.send('systemMessage', '[' + timeString + '] ' + 'Erreur faite par le joueur : ');
+                this.socketService.send('systemMessageSolo', 'Erreur ');
             }
             this.locked = false;
         }
