@@ -59,4 +59,9 @@ describe('SalleAttenteComponent', () => {
         component.goToGameSelection();
         expect(mockSocketService.disconnect).toHaveBeenCalled();
     });
+
+    it('refuseListen should disconnect', () => {
+        component.goToGameSelection();
+        expect(mockSocketService.disconnect).toHaveBeenCalled();
+    });
 });
