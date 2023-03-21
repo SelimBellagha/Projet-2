@@ -50,11 +50,14 @@ export class GameManagerService {
                 this.locked = false;
                 this.playDifferenceAudio();
                 this.socketService.send('systemMessage', "Différence trouvée par le joueur : " );
+                this.socketService.send('systemMessageSolo', "Différence trouvée ");
                 this.flashImages(this.gameData.differences[this.lastDifferenceFound]);
                 return true;
-            } else {
+            } else {    
                 await this.errorMessage(position);
                 this.socketService.send('systemMessage', "Erreur faite par le joueur : " );
+                this.socketService.send('systemMessageSolo', "Erreur ");
+
             }
             this.locked = false;
         }

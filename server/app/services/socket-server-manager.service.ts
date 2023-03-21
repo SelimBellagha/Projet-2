@@ -30,11 +30,14 @@ export class SocketServerManager {
                 let socketOtherPlayer = undefined
                 const playerEmitter = this.getPlayerFromSocketId(socket.id)
                 if(!playerEmitter) return
+                const now: Date = new Date();
+                const timeString: string = now.toTimeString().slice(0, 8);
+                const textMessage = "["+ timeString+ "] " + playerEmitter.playerName + " : "+ message.text
+                message.text = textMessage
                 if(lobby?.host.socketId === socket.id) {
                      socketOtherPlayer = lobby?.secondPlayer.socketId
                     if(!socketOtherPlayer) return
-                    message.isSender = false;
-                    message.name = playerEmitter.playerName
+                    message.isSender = false;                    
                     this.sio.to(socketOtherPlayer).emit('receiveChatMessage', message);
                     message.isSender = true;
                     this.sio.to(socket.id).emit('receiveChatMessage', message);
@@ -44,7 +47,6 @@ export class SocketServerManager {
                     socketOtherPlayer = lobby?.host.socketId
                     if(!socketOtherPlayer) return
                     message.isSender = false;
-                    message.name = playerEmitter.playerName
                     this.sio.to(socketOtherPlayer).emit('receiveChatMessage', message);
                     message.isSender = true;
                     this.sio.to(socket.id).emit('receiveChatMessage', message);
@@ -56,7 +58,7 @@ export class SocketServerManager {
                 
                 let playerName = this.getPlayerFromSocketId(socket.id)?.playerName
                 if(!lobby) return;
-
+                console.log("systemMessage: " + systemMessage)
                 if(systemMessage === " a abandonné la partie") {
                     this.sio.to(lobby?.host.socketId).emit("receiveSystemMessage", playerName + systemMessage)
                     this.sio.to(lobby?.secondPlayer.socketId).emit("receiveSystemMessage", playerName  + systemMessage)
@@ -64,6 +66,11 @@ export class SocketServerManager {
                 }
                 this.sio.to(lobby?.host.socketId).emit("receiveSystemMessage", systemMessage + playerName)
                 this.sio.to(lobby?.secondPlayer.socketId).emit("receiveSystemMessage", systemMessage  + playerName)
+            });
+
+            socket.on('systemMessageSolo', (systemMessage: string) => {
+                console.log("systemMessage: " + systemMessage)
+                this.sio.to(socket.id).emit("receiveSystemMessageSolo", systemMessage)
             });
 
 
