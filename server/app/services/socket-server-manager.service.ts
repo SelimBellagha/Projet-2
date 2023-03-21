@@ -12,7 +12,7 @@ export class SocketServerManager {
     lobbys = new Map<string, Lobby>();
     // eslint-disable-next-line @typescript-eslint/no-magic-numbers
     timerInterval = 1000;
-    private sio: io.Server;
+    sio: io.Server;
     constructor(server: http.Server, private timerManager: TimerManager) {
         this.sio = new io.Server(server, { cors: { origin: '*', methods: ['GET', 'POST'] } });
     }
