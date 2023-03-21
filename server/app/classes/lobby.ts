@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import { Player } from '@app/data/player';
 
 export class Lobby {
