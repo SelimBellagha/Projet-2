@@ -163,7 +163,7 @@ describe('GameManagerService', () => {
         service.locked = true;
         expect(await service.onPositionClicked(position)).toBeFalse();
     });
-    /*it('onPositionClicked should call errorMessage if position is not in a difference that is not found', async () => {
+    /* it('onPositionClicked should call errorMessage if position is not in a difference that is not found', async () => {
         const position: Vec2 = { x: 0, y: 0 };
         spyOn(service, 'verifyDifference').and.resolveTo(false);
         const spy = spyOn(service, 'drawError');
@@ -173,7 +173,7 @@ describe('GameManagerService', () => {
         expect(spy).toHaveBeenCalled();
         expect(spy2).toHaveBeenCalled();
     });*/
-    /*it('onPositionClicked should call playDifferenceAudio and  flashImages if position is verified', async () => {
+    /* it('onPositionClicked should call playDifferenceAudio and  flashImages if position is verified', async () => {
         const position: Vec2 = { x: 0, y: 0 };
         spyOn(service, 'verifyDifference').and.resolveTo(true);
         service.gameData = { differences: [[]] } as unknown as GameData;
