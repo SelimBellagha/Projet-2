@@ -2,29 +2,36 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
+import { SocketTestHelper } from '@app/classes/socket-test-helper';
 import { MouseButton } from '@app/components/play-area/play-area.component';
 import { GameData } from '@app/interfaces/game.interface';
 import { Player } from '@app/interfaces/player';
+import { Vec2 } from '@app/interfaces/vec2';
 import { DisplayGameService } from '@app/services/display-game.service';
 import { GameManagerService } from '@app/services/game-manager.service';
 import { LobbyService } from '@app/services/lobby.service';
 import { LoginFormService } from '@app/services/login-form.service';
 import { SocketClientService } from '@app/services/socket-client-service.service';
+import { Socket } from 'socket.io-client';
 import { OneVsOnePageComponent } from './one-vs-one-page.component';
 import SpyObj = jasmine.SpyObj;
+
+class SocketClientServiceMock extends SocketClientService {
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    override connect() {}
+}
 
 describe('OneVsOnePageComponent', () => {
     let component: OneVsOnePageComponent;
     let fixture: ComponentFixture<OneVsOnePageComponent>;
-
-    let socketServiceSpy: SpyObj<SocketClientService>;
+    let socketHelper: SocketTestHelper;
     let lobbyServiceSpy: SpyObj<LobbyService>;
     let displayServiceSpy: SpyObj<DisplayGameService>;
     let gameManagerSpy: SpyObj<GameManagerService>;
     let loginServiceSpy: SpyObj<LoginFormService>;
 
     let router: Router;
-
+    let socketServiceMock: SocketClientServiceMock;
     const gameMock1 = {
         id: '0',
         name: 'mock',
@@ -36,16 +43,26 @@ describe('OneVsOnePageComponent', () => {
     };
 
     beforeEach(async () => {
-        socketServiceSpy = jasmine.createSpyObj('SocketClientService', ['send', 'on']);
         lobbyServiceSpy = jasmine.createSpyObj('LobbyService', ['send', 'on']);
-        gameManagerSpy = jasmine.createSpyObj('GameManagerService', ['onPositionClicked', 'putImages', 'playWinAudio', 'initializeGame']);
+        gameManagerSpy = jasmine.createSpyObj('GameManagerService', [
+            'onPositionClicked',
+            'putImages',
+            'playWinAudio',
+            'initializeGame',
+            'flashImages',
+        ]);
         displayServiceSpy = jasmine.createSpyObj('DisplayGameService', ['loadGame', 'convertDifficulty'], { game: gameMock1 as unknown as GameData });
         loginServiceSpy = jasmine.createSpyObj('LoginFormService', ['getFormData']);
+
+        socketHelper = new SocketTestHelper();
+        socketServiceMock = new SocketClientService();
+        socketServiceMock.socket = socketHelper as unknown as Socket;
+
         await TestBed.configureTestingModule({
             declarations: [OneVsOnePageComponent],
             imports: [RouterTestingModule, HttpClientTestingModule],
             providers: [
-                { provide: SocketClientService, useValue: socketServiceSpy },
+                { provide: SocketClientService, useValue: socketServiceMock },
                 { provide: GameManagerService, useValue: gameManagerSpy },
                 { provide: DisplayGameService, useValue: displayServiceSpy },
                 { provide: LoginFormService, useValue: loginServiceSpy },
@@ -84,10 +101,11 @@ describe('OneVsOnePageComponent', () => {
 
     it('giveUp should call goToHomePage and send a event to socketService', () => {
         const spy = spyOn(component, 'goToHomePage');
+        const socketSpy = spyOn(socketServiceMock, 'send');
         component.roomId = '1';
         component.giveUp();
         expect(spy).toHaveBeenCalled();
-        expect(socketServiceSpy.send).toHaveBeenCalledWith('giveUp', { roomId: '1' });
+        expect(socketSpy).toHaveBeenCalledWith('giveUp', { roomId: '1' });
     });
     it('goToGiveUp should show PopUp', () => {
         component.popUpWindowGiveUp.nativeElement.style.display = 'none';
@@ -124,14 +142,16 @@ describe('OneVsOnePageComponent', () => {
     it('OnClick should call send from socketService if onPositionClicked returns true', async () => {
         const mouseEventMock = { button: MouseButton.Left, offsetX: 0, offsetY: 0 } as MouseEvent;
         gameManagerSpy.onPositionClicked.and.resolveTo(true);
+        const socketSpy = spyOn(socketServiceMock, 'send');
         await component.onClick(mouseEventMock);
-        expect(socketServiceSpy.send).toHaveBeenCalled();
+        expect(socketSpy).toHaveBeenCalled();
     });
     it('OnClick should not call send from socketService if onPositionClicked returns false', () => {
         const mouseEventMock = { button: MouseButton.Left, offsetX: 0, offsetY: 0 } as MouseEvent;
         gameManagerSpy.onPositionClicked.and.resolveTo(false);
+        const socketSpy = spyOn(socketServiceMock, 'send');
         component.onClick(mouseEventMock);
-        expect(socketServiceSpy.send).toHaveBeenCalledTimes(0);
+        expect(socketSpy).toHaveBeenCalledTimes(0);
     });
     it('Win check should call winGame if user1 found enough differences', () => {
         component.nbDifferenceToWin = 1;
@@ -157,6 +177,28 @@ describe('OneVsOnePageComponent', () => {
         lobbyServiceSpy.host = true;
         const spy = spyOn(component, 'loseGame');
         component.winCheck();
+        expect(spy).toHaveBeenCalled();
+    });
+
+    it('username attribute should be changed when receiving event "getHostName" from socket', () => {
+        lobbyServiceSpy.host = false;
+        component.ngOnInit();
+        socketHelper.peerSideEmit('getHostName', { hostName: 'test' });
+        expect(component.username).toEqual('test');
+    });
+    it('number of differences found per user attributes should be changed when receiving event "differenceUpdate" from socket', () => {
+        gameManagerSpy.lastDifferenceFound = 1;
+        gameManagerSpy.gameData = gameMock1;
+        gameManagerSpy.gameData.differences = [{} as Vec2[]];
+        socketHelper.peerSideEmit('differenceUpdate', { nbDifferenceHost: 0, nbDifferenceInvite: 1, differenceId: 0 });
+        expect(component.nbDifferencesFoundUser1).toEqual(0);
+        expect(component.nbDifferencesFoundUser2).toEqual(1);
+        expect(gameManagerSpy.flashImages).toHaveBeenCalled();
+    });
+
+    it('winGame  should be calld when receiving event "winGame" from socket', () => {
+        const spy = spyOn(component, 'winGame');
+        socketHelper.peerSideEmit('win');
         expect(spy).toHaveBeenCalled();
     });
 });
