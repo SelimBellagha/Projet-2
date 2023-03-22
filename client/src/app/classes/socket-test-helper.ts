@@ -1,4 +1,4 @@
-type CallbackSignature = (params: unknown) => {};
+type CallbackSignature = (params: any) => {}
 
 export class SocketTestHelper {
     on(event: string, callback: CallbackSignature): void {
@@ -9,15 +9,13 @@ export class SocketTestHelper {
         this.callbacks.get(event)!.push(callback);
     }
 
-    emit(event: string, ...params: [unknown]): void {
+    emit(event: string, ...params: any): void {
         return;
     }
 
-    disconnect(): void {
-        return;
-    }
+    disconnect(): void { return; }
 
-    peerSideEmit(event: string, params?: unknown) {
+    peerSideEmit(event: string, params?: any) {
         if (!this.callbacks.has(event)) {
             return;
         }
