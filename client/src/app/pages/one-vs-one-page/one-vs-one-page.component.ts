@@ -19,8 +19,10 @@ export class OneVsOnePageComponent implements OnInit, AfterViewInit {
     @ViewChild('popUpWindowWin') popUpWindowWin: ElementRef<HTMLDivElement>;
     @ViewChild('popUpWindowLose') popUpWindowLose: ElementRef<HTMLDivElement>;
     @ViewChild('popUpWindowGiveUp') popUpWindowGiveUp: ElementRef<HTMLDivElement>;
-    username: string;
-    username2: string;
+    myUsername: string;
+    opponentUsername: string;
+    hostName: string;
+    guestName: string;
     gameName: string;
     difficulty: string;
     nbDifferences: number;
@@ -30,8 +32,6 @@ export class OneVsOnePageComponent implements OnInit, AfterViewInit {
     minutes1: number = 0;
     minutes2: number = 0;
     intervalID: number;
-    user1: string;
-    user2: string;
     nbDifferencesFoundUser1: number;
     nbDifferencesFoundUser2: number;
     roomId: string;
@@ -51,16 +51,16 @@ export class OneVsOnePageComponent implements OnInit, AfterViewInit {
         this.roomId = this.lobbyService.roomId;
         if (this.lobbyService.host === false) {
             this.socketService.on('getHostName', (data: { hostName: string }) => {
-                this.user1 = data.hostName;
-                this.username = data.hostName;
-                this.user2 = this.loginService.getFormData();
-                this.username2 = this.loginService.getFormData();
+                this.opponentUsername = data.hostName;
+                this.hostName = data.hostName;
+                this.myUsername = this.loginService.getFormData();
+                this.guestName = this.loginService.getFormData();
             });
         } else {
-            this.user1 = this.loginService.getFormData();
-            this.username = this.loginService.getFormData();
-            this.user2 = this.lobbyService.opponent.playerName;
-            this.username2 = this.lobbyService.opponent.playerName;
+            this.myUsername = this.loginService.getFormData();
+            this.hostName = this.loginService.getFormData();
+            this.opponentUsername = this.lobbyService.opponent.playerName;
+            this.guestName = this.lobbyService.opponent.playerName;
         }
         this.startTimer();
         this.nbDifferencesFoundUser1 = 0;
