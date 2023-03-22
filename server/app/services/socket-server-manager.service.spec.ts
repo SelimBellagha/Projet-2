@@ -20,6 +20,10 @@ describe('SocketManager service tests', () => {
         playerName: 'hostName',
         socketId: 'hostId',
     };
+    const secondPlayer: Player = {
+        playerName: 'playerName',
+        socketId: 'playerId',
+    };
     const lobby = new Lobby(host, gameId);
 
     const urlString = 'http://localhost:3000';
@@ -123,11 +127,33 @@ describe('SocketManager service tests', () => {
         }, RESPONSE_DELAY);
     });
 
-    it('Receive a deleteRoom event should delete in parameter ', (done) => {
+    it('Receive a deleteRoom event should delete room in parameter', (done) => {
         service.lobbys.set(roomId, lobby);
         clientSocket.emit('deleteRoom', { roomId: roomId });
         setTimeout(() => {
             expect(service.lobbys.size).to.equal(0);
+            done();
+        }, RESPONSE_DELAY);
+    });
+
+    it('get room should return the room id if lobby exists', (done) => {
+        service.lobbys.set(roomId, lobby);
+        expect(service.getRoom(gameId)).to.be.equal(roomId);
+        done();
+    });
+
+    it("get room should return '' id if lobby don't exists", (done) => {
+        expect(service.getRoom(gameId)).to.be.equal('');
+        done();
+    });
+
+    it('Receive a removeFromQueue event should delete player from queue', (done) => {
+        lobby.clearQueue();
+        lobby.addInQueue(secondPlayer.playerName, secondPlayer.socketId);
+        service.lobbys.set(roomId, lobby);
+        clientSocket.emit('removeFromQueue', { socketId: secondPlayer.socketId, gameId: gameId });
+        setTimeout(() => {
+            expect(service.lobbys.get(roomId)?.getQueue().size).to.equal(0);
             done();
         }, RESPONSE_DELAY);
     });
