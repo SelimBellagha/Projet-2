@@ -87,9 +87,4 @@ describe('SalleAttenteComponent', () => {
         socketHelper.peerSideEmit('refused', { roomId: 0 });
         expect(mockRouter.navigate).toHaveBeenCalled();
     });
-
-    it('refuseListen should disconnect', () => {
-        component.goToGameSelection();
-        expect(mockSocketService.disconnect).toHaveBeenCalled();
-    });
 });

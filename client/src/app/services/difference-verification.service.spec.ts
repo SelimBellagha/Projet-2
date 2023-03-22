@@ -4,7 +4,7 @@ import { Verification } from '@app/interfaces/verification';
 
 import { DifferenceVerificationService } from './difference-verification.service';
 
-xdescribe('DifferenceVerificationService', () => {
+describe('DifferenceVerificationService', () => {
     let service: DifferenceVerificationService;
     let httpMock: HttpTestingController;
     let baseUrl: string;
