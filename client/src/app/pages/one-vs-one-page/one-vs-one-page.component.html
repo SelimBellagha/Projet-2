@@ -7,6 +7,7 @@
             <p class="game-details">Mode classique</p>
             <p class="game-details">L' image contient {{ nbDifferences }} différences</p>
             <button class="indice">Obtenir un indice</button>
+            <app-cheat></app-cheat>
         </div>
 
         <div>
@@ -32,7 +33,6 @@
         </div>
     </div>
 
-
     <div class="section">
         <div class="chat-container">
             <p class="message-title">Messages</p>
@@ -44,7 +44,7 @@
                 </div>
 
                 <div class="message-box-holder">
-                    <div class="name sender"> {{ user1 }} </div>
+                    <div class="name sender">{{ user1 }}</div>
                     <div class="messages">Hey Selim</div>
                 </div>
 
@@ -52,8 +52,6 @@
                     <div class="name">{{ user2 }}</div>
                     <div class="messages receiver">Hey Yahya</div>
                 </div>
-        
-
             </div>
             <div class="chat-input-holder">
                 <textarea class="chat-input"></textarea>
@@ -61,7 +59,6 @@
             </div>
         </div>
     </div>
-       
 
     <div #popUpWindowWin class="modal" id="congratulations">
         <div class="modal-content">
@@ -78,7 +75,7 @@
             <div>
                 <button id="end" class="button-pop" (click)="goToHomePage()">Fermer</button>
             </div>
-         </div>
+        </div>
     </div>
 
     <div #popUpWindowGiveUp class="modal">
@@ -87,8 +84,7 @@
             <div>
                 <button class="button-pop" id="button-stay" (click)="goToStay()">Continuer la partie</button>
                 <button class="button-pop" id="button-home" (click)="giveUp()">Quitter la partie</button>
-                </div>
+            </div>
         </div>
     </div>
-    
 </body>
