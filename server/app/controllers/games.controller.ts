@@ -40,6 +40,19 @@ export class GameController {
             }
         });
 
+        // GET games/difference/:id
+        this.router.get('/difference/:id', async (req: Request, res: Response) => {
+            try {
+                const positionX = Number(req.query.ClickX);
+                const positionY = Number(req.query.ClickY);
+                const id = req.params.id;
+                const response = await this.gameService.verificationInPicture(positionX, positionY, id);
+                res.status(StatusCodes.OK).send(response);
+            } catch (error) {
+                res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(error.message);
+            }
+        });
+
         // POST games
         this.router.post('/send', async (req: Request, res: Response) => {
             try {
@@ -51,12 +64,11 @@ export class GameController {
             }
         });
 
-        /*
         // DELETE games/:id
         this.router.delete('/:id', async (req: Request, res: Response) => {
             try {
                 const gameToDelete = await this.gameService.deleteGame(req.params.id);
-                if (gameToDelete === null) {
+                if (gameToDelete === false) {
                     res.status(StatusCodes.NOT_FOUND).json('The requested game cannot be deleted as it does not exist');
                 } else {
                     res.status(StatusCodes.OK).json('The game with the requested id has been deleted');
@@ -65,6 +77,5 @@ export class GameController {
                 res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(error.message);
             }
         });
-        */
     }
 }

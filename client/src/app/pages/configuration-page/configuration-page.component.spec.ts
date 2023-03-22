@@ -2,17 +2,29 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
-import { ConfigurationPageComponent } from './configuration-page.component';
+import { DisplayGameService } from '@app/services/display-game.service';
+import { SocketClientService } from '@app/services/socket-client-service.service';
+import { ConfigurationPageComponent, Game } from './configuration-page.component';
+import SpyObj = jasmine.SpyObj;
 
 describe('ConfigurationPageComponent', () => {
     let component: ConfigurationPageComponent;
     let fixture: ComponentFixture<ConfigurationPageComponent>;
     let router: Router;
+    let displayGamesSpy: SpyObj<DisplayGameService>;
+    let socketManagerSpy: SpyObj<SocketClientService>;
 
     beforeEach(async () => {
+        displayGamesSpy = jasmine.createSpyObj('DisplayGameService', ['loadAllGames']);
+        socketManagerSpy = jasmine.createSpyObj('DisplayGameService', ['isSocketAlive', 'connect']);
+
         await TestBed.configureTestingModule({
             declarations: [ConfigurationPageComponent],
             imports: [RouterTestingModule, HttpClientTestingModule],
+            providers: [
+                { provide: DisplayGameService, useValue: displayGamesSpy },
+                { provide: SocketClientService, useValue: socketManagerSpy },
+            ],
         }).compileComponents();
 
         fixture = TestBed.createComponent(ConfigurationPageComponent);
@@ -80,5 +92,42 @@ describe('ConfigurationPageComponent', () => {
         expect(popupWindow.style.display).toEqual('block');
         component.onClosingPopUp();
         expect(popupWindow.style.display).toEqual('none');
+    });
+    it('nextPage should set hasNextPage to true if the list of games has more than 4 games ', () => {
+        component.games = [{} as Game, {} as Game, {} as Game, {} as Game, {} as Game];
+        component.hasNextPage = false;
+        component.nextPage();
+        expect(component.hasNextPage).toBeTrue();
+    });
+    it('next should change games displayed to the next group of 4 games ', () => {
+        component.games = [{} as Game, {} as Game, {} as Game, {} as Game, {} as Game];
+        component.next();
+        expect(component.gamesDisplayed.length).toEqual(1);
+    });
+    it('next should change hasNext to false if the new games is the last group of 4 ', () => {
+        component.games = [{} as Game, {} as Game, {} as Game, {} as Game, {} as Game];
+        component.next();
+        expect(component.hasNext).toBeFalse();
+    });
+    it('previous should change hasPrevious to false if the new games is the first group of 4 ', () => {
+        component.games = [{} as Game, {} as Game, {} as Game, {} as Game, {} as Game];
+        component.firstGame = 4;
+        component.lastGame = 8;
+        component.previous();
+        expect(component.hasPrevious).toBeFalse();
+    });
+
+    it('previous should change games displayed to previous 4 ', () => {
+        component.games = [{} as Game, {} as Game, {} as Game, {} as Game, {} as Game];
+        component.firstGame = 4;
+        component.lastGame = 8;
+        component.previous();
+        expect(component.firstGame).toEqual(0);
+    });
+    it('checkGames should call checkPlayers and nextPage if there are games in the list', async () => {
+        const spyNext = spyOn(component, 'nextPage');
+        displayGamesSpy.games = [];
+        await component.checkGames();
+        expect(spyNext).toHaveBeenCalled();
     });
 });

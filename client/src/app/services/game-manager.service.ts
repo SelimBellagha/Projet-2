@@ -10,6 +10,7 @@ const PIXEL_SIZE = 4;
 const FLASH_TIME = 250;
 const ONE_SECOND = 1000;
 const EIGHT = 8;
+const QUART_SECOND = 250;
 @Injectable({
     providedIn: 'root',
 })
@@ -18,8 +19,11 @@ export class GameManagerService {
     modifiedImageCanvas: CanvasRenderingContext2D;
     differencesFound: boolean[];
     gameData: GameData;
+    // cheatMode: cheatMode;
     lastDifferenceFound: number = 0;
     locked: boolean;
+    state: boolean = false;
+    foundDifferenceCheat: boolean = false;
 
     constructor(private differenceVerification: DifferenceVerificationService, private socketService: SocketClientService) {}
 
@@ -68,7 +72,7 @@ export class GameManagerService {
 
     async verifyDifference(position: Vec2): Promise<boolean> {
         // code temporaire
-        const verification: Verification = await this.differenceVerification.differenceVerification(position.x, position.y, +this.gameData.id);
+        const verification: Verification = await this.differenceVerification.differenceVerification(position.x, position.y, this.gameData.id);
         if (verification.result) {
             if (!this.differencesFound[verification.index]) {
                 this.differencesFound[verification.index] = true;
@@ -80,7 +84,7 @@ export class GameManagerService {
     }
     async flashImages(pixels: Vec2[]): Promise<void> {
         this.flashPixels(pixels, this.originalImageCanvas);
-        this.flashPixels(pixels, this.modifiedImageCanvas);
+        await this.flashPixels(pixels, this.modifiedImageCanvas);
         // Changer les pixels de droite pour qu'ils soient comme à gauche
         this.replacePixels(this.gameData.differences[this.lastDifferenceFound]);
     }
@@ -95,7 +99,6 @@ export class GameManagerService {
             flashingOriginalImageData.data[pixelStartPosition + 2] = 0;
             flashingOriginalImageData.data[pixelStartPosition + 3] = 255;
         });
-        // fait
         for (let i = 0; i <= 3; i++) {
             canvas.putImageData(flashingOriginalImageData, 0, 0);
             await this.wait(FLASH_TIME);
@@ -106,6 +109,90 @@ export class GameManagerService {
 
     async wait(ms: number): Promise<void> {
         await new Promise((res) => setTimeout(res, ms));
+    }
+    // giveHint(): void {
+    //     const canvasModifier = this.modifiedImageCanvas;
+    //     const canvasOriginal = this.originalImageCanvas;
+    //     const pixelDifferences = this.gameData.differences;
+
+    //     this.flashPixelsCheat(pixelDifferences, canvasModifier);
+    //     this.flashPixelsCheat(pixelDifferences, canvasOriginal);
+    // }
+    // onClick(): void {
+    //     {
+    //         // this.cheatMode.giveHint();
+    //         this.cheatMode.toggle = !this.cheatMode.toggle;
+    //         // this.status = this.toggle ? 'Enable Cheat' : 'Disable Cheat';
+    //     }
+    // }
+    // getToogle(): boolean {
+    //     return this.cheatMode.toggle;
+    // }
+
+    stateChanger(): void {
+        this.state = !this.state;
+    }
+    differenceCheatChanger(): void {
+        this.foundDifferenceCheat = !this.foundDifferenceCheat;
+    }
+
+    async flashPixelsCheat(pixels: Vec2[][], canvas: CanvasRenderingContext2D): Promise<void> {
+        const originalImageData = canvas.getImageData(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT);
+        const flashingOriginalImageData = canvas.getImageData(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT);
+
+        for (let i = 0; i < this.gameData.nbDifferences; i++) {
+            pixels[i].forEach((pixelPosition) => {
+                const pixelStartPosition = PIXEL_SIZE * (pixelPosition.x + pixelPosition.y * DEFAULT_WIDTH);
+                flashingOriginalImageData.data[pixelStartPosition] = 0;
+                flashingOriginalImageData.data[pixelStartPosition + 1] = 0;
+                flashingOriginalImageData.data[pixelStartPosition + 2] = 0;
+                flashingOriginalImageData.data[pixelStartPosition + 3] = 255;
+            });
+        }
+
+        while (this.state) {
+            if (this.foundDifferenceCheat) {
+                const newOriginalImageData = canvas.getImageData(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT);
+                const newFlashingOriginalImageData = canvas.getImageData(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT);
+                this.replacePixels(this.gameData.differences[this.lastDifferenceFound]);
+                for (let i = 0; i < this.gameData.nbDifferences; i++) {
+                    if (!this.differencesFound[i]) {
+                        pixels[i].forEach((pixelPosition) => {
+                            const pixelStartPosition = PIXEL_SIZE * (pixelPosition.x + pixelPosition.y * DEFAULT_WIDTH);
+                            flashingOriginalImageData.data[pixelStartPosition] = 0;
+                            flashingOriginalImageData.data[pixelStartPosition + 1] = 0;
+                            flashingOriginalImageData.data[pixelStartPosition + 2] = 0;
+                            flashingOriginalImageData.data[pixelStartPosition + 3] = 255;
+                        });
+                    } else {
+                        this.replacePixels(pixels[i]);
+                    }
+                }
+
+                canvas.putImageData(newFlashingOriginalImageData, 0, 0);
+                await this.wait(QUART_SECOND);
+                canvas.putImageData(newOriginalImageData, 0, 0);
+                await this.wait(QUART_SECOND);
+                canvas.putImageData(newFlashingOriginalImageData, 0, 0);
+                await this.wait(QUART_SECOND);
+                canvas.putImageData(newOriginalImageData, 0, 0);
+                await this.wait(QUART_SECOND);
+                canvas.putImageData(newFlashingOriginalImageData, 0, 0);
+                canvas.putImageData(newOriginalImageData, 0, 0);
+            } else {
+                canvas.putImageData(flashingOriginalImageData, 0, 0);
+                await this.wait(QUART_SECOND);
+                canvas.putImageData(originalImageData, 0, 0);
+                await this.wait(QUART_SECOND);
+                canvas.putImageData(flashingOriginalImageData, 0, 0);
+                await this.wait(QUART_SECOND);
+                canvas.putImageData(originalImageData, 0, 0);
+                await this.wait(QUART_SECOND);
+                canvas.putImageData(flashingOriginalImageData, 0, 0);
+                canvas.putImageData(originalImageData, 0, 0);
+            }
+        }
+        return;
     }
 
     replacePixels(pixels: Vec2[]): void {
@@ -154,6 +241,10 @@ export class GameManagerService {
     playDifferenceAudio() {
         const soundTime = 3000;
         this.playAudio('../../../assets/audio/DifferenceTrouvee.mp3', soundTime);
+    }
+    playErrorAudio() {
+        const soundTime = 3000;
+        this.playAudio('../../../assets/audio/Error.mp3', soundTime);
     }
 
     playAudio(src: string, time: number): void {

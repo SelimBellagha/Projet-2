@@ -1,4 +1,8 @@
-type CallbackSignature = (params: any) => {}
+/* eslint-disable @typescript-eslint/member-ordering */
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
+/* eslint-disable no-unused-vars */
+// eslint-disable-next-line @typescript-eslint/ban-types
+type CallbackSignature = (params: unknown) => {};
 
 export class SocketTestHelper {
     on(event: string, callback: CallbackSignature): void {
@@ -6,16 +10,18 @@ export class SocketTestHelper {
             this.callbacks.set(event, []);
         }
 
-        this.callbacks.get(event)!.push(callback);
+        this.callbacks.get(event)?.push(callback);
     }
 
-    emit(event: string, ...params: any): void {
+    emit(event: string, ...params: unknown[]): void {
         return;
     }
 
-    disconnect(): void { return; }
+    disconnect(): void {
+        return;
+    }
 
-    peerSideEmit(event: string, params?: any) {
+    peerSideEmit(event: string, params?: unknown) {
         if (!this.callbacks.has(event)) {
             return;
         }

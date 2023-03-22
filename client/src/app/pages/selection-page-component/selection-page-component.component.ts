@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { DisplayGameService } from '@app/services/display-game.service';
 import { LobbyService } from '@app/services/lobby.service';
 import { SocketClientService } from '@app/services/socket-client-service.service';
+
 export type Game = {
     id: string;
     title: string;
@@ -47,7 +48,7 @@ export class SelectionPageComponentComponent implements OnInit {
 
     async checkGames() {
         await this.displayGames.loadAllGames();
-        if (this.displayGames.games !== undefined) {
+        if (this.displayGames.games) {
             this.games = this.displayGames.games;
             this.gamesDisplayed = this.games.slice(this.firstGame, this.lastGame);
             this.checkPlayers();

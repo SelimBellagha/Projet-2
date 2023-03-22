@@ -15,10 +15,15 @@ describe('GameManagerService', () => {
     const PIXEL_SIZE = 4;
     const whiteValue = 255;
     let differenceVerificationSpy: SpyObj<DifferenceVerificationService>;
+    // let canvas: CanvasRenderingContext2D;
+    // const mockCanvas = document.createElement('canvas');
+    // const mockContext = mockCanvas.getContext('2d') as CanvasRenderingContext2D;
+    // const mockImageData = new ImageData(640, 480);
 
     beforeEach(() => {
         differenceVerificationSpy = jasmine.createSpyObj('DifferenceVerificationService', ['differenceVerification']);
-
+        // spyOn(mockContext, 'getImageData').and.returnValue(mockImageData);
+        // spyOn(mockContext, 'putImageData');
         TestBed.configureTestingModule({
             imports: [HttpClientModule],
             providers: [{ provide: DifferenceVerificationService, useValue: differenceVerificationSpy }],
@@ -38,10 +43,24 @@ describe('GameManagerService', () => {
         expect(service.gameData).toEqual(gameMock as GameData);
         expect(service.differencesFound.length).toEqual(gameMock.nbDifferences);
     });
-    xit('flashImage should call flashPixels once with each canvas', async () => {
+    it('flashImage should call flashPixels once with each canvas and then call replacePixels', async () => {
         const spy = spyOn(service, 'flashPixels');
+        const spy2 = spyOn(service, 'replacePixels');
+        service.gameData = { differences: [{} as Vec2[], {} as Vec2[]] } as GameData;
+        service.lastDifferenceFound = 0;
         await service.flashImages([]);
         expect(spy).toHaveBeenCalledTimes(2);
+        expect(spy2).toHaveBeenCalled();
+    });
+
+    it('should return the value of toggle', () => {
+        service.state = true;
+        service.stateChanger();
+        expect(service.state).toBe(false);
+
+        service.state = false;
+        service.stateChanger();
+        expect(service.state).toBe(true);
     });
 
     it('flashPixels should not change the final canvas', async () => {
@@ -144,27 +163,28 @@ describe('GameManagerService', () => {
         service.locked = true;
         expect(await service.onPositionClicked(position)).toBeFalse();
     });
-    /* it('onPositionClicked should call errorMessage if position is not in a difference that is not found', async () => {
+    it('onPositionClicked should call errorMessage if position is not in a difference that is not found', async () => {
         const position: Vec2 = { x: 0, y: 0 };
         spyOn(service, 'verifyDifference').and.resolveTo(false);
         const spy = spyOn(service, 'drawError');
+        const spy2 = spyOn(service, 'playErrorAudio');
         service.locked = false;
         await service.onPositionClicked(position);
         expect(spy).toHaveBeenCalled();
-    });*/
-    xit('onPositionClicked should call playDifferenceAudio, flashImages and replacePixels if position is verified', async () => {
+        expect(spy2).toHaveBeenCalled();
+    });
+    it('onPositionClicked should call playDifferenceAudio and  flashImages if position is verified', async () => {
         const position: Vec2 = { x: 0, y: 0 };
         spyOn(service, 'verifyDifference').and.resolveTo(true);
         service.gameData = { differences: [[]] } as unknown as GameData;
         service.lastDifferenceFound = 0;
         const spy1 = spyOn(service, 'playDifferenceAudio');
         const spy2 = spyOn(service, 'flashImages').and.resolveTo();
-        const spy3 = spyOn(service, 'replacePixels').and.resolveTo();
         service.locked = false;
         await service.onPositionClicked(position);
+
         expect(spy1).toHaveBeenCalled();
         expect(spy2).toHaveBeenCalled();
-        expect(spy3).toHaveBeenCalled();
     });
 
     it('playDifferenceAudio should call playAudio', () => {
@@ -177,5 +197,68 @@ describe('GameManagerService', () => {
         const spy = spyOn(service, 'playAudio');
         service.playWinAudio();
         expect(spy).toHaveBeenCalled();
+    });
+    it('playErrorAudio should call playAudio', () => {
+        const spy = spyOn(service, 'playAudio');
+        service.playErrorAudio();
+        expect(spy).toHaveBeenCalled();
+    });
+
+    it('flashPixelsCheat should not modify the images after the execution ', async () => {
+        const originalData = service.originalImageCanvas.getImageData(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT).data;
+        const pixelsMock: Vec2[][] = [
+            [
+                { x: 0, y: 1 },
+                { x: 2, y: 2 },
+            ],
+        ];
+        service.gameData = { nbDifferences: 1 } as GameData;
+        service.state = true;
+        setTimeout(() => {
+            service.state = false;
+            // eslint-disable-next-line @typescript-eslint/no-magic-numbers
+        }, 1000);
+        await service.flashPixelsCheat(pixelsMock, service.originalImageCanvas);
+        const finalData = service.originalImageCanvas.getImageData(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT).data;
+        expect(finalData).toEqual(originalData);
+    });
+
+    it('flashPixelsCheat should call replacePixels if foundDifferenceCheat is true', async () => {
+        const spy = spyOn(service, 'replacePixels');
+        const pixelsMock: Vec2[][] = [
+            [
+                { x: 0, y: 1 },
+                { x: 2, y: 2 },
+            ],
+        ];
+        service.gameData = { nbDifferences: 1, differences: [{} as Vec2[]] } as GameData;
+        service.state = true;
+        service.foundDifferenceCheat = true;
+        service.differencesFound = [false];
+        setTimeout(() => {
+            service.state = false;
+            // eslint-disable-next-line @typescript-eslint/no-magic-numbers
+        }, 1000);
+        await service.flashPixelsCheat(pixelsMock, service.originalImageCanvas);
+        expect(spy).toHaveBeenCalled();
+    });
+    it('flashPixelsCheat should call replacePixels twice if foundDifferenceCheat true but difference is already found', async () => {
+        const spy = spyOn(service, 'replacePixels');
+        const pixelsMock: Vec2[][] = [
+            [
+                { x: 0, y: 1 },
+                { x: 2, y: 2 },
+            ],
+        ];
+        service.gameData = { nbDifferences: 1, differences: [{} as Vec2[]] } as GameData;
+        service.state = true;
+        service.foundDifferenceCheat = true;
+        service.differencesFound = [true];
+        setTimeout(() => {
+            service.state = false;
+            // eslint-disable-next-line @typescript-eslint/no-magic-numbers
+        }, 1000);
+        await service.flashPixelsCheat(pixelsMock, service.originalImageCanvas);
+        expect(spy).toHaveBeenCalledWith(pixelsMock[0]);
     });
 });
