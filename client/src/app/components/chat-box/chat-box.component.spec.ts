@@ -4,12 +4,13 @@ import { LoginFormService } from '@app/services/login-form.service';
 import { SocketClientService } from '@app/services/socket-client-service.service';
 import { Message } from '@common/chatMessage';
 import { ChatBoxComponent } from './chat-box.component';
+import SpyObj = jasmine.SpyObj;
 
 describe('ChatBoxComponent', () => {
     let component: ChatBoxComponent;
     let fixture: ComponentFixture<ChatBoxComponent>;
     let mockActivatedRoute: unknown;
-    let mockSocketService: any;
+    let mockSocketService: SpyObj<SocketClientService>;
     let mockGameUtils: unknown;
 
     beforeEach(async () => {
@@ -26,16 +27,7 @@ describe('ChatBoxComponent', () => {
         await TestBed.configureTestingModule({
             declarations: [ChatBoxComponent],
             providers: [
-                {
-                    provide: ActivatedRoute,
-                    useValue: {
-                        snapshot: {
-                            paramMap: {
-                                get: (key: string) => 'someValue',
-                            },
-                        },
-                    },
-                },
+                { provide: ActivatedRoute, useValue: {} },
                 { provide: ActivatedRoute, useValue: mockActivatedRoute },
                 { provide: SocketClientService, useValue: mockSocketService },
                 { provide: LoginFormService, useValue: mockGameUtils },
@@ -95,20 +87,20 @@ describe('ChatBoxComponent', () => {
             name: 'John Doe',
         };
         const spy = spyOn(component.messages, 'push');
-
-        mockSocketService.on.and.callFake((event: string, callback: Function) => {
+        /* eslint-disable */
+        mockSocketService.on.and.callFake((event: string, callback: any) => {
             if (event === 'receiveChatMessage') {
                 callback(message);
             }
         });
-
+        /* eslint-enable */
         component.ngOnInit();
 
         expect(mockSocketService.on).toHaveBeenCalledWith('receiveChatMessage', jasmine.any(Function));
         expect(spy).toHaveBeenCalledWith(message);
     });
 
-    /* it('should add a message when calling addMessage', () => {
+    it('should add a message when calling addMessage', () => {
         const message: Message = {
             text: 'Hello',
             roomId: '123',
@@ -128,5 +120,5 @@ describe('ChatBoxComponent', () => {
 
         expect(component.messages).toEqual([message]);
         expect(component.message).toBe('');
-    });*/
+    });
 });
