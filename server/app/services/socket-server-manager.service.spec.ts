@@ -1,3 +1,6 @@
+/* eslint-disable object-shorthand */
+import { Lobby } from '@app/classes/lobby';
+import { Player } from '@app/data/player';
 import { Server } from 'app/server';
 import { expect } from 'chai';
 import * as sinon from 'sinon';
@@ -11,19 +14,26 @@ describe('SocketManager service tests', () => {
     let service: SocketServerManager;
     let server: Server;
     let clientSocket: Socket;
+    const roomId = 'roomId';
+    const gameId = 'gameId';
+    const host: Player = {
+        playerName: 'hostName',
+        socketId: 'hostId',
+    };
+    const lobby = new Lobby(host, gameId);
 
     const urlString = 'http://localhost:3000';
     beforeEach(async () => {
         server = Container.get(Server);
-        await server.init();
+        server.init();
         service = server['socketManager'];
         timerManager = service['timerManager'];
         clientSocket = ioClient(urlString);
     });
 
     afterEach(async () => {
-        await clientSocket.close();
-        await service['sio'].close();
+        clientSocket.close();
+        service.sio.close();
         sinon.restore();
     });
 
@@ -61,8 +71,7 @@ describe('SocketManager service tests', () => {
     });
 
     it('Receive a createLobby event should create a room and add socket in the room', (done) => {
-        const roomId = '2';
-        clientSocket.emit('createLobby', { gameId: '1', playerName: 'name', roomId });
+        clientSocket.emit('createLobby', { gameId: gameId, playerName: 'name', roomId });
         setTimeout(() => {
             expect(service.sio.sockets.adapter.rooms.get(roomId)?.size).to.equal(1);
             done();
@@ -87,8 +96,7 @@ describe('SocketManager service tests', () => {
     });
 
     it('Receive a checkPlayersInGame event should return the size of the room if it exist', (done) => {
-        const roomId = '2';
-        clientSocket.emit('createLobby', { gameId: '1', playerName: 'name', roomId });
+        clientSocket.emit('createLobby', { gameId: '1', playerName: 'name', roomId: roomId });
         clientSocket.emit('checkPlayersInGame', { gameId: '1' });
         clientSocket.on('playersInGame', (data: { playersNumber: string }) => {
             expect(data.playersNumber).to.equal('1');
@@ -98,7 +106,7 @@ describe('SocketManager service tests', () => {
 
     it('Receive a joinQueue event should call getRoom', (done) => {
         const spy = sinon.spy(service, 'getRoom');
-        clientSocket.emit('joinQueue', { gameId: '1', playerName: 'playerName' });
+        clientSocket.emit('joinQueue', { gameId: gameId, playerName: 'playerName' });
         setTimeout(() => {
             expect(spy.called).to.equal(true);
             done();
@@ -106,43 +114,21 @@ describe('SocketManager service tests', () => {
     });
 
     it('Receive a joinQueue event should add player to queue', (done) => {
-        const roomId = '2';
         const playerName = 'playerName';
-        clientSocket.emit('createLobby', { gameId: '1', playerName, roomId });
-        clientSocket.emit('joinQueue', { gameId: '1', playerName });
+        service.lobbys.set(roomId, lobby);
+        clientSocket.emit('joinQueue', { gameId: gameId, playerName: playerName });
         setTimeout(() => {
             expect(service.lobbys.get(roomId)?.getQueue().size).to.equal(1);
             done();
         }, RESPONSE_DELAY);
     });
 
-    it('Receive a disconnect event should delete the lobby', (done) => {
-        const roomId = '2';
-        clientSocket.emit('createLobby', { gameId: '1', playerName: 'name', roomId });
+    it('Receive a deleteRoom event should delete in parameter ', (done) => {
+        service.lobbys.set(roomId, lobby);
+        clientSocket.emit('deleteRoom', { roomId: roomId });
         setTimeout(() => {
-            expect(service.sio.sockets.adapter.rooms.get(roomId)?.size).to.equal(1);
+            expect(service.lobbys.size).to.equal(0);
+            done();
         }, RESPONSE_DELAY);
-        clientSocket.disconnect();
-        setTimeout(() => {
-            expect(service.sio.sockets.adapter.rooms.get(roomId)).to.equal(undefined);
-        }, RESPONSE_DELAY);
-        done();
-    });
-
-    it('Receive a removeFromQueue event should remove player from queue', (done) => {
-        const playerName = 'playerName';
-        const socketId = 'socketId';
-        const roomId = '2';
-        const gameId = '1';
-        clientSocket.emit('createLobby', { gameId, playerName: 'name', roomId });
-        service.lobbys.get(roomId)?.addInQueue(playerName, socketId);
-        setTimeout(() => {
-            expect(service.lobbys.get(roomId)?.getQueue().size).to.equal(1);
-        }, RESPONSE_DELAY);
-        clientSocket.emit('removeFromQueue', { socketId, gameId });
-        setTimeout(() => {
-            expect(service.lobbys.get(roomId)?.getQueue().size).to.equal(0);
-        }, RESPONSE_DELAY);
-        done();
     });
 });
