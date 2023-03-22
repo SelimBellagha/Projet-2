@@ -8,6 +8,7 @@ describe('LoginFormService', () => {
     beforeEach(() => {
         TestBed.configureTestingModule({});
         service = TestBed.inject(LoginFormService);
+        service = new LoginFormService();
     });
 
     it('should be created', () => {
@@ -20,27 +21,34 @@ describe('LoginFormService', () => {
         expect(service.getFormData()).toEqual(name);
     });
 
-    it('should set game type', () => {
-        const gameType = true;
-        service.setGameType(gameType);
-        expect(service.getGameType()).toEqual(gameType);
+    describe('getFormData', () => {
+        it('should return the username', () => {
+            const name = 'John';
+            service.setFormData(name);
+            expect(service.getFormData()).toEqual(name);
+        });
+    });
+    it('should set and get game type', () => {
+        const isMultiplayer = true;
+        service.setGameType(isMultiplayer);
+        expect(service.getGameType()).toEqual(isMultiplayer);
     });
 
-    it('should set player type', () => {
-        const playerType = true;
-        service.setPlayerType(playerType);
-        expect(service.getPlayerType()).toEqual(playerType);
+    it('should set and get player type', () => {
+        const isHost = true;
+        service.setPlayerType(isHost);
+        expect(service.getPlayerType()).toEqual(isHost);
     });
 
-    it('should set game id', () => {
-        const gameId = '12345';
-        service.setGameId(gameId);
-        expect(service.getGameId()).toEqual(gameId);
+    it('should set and get game ID', () => {
+        const id = '1234';
+        service.setGameId(id);
+        expect(service.getGameId()).toEqual(id);
     });
 
-    it('should set room id', () => {
-        const roomId = '12345';
-        service.setRoomId(roomId);
-        expect(service.getRoomId()).toEqual(roomId);
+    it('should set and get room ID', () => {
+        const id = '5678';
+        service.setRoomId(id);
+        expect(service.getRoomId()).toEqual(id);
     });
 });

@@ -12,7 +12,7 @@ export class SocketServerManager {
     lobbys = new Map<string, Lobby>();
     // eslint-disable-next-line @typescript-eslint/no-magic-numbers
     timerInterval = 1000;
-    private sio: io.Server;
+    sio: io.Server;
     constructor(server: http.Server, private timerManager: TimerManager) {
         this.sio = new io.Server(server, { cors: { origin: '*', methods: ['GET', 'POST'] } });
     }
@@ -58,12 +58,8 @@ export class SocketServerManager {
                 }
             });
 
-            socket.on('disconnect', () => {
-                this.lobbys.delete(socket.id);
-            });
-
             socket.on('removeFromQueue', (data: { socketId: string; gameId: string }) => {
-                const lobby = this.lobbys.get(data.gameId);
+                const lobby = this.lobbys.get(this.getRoom(data.gameId));
                 if (lobby) {
                     lobby.deleteFromQueue(data.socketId);
                     socket.to(data.socketId).emit('refused');

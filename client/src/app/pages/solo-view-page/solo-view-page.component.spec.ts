@@ -8,6 +8,7 @@ import { GameManagerService } from '@app/services/game-manager.service';
 import { LoginFormService } from '@app/services/login-form.service';
 import { SoloViewPageComponent } from './solo-view-page.component';
 import SpyObj = jasmine.SpyObj;
+const timeTest = 1000;
 
 describe('SoloViewPageComponent', () => {
     let component: SoloViewPageComponent;
@@ -70,20 +71,34 @@ describe('SoloViewPageComponent', () => {
         expect(component.username).toEqual(username);
     });
 
-    // it('On initialization, initializeGame from gameManager should be called', () => {
-    //     displayServiceSpy.loadGame.and.returnValue(gameMock1 as unknown as GameData);
-    //     component.ngOnInit();
-    //     expect(gameManagerSpy.initializeGame).toHaveBeenCalled();
-    // });
+    it('should increment seconds1 every second', () => {
+        const initialSeconds1 = component.secondes1;
+        jasmine.clock().install();
+        component.timer();
+        jasmine.clock().tick(timeTest);
+        expect(component.secondes1).toBe(initialSeconds1 + 1);
+        jasmine.clock().uninstall();
+    });
+    it('should reset seconds1 and increment seconds2 when seconds1 reaches 9', () => {
+        component.secondes1 = 9;
+        jasmine.clock().install();
+        component.timer();
+        jasmine.clock().tick(timeTest);
+        expect(component.secondes1).toBe(0);
+        expect(component.secondes2).toBe(1);
+        jasmine.clock().uninstall();
+    });
 
-    // it('On initialization, game parameters should be instanciated', () => {
-    //     displayServiceSpy.loadGame.and.returnValue(gameMock2 as unknown as GameData);
-    //     displayServiceSpy.game.isDifficult = false;
-    //     component.ngOnInit();
-    //     expect(component.gameName).toEqual(gameMock2.name);
-    //     expect(component.nbDifferences).toEqual(gameMock2.nbDifferences);
-    //     expect(component.difficulty).toEqual('Niveau: facile');
-    // });
+    it('should reset minutes1 and increment minutes2 when minutes1 reaches 9', () => {
+        component.minutes1 = 9;
+        jasmine.clock().install();
+
+        component.timer();
+        jasmine.clock().tick(timeTest);
+        expect(component.minutes1).toBe(0);
+        expect(component.minutes2).toBe(1);
+        jasmine.clock().uninstall();
+    });
 
     it(' clicking on return button should navigate to configuration Page', () => {
         const routerSpy = spyOn(router, 'navigate');
@@ -182,5 +197,11 @@ describe('SoloViewPageComponent', () => {
             const time2 = component.secondes1;
             expect(time2).toBeGreaterThanOrEqual(timerTest);
         }, waitTime);
+    });
+
+    it('startTimer should call timer()', () => {
+        const spy = spyOn(component, 'timer');
+        component.startTimer();
+        expect(spy).toHaveBeenCalled();
     });
 });
