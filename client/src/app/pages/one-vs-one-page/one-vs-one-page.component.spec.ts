@@ -184,7 +184,7 @@ describe('OneVsOnePageComponent', () => {
         lobbyServiceSpy.host = false;
         component.ngOnInit();
         socketHelper.peerSideEmit('getHostName', { hostName: 'test' });
-        expect(component.username).toEqual('test');
+        expect(component.hostName).toEqual('test');
     });
     it('number of differences found per user attributes should be changed when receiving event "differenceUpdate" from socket', () => {
         gameManagerSpy.lastDifferenceFound = 1;
