@@ -4,11 +4,13 @@ import { Vec2 } from '@app/interfaces/vec2';
 import { Verification } from '@app/interfaces/verification';
 import { DifferenceVerificationService } from './difference-verification.service';
 import { DEFAULT_HEIGHT, DEFAULT_WIDTH } from './draw.service';
+import { SocketClientService } from './socket-client-service.service';
 
 const PIXEL_SIZE = 4;
 const FLASH_TIME = 250;
 const ONE_SECOND = 1000;
-const QUART_SECOND = 200;
+const EIGHT = 8;
+const QUART_SECOND = 250;
 @Injectable({
     providedIn: 'root',
 })
@@ -23,7 +25,7 @@ export class GameManagerService {
     state: boolean = false;
     foundDifferenceCheat: boolean = false;
 
-    constructor(private differenceVerification: DifferenceVerificationService) {}
+    constructor(private differenceVerification: DifferenceVerificationService, private socketService: SocketClientService) {}
 
     initializeGame(gameData: GameData) {
         if (gameData) {
@@ -49,23 +51,19 @@ export class GameManagerService {
     async onPositionClicked(position: Vec2): Promise<boolean> {
         if (!this.locked) {
             this.locked = true;
+            const now: Date = new Date();
+            const timeString: string = now.toTimeString().slice(0, EIGHT);
             if (await this.verifyDifference(position)) {
                 this.locked = false;
                 this.playDifferenceAudio();
-                this.differenceCheatChanger();
-                this.differenceCheatChanger();
-                // this.flashPixelsCheat(this.gameData.differences, this.modifiedImageCanvas);
-                // this.flashPixelsCheat(this.gameData.differences, this.originalImageCanvas);
-
-                // Clignotement de tout les pixels faisant partie de la différence
+                this.socketService.send('systemMessage', '[' + timeString + '] ' + 'Différence trouvée par le joueur : ');
+                this.socketService.send('systemMessageSolo', 'Différence trouvée ');
                 this.flashImages(this.gameData.differences[this.lastDifferenceFound]);
                 return true;
             } else {
-                // Écrire Erreur sur le canvas à la position
-                // Bloquer les clics pendant 1 sec
-
                 await this.errorMessage(position);
-                this.playErrorAudio();
+                this.socketService.send('systemMessage', '[' + timeString + '] ' + 'Erreur faite par le joueur : ');
+                this.socketService.send('systemMessageSolo', 'Erreur ');
             }
             this.locked = false;
         }

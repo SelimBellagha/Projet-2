@@ -33,32 +33,7 @@
         </div>
     </div>
 
-    <div class="section">
-        <div class="chat-container">
-            <p class="message-title">Messages</p>
-            <div class="line"></div>
-            <div class="main-message-box">
-                <div class="message-box-holder">
-                    <div class="name event">info</div>
-                    <div class="messages server">Bienvenue {{ user1 }} et {{ user2 }}!</div>
-                </div>
-
-                <div class="message-box-holder">
-                    <div class="name sender">{{ user1 }}</div>
-                    <div class="messages">Hey Selim</div>
-                </div>
-
-                <div class="message-box-holder">
-                    <div class="name">{{ user2 }}</div>
-                    <div class="messages receiver">Hey Yahya</div>
-                </div>
-            </div>
-            <div class="chat-input-holder">
-                <textarea class="chat-input"></textarea>
-                <input type="submit" value="Send" class="message-send" />
-            </div>
-        </div>
-    </div>
+    <app-chat-box></app-chat-box>       
 
     <div #popUpWindowWin class="modal" id="congratulations">
         <div class="modal-content">

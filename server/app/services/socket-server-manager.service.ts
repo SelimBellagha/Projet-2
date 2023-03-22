@@ -1,11 +1,14 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import { Lobby } from '@app/classes/lobby';
 import { Player } from '@app/data/player';
+import { Message } from '@common/chatMessage';
 import * as http from 'http';
 import * as io from 'socket.io';
 import { Socket } from 'socket.io';
 import { Service } from 'typedi';
 import { TimerManager } from './timer-manager.service';
+
+const EIGHT = 8;
 
 @Service()
 export class SocketServerManager {
@@ -22,6 +25,54 @@ export class SocketServerManager {
             // message initial
             socket.on('startTimer', () => {
                 this.timerManager.startTimer();
+            });
+
+            socket.on('sendChatToServer', (message: Message) => {
+                const lobby = this.getLobbyFromSocketID(socket.id);
+                let socketOtherPlayer;
+                const playerEmitter = this.getPlayerFromSocketId(socket.id);
+                if (!playerEmitter) return;
+                const now: Date = new Date();
+                const timeString: string = now.toTimeString().slice(0, EIGHT);
+                const textMessage = '[' + timeString + '] ' + playerEmitter.playerName + ' : ' + message.text;
+                message.text = textMessage;
+                if (lobby?.host.socketId === socket.id) {
+                    socketOtherPlayer = lobby?.secondPlayer.socketId;
+                    if (!socketOtherPlayer) return;
+                    message.isSender = false;
+                    this.sio.to(socketOtherPlayer).emit('receiveChatMessage', message);
+                    message.isSender = true;
+                    this.sio.to(socket.id).emit('receiveChatMessage', message);
+                } else {
+                    socketOtherPlayer = lobby?.host.socketId;
+                    if (!socketOtherPlayer) return;
+                    message.isSender = false;
+                    this.sio.to(socketOtherPlayer).emit('receiveChatMessage', message);
+                    message.isSender = true;
+                    this.sio.to(socket.id).emit('receiveChatMessage', message);
+                }
+            });
+
+            socket.on('systemMessage', (systemMessage: string) => {
+                const lobby = this.getLobbyFromSocketID(socket.id);
+
+                const playerName = this.getPlayerFromSocketId(socket.id)?.playerName;
+                if (!lobby) return;
+                if (systemMessage === ' a abandonné la partie') {
+                    const now: Date = new Date();
+                    const timeString: string = now.toTimeString().slice(0, EIGHT);
+                    this.sio.to(lobby?.host.socketId).emit('receiveSystemMessage', playerName + systemMessage);
+                    this.sio.to(lobby?.secondPlayer.socketId).emit('receiveSystemMessage', '[' + timeString + '] ' + playerName + systemMessage);
+                    return;
+                }
+                this.sio.to(lobby?.host.socketId).emit('receiveSystemMessage', systemMessage + playerName);
+                this.sio.to(lobby?.secondPlayer.socketId).emit('receiveSystemMessage', systemMessage + playerName);
+            });
+
+            socket.on('systemMessageSolo', (systemMessage: string) => {
+                const now: Date = new Date();
+                const timeString: string = now.toTimeString().slice(0, EIGHT);
+                this.sio.to(socket.id).emit('receiveSystemMessageSolo', '[' + timeString + '] ' + systemMessage);
             });
 
             socket.on('getRealTime', () => {
@@ -125,5 +176,21 @@ export class SocketServerManager {
             }
         }
         return '';
+    }
+
+    getLobbyFromSocketID(socketId: string) {
+        for (const lobby of this.lobbys) {
+            if (lobby[1].host.socketId === socketId) return lobby[1];
+            else if (lobby[1].secondPlayer.socketId === socketId) return lobby[1];
+        }
+        return;
+    }
+
+    getPlayerFromSocketId(socketId: string) {
+        for (const lobby of this.lobbys) {
+            if (lobby[1].host.socketId === socketId) return lobby[1].host;
+            else if (lobby[1].secondPlayer.socketId === socketId) return lobby[1].secondPlayer;
+        }
+        return;
     }
 }

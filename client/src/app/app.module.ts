@@ -11,6 +11,7 @@ import { AppComponent } from '@app/pages/app/app.component';
 import { GamePageComponent } from '@app/pages/game-page/game-page.component';
 import { MainPageComponent } from '@app/pages/main-page/main-page.component';
 import { MaterialPageComponent } from '@app/pages/material-page/material-page.component';
+import { ChatBoxComponent } from './components/chat-box/chat-box.component';
 import { CheatComponent } from './components/cheat/cheat.component';
 import { JeuxComponent } from './components/jeux/jeux/jeux.component';
 import { JoinBarComponent } from './components/join-bar/join-bar.component';
@@ -46,6 +47,7 @@ import { SoloViewPageComponent } from './pages/solo-view-page/solo-view-page.com
         OneVsOnePageComponent,
         SalleAttenteComponent,
         JoinBarComponent,
+        ChatBoxComponent,
     ],
     imports: [AppMaterialModule, AppRoutingModule, BrowserAnimationsModule, BrowserModule, FormsModule, HttpClientModule],
     providers: [],
