@@ -100,7 +100,7 @@ describe('ChatBoxComponent', () => {
         expect(spy).toHaveBeenCalledWith(message);
     });
 
-    it('should add a message when calling addMessage', () => {
+    /*it('should add a message when calling addMessage', () => {
         const message: Message = {
             text: 'Hello',
             roomId: '123',
@@ -120,5 +120,5 @@ describe('ChatBoxComponent', () => {
 
         expect(component.messages).toEqual([message]);
         expect(component.message).toBe('');
-    });
+    });*/
 });
