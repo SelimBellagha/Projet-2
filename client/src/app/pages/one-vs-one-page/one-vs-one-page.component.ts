@@ -62,7 +62,6 @@ export class OneVsOnePageComponent implements OnInit, AfterViewInit {
             this.user2 = this.lobbyService.opponent.playerName;
             this.username2 = this.lobbyService.opponent.playerName;
         }
-        this.username = this.loginService.getFormData();
         this.startTimer();
         this.nbDifferencesFoundUser1 = 0;
         this.nbDifferencesFoundUser2 = 0;
