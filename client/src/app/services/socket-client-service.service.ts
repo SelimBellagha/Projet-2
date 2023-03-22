@@ -14,7 +14,9 @@ export class SocketClientService {
     }
 
     connect() {
-        this.socket = io(this.baseUrl, { transports: ['websocket'], upgrade: false });
+        if (!this.isSocketAlive()) {
+            this.socket = io(this.baseUrl, { transports: ['websocket'], upgrade: false });
+        }
     }
 
     disconnect() {

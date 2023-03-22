@@ -94,6 +94,7 @@ export class SoloViewPageComponent implements OnInit, AfterViewInit {
             const mousePosition: Vec2 = { x: event.offsetX, y: event.offsetY };
             if (await this.gameManager.onPositionClicked(mousePosition)) {
                 // Incrementer le cpt de differences
+
                 this.nbDifferencesFound++;
                 if (this.nbDifferences === this.nbDifferencesFound) {
                     this.endGame();

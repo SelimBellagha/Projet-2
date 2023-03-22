@@ -139,8 +139,9 @@ export class OneVsOnePageComponent implements OnInit, AfterViewInit {
     }
 
     giveUp() {
-        this.goToHomePage();
         this.socketService.send('giveUp', { roomId: this.roomId });
+        this.socketService.send('systemMessage', ' a abandonné la partie');
+        this.goToHomePage();
     }
 
     goToGiveUp() {

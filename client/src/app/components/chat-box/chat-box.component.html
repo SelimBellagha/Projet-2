@@ -1,0 +1,16 @@
+<div class="chat-box">
+  <div class="chat-box-header">
+    <div class="chat-box-header__title">Chat Box</div>
+  </div>
+  <div class="chat-box-messages">
+    <div class="chat-box-messages__container">
+      <div *ngFor="let message of messages" [ngClass]="{'message--sender': message.isSender, 'message--received': !message.isSender, 'message--system': message.isSystem}">
+        <div class="message__text">{{message.text }}</div>
+      </div>
+    </div>
+  </div>
+  <div class="chat-box-input" *ngIf="isMultiplayerMode()">
+    <input type="text" id="message-input" (keydown.enter)="onKeyDown($event)" [(ngModel)]="message" maxlength="200" placeholder="Type your message here. 200 characters max" />
+    <button (click)="this.addMessage()" class="chat-box-input__button">Send</button>
+  </div>
+</div>
