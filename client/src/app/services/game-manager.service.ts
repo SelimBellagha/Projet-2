@@ -211,6 +211,7 @@ export class GameManagerService {
     }
 
     async errorMessage(position: Vec2): Promise<void> {
+        this.playErrorAudio();
         // save originals
         const originalImageData = this.originalImageCanvas.getImageData(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT);
         const modifiedImageData = this.modifiedImageCanvas.getImageData(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT);
