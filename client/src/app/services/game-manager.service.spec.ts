@@ -90,18 +90,22 @@ describe('GameManagerService', () => {
     });
 
     it('errorMessage should call drawError once with each canvas', async () => {
+        const spyAudio = spyOn(service, 'playAudio');
         const spy = spyOn(service, 'drawError');
         const posMock = { x: 3, y: 4 };
         await service.errorMessage(posMock);
         expect(spy).toHaveBeenCalledTimes(2);
+        expect(spyAudio).toHaveBeenCalled();
     });
 
     it('errorMessage should not change the final canvas', async () => {
+        const spy = spyOn(service, 'playAudio');
         const originalData = service.originalImageCanvas.getImageData(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT).data;
         const posMock = { x: 3, y: 4 };
         await service.errorMessage(posMock);
         const finalData = service.originalImageCanvas.getImageData(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT).data;
         expect(finalData).toEqual(originalData);
+        expect(spy).toHaveBeenCalled();
     });
 
     it('drawError should call fillText on canvas as many time as letters in "ERREUR" ', () => {
@@ -198,6 +202,13 @@ describe('GameManagerService', () => {
         service.playWinAudio();
         expect(spy).toHaveBeenCalled();
     });
+
+    it('playErrorAudio should call playAudio', () => {
+        const spy = spyOn(service, 'playAudio');
+        service.playErrorAudio();
+        expect(spy).toHaveBeenCalled();
+    });
+
     it('playErrorAudio should call playAudio', () => {
         const spy = spyOn(service, 'playAudio');
         service.playErrorAudio();
