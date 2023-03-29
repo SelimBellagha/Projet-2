@@ -3,50 +3,55 @@
         <button class="configuration" type="button" (click)="goToConfiguration()">Configuration</button>
         <h2 class="note-container">Les images doivent être en format BMP 24-bit de taille 640x480 pixels</h2>
         <div class="tool-label" id="largeur">
-            <input #widthPicker (change)="onSetWidth(widthPicker.value)" type="range" id="width" name="width" min="2" max="40" step="2" value="8" >
-            <p class ="icon-description">Épaisseur</p>  
+            <input #widthPicker (change)="onSetWidth(widthPicker.value)" type="range" id="width" name="width" min="2" max="40" step="2" value="2" />
+            <p class="icon-description">Épaisseur</p>
         </div>
-        <div  class="tool-label">
+        <div class="tool-label">
             <input class="tool-label" #colorPicker (change)="onChangeColor(colorPicker.value)" type="color" id="colorpicker" value="#ff0000" />
-            <p class ="icon-description">Couleur</p>
+            <p class="icon-description">Couleur</p>
         </div>
-        <div class = "tools-position">
-            <button class = "tool-button" (click)="changeTool(0)"> <img class="tool-icons" src="./assets/images/pencil" alt="pencil-icon " />
-                <div class ="icon-description">
-                    <p >Crayon</p>
-                    <p class = "details">Cliquer puis dessiner sur une image avec</p>
-                    <p  class = "details">  la couleur et l'épaisseur sélectionnés</p>
+        <div class="tools-position">
+            <button class="tool-button" (click)="changeTool(0)">
+                <img class="tool-icons" src="./assets/images/pencil" alt="pencil-icon " />
+                <div class="icon-description">
+                    <p>Crayon</p>
+                    <p class="details">Cliquer puis dessiner sur une image avec</p>
+                    <p class="details">la couleur et l'épaisseur sélectionnés</p>
                 </div>
             </button>
-            <button class = "tool-button" (click)="changeTool(1)"> <img class="tool-icons" src="./assets/images/rectangle.png" alt="rectangle-icon " />
-                <div class ="icon-description">
-                    <p >Rectangle</p>
-                    <p class = "details">Cliquer puis dessiner sur un rectangle avec</p>
-                    <p  class = "details">la couleur et l'épaisseur sélectionnés.</p>
-                    <p class = "details">Garder la touche "Shift" appuyée </p>
-                    <p  class = "details">pour obtenir un carré</p>
+            <button class="tool-button" (click)="changeTool(1)">
+                <img class="tool-icons" src="./assets/images/rectangle.png" alt="rectangle-icon " />
+                <div class="icon-description">
+                    <p>Rectangle</p>
+                    <p class="details">Cliquer puis dessiner sur un rectangle avec</p>
+                    <p class="details">la couleur et l'épaisseur sélectionnés.</p>
+                    <p class="details">Garder la touche "Shift" appuyée</p>
+                    <p class="details">pour obtenir un carré</p>
                 </div>
             </button>
-            <button class = "tool-button" (click)="changeTool(2)"> <img class="tool-icons" src="./assets/images/eraser.png" alt="eraser-icon " />
-                <div class ="icon-description">
-                    <p >Efface</p>
-                    <p class = "details">Cliquer puis effacer </p>
-                    <p class = "details">une partie de l'image</p>
+            <button class="tool-button" (click)="changeTool(2)">
+                <img class="tool-icons" src="./assets/images/eraser.png" alt="eraser-icon " />
+                <div class="icon-description">
+                    <p>Efface</p>
+                    <p class="details">Cliquer puis effacer</p>
+                    <p class="details">une partie de l'image</p>
                 </div>
             </button>
-            <button class = "tool-button" (click)="onUndo()"><img class="tool-icons" src="./assets/images/undo" alt="eraser-icon " />
-                <div class ="icon-description">
+            <button class="tool-button" (click)="onUndo()">
+                <img class="tool-icons" src="./assets/images/undo" alt="eraser-icon " />
+                <div class="icon-description">
                     <p>Revenir en arrière</p>
-                    <p class = "details">Annuler la dernière action </p>
+                    <p class="details">Annuler la dernière action</p>
                 </div>
             </button>
-            <button class = "tool-button" (click)="onRedo()"><img class="tool-icons" src="./assets/images/redo" alt="eraser-icon " />
-                <div class ="icon-description">
+            <button class="tool-button" (click)="onRedo()">
+                <img class="tool-icons" src="./assets/images/redo" alt="eraser-icon " />
+                <div class="icon-description">
                     <p>Refaire</p>
-                    <p class = "details"> Aller de l'avant</p>
+                    <p class="details">Aller de l'avant</p>
                 </div>
             </button>
-        </div>     
+        </div>
     </div>
 
     <div class="images-area">
@@ -61,7 +66,14 @@
                 (mouseup)="onMouseUp($event, true)"
             ></canvas>
             <div class="buttons">
-                <input #leftImageInput id="leftImageInput" type="file" accept="image/bmp" hidden (input)="onUpdateInput(leftImageInput, true, false)" />
+                <input
+                    #leftImageInput
+                    id="leftImageInput"
+                    type="file"
+                    accept="image/bmp"
+                    hidden
+                    (input)="onUpdateInput(leftImageInput, true, false)"
+                />
                 <label class="lien" for="leftImageInput">Téléverser une image</label>
                 <button type="button" (click)="resetBackground(true)">Réinitialiser arrière-plan</button>
                 <button type="button" (click)="onResetForeground(true)">Réinitialiser avant-plan</button>
@@ -120,10 +132,9 @@
             <input id="radius-input-15" type="radio" name="radius" (click)="modifyRadius(15)" />
             <label for="radius-input-15">15 </label>
         </p>
-        <p class="radius"> Rayon d'élargissement : {{ radius }}</p>
+        <p class="radius">Rayon d'élargissement : {{ radius }}</p>
     </div>
-    <div class="test"> <button class="validation" (click)="onValidationLaunched()">Valider et créer</button></div>
-   
+    <div class="test"><button class="validation" (click)="onValidationLaunched()">Valider et créer</button></div>
 
     <div #popUpWindow class="modal">
         <div class="modal-content">
@@ -140,14 +151,13 @@
                 <div class="modal-buttons">
                     <button class="modal-button" type="button" (click)="onClosingPopUp()">Fermer</button>
                     <button
-                    *ngIf="currentGameData.nbDifferences >= 3 && currentGameData.nbDifferences <= 9"
-                    type="button"
-                    (click)="onSave(gameName)"
-                    class="modal-button"
+                        *ngIf="currentGameData.nbDifferences >= 3 && currentGameData.nbDifferences <= 9"
+                        type="button"
+                        (click)="onSave(gameName)"
+                        class="modal-button"
                     >
-                    Sauvegarder
+                        Sauvegarder
                     </button>
-                    
                 </div>
             </div>
         </div>
