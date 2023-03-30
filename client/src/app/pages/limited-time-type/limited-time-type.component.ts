@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
     selector: 'app-limited-time-type',
@@ -6,11 +7,11 @@ import { Component, OnInit } from '@angular/core';
     styleUrls: ['./limited-time-type.component.scss'],
 })
 export class LimitedTimeTypeComponent implements OnInit {
-    constructor() {}
+    constructor(private router: Router) {}
 
     ngOnInit(): void {}
 
     goToSoloLimitedTime() {
-        console.log(1);
+        this.router.navigate(['/loginPage']);
     }
 }

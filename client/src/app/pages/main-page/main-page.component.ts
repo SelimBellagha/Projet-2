@@ -71,6 +71,6 @@ export class MainPageComponent implements OnInit {
 
     goToLimitedTimeGame() {
         this.loginFormService.setLimitedTimeGame(true);
-        this.router.navigate(['/loginPage']);
+        this.router.navigate(['/limitedTimeType']);
     }
 }

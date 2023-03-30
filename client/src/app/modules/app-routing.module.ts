@@ -10,6 +10,7 @@ import { MaterialPageComponent } from '@app/pages/material-page/material-page.co
 import { OneVsOnePageComponent } from '@app/pages/one-vs-one-page/one-vs-one-page.component';
 import { SalleAttenteComponent } from '@app/pages/salle-attente/salle-attente.component';
 import { SelectionPageComponentComponent } from '@app/pages/selection-page-component/selection-page-component.component';
+import { SoloLimitedTimeComponent } from '@app/pages/solo-limited-time/solo-limited-time.component';
 import { SoloViewPageComponent } from '@app/pages/solo-view-page/solo-view-page.component';
 
 const routes: Routes = [
@@ -24,7 +25,8 @@ const routes: Routes = [
     { path: 'loginPage', component: LoginPageComponent },
     { path: 'oneVSone', component: OneVsOnePageComponent },
     { path: 'salleAttente', component: SalleAttenteComponent },
-    { path: 'LimitedTimeType', component: LimitedTimeTypeComponent },
+    { path: 'limitedTimeType', component: LimitedTimeTypeComponent },
+    { path: 'soloLimitedTimeType', component: SoloLimitedTimeComponent },
     { path: '**', redirectTo: '/home' },
 ];
 @NgModule({
