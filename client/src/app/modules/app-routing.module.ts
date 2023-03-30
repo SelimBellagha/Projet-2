@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { ConfigurationPageComponent } from '@app/pages/configuration-page/configuration-page.component';
 import { GameCreationPageComponent } from '@app/pages/game-creation-page/game-creation-page.component';
 import { GamePageComponent } from '@app/pages/game-page/game-page.component';
+import { LimitedTimeTypeComponent } from '@app/pages/limited-time-type/limited-time-type.component';
 import { LoginPageComponent } from '@app/pages/login-page/login-page.component';
 import { MainPageComponent } from '@app/pages/main-page/main-page.component';
 import { MaterialPageComponent } from '@app/pages/material-page/material-page.component';
@@ -23,6 +24,7 @@ const routes: Routes = [
     { path: 'loginPage', component: LoginPageComponent },
     { path: 'oneVSone', component: OneVsOnePageComponent },
     { path: 'salleAttente', component: SalleAttenteComponent },
+    { path: 'LimitedTimeType', component: LimitedTimeTypeComponent },
     { path: '**', redirectTo: '/home' },
 ];
 @NgModule({

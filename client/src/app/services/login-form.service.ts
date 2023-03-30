@@ -7,6 +7,7 @@ export class LoginFormService {
     private roomId: string;
     private username: string;
     private multiplayer: boolean = false;
+    private limitedTimeGame: boolean = false;
     private host: boolean;
     private gameId: string;
 
@@ -48,5 +49,13 @@ export class LoginFormService {
 
     setRoomId(id: string) {
         this.roomId = id;
+    }
+
+    setLimitedTimeGame(limitedTimeGame: boolean) {
+        this.limitedTimeGame = limitedTimeGame;
+    }
+
+    getLimitedTimeGame() {
+        return this.limitedTimeGame;
     }
 }
