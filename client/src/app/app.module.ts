@@ -22,6 +22,7 @@ import { OneVsOnePageComponent } from './pages/one-vs-one-page/one-vs-one-page.c
 import { SalleAttenteComponent } from './pages/salle-attente/salle-attente.component';
 import { SelectionPageComponentComponent } from './pages/selection-page-component/selection-page-component.component';
 import { SoloViewPageComponent } from './pages/solo-view-page/solo-view-page.component';
+import { ModeIndiceComponent } from './components/mode-indice/mode-indice.component';
 
 /**
  * Main module that is used in main.ts.
@@ -48,6 +49,7 @@ import { SoloViewPageComponent } from './pages/solo-view-page/solo-view-page.com
         SalleAttenteComponent,
         JoinBarComponent,
         ChatBoxComponent,
+        ModeIndiceComponent,
     ],
     imports: [AppMaterialModule, AppRoutingModule, BrowserAnimationsModule, BrowserModule, FormsModule, HttpClientModule],
     providers: [],
