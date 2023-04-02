@@ -1,6 +1,5 @@
-<p>solo-limited-time works!</p>
 <body class="container">
-    <button class="quit-button" (click)="returnSelectionPage()">Abandonner la partie</button>
+    <button class="quit-button" (click)="goToHomePage()">Abandonner la partie</button>
 
     <div class="section">
         <div class="main-container">
@@ -24,7 +23,7 @@
                 <p>Differences trouvées: {{ nbDifferencesFound }}</p>
                 <div class="timer">
                     <img src="../../../assets/images/stopwatch.png" class="watch-logo" />
-                    <div>{{ minutes2 }}{{ minutes1 }}:{{ secondes2 }}{{ secondes1 }}</div>
+                    <div>{{ minutes.toString().padStart(2, '0') }} :{{ secondes.toString().padStart(2, '0') }}</div>
                 </div>
             </div>
         </div>

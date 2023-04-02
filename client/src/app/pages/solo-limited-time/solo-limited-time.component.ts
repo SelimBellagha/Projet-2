@@ -21,10 +21,7 @@ export class SoloLimitedTimeComponent implements OnInit, AfterViewInit {
     nbDifferences: number;
     nbDifferencesFound: number;
     minutes: number = 0;
-    secondes1: number = 0;
-    secondes2: number = 0;
-    minutes1: number = 0;
-    minutes2: number = 0;
+    secondes: number = 0;
     intervalID: number;
 
     // eslint-disable-next-line max-params
@@ -35,56 +32,40 @@ export class SoloLimitedTimeComponent implements OnInit, AfterViewInit {
         private gameManager: GameManagerService,
     ) {}
 
-    ngOnInit() {
+    async ngOnInit() {
         this.username = this.loginService.getFormData();
-        this.startTimer();
         this.nbDifferencesFound = 0;
-        if (this.displayService.game) {
-            this.gameManager.initializeGame(this.displayService.game);
-            this.gameName = this.displayService.game.name;
-            this.difficulty = this.displayService.convertDifficulty(this.displayService.game);
-            this.nbDifferences = this.displayService.game.nbDifferences;
+        await this.displayService.loadAllGames();
+        if (this.displayService.tempGames) {
+            this.gameManager.initializeLimitedGame(this.displayService.tempGames);
+            this.gameName = this.gameManager.gameData.name;
+            this.difficulty = this.displayService.convertDifficulty(this.gameManager.gameData);
+            this.gameManager.putImages();
         }
+    }
+
+    timer(gameTime: number) {
+        const timerInterval = 1000;
+        const max = 60;
+        this.secondes = gameTime % max;
+        this.minutes = Math.floor(gameTime / max);
+        this.intervalID = window.setInterval(() => {
+            gameTime--;
+            this.secondes = gameTime % max;
+            this.minutes = Math.floor(gameTime / max);
+            if (this.minutes === 0 && this.secondes === 0) {
+                this.endGame();
+            }
+        }, timerInterval);
     }
 
     ngAfterViewInit() {
         this.gameManager.modifiedImageCanvas = this.modifiedCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         this.gameManager.originalImageCanvas = this.originalCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
-        this.gameManager.putImages();
-    }
-
-    timer() {
-        const decimalMax = 9;
-        const centaineMax = 5;
-        const timerInterval = 1000;
-        this.intervalID = window.setInterval(() => {
-            if (this.secondes2 === centaineMax && this.secondes1 === decimalMax) {
-                this.secondes2 = 0;
-                this.secondes1 = 0;
-                this.minutes1++;
-            } else if (this.minutes1 === decimalMax) {
-                this.minutes1 = 0;
-                this.minutes2++;
-            }
-            if (this.secondes1 === decimalMax) {
-                this.secondes2++;
-                this.secondes1 = 0;
-            } else {
-                this.secondes1++;
-            }
-        }, timerInterval);
-    }
-
-    startTimer = () => {
-        this.timer();
-    };
-
-    stopTimer() {
-        clearInterval(this.intervalID);
+        this.timer(30);
     }
 
     endGame(): void {
-        this.stopTimer();
         this.gameManager.playWinAudio();
         this.popUpWindow.nativeElement.style.display = 'block';
     }
@@ -93,16 +74,22 @@ export class SoloLimitedTimeComponent implements OnInit, AfterViewInit {
         if (event.button === MouseButton.Left) {
             const mousePosition: Vec2 = { x: event.offsetX, y: event.offsetY };
             if (await this.gameManager.onPositionClicked(mousePosition)) {
-                // Incrementer le cpt de differences
-
+                // Incremented le cpt de differences
                 this.nbDifferencesFound++;
-                if (this.nbDifferences === this.nbDifferencesFound) {
+                await this.putNewGame();
+                if (this.nbDifferencesFound === this.gameManager.gameNumberMax) {
                     this.endGame();
                 }
                 // Si on a tout trouvé, finir le jeu.
             }
         }
     }
+
+    async putNewGame() {
+        this.gameName = this.gameManager.gameData.name;
+        this.difficulty = this.displayService.convertDifficulty(this.gameManager.gameData);
+    }
+
     goToHomePage() {
         this.popUpWindow.nativeElement.style.display = 'none';
         this.router.navigate(['home']);
@@ -110,8 +97,5 @@ export class SoloLimitedTimeComponent implements OnInit, AfterViewInit {
 
     goToCongratulations() {
         this.popUpWindow.nativeElement.style.display = 'block';
-    }
-    returnSelectionPage(): void {
-        this.router.navigate(['/gameSelection']);
     }
 }
