@@ -14,14 +14,21 @@ export class ModeIndiceComponent {
     // eslint-disable-next-line @typescript-eslint/member-ordering
     toggle = false;
     // eslint-disable-next-line @typescript-eslint/member-ordering
-    status = 'Activer Mode Indice';
+    counter = 0;
+    // eslint-disable-next-line @typescript-eslint/member-ordering
+    status = 'Mode Indice Inactive';
 
     onClick(): void {
         {
-            this.toggle = !this.toggle;
-            this.gameManager.stateChanger();
-            this.status = this.toggle ? 'Activer Mode Indice' : 'Arreter Mode Indice';
-            this.giveHint();
+            if (this.counter < 3) {
+                this.toggle = !this.toggle;
+                this.gameManager.stateChanger();
+                this.status = this.toggle ? 'Mode Indice Active' : 'Mode Indice Inactive';
+                this.giveHint();
+                this.counter++;
+            } else {
+                window.alert('Nombre de indice maximum atteint');
+            }
         }
     }
     // eslint-disable-next-line @typescript-eslint/member-ordering
@@ -29,7 +36,7 @@ export class ModeIndiceComponent {
     onKeyUp(event: KeyboardEvent) {
         // eslint-disable-next-line no-console
         console.log('Mode triche active');
-        if (event.key === 't' || event.key === 'T') {
+        if (event.key === 'i' || event.key === 'I') {
             this.onClick();
         }
     }
