@@ -29,8 +29,6 @@ export class CheatComponent {
     // eslint-disable-next-line @typescript-eslint/member-ordering
     @HostListener('document:keyup', ['$event'])
     onKeyUp(event: KeyboardEvent) {
-        // eslint-disable-next-line no-console
-        console.log('Mode triche active');
         if (event.key === 't' || event.key === 'T') {
             this.onClick();
         }

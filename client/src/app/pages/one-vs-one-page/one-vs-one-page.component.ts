@@ -82,6 +82,7 @@ export class OneVsOnePageComponent implements OnInit, AfterViewInit {
             this.nbDifferencesFoundUser1 = data.nbDifferenceHost;
             this.nbDifferencesFoundUser2 = data.nbDifferenceInvite;
             if (this.gameManager.lastDifferenceFound !== data.differenceId) {
+                this.gameManager.lastDifferenceFound = data.differenceId;
                 this.gameManager.flashImages(this.gameManager.gameData.differences[data.differenceId]);
             }
             this.winCheck();
