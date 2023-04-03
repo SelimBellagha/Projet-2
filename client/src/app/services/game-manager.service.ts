@@ -1,9 +1,11 @@
 import { Injectable } from '@angular/core';
+import { GameActionType } from '@app/interfaces/game-action';
 import { GameData } from '@app/interfaces/game-data';
 import { Vec2 } from '@app/interfaces/vec2';
 import { Verification } from '@app/interfaces/verification';
 import { DifferenceVerificationService } from './difference-verification.service';
 import { DEFAULT_HEIGHT, DEFAULT_WIDTH } from './draw.service';
+import { ReplayService } from './replay.service';
 import { SocketClientService } from './socket-client-service.service';
 
 const PIXEL_SIZE = 4;
@@ -25,7 +27,11 @@ export class GameManagerService {
     state: boolean = false;
     foundDifferenceCheat: boolean = false;
 
-    constructor(private differenceVerification: DifferenceVerificationService, private socketService: SocketClientService) {}
+    constructor(
+        private differenceVerification: DifferenceVerificationService,
+        private socketService: SocketClientService,
+        private replayService: ReplayService,
+    ) {}
 
     initializeGame(gameData: GameData) {
         if (gameData) {
@@ -51,6 +57,7 @@ export class GameManagerService {
     async onPositionClicked(position: Vec2): Promise<boolean> {
         if (!this.locked) {
             this.locked = true;
+            this.replayService.addAction(GameActionType.Click, 0);
             const now: Date = new Date();
             const timeString: string = now.toTimeString().slice(0, EIGHT);
             if (await this.verifyDifference(position)) {
