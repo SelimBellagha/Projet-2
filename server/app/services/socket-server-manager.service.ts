@@ -23,8 +23,12 @@ export class SocketServerManager {
     handleSockets(): void {
         this.sio.on('connection', (socket: Socket) => {
             // message initial
-            socket.on('startTimer', () => {
-                this.timerManager.startTimer();
+            socket.on('startStopWatch', () => {
+                this.timerManager.startStopWatch();
+            });
+
+            socket.on('startTimer', (timeGame: number) => {
+                this.timerManager.startTimer(timeGame);
             });
 
             socket.on('sendChatToServer', (message: Message) => {
@@ -76,8 +80,7 @@ export class SocketServerManager {
             });
 
             socket.on('getRealTime', () => {
-                const timerInfo = [this.timerManager.secondes1, this.timerManager.secondes2, this.timerManager.minutes1, this.timerManager.minutes2];
-                socket.emit('getRealTime', timerInfo);
+                socket.emit('getRealTime', this.timerManager.getTimeGame());
             });
 
             socket.on('createLobby', (data: { gameId: string; playerName: string; roomId: string }) => {
