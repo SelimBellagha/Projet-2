@@ -44,6 +44,7 @@ export class SoloLimitedTimeComponent implements OnInit, AfterViewInit {
         }
     }
 
+    // lorsqu on récupere le temps dans la BD si le t>2:00 set le timer a 2:00 ou le faire dans la configuration
     timer(gameTime: number) {
         const timerInterval = 1000;
         const max = 60;
