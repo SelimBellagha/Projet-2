@@ -66,6 +66,7 @@ export class SoloLimitedTimeComponent implements OnInit, AfterViewInit {
     }
 
     endGame(): void {
+        clearInterval(this.intervalID);
         this.gameManager.playWinAudio();
         this.popUpWindow.nativeElement.style.display = 'block';
     }
