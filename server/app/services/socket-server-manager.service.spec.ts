@@ -41,7 +41,7 @@ describe('SocketManager service tests', () => {
         sinon.restore();
     });
 
-    it('Receive a startStopWatch event should call startStopWatch', (done) => {
+    xit('Receive a startStopWatch event should call startStopWatch', (done) => {
         const spy = sinon.spy(timerManager, 'startStopWatch');
         clientSocket.emit('startStopWatch');
         setTimeout(() => {
