@@ -106,6 +106,13 @@ export class GameManagerService {
             await this.wait(FLASH_TIME);
         }
     }
+    async createSquare(pixels: Vec2[][], canvas: CanvasRenderingContext2D): Promise<void> {
+        const flashingOriginalImageData = canvas.getImageData(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT);
+
+        for (let i = 0; i <= 1000; i++) {
+            canvas.putImageData(flashingOriginalImageData, i, 0);
+        }
+    }
 
     async wait(ms: number): Promise<void> {
         await new Promise((res) => setTimeout(res, ms));
