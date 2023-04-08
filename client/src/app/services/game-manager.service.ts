@@ -22,7 +22,8 @@ export class GameManagerService {
     // cheatMode: cheatMode;
     lastDifferenceFound: number = 0;
     locked: boolean;
-    state: boolean = false;
+    cheatState: boolean = false;
+    hintState: boolean = false;
     foundDifferenceCheat: boolean = false;
 
     constructor(private differenceVerification: DifferenceVerificationService, private socketService: SocketClientService) {}
@@ -137,7 +138,10 @@ export class GameManagerService {
     // }
 
     stateChanger(): void {
-        this.state = !this.state;
+        this.cheatState = !this.cheatState;
+    }
+    hintStateChanger(): void {
+        this.hintState = !this.hintState;
     }
     differenceCheatChanger(): void {
         this.foundDifferenceCheat = !this.foundDifferenceCheat;
@@ -157,7 +161,7 @@ export class GameManagerService {
             });
         }
 
-        while (this.state) {
+        while (this.cheatState) {
             if (this.foundDifferenceCheat) {
                 const newOriginalImageData = canvas.getImageData(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT);
                 const newFlashingOriginalImageData = canvas.getImageData(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT);
