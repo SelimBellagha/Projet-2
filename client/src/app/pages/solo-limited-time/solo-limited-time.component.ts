@@ -4,6 +4,7 @@ import { MouseButton } from '@app/components/play-area/play-area.component';
 import { Vec2 } from '@app/interfaces/vec2';
 import { DisplayGameService } from '@app/services/display-game.service';
 import { GameManagerService } from '@app/services/game-manager.service';
+import { LimitedTimeLobbyService } from '@app/services/limited-time-lobby.service';
 import { LoginFormService } from '@app/services/login-form.service';
 
 @Component({
@@ -30,18 +31,24 @@ export class SoloLimitedTimeComponent implements OnInit, AfterViewInit {
         private loginService: LoginFormService,
         private displayService: DisplayGameService,
         private gameManager: GameManagerService,
+        private limitedTimeLobbyService: LimitedTimeLobbyService,
     ) {}
 
     async ngOnInit() {
-        this.username = this.loginService.getFormData();
-        this.nbDifferencesFound = 0;
-        await this.displayService.loadAllGames();
-        if (this.displayService.tempGames) {
-            this.gameManager.initializeLimitedGame(this.displayService.tempGames);
-            this.gameName = this.gameManager.gameData.name;
-            this.difficulty = this.displayService.convertDifficulty(this.gameManager.gameData);
-            this.gameManager.putImages();
+        if (!this.limitedTimeLobbyService.firstGame) {
+            this.nbDifferencesFound = 0;
+            await this.displayService.loadAllGames();
+            if (this.displayService.tempGames) {
+                this.gameManager.initializeLimitedGame(this.displayService.tempGames);
+            }
+        } else {
+            this.gameManager.initializeGame(this.gameManager.gameData);
+            this.nbDifferencesFound = this.limitedTimeLobbyService.differencesFound;
         }
+        this.username = this.loginService.getFormData();
+        this.gameName = this.gameManager.gameData.name;
+        this.difficulty = this.displayService.convertDifficulty(this.gameManager.gameData);
+        this.gameManager.putImages();
     }
 
     // lorsqu on récupere le temps dans la BD si le t>2:00 set le timer a 2:00 ou le faire dans la configuration

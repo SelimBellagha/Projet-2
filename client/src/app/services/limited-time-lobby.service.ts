@@ -9,5 +9,6 @@ export class LimitedTimeLobbyService {
     secondPlayer: Player;
     roomId: string;
     firstGame: number;
+    differencesFound: number;
     constructor() {}
 }

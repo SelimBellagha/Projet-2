@@ -227,6 +227,10 @@ export class SocketServerManager {
                         .emit('LimitedDifferenceUpdate', { nbDifferences: lobby.differencesFound, newGame: newGameNumber });
                 }
             });
+
+            socket.on('limitedTimeGiveUp', (data: { roomId: string }) => {
+                socket.to(data.roomId).emit('limitedTimeGiveUp');
+            });
         });
     }
 

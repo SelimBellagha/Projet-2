@@ -77,6 +77,10 @@ export class OneVsOneLimitedTimeComponent implements OnInit, AfterViewInit {
                 this.endGame();
             }
         });
+        this.socketService.on('limitedTimeGiveUp', () => {
+            this.limitedTimeLobbyService.differencesFound = this.nbDifferencesFound;
+            this.router.navigate(['soloLimitedTime']);
+        });
     }
 
     async putNewGame() {
@@ -118,7 +122,7 @@ export class OneVsOneLimitedTimeComponent implements OnInit, AfterViewInit {
     }
 
     giveUp() {
-        this.socketService.send('giveUp', { roomId: this.limitedTimeLobbyService.roomId });
+        this.socketService.send('limitedTimeGiveUp', { roomId: this.limitedTimeLobbyService.roomId });
         this.socketService.send('systemMessage', ' a abandonné la partie');
         this.stopTimer();
         this.goToHomePage();
