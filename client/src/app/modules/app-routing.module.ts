@@ -28,7 +28,7 @@ const routes: Routes = [
     { path: 'salleAttente', component: SalleAttenteComponent },
     { path: 'limitedOneVsOne', component: OneVsOneLimitedTimeComponent },
     { path: 'limitedTimeType', component: LimitedTimeTypeComponent },
-    { path: 'soloLimitedTimeType', component: SoloLimitedTimeComponent },
+    { path: 'soloLimitedTime', component: SoloLimitedTimeComponent },
     { path: '**', redirectTo: '/home' },
 ];
 @NgModule({

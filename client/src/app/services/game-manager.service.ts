@@ -86,7 +86,7 @@ export class GameManagerService {
                 this.socketService.send('systemMessage', '[' + timeString + '] ' + 'Différence trouvée par le joueur : ');
                 this.socketService.send('systemMessageSolo', 'Différence trouvée ');
                 await this.flashImages(this.gameData.differences[this.lastDifferenceFound]);
-                if (this.router.url === '/soloLimitedTimeType') {
+                if (this.router.url === '/soloLimitedTime') {
                     this.changeGame();
                 }
                 return true;

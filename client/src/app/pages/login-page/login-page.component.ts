@@ -31,7 +31,7 @@ export class LoginPageComponent {
                 if (this.loginService.getGameType()) {
                     this.router.navigate(['/salleAttente']);
                 } else {
-                    this.router.navigate(['/soloLimitedTimeType']);
+                    this.router.navigate(['/soloLimitedTime']);
                 }
             } else if (this.loginService.getGameType() === false) {
                 this.router.navigate(['/soloView']);
