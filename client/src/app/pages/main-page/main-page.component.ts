@@ -32,10 +32,7 @@ export class MainPageComponent implements OnInit {
             this.socketManager.connect();
         }
         this.loginFormService.setLimitedTimeGame(false);
-        if (this.lobbyService.roomId) {
-            this.socketManager.send('deleteRoom', { roomId: this.lobbyService.roomId });
-            this.lobbyService.roomId = '';
-        }
+        this.lobbyService.deleteLobby();
     }
 
     sendTimeToServer(): void {
