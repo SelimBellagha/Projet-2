@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import { Lobby } from '@app/classes/lobby';
+import { LobbyLimitedTime } from '@app/classes/lobby-limited-time';
 import { Player } from '@app/data/player';
 import { Message } from '@common/chatMessage';
 import * as http from 'http';
@@ -13,6 +14,7 @@ const EIGHT = 8;
 @Service()
 export class SocketServerManager {
     lobbys = new Map<string, Lobby>();
+    limitedLobbys = new Map<string, LobbyLimitedTime>();
     // eslint-disable-next-line @typescript-eslint/no-magic-numbers
     timerInterval = 1000;
     sio: io.Server;
@@ -140,8 +142,14 @@ export class SocketServerManager {
             });
 
             socket.on('deleteRoom', (data: { roomId: string }) => {
-                if (this.lobbys.get(data.roomId)) {
+                if (this.lobbys.has(data.roomId)) {
                     this.lobbys.delete(data.roomId);
+                } else if (
+                    this.limitedLobbys.has(data.roomId) &&
+                    this.limitedLobbys.get(data.roomId)?.checkFirstPlayer() &&
+                    this.limitedLobbys.get(data.roomId)?.checkSecondPlayer()
+                ) {
+                    this.limitedLobbys.delete(data.roomId);
                 }
             });
 
@@ -169,6 +177,27 @@ export class SocketServerManager {
                     socket.to(data.roomId).emit('win');
                 }
             });
+
+            socket.on('checkLimitedGame', (data: { playerName: string; roomId: string }) => {
+                const lobby = this.checkLimitedLobby();
+                if (lobby) {
+                    const playerToAdd: Player = {
+                        playerName: data.playerName,
+                        socketId: socket.id,
+                    };
+                    lobby[1].addPlayer(playerToAdd);
+                    socket.join(lobby[0]);
+                    this.sio.sockets.to(lobby[0]).emit('goToCoopGame', { roomId: data.roomId });
+                } else {
+                    const player: Player = {
+                        playerName: data.playerName,
+                        socketId: socket.id,
+                    };
+                    const newLimitedLobby = new LobbyLimitedTime(player);
+                    this.limitedLobbys.set(data.roomId, newLimitedLobby);
+                    socket.join(data.roomId);
+                }
+            });
         });
     }
 
@@ -193,6 +222,17 @@ export class SocketServerManager {
         for (const lobby of this.lobbys) {
             if (lobby[1].host.socketId === socketId) return lobby[1].host;
             else if (lobby[1].secondPlayer.socketId === socketId) return lobby[1].secondPlayer;
+        }
+        return;
+    }
+
+    checkLimitedLobby() {
+        for (const limitedLobby of this.limitedLobbys) {
+            if (limitedLobby[1].checkSecondPlayer()) {
+                continue;
+            } else {
+                return limitedLobby;
+            }
         }
         return;
     }

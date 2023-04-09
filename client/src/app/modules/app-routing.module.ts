@@ -7,6 +7,7 @@ import { LimitedTimeTypeComponent } from '@app/pages/limited-time-type/limited-t
 import { LoginPageComponent } from '@app/pages/login-page/login-page.component';
 import { MainPageComponent } from '@app/pages/main-page/main-page.component';
 import { MaterialPageComponent } from '@app/pages/material-page/material-page.component';
+import { OneVsOneLimitedTimeComponent } from '@app/pages/one-vs-one-limited-time/one-vs-one-limited-time.component';
 import { OneVsOnePageComponent } from '@app/pages/one-vs-one-page/one-vs-one-page.component';
 import { SalleAttenteComponent } from '@app/pages/salle-attente/salle-attente.component';
 import { SelectionPageComponentComponent } from '@app/pages/selection-page-component/selection-page-component.component';
@@ -25,6 +26,7 @@ const routes: Routes = [
     { path: 'loginPage', component: LoginPageComponent },
     { path: 'oneVSone', component: OneVsOnePageComponent },
     { path: 'salleAttente', component: SalleAttenteComponent },
+    { path: 'limitedOneVsOne', component: OneVsOneLimitedTimeComponent },
     { path: 'limitedTimeType', component: LimitedTimeTypeComponent },
     { path: 'soloLimitedTimeType', component: SoloLimitedTimeComponent },
     { path: '**', redirectTo: '/home' },

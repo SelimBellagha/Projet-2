@@ -8,7 +8,7 @@ export class LoginFormService {
     private username: string;
     private multiplayer: boolean = false;
     private limitedTimeGame: boolean = false;
-    private host: boolean;
+    private host: boolean = false;
     private gameId: string;
 
     setFormData(name: string) {

@@ -4,6 +4,7 @@ import { Player } from '@app/interfaces/player';
 import { LobbyService } from '@app/services/lobby.service';
 import { LoginFormService } from '@app/services/login-form.service';
 import { SocketClientService } from '@app/services/socket-client-service.service';
+import { v4 as uuidv4 } from 'uuid';
 @Component({
     selector: 'app-salle-attente',
     templateUrl: './salle-attente.component.html',
@@ -23,7 +24,6 @@ export class SalleAttenteComponent implements OnInit {
     ngOnInit(): void {
         this.host = this.lobbyService.host;
         if (this.host) {
-            // TODO verifier ou va get form data
             this.socketService.send('createLobby', {
                 gameId: this.loginService.getGameId(),
                 playerName: this.loginService.getFormData(),
@@ -33,6 +33,16 @@ export class SalleAttenteComponent implements OnInit {
                 const queueArray = JSON.parse(data.newQueue);
                 this.playerQueue = new Map<string, Player>(queueArray);
             });
+        } else if (this.loginService.getLimitedTimeGame()) {
+            this.socketService.on('goToCoopGame', (data: { roomId: string }) => {
+                this.router.navigate(['/limitedOneVsOne']);
+                this.lobbyService.roomId = data.roomId;
+            });
+            this.lobbyService.roomId = uuidv4();
+            this.socketService.send('checkLimitedGame', {
+                playerName: this.loginService.getFormData(),
+                roomId: this.lobbyService.roomId,
+            });
         } else {
             this.socketService.send('joinQueue', { gameId: this.loginService.getGameId(), playerName: this.loginService.getFormData() });
             this.refuseListen();
@@ -40,8 +50,22 @@ export class SalleAttenteComponent implements OnInit {
         this.acceptListen();
     }
 
+    cancel() {
+        if (this.loginService.getLimitedTimeGame()) {
+            this.goToHome();
+        } else {
+            this.goToGameSelection();
+        }
+    }
+
     goToGameSelection(): void {
         this.router.navigate(['/gameSelection']);
+        this.socketService.send('removeFromQueue', { socketId: this.socketService.socket.id, gameId: this.lobbyService.roomId });
+        this.socketService.disconnect();
+    }
+
+    goToHome() {
+        this.router.navigate(['/home']);
         this.socketService.send('removeFromQueue', { socketId: this.socketService.socket.id, gameId: this.lobbyService.roomId });
         this.socketService.disconnect();
     }

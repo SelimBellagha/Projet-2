@@ -24,6 +24,7 @@ import { SalleAttenteComponent } from './pages/salle-attente/salle-attente.compo
 import { SelectionPageComponentComponent } from './pages/selection-page-component/selection-page-component.component';
 import { SoloViewPageComponent } from './pages/solo-view-page/solo-view-page.component';
 import { SoloLimitedTimeComponent } from './pages/solo-limited-time/solo-limited-time.component';
+import { OneVsOneLimitedTimeComponent } from './pages/one-vs-one-limited-time/one-vs-one-limited-time.component';
 
 /**
  * Main module that is used in main.ts.
@@ -52,6 +53,7 @@ import { SoloLimitedTimeComponent } from './pages/solo-limited-time/solo-limited
         ChatBoxComponent,
         LimitedTimeTypeComponent,
         SoloLimitedTimeComponent,
+        OneVsOneLimitedTimeComponent,
     ],
     imports: [AppMaterialModule, AppRoutingModule, BrowserAnimationsModule, BrowserModule, FormsModule, HttpClientModule],
     providers: [],

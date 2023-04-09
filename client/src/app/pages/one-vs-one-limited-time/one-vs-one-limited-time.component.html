@@ -1,0 +1,57 @@
+<body class="container">
+    <button class="quit-button" (click)="goToGiveUp()">Abandonner la partie</button>
+
+    <div class="section">
+        <div class="main-container">
+            <h2 class="game-info">{{ gameName }} - {{ difficulty }}</h2>
+            <p class="game-details">Mode temps Limité Coop</p>
+            <p class="game-details">L' image contient {{ nbDifferences }} différences</p>
+            <button class="indice">Obtenir un indice</button>
+            <app-cheat></app-cheat>
+        </div>
+
+        <div>
+            <canvas #originalImage #gridCanvas (click)="onClick($event)" width="600px" height="480px"></canvas>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="main-container">
+            <div class="game-details">
+                <p id="penalty">Pénalités pour utilisation d'indice : 00: XX - Indices restants: X</p>
+                <p>{{ hostName }} - {{ guestName }} : {{ nbDifferencesFoundUser }} différences trouvées</p>
+                <div class="timer">
+                    <img src="../../../assets/images/stopwatch.png" class="watch-logo" />
+                    <div>
+                        <div>{{ minutes.toString().padStart(2, '0') }} :{{ secondes.toString().padStart(2, '0') }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div>
+            <canvas #modifiedImage (click)="onClick($event)" width="600px" height="480px"></canvas>
+        </div>
+    </div>
+
+    <app-chat-box></app-chat-box>
+
+    <div #popUpWindow class="modal" id="congratulations">
+        <div class="modal-content">
+            <h1 class="title">Félicitations {{ myUsername }} ! Vous avez trouvé toutes les différences !</h1>
+            <div>
+                <button id="end" class="button-pop" (click)="goToHomePage()">Fermer</button>
+            </div>
+        </div>
+    </div>
+
+    <div #popUpWindowGiveUp class="modal">
+        <div class="modal-content">
+            <h1 class="title">Êtes-vous sûr de vouloir quitter la partie ?</h1>
+            <div>
+                <button class="button-pop" id="button-stay" (click)="goToStay()">Continuer la partie</button>
+                <button class="button-pop" id="button-home" (click)="giveUp()">Quitter la partie</button>
+            </div>
+        </div>
+    </div>
+</body>

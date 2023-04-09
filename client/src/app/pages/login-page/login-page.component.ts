@@ -28,7 +28,11 @@ export class LoginPageComponent {
         } else {
             this.onClickSubmit(name);
             if (this.loginService.getLimitedTimeGame()) {
-                this.router.navigate(['/soloLimitedTimeType']);
+                if (this.loginService.getGameType()) {
+                    this.router.navigate(['/salleAttente']);
+                } else {
+                    this.router.navigate(['/soloLimitedTimeType']);
+                }
             } else if (this.loginService.getGameType() === false) {
                 this.router.navigate(['/soloView']);
             } else {

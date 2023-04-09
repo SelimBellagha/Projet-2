@@ -2,6 +2,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommunicationService } from '@app/services/communication.service';
+import { LobbyService } from '@app/services/lobby.service';
 import { LoginFormService } from '@app/services/login-form.service';
 import { SocketClientService } from '@app/services/socket-client-service.service';
 import { Message } from '@common/message';
@@ -23,6 +24,7 @@ export class MainPageComponent implements OnInit {
         private router: Router,
         private socketManager: SocketClientService,
         private loginFormService: LoginFormService,
+        private lobbyService: LobbyService,
     ) {}
 
     ngOnInit(): void {
@@ -30,6 +32,10 @@ export class MainPageComponent implements OnInit {
             this.socketManager.connect();
         }
         this.loginFormService.setLimitedTimeGame(false);
+        if (this.lobbyService.roomId) {
+            this.socketManager.send('deleteRoom', { roomId: this.lobbyService.roomId });
+            this.lobbyService.roomId = '';
+        }
     }
 
     sendTimeToServer(): void {
