@@ -3,14 +3,15 @@ import { Player } from '@app/data/player';
 export class LobbyLimitedTime {
     firstPlayer: Player;
     secondPlayer: Player;
-    nbDifferencesHost = 0;
-    nbDifferencesInvite = 0;
+    gamesNumber: number = 0;
+    differencesFound: number = 0;
+    firstGame: boolean = false;
 
     constructor(host: Player) {
         this.firstPlayer = host;
     }
 
-    getHost() {
+    getFirstPlayer() {
         return this.firstPlayer;
     }
 

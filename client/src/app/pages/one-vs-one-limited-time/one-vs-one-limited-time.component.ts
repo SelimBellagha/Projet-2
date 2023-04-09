@@ -1,11 +1,11 @@
 import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { MouseButton } from '@app/components/play-area/play-area.component';
+import { Player } from '@app/interfaces/player';
 import { Vec2 } from '@app/interfaces/vec2';
 import { DisplayGameService } from '@app/services/display-game.service';
 import { GameManagerService } from '@app/services/game-manager.service';
-import { LobbyService } from '@app/services/lobby.service';
-import { LoginFormService } from '@app/services/login-form.service';
+import { LimitedTimeLobbyService } from '@app/services/limited-time-lobby.service';
 import { SocketClientService } from '@app/services/socket-client-service.service';
 
 @Component({
@@ -20,8 +20,8 @@ export class OneVsOneLimitedTimeComponent implements OnInit, AfterViewInit {
     @ViewChild('popUpWindowGiveUp') popUpWindowGiveUp: ElementRef<HTMLDivElement>;
     myUsername: string;
     opponentUsername: string;
-    hostName: string;
-    guestName: string;
+    firstPlayerName: string;
+    secondPlayerName: string;
     gameName: string;
     difficulty: string;
     nbDifferences: number;
@@ -29,60 +29,59 @@ export class OneVsOneLimitedTimeComponent implements OnInit, AfterViewInit {
     secondes: number = 0;
     gameTime: number = 0;
     intervalID: number;
-    nbDifferencesFoundUser: number;
-    roomId: string;
+    nbDifferencesFound: number;
     nbDifferenceToWin: number;
 
     // eslint-disable-next-line max-params
     constructor(
         private router: Router,
-        private loginService: LoginFormService,
         private displayService: DisplayGameService,
         private gameManager: GameManagerService,
         private socketService: SocketClientService,
-        private lobbyService: LobbyService,
+        private limitedTimeLobbyService: LimitedTimeLobbyService,
     ) {}
 
     async ngOnInit() {
-        this.roomId = this.lobbyService.roomId;
-        if (this.lobbyService.host === false) {
-            this.socketService.on('getHostName', (data: { hostName: string }) => {
-                this.opponentUsername = data.hostName;
-                this.hostName = data.hostName;
-                this.myUsername = this.loginService.getFormData();
-                this.guestName = this.loginService.getFormData();
-            });
-        } else {
-            this.myUsername = this.loginService.getFormData();
-            this.hostName = this.loginService.getFormData();
-            this.opponentUsername = this.lobbyService.opponent.playerName;
-            this.guestName = this.lobbyService.opponent.playerName;
-        }
+        // TODO get les nom des joueurs
+        this.socketService.on('getPlayers', (data: { firstPlayer: Player; secondPlayer: Player }) => {
+            this.limitedTimeLobbyService.firstPlayer = data.firstPlayer;
+            this.limitedTimeLobbyService.secondPlayer = data.secondPlayer;
+            this.firstPlayerName = this.limitedTimeLobbyService.firstPlayer.playerName;
+            this.secondPlayerName = this.limitedTimeLobbyService.secondPlayer.playerName;
+        });
         this.startTimer(30);
-        this.nbDifferencesFoundUser = 0;
+        this.nbDifferencesFound = 0;
         await this.displayService.loadAllGames();
-        if (this.displayService.game) {
-            this.gameManager.initializeGame(this.displayService.game);
-            this.gameName = this.displayService.game.name;
-            this.difficulty = this.displayService.convertDifficulty(this.displayService.game);
-            this.nbDifferences = this.displayService.game.nbDifferences;
-            this.nbDifferenceToWin = Math.ceil(this.nbDifferences / 2);
+        if (this.displayService.tempGames) {
+            await this.gameManager.initializeLimitedGame(this.displayService.tempGames);
+            await this.gameManager.initializeGame(this.gameManager.limitedGameData[this.limitedTimeLobbyService.firstGame]);
+            this.gameManager.limitedGameData.splice(this.limitedTimeLobbyService.firstGame, 1);
+            this.gameName = this.gameManager.gameData.name;
+            this.difficulty = this.displayService.convertDifficulty(this.gameManager.gameData);
+            this.gameManager.putImages();
         }
+        this.socketService.send('gamesNumber', { gamesNumber: this.gameManager.limitedGameData.length, roomId: this.limitedTimeLobbyService.roomId });
     }
 
     async ngAfterViewInit() {
         this.gameManager.modifiedImageCanvas = this.modifiedCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         this.gameManager.originalImageCanvas = this.originalCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         this.gameManager.putImages();
-        this.socketService.on('differenceUpdate', async (data: { nbDifferenceHost: number; nbDifferenceInvite: number; differenceId: number }) => {
-            this.nbDifferencesFoundUser = data.nbDifferenceInvite;
-            if (this.gameManager.lastDifferenceFound !== data.differenceId) {
-                this.gameManager.flashImages(this.gameManager.gameData.differences[data.differenceId]);
+        this.socketService.on('LimitedDifferenceUpdate', async (data: { nbDifferences: number; newGame: number }) => {
+            this.nbDifferencesFound = data.nbDifferences;
+            await this.gameManager.initializeGame(this.gameManager.limitedGameData[data.newGame]);
+            this.gameManager.putImages();
+            this.putNewGame();
+            this.gameManager.limitedGameData.splice(data.newGame, 1);
+            if (this.nbDifferencesFound === this.gameManager.gameNumberMax) {
+                this.endGame();
             }
         });
-        this.socketService.on('win', () => {
-            this.endGame();
-        });
+    }
+
+    async putNewGame() {
+        this.gameName = this.gameManager.gameData.name;
+        this.difficulty = this.displayService.convertDifficulty(this.gameManager.gameData);
     }
 
     timer(gameTime: number) {
@@ -119,7 +118,7 @@ export class OneVsOneLimitedTimeComponent implements OnInit, AfterViewInit {
     }
 
     giveUp() {
-        this.socketService.send('giveUp', { roomId: this.roomId });
+        this.socketService.send('giveUp', { roomId: this.limitedTimeLobbyService.roomId });
         this.socketService.send('systemMessage', ' a abandonné la partie');
         this.stopTimer();
         this.goToHomePage();
@@ -133,17 +132,13 @@ export class OneVsOneLimitedTimeComponent implements OnInit, AfterViewInit {
         this.popUpWindowGiveUp.nativeElement.style.display = 'none';
     }
 
-    returnSelectionPage(): void {
-        this.router.navigate(['/gameSelection']);
-    }
-
     /// ////A adapter selon les joueurs
     async onClick(event: MouseEvent): Promise<void> {
         if (event.button === MouseButton.Left) {
             const mousePosition: Vec2 = { x: event.offsetX, y: event.offsetY };
             if (await this.gameManager.onPositionClicked(mousePosition)) {
                 // Incrementer le cpt de differences
-                this.socketService.send('differenceFound', { roomId: this.roomId, differenceId: this.gameManager.lastDifferenceFound });
+                this.socketService.send('limitedDifferenceFound', { roomId: this.limitedTimeLobbyService.roomId });
                 // Si on a tout trouvé, finir le jeu.
             }
         }

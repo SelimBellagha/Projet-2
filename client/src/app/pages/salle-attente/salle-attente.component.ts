@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Player } from '@app/interfaces/player';
+import { LimitedTimeLobbyService } from '@app/services/limited-time-lobby.service';
 import { LobbyService } from '@app/services/lobby.service';
 import { LoginFormService } from '@app/services/login-form.service';
 import { SocketClientService } from '@app/services/socket-client-service.service';
@@ -19,6 +20,7 @@ export class SalleAttenteComponent implements OnInit {
         private socketService: SocketClientService,
         private loginService: LoginFormService,
         private lobbyService: LobbyService,
+        private limitedTimeLobbyService: LimitedTimeLobbyService,
     ) {}
 
     ngOnInit(): void {
@@ -34,14 +36,15 @@ export class SalleAttenteComponent implements OnInit {
                 this.playerQueue = new Map<string, Player>(queueArray);
             });
         } else if (this.loginService.getLimitedTimeGame()) {
-            this.socketService.on('goToCoopGame', (data: { roomId: string }) => {
+            this.socketService.on('goToCoopGame', (data: { roomId: string; firstGame: number }) => {
+                this.limitedTimeLobbyService.firstGame = data.firstGame;
                 this.router.navigate(['/limitedOneVsOne']);
-                this.lobbyService.roomId = data.roomId;
+                this.limitedTimeLobbyService.roomId = data.roomId;
             });
-            this.lobbyService.roomId = uuidv4();
+            this.limitedTimeLobbyService.roomId = uuidv4();
             this.socketService.send('checkLimitedGame', {
                 playerName: this.loginService.getFormData(),
-                roomId: this.lobbyService.roomId,
+                roomId: this.limitedTimeLobbyService.roomId,
             });
         } else {
             this.socketService.send('joinQueue', { gameId: this.loginService.getGameId(), playerName: this.loginService.getFormData() });

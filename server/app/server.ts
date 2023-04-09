@@ -2,6 +2,7 @@ import { Application } from '@app/app';
 import * as http from 'http';
 import { AddressInfo } from 'net';
 import { Service } from 'typedi';
+import { GameManager } from './services/game-manager.service';
 import { SocketServerManager } from './services/socket-server-manager.service';
 import { TimerManager } from './services/timer-manager.service';
 
@@ -13,6 +14,7 @@ export class Server {
     private server: http.Server;
     private timerManager: TimerManager;
     private socketManager: SocketServerManager;
+    private gameService: GameManager;
 
     constructor(private readonly application: Application) {}
 
@@ -31,8 +33,9 @@ export class Server {
 
         this.server = http.createServer(this.application.app);
         this.timerManager = new TimerManager();
+        this.gameService = new GameManager();
 
-        this.socketManager = new SocketServerManager(this.server, this.timerManager);
+        this.socketManager = new SocketServerManager(this.server, this.timerManager, this.gameService);
         this.socketManager.handleSockets();
 
         this.server.listen(Server.appPort);

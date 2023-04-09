@@ -44,7 +44,9 @@ export class GameManagerService {
             this.limitedGameData = limitedGameData;
             this.gameNumberMax = this.limitedGameData.length;
             this.locked = false;
-            this.initializeGame(this.getRandomGame());
+            if (this.router.url === '/soloLimitedTime') {
+                this.initializeGame(this.getRandomGame());
+            }
         }
     }
 

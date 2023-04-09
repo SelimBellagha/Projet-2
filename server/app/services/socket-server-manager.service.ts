@@ -7,6 +7,7 @@ import * as http from 'http';
 import * as io from 'socket.io';
 import { Socket } from 'socket.io';
 import { Service } from 'typedi';
+import { GameManager } from './game-manager.service';
 import { TimerManager } from './timer-manager.service';
 
 const EIGHT = 8;
@@ -18,7 +19,7 @@ export class SocketServerManager {
     // eslint-disable-next-line @typescript-eslint/no-magic-numbers
     timerInterval = 1000;
     sio: io.Server;
-    constructor(server: http.Server, private timerManager: TimerManager) {
+    constructor(server: http.Server, private timerManager: TimerManager, private gameService: GameManager) {
         this.sio = new io.Server(server, { cors: { origin: '*', methods: ['GET', 'POST'] } });
     }
 
@@ -178,8 +179,12 @@ export class SocketServerManager {
                 }
             });
 
-            socket.on('checkLimitedGame', (data: { playerName: string; roomId: string }) => {
+            socket.on('checkLimitedGame', async (data: { playerName: string; roomId: string }) => {
                 const lobby = this.checkLimitedLobby();
+                const gamesNumber = await this.gameService.getAllGames();
+                const max = gamesNumber.length;
+                const min = 0;
+                const firstGameNumber = Math.floor(Math.random() * (max - min + 1) + min);
                 if (lobby) {
                     const playerToAdd: Player = {
                         playerName: data.playerName,
@@ -187,7 +192,10 @@ export class SocketServerManager {
                     };
                     lobby[1].addPlayer(playerToAdd);
                     socket.join(lobby[0]);
-                    this.sio.sockets.to(lobby[0]).emit('goToCoopGame', { roomId: data.roomId });
+                    this.sio.sockets.to(lobby[0]).emit('goToCoopGame', { roomId: lobby[0], firstGame: firstGameNumber });
+                    this.sio.sockets
+                        .to(lobby[0])
+                        .emit('getPlayers', { firstPlayer: lobby[1].getFirstPlayer(), secondPlayer: lobby[1].getSecondPlayer() });
                 } else {
                     const player: Player = {
                         playerName: data.playerName,
@@ -196,6 +204,27 @@ export class SocketServerManager {
                     const newLimitedLobby = new LobbyLimitedTime(player);
                     this.limitedLobbys.set(data.roomId, newLimitedLobby);
                     socket.join(data.roomId);
+                }
+            });
+
+            socket.on('gamesNumber', (data: { gamesNumber: number; roomId: string }) => {
+                const lobby = this.limitedLobbys.get(data.roomId);
+                if (lobby) {
+                    lobby.gamesNumber = data.gamesNumber;
+                }
+            });
+
+            socket.on('limitedDifferenceFound', (data: { roomId: string }) => {
+                const lobby = this.limitedLobbys.get(data.roomId);
+                const min = 0;
+                if (lobby) {
+                    lobby.differencesFound++;
+                    lobby.gamesNumber--;
+                    const max = lobby.gamesNumber;
+                    const newGameNumber = Math.floor(Math.random() * (max - min + 1) + min);
+                    this.sio.sockets
+                        .to(data.roomId)
+                        .emit('LimitedDifferenceUpdate', { nbDifferences: lobby.differencesFound, newGame: newGameNumber });
                 }
             });
         });
