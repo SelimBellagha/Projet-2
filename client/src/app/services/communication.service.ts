@@ -1,6 +1,6 @@
 import { HttpClient, HttpParams, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { GameData } from '@app/interfaces/game.interface';
+import { GameData, TopScore } from '@app/interfaces/game.interface';
 import { Message } from '@common/message';
 import { Observable, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
@@ -38,6 +38,28 @@ export class CommunicationService {
     deleteGame(id: string): void {
         const params = new HttpParams().set('id', id);
         this.http.delete(`${this.baseUrl}/games/${id}`, { params }).subscribe();
+    }
+
+    getAllScores(): Observable<TopScore[]> {
+        return this.http.get<TopScore[]>(`${this.baseUrl}/scores`);
+    }
+
+    getGameScores(gameId: string, gameType: string): Observable<TopScore[]> {
+        const params = new HttpParams().set('gameId', gameId).set('gameType', gameType);
+        return this.http.get<TopScore[]>(`${this.baseUrl}/scores/${gameId}/${gameType}`, { params });
+    }
+
+    addScore(score: TopScore): Observable<boolean> {
+        return this.http.post<boolean>(`${this.baseUrl}/scores`, score);
+    }
+
+    deleteGameScores(gameId: string): void {
+        const params = new HttpParams().set('gameId', gameId);
+        this.http.delete(`${this.baseUrl}/scores/${gameId}`, { params }).subscribe();
+    }
+
+    deleteAllScore(): void {
+        this.http.delete(`${this.baseUrl}/scores`).subscribe();
     }
 
     private handleError<T>(request: string, result?: T): (error: Error) => Observable<T> {

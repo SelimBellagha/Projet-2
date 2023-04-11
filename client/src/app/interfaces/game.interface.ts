@@ -9,3 +9,11 @@ export interface GameData {
     differences: Vec2[][];
     isDifficult: boolean;
 }
+
+export interface TopScore {
+    id: number;
+    gameId: string;
+    gameType: string;
+    time: string;
+    playerName: string;
+}

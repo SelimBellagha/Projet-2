@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { GameData } from '@app/interfaces/game.interface';
+import { GameData, TopScore } from '@app/interfaces/game.interface';
 import { Game } from '@app/pages/selection-page-component/selection-page-component.component';
 import { firstValueFrom } from 'rxjs';
 import { CommunicationService } from './communication.service';
@@ -13,6 +13,8 @@ export class DisplayGameService {
     games: Game[] = [];
     tempGames: GameData[] = [];
     gameId: string;
+    soloScores: TopScore[] = [];
+    oneVOneScores: TopScore[] = [];
     constructor(private comm: CommunicationService, private socketService: SocketClientService) {}
 
     loadGame(gameId: string) {
@@ -25,11 +27,22 @@ export class DisplayGameService {
         await this.convertAllGames();
     }
 
+    loadScores(gameId: string) {
+        /*
+        const source = this.comm.getGameScores(gameId, "solo");
+        this.soloScores = await firstValueFrom(source);
+        const source2 = this.comm.getGameScores(gameId, "1v1");
+        this.oneVOneScores = await firstValueFrom(source2);
+        */
+        this.comm.getGameScores(gameId, 'solo').subscribe((scores: TopScore[]) => (this.soloScores = scores));
+        this.comm.getGameScores(gameId, '1v1').subscribe((scores: TopScore[]) => (this.oneVOneScores = scores));
+    }
+
     convertDifficulty(game: GameData) {
         if (game.isDifficult) {
-            return 'Niveau: difficile';
+            return 'difficile';
         } else {
-            return 'Niveau: facile';
+            return 'facile';
         }
     }
 

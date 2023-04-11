@@ -46,6 +46,15 @@ export class ConfigurationPageComponent implements OnInit {
         }
     }
 
+    /*
+                [soloFirst]="soloDefault[0].time + '' + soloDefault[0].playerName"
+                [OneVOneFirst]="oneVOneDefault[0].time + '' + oneVOneDefault[0].playerName"
+                [soloSecond]="soloDefault[1].time + '' + soloDefault[1].playerName"
+                [OneVOneSecond]="oneVOneDefault[1].time + '' + oneVOneDefault[1].playerName"
+                [soloThird]="soloDefault[2].time + '' + soloDefault[2].playerName"
+                [OneVOneThird]="oneVOneDefault[2].time + '' + oneVOneDefault[2].playerName"
+    */
+
     goToHomePage(): void {
         this.router.navigate(['home']);
     }

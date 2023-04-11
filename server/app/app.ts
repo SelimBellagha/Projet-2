@@ -10,6 +10,8 @@ import { StatusCodes } from 'http-status-codes';
 import * as swaggerJSDoc from 'swagger-jsdoc';
 import * as swaggerUi from 'swagger-ui-express';
 import { Service } from 'typedi';
+import { ScoresController } from '@app/controllers/scores.controller';
+import { DatabaseService } from './services/database.service';
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 import bodyParser = require('body-parser');
 
@@ -19,10 +21,13 @@ export class Application {
     private readonly internalError: number = StatusCodes.INTERNAL_SERVER_ERROR;
     private readonly swaggerOptions: swaggerJSDoc.Options;
 
+    // eslint-disable-next-line max-params
     constructor(
         private readonly exampleController: ExampleController,
         private readonly dateController: DateController,
         private gamesController: GameController,
+        private scoresController: ScoresController,
+        private readonly databaseService: DatabaseService,
     ) {
         this.app = express();
 
@@ -40,6 +45,8 @@ export class Application {
         this.config();
 
         this.bindRoutes();
+
+        this.connectDatabase();
     }
 
     bindRoutes(): void {
@@ -47,10 +54,16 @@ export class Application {
         this.app.use('/api/example', this.exampleController.router);
         this.app.use('/api/date', this.dateController.router);
         this.app.use('/api/games', this.gamesController.router);
+        this.app.use('/api/scores', this.scoresController.router);
         this.app.use('/', (req, res) => {
             res.redirect('/api/docs');
         });
         this.errorHandling();
+    }
+
+    private connectDatabase(): void {
+        // Connect to the mongoDB database
+        this.databaseService.start();
     }
 
     private config(): void {

@@ -34,11 +34,11 @@ describe('DisplayGameService', () => {
 
     it('convertDifficulty should return string "Niveau: difficile" if gameData isDifficult', () => {
         const gameDataStub = { isDifficult: true } as GameData;
-        expect(service.convertDifficulty(gameDataStub)).toEqual('Niveau: difficile');
+        expect(service.convertDifficulty(gameDataStub)).toEqual('difficile');
     });
     it('convertDifficulty should return string "Niveau: facile" if gameData is not Difficult', () => {
         const gameDataStub = { isDifficult: false } as GameData;
-        expect(service.convertDifficulty(gameDataStub)).toEqual('Niveau: facile');
+        expect(service.convertDifficulty(gameDataStub)).toEqual('facile');
     });
 
     it('loadAllGames should call getAllGames from communicationService', () => {
