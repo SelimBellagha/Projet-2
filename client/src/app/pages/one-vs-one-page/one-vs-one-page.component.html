@@ -23,7 +23,9 @@
                 <p>{{ guestName }} : {{ nbDifferencesFoundUser2 }} différences trouvées</p>
                 <div class="timer">
                     <img src="../../../assets/images/stopwatch.png" class="watch-logo" />
-                    <div>{{ minutes2 }}{{ minutes1 }}:{{ secondes2 }}{{ secondes1 }}</div>
+                    <div>
+                        <div>{{ minutes.toString().padStart(2, '0') }} :{{ secondes.toString().padStart(2, '0') }}</div>
+                    </div>
                 </div>
             </div>
         </div>
