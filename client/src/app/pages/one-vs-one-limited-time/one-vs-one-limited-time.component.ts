@@ -42,14 +42,15 @@ export class OneVsOneLimitedTimeComponent implements OnInit, AfterViewInit {
     ) {}
 
     async ngOnInit() {
-        // TODO get les nom des joueurs
         this.socketService.on('getPlayers', (data: { firstPlayer: Player; secondPlayer: Player }) => {
             this.limitedTimeLobbyService.firstPlayer = data.firstPlayer;
             this.limitedTimeLobbyService.secondPlayer = data.secondPlayer;
             this.firstPlayerName = this.limitedTimeLobbyService.firstPlayer.playerName;
             this.secondPlayerName = this.limitedTimeLobbyService.secondPlayer.playerName;
         });
-        this.startTimer(30);
+        // TODO changer constante avec temps de vue de config
+        const time = 30;
+        this.startTimer(time);
         this.nbDifferencesFound = 0;
         await this.displayService.loadAllGames();
         if (this.displayService.tempGames) {

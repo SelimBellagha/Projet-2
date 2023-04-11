@@ -70,7 +70,9 @@ export class SoloLimitedTimeComponent implements OnInit, AfterViewInit {
     ngAfterViewInit() {
         this.gameManager.modifiedImageCanvas = this.modifiedCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         this.gameManager.originalImageCanvas = this.originalCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
-        this.timer(30);
+        // TODO changer time avec temps vue de config
+        const time = 30;
+        this.timer(time);
     }
 
     endGame(): void {
