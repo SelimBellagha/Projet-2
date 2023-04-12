@@ -1,5 +1,5 @@
 export interface GameAction {
-    actionType: GameActionType;
+    type: GameActionType;
     time: number;
     info: object;
 }

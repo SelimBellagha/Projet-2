@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { GameAction, GameActionType } from '@app/interfaces/game-action';
 import { Vec2 } from '@app/interfaces/vec2';
+import { ActionSaverService } from './action-saver.service';
 import { GameManagerService } from './game-manager.service';
 
 const ONE_SECOND = 1000;
@@ -8,27 +9,24 @@ const ONE_SECOND = 1000;
     providedIn: 'root',
 })
 export class ReplayService {
-    private actionsDone: GameAction[] = [];
-    private nextActionIndex: number = 0;
-    private replaySpeed = 1;
-    private currentReplayTime = 0;
-    private timerId: number;
-    private isPlaying: boolean;
+    replaySpeed = 1;
+    currentReplayTime = 0;
+    timerId: number;
+    isPlaying: boolean = false;
 
-    constructor(private gameManager: GameManagerService) {}
+    constructor(private gameManager: GameManagerService, private actionSaver: ActionSaverService) {}
 
-    addAction(actionType: GameActionType, time: number, info: object): void {
-        this.actionsDone.push({ actionType, time, info });
-    }
     reset(): void {
-        this.actionsDone = [];
-        this.nextActionIndex = 0;
+        //
+        //
     }
     getNextAction(): GameAction {
-        return this.actionsDone[this.nextActionIndex++];
+        const action = this.actionSaver.getNextAction();
+        return action;
     }
     setCurrentSpeed(speed: number): void {
         this.replaySpeed = speed;
+        this.gameManager.replaySpeed = speed;
         clearInterval(this.timerId);
         this.startTimer(speed);
     }
@@ -36,23 +34,21 @@ export class ReplayService {
         return this.replaySpeed;
     }
     pauseReplay(): void {
-        this.isPlaying = false;
-    }
-    resumeReplay(): void {
-        this.isPlaying = true;
+        this.isPlaying = !this.isPlaying;
     }
     restartReplay(): void {
         this.currentReplayTime = 0;
-        this.nextActionIndex = 0;
+        this.actionSaver.restart();
         // reset the canvas from game Manager
+        this.gameManager.restartGame();
+        this.isPlaying = true;
         this.startTimer(this.replaySpeed);
     }
     endReplay(): void {
-        this.setCurrentSpeed(1);
         clearInterval(this.timerId);
     }
     doAction(gameAction: GameAction): void {
-        switch (gameAction.actionType) {
+        switch (gameAction.type) {
             case GameActionType.Click:
                 this.gameManager.onPositionClicked(gameAction.info as Vec2);
                 break;
@@ -66,20 +62,18 @@ export class ReplayService {
     }
 
     startTimer(speed: number): void {
-        this.timerId = window.setInterval(this.timerFunction, ONE_SECOND / speed);
-    }
-
-    timerFunction(): void {
-        if (this.isPlaying) {
-            this.currentReplayTime++;
-            while (this.actionsDone[this.nextActionIndex].time === this.currentReplayTime) {
-                this.doAction(this.actionsDone[this.nextActionIndex]);
-                if (this.nextActionIndex === this.actionsDone.length - 1) {
-                    this.endReplay();
-                    break;
+        this.timerId = window.setInterval(() => {
+            if (this.isPlaying) {
+                this.currentReplayTime++;
+                while (this.getNextAction().time === this.currentReplayTime) {
+                    this.doAction(this.getNextAction());
+                    this.actionSaver.nextActionIndex++;
+                    if (this.actionSaver.nextActionIndex >= this.actionSaver.getNbActions()) {
+                        this.endReplay();
+                        break;
+                    }
                 }
-                this.nextActionIndex++;
             }
-        }
+        }, ONE_SECOND / speed);
     }
 }

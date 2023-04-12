@@ -3,9 +3,9 @@ import { GameActionType } from '@app/interfaces/game-action';
 import { GameData } from '@app/interfaces/game-data';
 import { Vec2 } from '@app/interfaces/vec2';
 import { Verification } from '@app/interfaces/verification';
+import { ActionSaverService } from './action-saver.service';
 import { DifferenceVerificationService } from './difference-verification.service';
 import { DEFAULT_HEIGHT, DEFAULT_WIDTH } from './draw.service';
-import { ReplayService } from './replay.service';
 import { SocketClientService } from './socket-client-service.service';
 
 const PIXEL_SIZE = 4;
@@ -27,20 +27,24 @@ export class GameManagerService {
     state: boolean = false;
     foundDifferenceCheat: boolean = false;
     replayMode: boolean = false;
+    replaySpeed: number = 1;
+    timeTest: number = 1;
 
     constructor(
         private differenceVerification: DifferenceVerificationService,
         private socketService: SocketClientService,
-        private replayService: ReplayService,
+        private actionSaver: ActionSaverService,
     ) {}
 
     initializeGame(gameData: GameData) {
         if (gameData) {
             this.gameData = gameData;
             this.differencesFound = new Array<boolean>(gameData.nbDifferences).fill(false);
-            this.lastDifferenceFound = -1; // change this
+            this.lastDifferenceFound = -1;
             this.locked = false;
             this.replayMode = false;
+            this.replaySpeed = 1;
+            this.actionSaver.reset();
         }
     }
 
@@ -59,7 +63,7 @@ export class GameManagerService {
     async onPositionClicked(position: Vec2): Promise<boolean> {
         if (!this.locked) {
             this.locked = true;
-            this.replayService.addAction(GameActionType.Click, 0, position);
+            this.actionSaver.addAction(GameActionType.Click, (this.timeTest += 5), position);
             const now: Date = new Date();
             const timeString: string = now.toTimeString().slice(0, EIGHT);
             if (await this.verifyDifference(position)) {
@@ -110,9 +114,9 @@ export class GameManagerService {
         });
         for (let i = 0; i <= 3; i++) {
             canvas.putImageData(flashingOriginalImageData, 0, 0);
-            await this.wait(FLASH_TIME / this.replayService.getSpeed());
+            await this.wait(FLASH_TIME / this.replaySpeed);
             canvas.putImageData(originalImageData, 0, 0);
-            await this.wait(FLASH_TIME / this.replayService.getSpeed());
+            await this.wait(FLASH_TIME / this.replaySpeed);
         }
     }
 
@@ -226,7 +230,7 @@ export class GameManagerService {
         // put error
         this.drawError(this.originalImageCanvas, position);
         this.drawError(this.modifiedImageCanvas, position);
-        await this.wait(ONE_SECOND / this.replayService.getSpeed());
+        await this.wait(ONE_SECOND / this.replaySpeed);
         // restore Canvas
         this.originalImageCanvas.putImageData(originalImageData, 0, 0);
         this.modifiedImageCanvas.putImageData(modifiedImageData, 0, 0);
@@ -244,6 +248,13 @@ export class GameManagerService {
     }
     enableReplay(): void {
         this.replayMode = true;
+    }
+
+    restartGame(): void {
+        this.putImages();
+        this.differencesFound = new Array<boolean>(this.gameData.nbDifferences).fill(false);
+        this.lastDifferenceFound = -1;
+        this.locked = false;
     }
 
     playWinAudio() {

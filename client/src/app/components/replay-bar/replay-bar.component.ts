@@ -14,10 +14,10 @@ export class ReplayBarComponent {
     constructor(private replayManager: ReplayService) {}
 
     onPause(): void {
-        //
+        this.replayManager.pauseReplay();
     }
     onStart(): void {
-        //
+        this.replayManager.restartReplay();
     }
     onSetSpeed(): void {
         if (this.speed === FOURX_SPEED) {
