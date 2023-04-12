@@ -11,7 +11,7 @@
         </div>
 
         <div>
-            <canvas #originalImage #gridCanvas (click)="onClick($event)" width="600px" height="480px"></canvas>
+            <canvas #originalImage #gridCanvas (click)="onClick($event)" width="500px" height="460px"></canvas>
         </div>
     </div>
 
@@ -29,11 +29,13 @@
         </div>
 
         <div>
-            <canvas #modifiedImage (click)="onClick($event)" width="600px" height="480px"></canvas>
+            <canvas #modifiedImage (click)="onClick($event)" width="500px" height="460px"></canvas>
         </div>
     </div>
 
+    <div class="section">
     <app-chat-box></app-chat-box>
+    </div>
 
     <div #popUpWindowWin class="modal" id="congratulations">
         <div class="modal-content">
