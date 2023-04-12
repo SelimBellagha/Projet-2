@@ -65,7 +65,7 @@ export class ReplayService {
         this.timerId = window.setInterval(() => {
             if (this.isPlaying) {
                 this.currentReplayTime++;
-                while (this.getNextAction().time === this.currentReplayTime) {
+                while (this.getNextAction() && this.getNextAction().time === this.currentReplayTime) {
                     this.doAction(this.getNextAction());
                     this.actionSaver.nextActionIndex++;
                     if (this.actionSaver.nextActionIndex >= this.actionSaver.getNbActions()) {

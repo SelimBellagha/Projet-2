@@ -94,7 +94,7 @@ export class GameManagerService {
     async onPositionClicked(position: Vec2): Promise<boolean> {
         if (!this.locked) {
             this.locked = true;
-            this.actionSaver.addAction(GameActionType.Click, (this.timeTest += 5), position);
+            this.actionSaver.addAction(GameActionType.Click, (this.timeTest += 10), position);
             const now: Date = new Date();
             const timeString: string = now.toTimeString().slice(0, EIGHT);
             if (await this.verifyDifference(position)) {
