@@ -27,6 +27,8 @@ export class SoloViewPageComponent implements OnInit, AfterViewInit {
     minutes2: number = 0;
     intervalID: number;
 
+    inReplay: boolean = false;
+
     // eslint-disable-next-line max-params
     constructor(
         private router: Router,
@@ -113,5 +115,9 @@ export class SoloViewPageComponent implements OnInit, AfterViewInit {
     }
     returnSelectionPage(): void {
         this.router.navigate(['/gameSelection']);
+    }
+    onReplay(): void {
+        this.inReplay = true;
+        this.gameManager.enableReplay();
     }
 }

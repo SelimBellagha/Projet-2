@@ -33,12 +33,13 @@
         </div>
     </div>
 
-    <app-chat-box></app-chat-box> 
-
+    <app-chat-box></app-chat-box>
+    <app-replay-bar *ngIf="this.inReplay"></app-replay-bar>
     <div #popUpWindow class="modal">
         <div class="modal-content">
             <h1 class="congrats">Félicitations {{ username }} ! Vous avez trouvé toutes les différences !</h1>
             <div class="close-button">
+                <button id="replay-button" (click)="(onReplay)"></button>
                 <button id="close-button" (click)="goToHomePage()">Fermer</button>
             </div>
         </div>

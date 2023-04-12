@@ -26,6 +26,7 @@ export class GameManagerService {
     locked: boolean;
     state: boolean = false;
     foundDifferenceCheat: boolean = false;
+    replayMode: boolean = false;
 
     constructor(
         private differenceVerification: DifferenceVerificationService,
@@ -39,6 +40,7 @@ export class GameManagerService {
             this.differencesFound = new Array<boolean>(gameData.nbDifferences).fill(false);
             this.lastDifferenceFound = -1; // change this
             this.locked = false;
+            this.replayMode = false;
         }
     }
 
@@ -57,7 +59,7 @@ export class GameManagerService {
     async onPositionClicked(position: Vec2): Promise<boolean> {
         if (!this.locked) {
             this.locked = true;
-            this.replayService.addAction(GameActionType.Click, 0);
+            this.replayService.addAction(GameActionType.Click, 0, position);
             const now: Date = new Date();
             const timeString: string = now.toTimeString().slice(0, EIGHT);
             if (await this.verifyDifference(position)) {
@@ -108,9 +110,9 @@ export class GameManagerService {
         });
         for (let i = 0; i <= 3; i++) {
             canvas.putImageData(flashingOriginalImageData, 0, 0);
-            await this.wait(FLASH_TIME);
+            await this.wait(FLASH_TIME / this.replayService.getSpeed());
             canvas.putImageData(originalImageData, 0, 0);
-            await this.wait(FLASH_TIME);
+            await this.wait(FLASH_TIME / this.replayService.getSpeed());
         }
     }
 
@@ -224,7 +226,7 @@ export class GameManagerService {
         // put error
         this.drawError(this.originalImageCanvas, position);
         this.drawError(this.modifiedImageCanvas, position);
-        await this.wait(ONE_SECOND);
+        await this.wait(ONE_SECOND / this.replayService.getSpeed());
         // restore Canvas
         this.originalImageCanvas.putImageData(originalImageData, 0, 0);
         this.modifiedImageCanvas.putImageData(modifiedImageData, 0, 0);
@@ -239,6 +241,9 @@ export class GameManagerService {
         for (let i = 0; i < word.length; i++) {
             context.fillText(word[i], startPosition.x + step * i, startPosition.y);
         }
+    }
+    enableReplay(): void {
+        this.replayMode = true;
     }
 
     playWinAudio() {
