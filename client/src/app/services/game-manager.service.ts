@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
 import { GameActionType } from '@app/interfaces/game-action';
 import { GameData } from '@app/interfaces/game-data';
 import { Vec2 } from '@app/interfaces/vec2';
@@ -21,6 +22,8 @@ export class GameManagerService {
     modifiedImageCanvas: CanvasRenderingContext2D;
     differencesFound: boolean[];
     gameData: GameData;
+    limitedGameData: GameData[];
+    gameNumberMax: number;
     // cheatMode: cheatMode;
     lastDifferenceFound: number = 0;
     locked: boolean;
@@ -30,10 +33,12 @@ export class GameManagerService {
     replaySpeed: number = 1;
     timeTest: number = 1;
 
+    // eslint-disable-next-line max-params
     constructor(
         private differenceVerification: DifferenceVerificationService,
         private socketService: SocketClientService,
         private actionSaver: ActionSaverService,
+        private router: Router,
     ) {}
 
     initializeGame(gameData: GameData) {
@@ -46,6 +51,32 @@ export class GameManagerService {
             this.replaySpeed = 1;
             this.actionSaver.reset();
         }
+    }
+
+    initializeLimitedGame(limitedGameData: GameData[]) {
+        if (limitedGameData) {
+            this.limitedGameData = limitedGameData;
+            this.gameNumberMax = this.limitedGameData.length;
+            this.locked = false;
+            if (this.router.url === '/soloLimitedTime') {
+                this.initializeGame(this.getRandomGame());
+            }
+        }
+    }
+
+    getRandomGame(): GameData {
+        const max = this.limitedGameData.length - 1;
+        const min = 0;
+        const gameNumber = Math.floor(Math.random() * (max - min + 1) + min);
+        const game = this.limitedGameData[gameNumber];
+        this.limitedGameData.splice(gameNumber, 1);
+        return game;
+    }
+
+    async changeGame() {
+        const newGame = this.getRandomGame();
+        await this.initializeGame(newGame);
+        this.putImages();
     }
 
     async putImages(): Promise<void> {
@@ -71,7 +102,10 @@ export class GameManagerService {
                 this.playDifferenceAudio();
                 this.socketService.send('systemMessage', '[' + timeString + '] ' + 'Différence trouvée par le joueur : ');
                 this.socketService.send('systemMessageSolo', 'Différence trouvée ');
-                this.flashImages(this.gameData.differences[this.lastDifferenceFound]);
+                await this.flashImages(this.gameData.differences[this.lastDifferenceFound]);
+                if (this.router.url === '/soloLimitedTime') {
+                    this.changeGame();
+                }
                 return true;
             } else {
                 await this.errorMessage(position);
@@ -224,6 +258,7 @@ export class GameManagerService {
     }
 
     async errorMessage(position: Vec2): Promise<void> {
+        this.playErrorAudio();
         // save originals
         const originalImageData = this.originalImageCanvas.getImageData(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT);
         const modifiedImageData = this.modifiedImageCanvas.getImageData(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT);

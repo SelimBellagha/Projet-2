@@ -4,7 +4,7 @@
     <div class="section">
         <div class="main-container">
             <h2 class="game-info">{{ gameName }} - {{ difficulty }}</h2>
-            <p class="game-details">Mode classique</p>
+            <p class="game-details">Mode temps Limité Coop</p>
             <p class="game-details">L' image contient {{ nbDifferences }} différences</p>
             <button class="indice">Obtenir un indice</button>
             <app-cheat></app-cheat>
@@ -19,8 +19,7 @@
         <div class="main-container">
             <div class="game-details">
                 <p id="penalty">Pénalités pour utilisation d'indice : 00: XX - Indices restants: X</p>
-                <p>{{ hostName }} : {{ nbDifferencesFoundUser1 }} différences trouvées</p>
-                <p>{{ guestName }} : {{ nbDifferencesFoundUser2 }} différences trouvées</p>
+                <p>{{ firstPlayerName }} - {{ secondPlayerName }} : {{ nbDifferencesFound }} différences trouvées</p>
                 <div class="timer">
                     <img src="../../../assets/images/stopwatch.png" class="watch-logo" />
                     <div>
@@ -37,18 +36,9 @@
 
     <app-chat-box></app-chat-box>
 
-    <div #popUpWindowWin class="modal" id="congratulations">
+    <div #popUpWindow class="modal" id="congratulations">
         <div class="modal-content">
             <h1 class="title">Félicitations {{ myUsername }} ! Vous avez trouvé toutes les différences !</h1>
-            <div>
-                <button id="end" class="button-pop" (click)="goToHomePage()">Fermer</button>
-            </div>
-        </div>
-    </div>
-
-    <div #popUpWindowLose class="modal">
-        <div class="modal-content">
-            <h1 class="title">Dommage {{ myUsername }} ! Vous n'avais pas été assez rapide, {{ opponentUsername }} a gagné la partie !</h1>
             <div>
                 <button id="end" class="button-pop" (click)="goToHomePage()">Fermer</button>
             </div>

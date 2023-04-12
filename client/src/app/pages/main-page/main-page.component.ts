@@ -2,6 +2,8 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommunicationService } from '@app/services/communication.service';
+import { LobbyService } from '@app/services/lobby.service';
+import { LoginFormService } from '@app/services/login-form.service';
 import { SocketClientService } from '@app/services/socket-client-service.service';
 import { Message } from '@common/message';
 import { BehaviorSubject } from 'rxjs';
@@ -16,12 +18,21 @@ export class MainPageComponent implements OnInit {
     readonly title: string = 'LOG2990';
     message: BehaviorSubject<string> = new BehaviorSubject<string>('');
 
-    constructor(private readonly communicationService: CommunicationService, private router: Router, private socketManager: SocketClientService) {}
+    // eslint-disable-next-line max-params
+    constructor(
+        private readonly communicationService: CommunicationService,
+        private router: Router,
+        private socketManager: SocketClientService,
+        private loginFormService: LoginFormService,
+        private lobbyService: LobbyService,
+    ) {}
 
     ngOnInit(): void {
         if (!this.socketManager.isSocketAlive()) {
             this.socketManager.connect();
         }
+        this.loginFormService.setLimitedTimeGame(false);
+        this.lobbyService.deleteLobby();
     }
 
     sendTimeToServer(): void {
@@ -59,5 +70,10 @@ export class MainPageComponent implements OnInit {
 
     goToConfiguration(): void {
         this.router.navigate(['/config']);
+    }
+
+    goToLimitedTimeGame() {
+        this.loginFormService.setLimitedTimeGame(true);
+        this.router.navigate(['/limitedTimeType']);
     }
 }
