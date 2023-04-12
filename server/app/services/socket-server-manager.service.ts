@@ -94,6 +94,7 @@ export class SocketServerManager {
                 const newLobby = new Lobby(host, data.gameId);
                 this.lobbys.set(data.roomId, newLobby);
                 socket.join(data.roomId);
+                this.sio.sockets.emit('updatePlayers', { gameId: data.gameId, available: true });
             });
 
             socket.on('joinQueue', (data: { gameId: string; playerName: string }) => {
@@ -144,6 +145,8 @@ export class SocketServerManager {
 
             socket.on('deleteRoom', (data: { roomId: string }) => {
                 if (this.lobbys.has(data.roomId)) {
+                    const gameId = this.lobbys.get(data.roomId)?.gameId;
+                    this.sio.sockets.emit('updatePlayers', { gameId, available: false });
                     this.lobbys.delete(data.roomId);
                 } else if (
                     this.limitedLobbys.has(data.roomId) &&
