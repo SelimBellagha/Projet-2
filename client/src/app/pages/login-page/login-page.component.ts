@@ -27,7 +27,13 @@ export class LoginPageComponent {
             window.alert('Nom de joueur invalide: entrez un nom non vide');
         } else {
             this.onClickSubmit(name);
-            if (this.loginService.getGameType() === false) {
+            if (this.loginService.getLimitedTimeGame()) {
+                if (this.loginService.getGameType()) {
+                    this.router.navigate(['/salleAttente']);
+                } else {
+                    this.router.navigate(['/soloLimitedTime']);
+                }
+            } else if (this.loginService.getGameType() === false) {
                 this.router.navigate(['/soloView']);
             } else {
                 this.router.navigate(['/salleAttente']);
