@@ -33,6 +33,12 @@ export class DisplayGameService {
         }
     }
 
+    async updateLobbyAvailability() {
+        for (const game of this.games) {
+            game.playerInGame = await this.getPlayersInGame(game.id);
+        }
+    }
+
     async convertAllGames() {
         const tempArray: Game[] = [];
         // eslint-disable-next-line @typescript-eslint/prefer-for-of

@@ -149,7 +149,7 @@ describe('SocketManager service tests', () => {
         lobby.clearQueue();
         lobby.addInQueue(secondPlayer.playerName, secondPlayer.socketId);
         service.lobbys.set(roomId, lobby);
-        clientSocket.emit('removeFromQueue', { socketId: secondPlayer.socketId, gameId: gameId });
+        clientSocket.emit('removeFromQueue', { socketId: secondPlayer.socketId, roomId: roomId });
         setTimeout(() => {
             expect(service.lobbys.get(roomId)?.getQueue().size).to.equal(0);
             done();
