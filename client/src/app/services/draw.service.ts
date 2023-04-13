@@ -11,7 +11,7 @@ export const DEFAULT_HEIGHT = 480;
 export class DrawService {
     drawingContext: OffscreenCanvasRenderingContext2D;
     color: string = 'red';
-    width: number = 1;
+    width: number = 2;
     isSquareEnabled: boolean = false;
 
     drawLine(startPosition: Vec2, endPosition: Vec2): void {
