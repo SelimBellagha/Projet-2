@@ -4,6 +4,10 @@ import { Vec2 } from '@app/interfaces/vec2';
 import { ActionSaverService } from './action-saver.service';
 import { GameManagerService } from './game-manager.service';
 
+export interface CheatInfo {
+    isActivating: boolean;
+}
+
 const ONE_SECOND = 1000;
 @Injectable({
     providedIn: 'root',
@@ -28,7 +32,7 @@ export class ReplayService {
         this.replaySpeed = speed;
         this.gameManager.replaySpeed = speed;
         clearInterval(this.timerId);
-        this.startTimer(speed);
+        this.startTimer(this.replaySpeed);
     }
     getSpeed(): number {
         return this.replaySpeed;
@@ -39,7 +43,6 @@ export class ReplayService {
     restartReplay(): void {
         this.currentReplayTime = 0;
         this.actionSaver.restart();
-        // reset the canvas from game Manager
         this.gameManager.restartGame();
         this.isPlaying = true;
         this.startTimer(this.replaySpeed);
@@ -55,6 +58,15 @@ export class ReplayService {
             case GameActionType.Hint:
                 break;
             case GameActionType.ActivateCheat:
+                this.gameManager.stateChanger();
+                if ((gameAction.info as CheatInfo).isActivating) {
+                    const canvasModifier = this.gameManager.modifiedImageCanvas;
+                    const canvasOriginal = this.gameManager.originalImageCanvas;
+                    const pixelDifferences = this.gameManager.gameData.differences;
+
+                    this.gameManager.flashPixelsCheat(pixelDifferences, canvasModifier);
+                    this.gameManager.flashPixelsCheat(pixelDifferences, canvasOriginal);
+                }
                 break;
             case GameActionType.Message:
                 break;
@@ -62,6 +74,8 @@ export class ReplayService {
     }
 
     startTimer(speed: number): void {
+        clearInterval(this.timerId);
+        console.log('time');
         this.timerId = window.setInterval(() => {
             if (this.isPlaying) {
                 this.currentReplayTime++;

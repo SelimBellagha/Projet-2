@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { GameActionType } from '@app/interfaces/game-action';
 import { GameData } from '@app/interfaces/game-data';
 import { Vec2 } from '@app/interfaces/vec2';
 import { Verification } from '@app/interfaces/verification';
@@ -94,7 +93,7 @@ export class GameManagerService {
     async onPositionClicked(position: Vec2): Promise<boolean> {
         if (!this.locked) {
             this.locked = true;
-            this.actionSaver.addAction(GameActionType.Click, (this.timeTest += 10), position);
+            this.actionSaver.addClickAction(position);
             const now: Date = new Date();
             const timeString: string = now.toTimeString().slice(0, EIGHT);
             if (await this.verifyDifference(position)) {
@@ -217,24 +216,24 @@ export class GameManagerService {
                 }
 
                 canvas.putImageData(newFlashingOriginalImageData, 0, 0);
-                await this.wait(QUART_SECOND);
+                await this.wait(QUART_SECOND / this.replaySpeed);
                 canvas.putImageData(newOriginalImageData, 0, 0);
-                await this.wait(QUART_SECOND);
+                await this.wait(QUART_SECOND / this.replaySpeed);
                 canvas.putImageData(newFlashingOriginalImageData, 0, 0);
-                await this.wait(QUART_SECOND);
+                await this.wait(QUART_SECOND / this.replaySpeed);
                 canvas.putImageData(newOriginalImageData, 0, 0);
-                await this.wait(QUART_SECOND);
+                await this.wait(QUART_SECOND / this.replaySpeed);
                 canvas.putImageData(newFlashingOriginalImageData, 0, 0);
                 canvas.putImageData(newOriginalImageData, 0, 0);
             } else {
                 canvas.putImageData(flashingOriginalImageData, 0, 0);
-                await this.wait(QUART_SECOND);
+                await this.wait(QUART_SECOND / this.replaySpeed);
                 canvas.putImageData(originalImageData, 0, 0);
-                await this.wait(QUART_SECOND);
+                await this.wait(QUART_SECOND / this.replaySpeed);
                 canvas.putImageData(flashingOriginalImageData, 0, 0);
-                await this.wait(QUART_SECOND);
+                await this.wait(QUART_SECOND / this.replaySpeed);
                 canvas.putImageData(originalImageData, 0, 0);
-                await this.wait(QUART_SECOND);
+                await this.wait(QUART_SECOND / this.replaySpeed);
                 canvas.putImageData(flashingOriginalImageData, 0, 0);
                 canvas.putImageData(originalImageData, 0, 0);
             }
