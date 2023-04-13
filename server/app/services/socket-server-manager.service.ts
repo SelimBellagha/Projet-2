@@ -116,8 +116,8 @@ export class SocketServerManager {
                 }
             });
 
-            socket.on('removeFromQueue', (data: { socketId: string; gameId: string }) => {
-                const lobby = this.lobbys.get(this.getRoom(data.gameId));
+            socket.on('removeFromQueue', (data: { socketId: string; roomId: string }) => {
+                const lobby = this.lobbys.get(data.roomId);
                 if (lobby) {
                     lobby.deleteFromQueue(data.socketId);
                     socket.to(data.socketId).emit('refused');
