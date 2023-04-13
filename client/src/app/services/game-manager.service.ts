@@ -27,6 +27,7 @@ export class GameManagerService {
     locked: boolean;
     state: boolean = false;
     foundDifferenceCheat: boolean = false;
+    gameTime: number = 0;
 
     constructor(private differenceVerification: DifferenceVerificationService, private socketService: SocketClientService, private router: Router) {}
 

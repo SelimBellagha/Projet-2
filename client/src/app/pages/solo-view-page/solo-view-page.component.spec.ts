@@ -6,6 +6,7 @@ import { GameData } from '@app/interfaces/game.interface';
 import { DisplayGameService } from '@app/services/display-game.service';
 import { GameManagerService } from '@app/services/game-manager.service';
 import { LoginFormService } from '@app/services/login-form.service';
+import { SocketClientService } from '@app/services/socket-client-service.service';
 import { SoloViewPageComponent } from './solo-view-page.component';
 import SpyObj = jasmine.SpyObj;
 const timeTest = 1000;
@@ -16,6 +17,7 @@ describe('SoloViewPageComponent', () => {
     let gameManagerSpy: SpyObj<GameManagerService>;
     let displayServiceSpy: SpyObj<DisplayGameService>;
     let loginServiceSpy: SpyObj<LoginFormService>;
+    let socketService: SpyObj<SocketClientService>;
     let router: Router;
 
     const username = 'testName';
@@ -43,6 +45,7 @@ describe('SoloViewPageComponent', () => {
         gameManagerSpy = jasmine.createSpyObj('GameManagerService', ['onPositionClicked', 'putImages', 'playWinAudio', 'initializeGame']);
         displayServiceSpy = jasmine.createSpyObj('DisplayGameService', ['loadGame', 'convertDifficulty'], { game: gameMock1 as unknown as GameData });
         loginServiceSpy = jasmine.createSpyObj('LoginFormService', ['getFormData']);
+        socketService = jasmine.createSpyObj('SocketClientService', ['send']);
 
         loginServiceSpy.getFormData.and.returnValue(username);
 
@@ -53,6 +56,7 @@ describe('SoloViewPageComponent', () => {
                 { provide: GameManagerService, useValue: gameManagerSpy },
                 { provide: DisplayGameService, useValue: displayServiceSpy },
                 { provide: LoginFormService, useValue: loginServiceSpy },
+                { provide: SocketClientService, useValue: socketService },
             ],
         }).compileComponents();
 
