@@ -34,13 +34,13 @@ describe('CheatComponent', () => {
         // gameManagerSpy.state = false;
         component.onClick();
         expect(component.toggle).toBe(true);
-        expect(component.status).toBe('Enable Cheat');
+        expect(component.status).toBe('Activer Triche');
         expect(giveHintSpy).toHaveBeenCalled();
         expect(gameManagerSpy.stateChanger).toHaveBeenCalled();
 
         component.onClick();
         expect(component.toggle).toBe(false);
-        expect(component.status).toBe('Disable Cheat');
+        expect(component.status).toBe('Désactiver Triche');
         expect(giveHintSpy).toHaveBeenCalled();
         expect(gameManagerSpy.stateChanger).toHaveBeenCalled();
     });
