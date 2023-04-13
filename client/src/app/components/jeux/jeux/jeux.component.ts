@@ -4,6 +4,7 @@ import { CommunicationService } from '@app/services/communication.service';
 import { DisplayGameService } from '@app/services/display-game.service';
 import { LobbyService } from '@app/services/lobby.service';
 import { LoginFormService } from '@app/services/login-form.service';
+import { SocketClientService } from '@app/services/socket-client-service.service';
 import { v4 as uuidv4 } from 'uuid';
 
 @Component({
@@ -28,11 +29,13 @@ export class JeuxComponent implements AfterViewInit {
         private loginService: LoginFormService,
         private lobbyService: LobbyService,
         private comm: CommunicationService,
+        private socketService: SocketClientService,
     ) {}
 
     ngAfterViewInit(): void {
         this.image.nativeElement.src = this.customPhoto;
         this.lobbyService.host = false;
+        this.holdUpdateLobbyAvailability();
     }
 
     goToLoginPage(): void {
@@ -70,5 +73,17 @@ export class JeuxComponent implements AfterViewInit {
 
     onClosingPopUp(): void {
         this.popUpWindow.nativeElement.style.display = 'none';
+    }
+
+    holdUpdateLobbyAvailability() {
+        this.socketService.on('updatePlayers', (data: { gameId: string; available: boolean }) => {
+            if (data.gameId === this.customId) {
+                if (data.available) {
+                    this.multiplayerButton = 'Rejoindre';
+                } else {
+                    this.multiplayerButton = 'Créer';
+                }
+            }
+        });
     }
 }

@@ -27,10 +27,8 @@ export class OneVsOnePageComponent implements OnInit, AfterViewInit {
     difficulty: string;
     nbDifferences: number;
     minutes: number = 0;
-    secondes1: number = 0;
-    secondes2: number = 0;
-    minutes1: number = 0;
-    minutes2: number = 0;
+    secondes: number = 0;
+    gameTime: number = 0;
     intervalID: number;
     nbDifferencesFoundUser1: number;
     nbDifferencesFoundUser2: number;
@@ -62,7 +60,7 @@ export class OneVsOnePageComponent implements OnInit, AfterViewInit {
             this.opponentUsername = this.lobbyService.opponent.playerName;
             this.guestName = this.lobbyService.opponent.playerName;
         }
-        this.startTimer();
+        this.startStopWatch();
         this.nbDifferencesFoundUser1 = 0;
         this.nbDifferencesFoundUser2 = 0;
         if (this.displayService.game) {
@@ -82,6 +80,7 @@ export class OneVsOnePageComponent implements OnInit, AfterViewInit {
             this.nbDifferencesFoundUser1 = data.nbDifferenceHost;
             this.nbDifferencesFoundUser2 = data.nbDifferenceInvite;
             if (this.gameManager.lastDifferenceFound !== data.differenceId) {
+                this.gameManager.lastDifferenceFound = data.differenceId;
                 this.gameManager.flashImages(this.gameManager.gameData.differences[data.differenceId]);
             }
             this.winCheck();
@@ -91,43 +90,33 @@ export class OneVsOnePageComponent implements OnInit, AfterViewInit {
         });
     }
 
-    timer() {
-        const decimalMax = 9;
-        const centaineMax = 5;
+    stopWatch() {
         const timerInterval = 1000;
-        this.intervalID = window.setInterval(() => {
-            if (this.secondes2 === centaineMax && this.secondes1 === decimalMax) {
-                this.secondes2 = 0;
-                this.secondes1 = 0;
-                this.minutes1++;
-            } else if (this.minutes1 === decimalMax) {
-                this.minutes1 = 0;
-                this.minutes2++;
-            }
-            if (this.secondes1 === decimalMax) {
-                this.secondes2++;
-                this.secondes1 = 0;
-            } else {
-                this.secondes1++;
-            }
+        const max = 60;
+        this.minutes = 0;
+        this.secondes = 0;
+        setInterval(() => {
+            this.gameTime++;
+            this.secondes = this.gameTime % max;
+            this.minutes = Math.floor(this.gameTime / max);
         }, timerInterval);
     }
 
-    startTimer() {
-        this.timer();
+    startStopWatch() {
+        this.stopWatch();
     }
 
-    stopTimer() {
+    stopStopWatch() {
         clearInterval(this.intervalID);
     }
 
     loseGame() {
-        this.stopTimer();
+        this.stopStopWatch();
         this.popUpWindowLose.nativeElement.style.display = 'block';
     }
 
     winGame(): void {
-        this.stopTimer();
+        this.stopStopWatch();
         this.gameManager.playWinAudio();
         this.popUpWindowWin.nativeElement.style.display = 'block';
     }

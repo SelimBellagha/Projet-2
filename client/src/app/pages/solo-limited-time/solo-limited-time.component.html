@@ -1,5 +1,5 @@
 <body class="container">
-    <button class="quit-button" (click)="returnSelectionPage()">Abandonner la partie</button>
+    <button class="quit-button" (click)="goToHomePage()">Abandonner la partie</button>
 
     <div class="section">
         <div class="main-container">
@@ -11,7 +11,7 @@
         </div>
 
         <div>
-            <canvas #originalImage #gridCanvas (click)="onClick($event)" width="500px" height="480px"></canvas>
+            <canvas #originalImage #gridCanvas (click)="onClick($event)" width="640px" height="480px"></canvas>
         </div>
     </div>
 
@@ -23,21 +23,17 @@
                 <p>Differences trouvées: {{ nbDifferencesFound }}</p>
                 <div class="timer">
                     <img src="../../../assets/images/stopwatch.png" class="watch-logo" />
-                    <div>
-                        <div>{{ minutes.toString().padStart(2, '0') }} :{{ secondes.toString().padStart(2, '0') }}</div>
-                    </div>
+                    <div>{{ minutes.toString().padStart(2, '0') }} :{{ secondes.toString().padStart(2, '0') }}</div>
                 </div>
             </div>
         </div>
 
         <div>
-            <canvas #modifiedImage (click)="onClick($event)" width="500px" height="480px"></canvas>
+            <canvas #modifiedImage (click)="onClick($event)" width="640px" height="480px"></canvas>
         </div>
     </div>
 
-    <div class="section">
-        <app-chat-box></app-chat-box>
-    </div>
+    <app-chat-box></app-chat-box>
 
     <div #popUpWindow class="modal">
         <div class="modal-content">

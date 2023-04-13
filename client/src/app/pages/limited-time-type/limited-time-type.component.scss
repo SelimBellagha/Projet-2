@@ -1,0 +1,25 @@
+body {
+    background-color: #b5d8b5;
+}
+
+p {
+    font-size: x-large;
+    padding-top: 5%;
+    text-align: center;
+}
+
+div {
+    position: absolute;
+    top: 50%;
+    width: 100%;
+}
+
+.solo-button {
+    position: absolute;
+    left: 45%;
+}
+
+.multi-button {
+    position: absolute;
+    right: 45%;
+}

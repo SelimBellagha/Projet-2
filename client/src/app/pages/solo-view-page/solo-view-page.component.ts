@@ -20,11 +20,9 @@ export class SoloViewPageComponent implements OnInit, AfterViewInit {
     difficulty: string;
     nbDifferences: number;
     nbDifferencesFound: number;
+    secondes: number = 0;
     minutes: number = 0;
-    secondes1: number = 0;
-    secondes2: number = 0;
-    minutes1: number = 0;
-    minutes2: number = 0;
+    gameTime: number = 0;
     intervalID: number;
 
     // eslint-disable-next-line max-params
@@ -37,7 +35,7 @@ export class SoloViewPageComponent implements OnInit, AfterViewInit {
 
     ngOnInit() {
         this.username = this.loginService.getFormData();
-        this.startTimer();
+        this.startStopWatch();
         this.nbDifferencesFound = 0;
         if (this.displayService.game) {
             this.gameManager.initializeGame(this.displayService.game);
@@ -53,38 +51,28 @@ export class SoloViewPageComponent implements OnInit, AfterViewInit {
         this.gameManager.putImages();
     }
 
-    timer() {
-        const decimalMax = 9;
-        const centaineMax = 5;
+    stopWatch() {
         const timerInterval = 1000;
-        this.intervalID = window.setInterval(() => {
-            if (this.secondes2 === centaineMax && this.secondes1 === decimalMax) {
-                this.secondes2 = 0;
-                this.secondes1 = 0;
-                this.minutes1++;
-            } else if (this.minutes1 === decimalMax) {
-                this.minutes1 = 0;
-                this.minutes2++;
-            }
-            if (this.secondes1 === decimalMax) {
-                this.secondes2++;
-                this.secondes1 = 0;
-            } else {
-                this.secondes1++;
-            }
+        const max = 60;
+        this.minutes = 0;
+        this.secondes = 0;
+        setInterval(() => {
+            this.gameTime++;
+            this.secondes = this.gameTime % max;
+            this.minutes = Math.floor(this.gameTime / max);
         }, timerInterval);
     }
 
-    startTimer = () => {
-        this.timer();
+    startStopWatch = () => {
+        this.stopWatch();
     };
 
-    stopTimer() {
+    stopStopWatch() {
         clearInterval(this.intervalID);
     }
 
     endGame(): void {
-        this.stopTimer();
+        this.stopStopWatch();
         this.gameManager.playWinAudio();
         this.popUpWindow.nativeElement.style.display = 'block';
     }
