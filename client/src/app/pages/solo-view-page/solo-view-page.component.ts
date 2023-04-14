@@ -87,7 +87,13 @@ export class SoloViewPageComponent implements OnInit, AfterViewInit {
     endGame(): void {
         this.stopStopWatch();
         this.newScore.gameId = this.gameId;
-        this.newScore.time = this.minutes + ':' + this.secondes;
+        const doubleDigitsSeconds = 10;
+        if (this.secondes < doubleDigitsSeconds) {
+            const seconds = '0' + this.secondes;
+            this.newScore.time = this.minutes + ':' + seconds;
+        } else {
+            this.newScore.time = this.minutes + ':' + this.secondes;
+        }
         this.newScore.playerName = this.username;
         this.displayService.checkPlayerScore(this.newScore);
         this.gameManager.playWinAudio();

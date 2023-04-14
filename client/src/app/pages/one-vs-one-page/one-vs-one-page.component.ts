@@ -86,10 +86,6 @@ export class OneVsOnePageComponent implements OnInit, AfterViewInit {
         this.gameManager.modifiedImageCanvas = this.modifiedCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         this.gameManager.originalImageCanvas = this.originalCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         this.gameManager.putImages();
-        /* this.socketService.on('getRealTime', (data: { realTime: number[] }) => {
-            // this.newScore.time = String(data.realTime[3]) + String(data.realTime[2]) + ':' + String(data.realTime[1]) + String(data.realTime[0]);
-            console.log(data.realTime);
-        });*/
         this.socketService.on('differenceUpdate', async (data: { nbDifferenceHost: number; nbDifferenceInvite: number; differenceId: number }) => {
             this.nbDifferencesFoundUser1 = data.nbDifferenceHost;
             this.nbDifferencesFoundUser2 = data.nbDifferenceInvite;
@@ -100,7 +96,20 @@ export class OneVsOnePageComponent implements OnInit, AfterViewInit {
             this.winCheck();
         });
         this.socketService.on('win', () => {
-            this.winGame();
+            this.winGameAfterGiveUp();
+        });
+        this.socketService.on('getRealTime', (data: { realTime: number }) => {
+            const doubleDigits = 10;
+            const secondsInMinute = 60;
+            if (data.realTime < doubleDigits) {
+                this.newScore.time = '0:0' + String(data.realTime);
+            } else if (data.realTime < secondsInMinute && data.realTime > doubleDigits - 1) {
+                this.newScore.time = '0:' + String(data.realTime);
+            } else {
+                const minutes = Math.floor(data.realTime / secondsInMinute);
+                const seconds = data.realTime - minutes * secondsInMinute;
+                this.newScore.time = String(minutes) + ':' + String(seconds);
+            }
         });
     }
 
@@ -133,12 +142,20 @@ export class OneVsOnePageComponent implements OnInit, AfterViewInit {
         this.popUpWindowLose.nativeElement.style.display = 'block';
     }
 
+    winGameAfterGiveUp(): void {
+        this.stopStopWatch();
+        this.gameManager.playWinAudio();
+        this.popUpWindowWin.nativeElement.style.display = 'block';
+    }
+
     winGame(): void {
+        this.socketService.send('getRealTime', { roomId: this.roomId });
         this.stopStopWatch();
         this.gameManager.playWinAudio();
         this.popUpWindowWin.nativeElement.style.display = 'block';
     }
     goToHomePage() {
+        this.displayService.checkPlayerScore(this.newScore);
         this.popUpWindowWin.nativeElement.style.display = 'none';
         this.popUpWindowLose.nativeElement.style.display = 'none';
         this.router.navigate(['home']);
@@ -177,15 +194,11 @@ export class OneVsOnePageComponent implements OnInit, AfterViewInit {
     winCheck() {
         if (this.nbDifferencesFoundUser1 === this.nbDifferenceToWin || this.nbDifferencesFoundUser2 === this.nbDifferenceToWin) {
             this.newScore.gameId = this.gameId;
-            // this.socketService.send('getRealTime', { roomId: this.roomId} );
-            this.newScore.time = this.minutes2 + this.minutes1 + ':' + this.secondes2 + this.secondes1;
             if (this.nbDifferencesFoundUser1 === this.nbDifferenceToWin && this.lobbyService.host === true) {
                 this.newScore.playerName = this.hostName;
-                this.displayService.checkPlayerScore(this.newScore);
                 this.winGame();
             } else if (this.nbDifferencesFoundUser2 === this.nbDifferenceToWin && this.lobbyService.host === false) {
                 this.newScore.playerName = this.guestName;
-                this.displayService.checkPlayerScore(this.newScore);
                 this.winGame();
             } else {
                 this.loseGame();
