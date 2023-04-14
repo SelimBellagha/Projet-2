@@ -1,15 +1,13 @@
-import { TopScore } from '@app/data/top-scores.interface';
-import { Collection, Filter } from 'mongodb';
-import { DatabaseService } from './database.service';
-import { Service } from 'typedi';
 import { DATABASE_COLLECTION } from '@app/data/db-constants';
-import * as path from 'path';
+import { TopScore } from '@app/data/top-scores.interface';
 import * as fs from 'fs';
-
-const jsonPath = path.join(__dirname + '../../../../../app/data/default_scores.json');
-
+import { Collection } from 'mongodb';
+import * as path from 'path';
+import { Service } from 'typedi';
+import { DatabaseService } from './database.service';
 @Service()
 export class TopScoresService {
+    jsonPath = path.join(__dirname + '../../../../../app/data/default_scores.json');
     constructor(private databaseService: DatabaseService) {}
 
     get collection(): Collection<TopScore> {
@@ -20,7 +18,7 @@ export class TopScoresService {
         return await fs.promises.readFile(filePath);
     }
 
-    private static async getDefaultScores(): Promise<TopScore[]> {
+    private static async getDefaultScores(jsonPath: string): Promise<TopScore[]> {
         const fileBuffer = await TopScoresService.readJsonFile(jsonPath);
         return JSON.parse(fileBuffer.toString()).defaultScores;
     }
@@ -37,28 +35,19 @@ export class TopScoresService {
     async sortTopScores(id: string, type: string): Promise<TopScore[]> {
         return this.collection
             .find({ gameId: id, gameType: type })
-            .sort({ time: -1 })
+            .sort({ time: 1 })
             .toArray()
             .then((scores: TopScore[]) => {
                 return scores;
             });
     }
 
-    async sortScoresByGame(id: string): Promise<TopScore[]> {
-        return this.collection
-            .find({ gameId: id })
-            .toArray()
-            .then((scores: TopScore[]) => {
-                return scores;
-            });
-    }
-
-    async validateScore(newScore: TopScore): Promise<number> {
+    async validateScore(newScore: TopScore): Promise<string> {
         const currentScores = await this.sortTopScores(newScore.gameId, newScore.gameType);
-        let indexVal = -1;
-        for (let i = 0; i < 3; i++) {
-            if (currentScores[i].time < newScore.time) {
-                indexVal = i;
+        let indexVal = '-1';
+        for (const score of currentScores) {
+            if (score.time > newScore.time) {
+                indexVal = score.position;
                 break;
             }
         }
@@ -67,71 +56,61 @@ export class TopScoresService {
 
     async addScore(newScore: TopScore): Promise<boolean> {
         const indexToReplace = await this.validateScore(newScore);
-        const allScores = await this.getAllTopScores();
-        const noScoreChange = -1;
+        const noScoreChange = '-1';
         if (indexToReplace !== noScoreChange) {
-            const scoresLength = allScores.length;
-            newScore.id = scoresLength + 1;
-            allScores[indexToReplace] = newScore;
-            await this.collection.deleteMany({});
-            await this.collection.insertMany(allScores);
-            return true;
-        }
-        return false;
-    }
+            switch (indexToReplace) {
+                case '1': {
+                    await this.collection.deleteOne({ gameId: newScore.gameId, position: '3', gameType: newScore.gameType });
+                    await this.collection.updateOne(
+                        { gameId: newScore.gameId, position: '1', gameType: newScore.gameType },
+                        { $set: { position: '2' } },
+                    );
+                    await this.collection.updateOne(
+                        { gameId: newScore.gameId, position: '2', gameType: newScore.gameType },
+                        { $set: { position: '3' } },
+                    );
+                    newScore.position = '1';
+                    await this.collection.insertOne(newScore);
 
-    async updateScore(score: TopScore) {
-        const allScores = await this.getAllTopScores();
-        const theScore = allScores.find((scores) => scores.playerName === score.playerName);
-        if (theScore) {
-            theScore.playerName = score.playerName;
-            theScore.time = score.time;
-        }
-        await this.collection.deleteMany({});
-        await this.collection.insertMany(allScores);
-    }
-
-    async modifyScore(score: TopScore): Promise<TopScore[]> {
-        const filterQuery: Filter<TopScore> = { playerName: score.playerName };
-        return this.collection
-            .replaceOne(filterQuery, score)
-            .then((scores: TopScore[]) => {
-                return scores;
-            })
-            .catch(() => {
-                throw new Error('Failed to update document');
-            });
-    }
-
-    async deleteScore(playerName: string): Promise<void> {
-        return this.collection
-            .findOneAndDelete({ playerName })
-            .then((res) => {
-                if (!res.value) {
-                    throw new Error('Could not find score');
+                    break;
                 }
-            })
-            .catch(() => {
-                throw new Error('Failed to delete score');
-            });
+                case '2': {
+                    await this.collection.deleteOne({ gameId: newScore.gameId, position: '3', gameType: newScore.gameType });
+                    await this.collection.updateOne(
+                        { gameId: newScore.gameId, position: '2', gameType: newScore.gameType },
+                        { $set: { position: '3' } },
+                    );
+                    newScore.position = '2';
+                    await this.collection.insertOne(newScore);
+
+                    break;
+                }
+                case '3': {
+                    await this.collection.updateOne(
+                        { gameId: newScore.gameId, position: '3', gameType: newScore.gameType },
+                        { $set: { time: newScore.time, playerName: newScore.playerName } },
+                    );
+
+                    break;
+                }
+            }
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    async deleteGameScores(id: string): Promise<void> {
+        this.collection.deleteMany({ gameId: id });
     }
 
     async resetOneGame(id: string): Promise<void> {
-        const defaultScores = await TopScoresService.getDefaultScores();
-        for (const score of defaultScores) {
-            score.gameId = id;
-        }
-        this.collection.deleteMany({ gameId: id });
+        await this.deleteGameScores(id);
         await this.addDefaultScores(id);
     }
 
-    async resetScores(): Promise<void> {
-        await this.collection.deleteMany({});
-        await this.databaseService.populateDB(DATABASE_COLLECTION, await TopScoresService.getDefaultScores());
-    }
-
     async addDefaultScores(gameId: string): Promise<void> {
-        const defaultScores = await TopScoresService.getDefaultScores();
+        const defaultScores = await TopScoresService.getDefaultScores(this.jsonPath);
         for (const score of defaultScores) {
             score.gameId = gameId;
         }

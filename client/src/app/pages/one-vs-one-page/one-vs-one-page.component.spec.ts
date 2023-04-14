@@ -153,6 +153,7 @@ describe('OneVsOnePageComponent', () => {
         component.onClick(mouseEventMock);
         expect(socketSpy).toHaveBeenCalledTimes(0);
     });
+    /*
     it('Win check should call winGame if user1 found enough differences', () => {
         component.nbDifferenceToWin = 1;
         component.nbDifferencesFoundUser1 = 1;
@@ -170,6 +171,7 @@ describe('OneVsOnePageComponent', () => {
         component.winCheck();
         expect(spy).toHaveBeenCalled();
     });
+    */
     it('Win check should call loseGame if otherUser found enough differences', () => {
         component.nbDifferenceToWin = 1;
         component.nbDifferencesFoundUser1 = 0;

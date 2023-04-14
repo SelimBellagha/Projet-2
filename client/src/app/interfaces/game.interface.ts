@@ -11,7 +11,7 @@ export interface GameData {
 }
 
 export interface TopScore {
-    id: number;
+    position: string;
     gameId: string;
     gameType: string;
     time: string;

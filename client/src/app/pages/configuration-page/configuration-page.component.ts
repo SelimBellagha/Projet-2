@@ -18,6 +18,8 @@ const display = 4;
 })
 export class ConfigurationPageComponent implements OnInit {
     @ViewChild('popUpWindow') popUpWindow: ElementRef<HTMLDivElement>;
+    @ViewChild('popUpWindow2') popUpWindow2: ElementRef<HTMLDivElement>;
+    @ViewChild('popUpWindow3') popUpWindow3: ElementRef<HTMLDivElement>;
     componentNumber: number = 0;
     hasPrevious: boolean = false;
     hasNext: boolean = false;
@@ -45,15 +47,6 @@ export class ConfigurationPageComponent implements OnInit {
             this.nextPage();
         }
     }
-
-    /*
-                [soloFirst]="soloDefault[0].time + '' + soloDefault[0].playerName"
-                [OneVOneFirst]="oneVOneDefault[0].time + '' + oneVOneDefault[0].playerName"
-                [soloSecond]="soloDefault[1].time + '' + soloDefault[1].playerName"
-                [OneVOneSecond]="oneVOneDefault[1].time + '' + oneVOneDefault[1].playerName"
-                [soloThird]="soloDefault[2].time + '' + soloDefault[2].playerName"
-                [OneVOneThird]="oneVOneDefault[2].time + '' + oneVOneDefault[2].playerName"
-    */
 
     goToHomePage(): void {
         this.router.navigate(['home']);
@@ -94,7 +87,30 @@ export class ConfigurationPageComponent implements OnInit {
         this.popUpWindow.nativeElement.style.display = 'block';
     }
 
-    onClosingPopUp(): void {
-        this.popUpWindow.nativeElement.style.display = 'none';
+    goToReset(): void {
+        this.popUpWindow2.nativeElement.style.display = 'block';
+    }
+
+    goToDelete(): void {
+        this.popUpWindow3.nativeElement.style.display = 'block';
+    }
+
+    resetAllScores() {
+        this.displayGames.resetAllScores();
+        this.popUpWindow2.nativeElement.style.display = 'none';
+    }
+
+    deleteAllGames() {
+        this.popUpWindow3.nativeElement.style.display = 'none';
+    }
+
+    onClosingPopUp(popUpNumber: number): void {
+        if (popUpNumber === 1) {
+            this.popUpWindow.nativeElement.style.display = 'none';
+        } else if (popUpNumber === 2) {
+            this.popUpWindow2.nativeElement.style.display = 'none';
+        } else {
+            this.popUpWindow3.nativeElement.style.display = 'none';
+        }
     }
 }

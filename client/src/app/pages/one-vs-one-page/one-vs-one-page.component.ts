@@ -1,6 +1,7 @@
 import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { MouseButton } from '@app/components/play-area/play-area.component';
+import { TopScore } from '@app/interfaces/game.interface';
 import { Vec2 } from '@app/interfaces/vec2';
 import { DisplayGameService } from '@app/services/display-game.service';
 import { GameManagerService } from '@app/services/game-manager.service';
@@ -23,6 +24,7 @@ export class OneVsOnePageComponent implements OnInit, AfterViewInit {
     opponentUsername: string;
     hostName: string;
     guestName: string;
+    gameId: string;
     gameName: string;
     difficulty: string;
     nbDifferences: number;
@@ -36,6 +38,14 @@ export class OneVsOnePageComponent implements OnInit, AfterViewInit {
     nbDifferencesFoundUser2: number;
     roomId: string;
     nbDifferenceToWin: number;
+
+    newScore: TopScore = {
+        position: 'tempPosition',
+        gameId: 'tempId',
+        gameType: '1v1',
+        time: 'tempTime',
+        playerName: 'tempName',
+    };
 
     // eslint-disable-next-line max-params
     constructor(
@@ -67,6 +77,7 @@ export class OneVsOnePageComponent implements OnInit, AfterViewInit {
         this.nbDifferencesFoundUser2 = 0;
         if (this.displayService.game) {
             this.gameManager.initializeGame(this.displayService.game);
+            this.gameId = this.displayService.game.id;
             this.gameName = this.displayService.game.name;
             this.difficulty = this.displayService.convertDifficulty(this.displayService.game);
             this.nbDifferences = this.displayService.game.nbDifferences;
@@ -78,6 +89,10 @@ export class OneVsOnePageComponent implements OnInit, AfterViewInit {
         this.gameManager.modifiedImageCanvas = this.modifiedCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         this.gameManager.originalImageCanvas = this.originalCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         this.gameManager.putImages();
+        /* this.socketService.on('getRealTime', (data: { realTime: number[] }) => {
+            // this.newScore.time = String(data.realTime[3]) + String(data.realTime[2]) + ':' + String(data.realTime[1]) + String(data.realTime[0]);
+            console.log(data.realTime);
+        });*/
         this.socketService.on('differenceUpdate', async (data: { nbDifferenceHost: number; nbDifferenceInvite: number; differenceId: number }) => {
             this.nbDifferencesFoundUser1 = data.nbDifferenceHost;
             this.nbDifferencesFoundUser2 = data.nbDifferenceInvite;
@@ -169,9 +184,16 @@ export class OneVsOnePageComponent implements OnInit, AfterViewInit {
 
     winCheck() {
         if (this.nbDifferencesFoundUser1 === this.nbDifferenceToWin || this.nbDifferencesFoundUser2 === this.nbDifferenceToWin) {
+            this.newScore.gameId = this.gameId;
+            // this.socketService.send('getRealTime', { roomId: this.roomId} );
+            this.newScore.time = this.minutes2 + this.minutes1 + ':' + this.secondes2 + this.secondes1;
             if (this.nbDifferencesFoundUser1 === this.nbDifferenceToWin && this.lobbyService.host === true) {
+                this.newScore.playerName = this.hostName;
+                this.displayService.checkPlayerScore(this.newScore);
                 this.winGame();
             } else if (this.nbDifferencesFoundUser2 === this.nbDifferenceToWin && this.lobbyService.host === false) {
+                this.newScore.playerName = this.guestName;
+                this.displayService.checkPlayerScore(this.newScore);
                 this.winGame();
             } else {
                 this.loseGame();

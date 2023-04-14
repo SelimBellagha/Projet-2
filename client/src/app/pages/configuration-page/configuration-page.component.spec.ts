@@ -86,13 +86,30 @@ describe('ConfigurationPageComponent', () => {
         expect(popupWindow.style.display).toEqual('block');
     });
 
-    it('should hide the popup window on onClosingPopUp()', () => {
+    it('should hide the popup window on onClosingPopUp(1)', () => {
         const popupWindow = component.popUpWindow.nativeElement;
         popupWindow.style.display = 'block';
         expect(popupWindow.style.display).toEqual('block');
-        component.onClosingPopUp();
+        component.onClosingPopUp(1);
         expect(popupWindow.style.display).toEqual('none');
     });
+
+    it('should hide the popup window on onClosingPopUp(2)', () => {
+        const popupWindow = component.popUpWindow2.nativeElement;
+        popupWindow.style.display = 'block';
+        expect(popupWindow.style.display).toEqual('block');
+        component.onClosingPopUp(2);
+        expect(popupWindow.style.display).toEqual('none');
+    });
+
+    it('should hide the popup window on onClosingPopUp(3)', () => {
+        const popupWindow = component.popUpWindow3.nativeElement;
+        popupWindow.style.display = 'block';
+        expect(popupWindow.style.display).toEqual('block');
+        component.onClosingPopUp(3);
+        expect(popupWindow.style.display).toEqual('none');
+    });
+
     it('nextPage should set hasNextPage to true if the list of games has more than 4 games ', () => {
         component.games = [{} as Game, {} as Game, {} as Game, {} as Game, {} as Game];
         component.hasNextPage = false;

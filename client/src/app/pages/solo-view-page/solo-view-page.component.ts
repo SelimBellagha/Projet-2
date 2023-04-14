@@ -1,6 +1,7 @@
 import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { MouseButton } from '@app/components/play-area/play-area.component';
+import { TopScore } from '@app/interfaces/game.interface';
 import { Vec2 } from '@app/interfaces/vec2';
 import { DisplayGameService } from '@app/services/display-game.service';
 import { GameManagerService } from '@app/services/game-manager.service';
@@ -15,6 +16,7 @@ export class SoloViewPageComponent implements OnInit, AfterViewInit {
     @ViewChild('modifiedImage') modifiedCanvas: ElementRef<HTMLCanvasElement>;
     @ViewChild('originalImage') originalCanvas: ElementRef<HTMLCanvasElement>;
     @ViewChild('popUpWindow') popUpWindow: ElementRef<HTMLDivElement>;
+    gameId: string;
     username: string;
     gameName: string;
     difficulty: string;
@@ -26,6 +28,13 @@ export class SoloViewPageComponent implements OnInit, AfterViewInit {
     minutes1: number = 0;
     minutes2: number = 0;
     intervalID: number;
+    newScore: TopScore = {
+        position: 'tempPosition',
+        gameId: 'tempId',
+        gameType: 'solo',
+        time: 'tempTime',
+        playerName: 'tempName',
+    };
 
     // eslint-disable-next-line max-params
     constructor(
@@ -42,6 +51,7 @@ export class SoloViewPageComponent implements OnInit, AfterViewInit {
         if (this.displayService.game) {
             this.gameManager.initializeGame(this.displayService.game);
             this.gameName = this.displayService.game.name;
+            this.gameId = this.displayService.game.id;
             this.difficulty = this.displayService.convertDifficulty(this.displayService.game);
             this.nbDifferences = this.displayService.game.nbDifferences;
         }
@@ -85,6 +95,10 @@ export class SoloViewPageComponent implements OnInit, AfterViewInit {
 
     endGame(): void {
         this.stopTimer();
+        this.newScore.gameId = this.gameId;
+        this.newScore.time = this.minutes2 + this.minutes1 + ':' + this.secondes2 + this.secondes1;
+        this.newScore.playerName = this.username;
+        this.displayService.checkPlayerScore(this.newScore);
         this.gameManager.playWinAudio();
         this.popUpWindow.nativeElement.style.display = 'block';
     }

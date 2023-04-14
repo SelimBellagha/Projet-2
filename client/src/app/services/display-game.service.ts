@@ -15,6 +15,7 @@ export class DisplayGameService {
     gameId: string;
     soloScores: TopScore[] = [];
     oneVOneScores: TopScore[] = [];
+    isScoreAdded: boolean = false;
     constructor(private comm: CommunicationService, private socketService: SocketClientService) {}
 
     loadGame(gameId: string) {
@@ -27,15 +28,14 @@ export class DisplayGameService {
         await this.convertAllGames();
     }
 
-    loadScores(gameId: string) {
-        /*
-        const source = this.comm.getGameScores(gameId, "solo");
-        this.soloScores = await firstValueFrom(source);
-        const source2 = this.comm.getGameScores(gameId, "1v1");
-        this.oneVOneScores = await firstValueFrom(source2);
-        */
-        this.comm.getGameScores(gameId, 'solo').subscribe((scores: TopScore[]) => (this.soloScores = scores));
-        this.comm.getGameScores(gameId, '1v1').subscribe((scores: TopScore[]) => (this.oneVOneScores = scores));
+    resetAllScores() {
+        for (const game of this.tempGames) {
+            this.comm.resetGameScores(game.id);
+        }
+    }
+
+    checkPlayerScore(newScore: TopScore) {
+        this.comm.addScore(newScore).subscribe((added: boolean) => (this.isScoreAdded = added));
     }
 
     convertDifficulty(game: GameData) {

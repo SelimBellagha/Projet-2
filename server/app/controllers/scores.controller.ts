@@ -26,7 +26,7 @@ export class ScoresController {
             }
         });
 
-        // GET scores/:id
+        // GET scores/:gameId/:gameType
         this.router.get('/:gameId/:gameType', async (req: Request, res: Response) => {
             try {
                 const { gameId, gameType } = req.params;
@@ -45,7 +45,7 @@ export class ScoresController {
                 if (response) {
                     res.status(StatusCodes.CREATED).send(response);
                 } else {
-                    res.status(StatusCodes.OK).json('The score did not beat a topscore');
+                    res.status(StatusCodes.OK).send(response);
                 }
             } catch (error) {
                 res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(error.message);
@@ -69,16 +69,6 @@ export class ScoresController {
                 const { gameId } = req.params;
                 await this.scoreService.resetOneGame(gameId);
                 res.status(StatusCodes.OK).json('The scores for this game have been reinitialized');
-            } catch (error) {
-                res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(error.message);
-            }
-        });
-
-        // DELETE scores
-        this.router.delete('/', async (req: Request, res: Response) => {
-            try {
-                await this.scoreService.resetScores();
-                res.status(StatusCodes.OK).json('The scores have been reinitialized');
             } catch (error) {
                 res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(error.message);
             }

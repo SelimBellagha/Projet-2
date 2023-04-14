@@ -53,13 +53,9 @@ export class CommunicationService {
         return this.http.post<boolean>(`${this.baseUrl}/scores`, score);
     }
 
-    deleteGameScores(gameId: string): void {
+    resetGameScores(gameId: string): void {
         const params = new HttpParams().set('gameId', gameId);
         this.http.delete(`${this.baseUrl}/scores/${gameId}`, { params }).subscribe();
-    }
-
-    deleteAllScore(): void {
-        this.http.delete(`${this.baseUrl}/scores`).subscribe();
     }
 
     private handleError<T>(request: string, result?: T): (error: Error) => Observable<T> {

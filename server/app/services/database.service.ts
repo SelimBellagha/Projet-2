@@ -1,7 +1,7 @@
-import { Db, MongoClient } from 'mongodb';
-import { DATABASE_URL } from '@app/data/db-constants';
-import { Service } from 'typedi';
+import { DATABASE_NAME, DATABASE_URL } from '@app/data/db-constants';
 import { TopScore } from '@app/data/top-scores.interface';
+import { Db, MongoClient } from 'mongodb';
+import { Service } from 'typedi';
 
 @Service()
 export class DatabaseService {
@@ -12,11 +12,11 @@ export class DatabaseService {
         return this.db;
     }
 
-    async start(): Promise<MongoClient | null> {
+    async start(databaseUrl: string = DATABASE_URL): Promise<MongoClient | null> {
         try {
-            this.client = new MongoClient(DATABASE_URL);
+            this.client = new MongoClient(databaseUrl);
             await this.client.connect();
-            this.db = this.client.db(process.env.DATABASE_NAME);
+            this.db = this.client.db(DATABASE_NAME);
         } catch {
             throw new Error('Database connection error');
         }

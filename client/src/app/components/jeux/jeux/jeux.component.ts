@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, Input, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { TopScore } from '@app/interfaces/game.interface';
 import { CommunicationService } from '@app/services/communication.service';
@@ -12,7 +12,7 @@ import { v4 as uuidv4 } from 'uuid';
     templateUrl: './jeux.component.html',
     styleUrls: ['./jeux.component.scss'],
 })
-export class JeuxComponent implements AfterViewInit {
+export class JeuxComponent implements AfterViewInit, OnInit {
     @Input() customTitle: string;
     @Input() customDifficulty: string;
     @Input() isConfigurationMode: boolean;
@@ -39,14 +39,17 @@ export class JeuxComponent implements AfterViewInit {
         this.lobbyService.host = false;
     }
 
+    ngOnInit(): void {
+        this.loadSoloScores();
+        this.load1v1Scores();
+    }
+
     loadSoloScores() {
         this.comm.getGameScores(this.customId, 'solo').subscribe((scores: TopScore[]) => (this.soloScores = scores));
-        return this.soloScores;
     }
 
     load1v1Scores() {
         this.comm.getGameScores(this.customId, '1v1').subscribe((scores: TopScore[]) => (this.oneVOneScores = scores));
-        return this.oneVOneScores;
     }
 
     goToLoginPage(): void {
@@ -83,12 +86,12 @@ export class JeuxComponent implements AfterViewInit {
 
     deleteGame(): void {
         this.comm.deleteGame(this.customId);
-        this.popUpWindow.nativeElement.style.display = 'none';
+        this.onClosingPopUp();
     }
 
     resetGameScores(): void {
-        this.comm.deleteGameScores(this.customId);
-        this.popUpWindow2.nativeElement.style.display = 'none';
+        this.comm.resetGameScores(this.customId);
+        this.onClosingPopUp2();
     }
 
     onClosingPopUp(): void {

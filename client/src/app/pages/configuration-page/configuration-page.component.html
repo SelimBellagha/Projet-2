@@ -8,7 +8,7 @@
     <div class="main-container">
         <div *ngFor="let game of gamesDisplayed">
             <app-jeux
-                [customId] = "game.id"
+                [customId]="game.id"
                 [customTitle]="game.title"
                 [customDifficulty]="game.difficulty"
                 [isConfigurationMode]="true"
@@ -18,8 +18,8 @@
     </div>
     <div class="buttons-align">
         <div *ngIf="hasNextPage === false">
-            <button disabled="disabled" >Précédent</button>
-            <button disabled="disabled" >Suivant</button>
+            <button disabled="disabled">Précédent</button>
+            <button disabled="disabled">Suivant</button>
         </div>
 
         <div *ngIf="hasNextPage === true">
@@ -43,7 +43,8 @@
         <button class="button-choice" (click)="goToConstants()">Constantes de jeu</button>
 
         <button class="button-choice">Accéder à l'historique des parties jouées</button>
-        <button class="button-choice">Remettre les données à leur état initial</button>
+        <button class="button-choice" (click)="goToReset()">Reinitialiser tous les TOP 3</button>
+        <button class="button-choice" (click)="goToDelete()">Supprimer toutes les fiches de jeu</button>
     </div>
 
     <div #popUpWindow class="modal">
@@ -52,9 +53,28 @@
             <li>temps gagné avec la découverte d’une différence : 5 secondes</li>
             <li>temps de pénalité pour l’utilisation d’un indice : 5 secondes</li>
             <div class="close-button">
-                <button (click)="onClosingPopUp()">Fermer</button>
+                <button (click)="onClosingPopUp(1)">Fermer</button>
+            </div>
+        </div>
+    </div>
+
+    <div #popUpWindow2 class="modal">
+        <div class="modal-content">
+            <div class="deleteWarning">Êtes-vous sûrs de vouloir reinitializer les temps de tous les jeux?</div>
+            <div class="close-button">
+                <button (click)="resetAllScores()">Oui</button>
+                <button (click)="onClosingPopUp(2)">Non</button>
+            </div>
+        </div>
+    </div>
+
+    <div #popUpWindow3 class="modal">
+        <div class="modal-content">
+            <div class="deleteWarning">Êtes-vous sûrs de vouloir supprimer toutes les fiches de jeux?</div>
+            <div class="close-button">
+                <button (click)="deleteAllGames()">Oui</button>
+                <button (click)="onClosingPopUp(3)">Non</button>
             </div>
         </div>
     </div>
 </body>
-
