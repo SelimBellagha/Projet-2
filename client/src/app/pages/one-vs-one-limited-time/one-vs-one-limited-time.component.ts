@@ -27,7 +27,6 @@ export class OneVsOneLimitedTimeComponent implements OnInit, AfterViewInit {
     nbDifferences: number;
     minutes: number = 0;
     secondes: number = 0;
-    gameTime: number = 0;
     intervalID: number;
     nbDifferencesFound: number;
     nbDifferenceToWin: number;
@@ -90,14 +89,15 @@ export class OneVsOneLimitedTimeComponent implements OnInit, AfterViewInit {
     }
 
     timer(gameTime: number) {
+        this.gameManager.gameTime = gameTime;
         const timerInterval = 1000;
         const max = 60;
-        this.secondes = gameTime % max;
-        this.minutes = Math.floor(gameTime / max);
+        this.secondes = this.gameManager.gameTime % max;
+        this.minutes = Math.floor(this.gameManager.gameTime / max);
         this.intervalID = window.setInterval(() => {
-            gameTime--;
-            this.secondes = gameTime % max;
-            this.minutes = Math.floor(gameTime / max);
+            this.gameManager.gameTime--;
+            this.secondes = this.gameManager.gameTime % max;
+            this.minutes = Math.floor(this.gameManager.gameTime / max);
             if (this.minutes === 0 && this.secondes === 0) {
                 this.endGame();
             }

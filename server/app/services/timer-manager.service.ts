@@ -1,10 +1,9 @@
-import { setInterval } from 'timers';
 import { Service } from 'typedi';
 @Service()
 export class TimerManager {
     minutes: number = 0;
     secondes: number = 0;
-    gameTime: number;
+    gameTime: number = 0;
 
     startTimer(gameTime: number) {
         this.gameTime = gameTime;
@@ -12,7 +11,7 @@ export class TimerManager {
     }
 
     startStopWatch() {
-        this.startStopWatch();
+        this.stopWatch();
     }
 
     getTimeGame() {

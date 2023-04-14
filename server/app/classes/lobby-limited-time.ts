@@ -1,4 +1,5 @@
 import { Player } from '@app/data/player';
+import { TimerManager } from '@app/services/timer-manager.service';
 
 export class LobbyLimitedTime {
     firstPlayer: Player;
@@ -6,6 +7,7 @@ export class LobbyLimitedTime {
     gamesNumber: number = 0;
     differencesFound: number = 0;
     firstGame: boolean = false;
+    timer = new TimerManager();
 
     constructor(host: Player) {
         this.firstPlayer = host;

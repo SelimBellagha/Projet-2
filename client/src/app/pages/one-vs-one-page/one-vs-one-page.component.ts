@@ -28,7 +28,6 @@ export class OneVsOnePageComponent implements OnInit, AfterViewInit {
     nbDifferences: number;
     minutes: number = 0;
     secondes: number = 0;
-    gameTime: number = 0;
     intervalID: number;
     nbDifferencesFoundUser1: number;
     nbDifferencesFoundUser2: number;
@@ -91,19 +90,23 @@ export class OneVsOnePageComponent implements OnInit, AfterViewInit {
     }
 
     stopWatch() {
+        this.gameManager.gameTime = 0;
         const timerInterval = 1000;
         const max = 60;
         this.minutes = 0;
         this.secondes = 0;
         setInterval(() => {
-            this.gameTime++;
-            this.secondes = this.gameTime % max;
-            this.minutes = Math.floor(this.gameTime / max);
+            this.gameManager.gameTime++;
+            this.secondes = this.gameManager.gameTime % max;
+            this.minutes = Math.floor(this.gameManager.gameTime / max);
         }, timerInterval);
     }
 
     startStopWatch() {
         this.stopWatch();
+        if (this.lobbyService.host) {
+            this.socketService.send('startStopWatch', { roomId: this.lobbyService.roomId });
+        }
     }
 
     stopStopWatch() {
