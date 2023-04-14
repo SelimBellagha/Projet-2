@@ -1,14 +1,12 @@
 body {
-    background-color: #b5d8b5;
-    width: 100%;
-    height: 100%;
+    background-color:  #b5d8b5;
+    font-family: Arial, Helvetica, sans-serif;
+    margin: 0;   
 }
 
 .top-bar {
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
-    margin: 10px, 0px;
 }
 
 .image-container {
@@ -73,7 +71,7 @@ canvas {
 .validation {
     text-align: center;
     font-weight: bold;
-    height: 30px;
+    height: 23px;
     width: 200px;
     background-color: #ebe8e0;
     color: black;
@@ -84,10 +82,10 @@ canvas {
 }
 
 button {
-    margin: 0 2% 2% 2%;
+    margin: 0 1% 1% 1%;
     text-align: center;
     font-weight: bold;
-    height: 30px;
+    height: 25px;
     width: 200px;
     background-color: #3d7db1;
     color: white;
@@ -109,7 +107,7 @@ h1 {
 .note-container {
     color: red;
     font-style: italic;
-    text-align: center;
+    margin: 0.5% 4% 0 13%;
 }
 
 .modal {
@@ -143,8 +141,7 @@ h1 {
 }
 
 .modal-buttons {
-    padding-top: 100%;
-    margin-top: 25%;
+    margin-top: 150%;
     text-align: right;
 }
 
@@ -191,11 +188,6 @@ h1 {
     outline: none;
 }
 
-body {
-    font-family: Arial, Helvetica, sans-serif;
-    margin: 0;
-    background-color: #f1f9f9;
-}
 
 #app-cover {
     display: table;
@@ -327,4 +319,58 @@ body {
 #button-6 .checkbox:checked ~ .layer {
     background-color: #daf6e2;
     transform: rotateZ(180deg);
+}
+
+.tool-icons {
+    width: 20px;
+    height: 20px;
+    margin-top: 7px;
+}
+
+.icon-description {
+    position: relative;
+    height: max-content;
+    width: max-content;
+    background: rgba(245, 245, 245, 0.823);
+    border: 1px solid rgb(197, 28, 28);
+    padding: 4px;
+    color: black;
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity .2s, visibility .2s;
+}
+
+.tool-button:hover .icon-description, .tool-label:hover .icon-description{
+  visibility: visible;
+  opacity: 1;
+}
+
+.tool-button {
+    cursor: pointer;
+    background-color: rgba(255, 255, 255, 0.812);
+    border-color: rgba(178, 177, 177, 0.592);
+    width: 40px;
+    height: 40px;
+    margin-right:0.2px;
+    margin-top: 2px;
+}
+
+.tools-position {
+   position: absolute;
+    right: 0;
+    width: 270px;
+}
+
+.tool-label {
+    margin-top: 5px;
+    cursor:pointer;
+}
+
+#largeur {
+    margin-top: 13px;
+}
+
+.details {
+    font-size: 11px;
+    font-weight: normal;
 }

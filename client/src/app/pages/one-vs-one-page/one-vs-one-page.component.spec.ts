@@ -82,16 +82,16 @@ describe('OneVsOnePageComponent', () => {
         expect(component).toBeTruthy();
     });
 
-    it('loseGame should call stopTimer and show correct PopUp', () => {
-        const spy = spyOn(component, 'stopTimer').and.callThrough();
+    it('loseGame should call stopStopWatch and show correct PopUp', () => {
+        const spy = spyOn(component, 'stopStopWatch').and.callThrough();
         component.popUpWindowLose.nativeElement.style.display = 'none';
         component.loseGame();
         expect(spy).toHaveBeenCalled();
         expect(component.popUpWindowLose.nativeElement.style.display).toEqual('block');
     });
 
-    it('loseGame should call stopTimer, playAudio and show correct popUp', () => {
-        const spy = spyOn(component, 'stopTimer').and.callThrough();
+    it('loseGame should call stopStopWatch, playAudio and show correct popUp', () => {
+        const spy = spyOn(component, 'stopStopWatch').and.callThrough();
         component.popUpWindowWin.nativeElement.style.display = 'none';
         component.winGame();
         expect(spy).toHaveBeenCalled();

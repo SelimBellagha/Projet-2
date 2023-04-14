@@ -6,6 +6,7 @@ import { GameData } from '@app/interfaces/game.interface';
 import { DisplayGameService } from '@app/services/display-game.service';
 import { GameManagerService } from '@app/services/game-manager.service';
 import { LoginFormService } from '@app/services/login-form.service';
+import { SocketClientService } from '@app/services/socket-client-service.service';
 import { SoloViewPageComponent } from './solo-view-page.component';
 import SpyObj = jasmine.SpyObj;
 const timeTest = 1000;
@@ -16,6 +17,7 @@ describe('SoloViewPageComponent', () => {
     let gameManagerSpy: SpyObj<GameManagerService>;
     let displayServiceSpy: SpyObj<DisplayGameService>;
     let loginServiceSpy: SpyObj<LoginFormService>;
+    let socketService: SpyObj<SocketClientService>;
     let router: Router;
 
     const username = 'testName';
@@ -43,6 +45,7 @@ describe('SoloViewPageComponent', () => {
         gameManagerSpy = jasmine.createSpyObj('GameManagerService', ['onPositionClicked', 'putImages', 'playWinAudio', 'initializeGame']);
         displayServiceSpy = jasmine.createSpyObj('DisplayGameService', ['loadGame', 'convertDifficulty'], { game: gameMock1 as unknown as GameData });
         loginServiceSpy = jasmine.createSpyObj('LoginFormService', ['getFormData']);
+        socketService = jasmine.createSpyObj('SocketClientService', ['send']);
 
         loginServiceSpy.getFormData.and.returnValue(username);
 
@@ -53,6 +56,7 @@ describe('SoloViewPageComponent', () => {
                 { provide: GameManagerService, useValue: gameManagerSpy },
                 { provide: DisplayGameService, useValue: displayServiceSpy },
                 { provide: LoginFormService, useValue: loginServiceSpy },
+                { provide: SocketClientService, useValue: socketService },
             ],
         }).compileComponents();
 
@@ -71,32 +75,12 @@ describe('SoloViewPageComponent', () => {
         expect(component.username).toEqual(username);
     });
 
-    it('should increment seconds1 every second', () => {
-        const initialSeconds1 = component.secondes1;
+    it('should increment seconds every second', () => {
+        const initialSeconds1 = component.secondes;
         jasmine.clock().install();
-        component.timer();
+        component.startStopWatch();
         jasmine.clock().tick(timeTest);
-        expect(component.secondes1).toBe(initialSeconds1 + 1);
-        jasmine.clock().uninstall();
-    });
-    it('should reset seconds1 and increment seconds2 when seconds1 reaches 9', () => {
-        component.secondes1 = 9;
-        jasmine.clock().install();
-        component.timer();
-        jasmine.clock().tick(timeTest);
-        expect(component.secondes1).toBe(0);
-        expect(component.secondes2).toBe(1);
-        jasmine.clock().uninstall();
-    });
-
-    it('should reset minutes1 and increment minutes2 when minutes1 reaches 9', () => {
-        component.minutes1 = 9;
-        jasmine.clock().install();
-
-        component.timer();
-        jasmine.clock().tick(timeTest);
-        expect(component.minutes1).toBe(0);
-        expect(component.minutes2).toBe(1);
+        expect(component.secondes).toBe(initialSeconds1 + 1);
         jasmine.clock().uninstall();
     });
 
@@ -186,24 +170,24 @@ describe('SoloViewPageComponent', () => {
         expect(popUp.nativeElement.style.display).toEqual('block');
     });
 
-    xit('timer should start', () => {
+    xit('stopWatch should start', () => {
         const timerTest = 4;
         const waitTime = 5000;
 
-        const time = component.secondes1;
+        const time = component.secondes;
         expect(time).toBeGreaterThanOrEqual(0);
-        const timerSpy = spyOn(component, 'startTimer');
-        component.startTimer();
+        const timerSpy = spyOn(component, 'startStopWatch');
+        component.startStopWatch();
         expect(timerSpy).toHaveBeenCalled();
         setTimeout(() => {
-            const time2 = component.secondes1;
+            const time2 = component.secondes;
             expect(time2).toBeGreaterThanOrEqual(timerTest);
         }, waitTime);
     });
 
     it('startTimer should call timer()', () => {
-        const spy = spyOn(component, 'timer');
-        component.startTimer();
+        const spy = spyOn(component, 'stopWatch');
+        component.startStopWatch();
         expect(spy).toHaveBeenCalled();
     });
 });

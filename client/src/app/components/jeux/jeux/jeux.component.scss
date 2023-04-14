@@ -3,17 +3,15 @@
     border: 1px solid black;
     border-radius: 5px;
     margin: 2%;
+    padding: 1%;
 }
 
 .image-position{
-  width: 60%;
-  height: 60%;
-  margin-left: 5%;
- 
-}
-
-.flex-column {
-    margin-left: 60%;
+  width: 40%;
+  height: 40%;
+  margin-left: 2%;
+  margin-right: 3%;
+  float: left;
 }
 
 .buttons {
@@ -50,6 +48,7 @@ button {
     border: 1px solid black;
     border-collapse: collapse;
     margin-bottom: 10px;
+    width: 50%;
 }
 
 th, td {

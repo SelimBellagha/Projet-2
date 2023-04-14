@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
+import { LobbyService } from '@app/services/lobby.service';
 import { LoginFormService } from '@app/services/login-form.service';
 
 @Component({
@@ -9,7 +10,7 @@ import { LoginFormService } from '@app/services/login-form.service';
 })
 export class LoginPageComponent {
     username: string;
-    constructor(private router: Router, private loginService: LoginFormService) {}
+    constructor(private router: Router, private loginService: LoginFormService, private lobbyService: LobbyService) {}
 
     goToGameSelection(): void {
         this.router.navigate(['/gameSelection']);
@@ -27,8 +28,15 @@ export class LoginPageComponent {
             window.alert('Nom de joueur invalide: entrez un nom non vide');
         } else {
             this.onClickSubmit(name);
-            if (this.loginService.getGameType() === false) {
+            if (this.loginService.getLimitedTimeGame()) {
+                if (this.loginService.getGameType()) {
+                    this.router.navigate(['/salleAttente']);
+                } else {
+                    this.router.navigate(['/soloLimitedTime']);
+                }
+            } else if (this.loginService.getGameType() === false) {
                 this.router.navigate(['/soloView']);
+                this.lobbyService.roomId = '0';
             } else {
                 this.router.navigate(['/salleAttente']);
             }

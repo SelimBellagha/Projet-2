@@ -30,7 +30,8 @@
             "app/server.ts",
             "app/app.ts",
             "app/services/timer-manager.service.ts",
-            "app/services/socket-server-manager.service.ts"
+            "app/services/socket-server-manager.service.ts",
+            "app/classes/lobby-limited-time.ts"
         ],
         "require": [
             "ts-node/register",
