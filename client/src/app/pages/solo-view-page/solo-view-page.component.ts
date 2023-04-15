@@ -5,6 +5,7 @@ import { Vec2 } from '@app/interfaces/vec2';
 import { DisplayGameService } from '@app/services/display-game.service';
 import { GameManagerService } from '@app/services/game-manager.service';
 import { LoginFormService } from '@app/services/login-form.service';
+import { SocketClientService } from '@app/services/socket-client-service.service';
 
 @Component({
     selector: 'app-solo-view-page',
@@ -20,11 +21,8 @@ export class SoloViewPageComponent implements OnInit, AfterViewInit {
     difficulty: string;
     nbDifferences: number;
     nbDifferencesFound: number;
+    secondes: number = 0;
     minutes: number = 0;
-    secondes1: number = 0;
-    secondes2: number = 0;
-    minutes1: number = 0;
-    minutes2: number = 0;
     intervalID: number;
 
     // eslint-disable-next-line max-params
@@ -33,11 +31,12 @@ export class SoloViewPageComponent implements OnInit, AfterViewInit {
         private loginService: LoginFormService,
         private displayService: DisplayGameService,
         private gameManager: GameManagerService,
+        private socketService: SocketClientService,
     ) {}
 
     ngOnInit() {
         this.username = this.loginService.getFormData();
-        this.startTimer();
+        this.startStopWatch();
         this.nbDifferencesFound = 0;
         if (this.displayService.game) {
             this.gameManager.initializeGame(this.displayService.game);
@@ -53,38 +52,30 @@ export class SoloViewPageComponent implements OnInit, AfterViewInit {
         this.gameManager.putImages();
     }
 
-    timer() {
-        const decimalMax = 9;
-        const centaineMax = 5;
+    stopWatch() {
+        this.gameManager.gameTime = 0;
         const timerInterval = 1000;
+        const max = 60;
+        this.minutes = 0;
+        this.secondes = 0;
         this.intervalID = window.setInterval(() => {
-            if (this.secondes2 === centaineMax && this.secondes1 === decimalMax) {
-                this.secondes2 = 0;
-                this.secondes1 = 0;
-                this.minutes1++;
-            } else if (this.minutes1 === decimalMax) {
-                this.minutes1 = 0;
-                this.minutes2++;
-            }
-            if (this.secondes1 === decimalMax) {
-                this.secondes2++;
-                this.secondes1 = 0;
-            } else {
-                this.secondes1++;
-            }
+            this.gameManager.gameTime++;
+            this.secondes = this.gameManager.gameTime % max;
+            this.minutes = Math.floor(this.gameManager.gameTime / max);
         }, timerInterval);
     }
 
-    startTimer = () => {
-        this.timer();
+    startStopWatch = () => {
+        this.stopWatch();
+        this.socketService.send('startStopWatch', {});
     };
 
-    stopTimer() {
+    stopStopWatch() {
         clearInterval(this.intervalID);
     }
 
     endGame(): void {
-        this.stopTimer();
+        this.stopStopWatch();
         this.gameManager.playWinAudio();
         this.popUpWindow.nativeElement.style.display = 'block';
     }
@@ -112,6 +103,7 @@ export class SoloViewPageComponent implements OnInit, AfterViewInit {
         this.popUpWindow.nativeElement.style.display = 'block';
     }
     returnSelectionPage(): void {
+        this.stopStopWatch();
         this.router.navigate(['/gameSelection']);
     }
 }
