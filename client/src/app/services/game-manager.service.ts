@@ -99,8 +99,10 @@ export class GameManagerService {
             if (await this.verifyDifference(position)) {
                 this.locked = false;
                 this.playDifferenceAudio();
-                this.socketService.send('systemMessage', '[' + timeString + '] ' + 'Différence trouvée par le joueur : ');
-                this.socketService.send('systemMessageSolo', 'Différence trouvée ');
+                if (!this.replayMode) {
+                    this.socketService.send('systemMessage', '[' + timeString + '] ' + 'Différence trouvée par le joueur : ');
+                    this.socketService.send('systemMessageSolo', 'Différence trouvée ');
+                }
                 await this.flashImages(this.gameData.differences[this.lastDifferenceFound]);
                 if (this.router.url === '/soloLimitedTime') {
                     this.changeGame();
@@ -108,8 +110,10 @@ export class GameManagerService {
                 return true;
             } else {
                 await this.errorMessage(position);
-                this.socketService.send('systemMessage', '[' + timeString + '] ' + 'Erreur faite par le joueur : ');
-                this.socketService.send('systemMessageSolo', 'Erreur ');
+                if (!this.replayMode) {
+                    this.socketService.send('systemMessage', '[' + timeString + '] ' + 'Erreur faite par le joueur : ');
+                    this.socketService.send('systemMessageSolo', 'Erreur ');
+                }
             }
             this.locked = false;
         }

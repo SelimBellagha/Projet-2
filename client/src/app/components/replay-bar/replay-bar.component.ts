@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ReplayService } from '@app/services/replay.service';
 
 const FOURX_SPEED = 4;
@@ -9,9 +9,12 @@ const DEFAULT_SPEED = 1;
     templateUrl: './replay-bar.component.html',
     styleUrls: ['./replay-bar.component.scss'],
 })
-export class ReplayBarComponent {
+export class ReplayBarComponent implements OnInit {
     speed: number = 1;
     constructor(private replayManager: ReplayService) {}
+    ngOnInit(): void {
+        this.replayManager.setCurrentSpeed(1);
+    }
 
     onPause(): void {
         this.replayManager.pauseReplay();

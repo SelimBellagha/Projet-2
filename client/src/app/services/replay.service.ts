@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { GameAction, GameActionType } from '@app/interfaces/game-action';
 import { Vec2 } from '@app/interfaces/vec2';
+import { Message } from '@common/chatMessage';
 import { ActionSaverService } from './action-saver.service';
 import { GameManagerService } from './game-manager.service';
 
@@ -69,13 +70,18 @@ export class ReplayService {
                 }
                 break;
             case GameActionType.Message:
+                if (!this.compareMessages(gameAction.info as Message, this.actionSaver.messages[this.actionSaver.messages.length - 1])) {
+                    this.actionSaver.messages.push(gameAction.info as Message);
+                }
                 break;
         }
+    }
+    compareMessages(message1: Message, message2: Message) {
+        return message1.text === message2.text;
     }
 
     startTimer(speed: number): void {
         clearInterval(this.timerId);
-        console.log('time');
         this.timerId = window.setInterval(() => {
             if (this.isPlaying) {
                 this.currentReplayTime++;
