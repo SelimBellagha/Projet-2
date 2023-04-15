@@ -11,6 +11,9 @@ const FLASH_TIME = 250;
 const ONE_SECOND = 1000;
 const EIGHT = 8;
 const QUART_SECOND = 250;
+const pointY = 240;
+const pointX = 320;
+const indicePixel = 20;
 @Injectable({
     providedIn: 'root',
 })
@@ -185,7 +188,7 @@ export class GameManagerService {
     drawLine(firstPoint: Vec2): void {
         // Copier les pixels dee l'image originale vers l'image modifiée
         const hintImage = this.originalImageCanvas;
-        hintImage.moveTo(320, 240);
+        hintImage.moveTo(pointX, pointY);
         hintImage.lineTo(firstPoint.x, firstPoint.y);
         hintImage.stroke();
     }
@@ -200,7 +203,7 @@ export class GameManagerService {
 
     giveHint3(coordinate: Vec2): void {
         this.originalImageCanvas.font = '40px Arial';
-        this.originalImageCanvas.strokeText('Click Here', coordinate.x + 20, coordinate.y + 20);
+        this.originalImageCanvas.strokeText('Click Here', coordinate.x + indicePixel, coordinate.y + indicePixel);
     }
 
     replacePixels(pixels: Vec2[]): void {

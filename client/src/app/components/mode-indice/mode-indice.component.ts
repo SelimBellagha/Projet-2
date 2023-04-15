@@ -3,6 +3,13 @@ import { Vec2 } from '@app/interfaces/vec2';
 
 import { GameManagerService } from '@app/services/game-manager.service';
 
+const cadran1 = 0;
+const cadran2 = 1;
+const cadran3 = 10;
+const cadran4 = 11;
+
+const multiplicateur = 10;
+
 @Component({
     selector: 'app-mode-indice',
     templateUrl: './mode-indice.component.html',
@@ -105,8 +112,6 @@ export class ModeIndiceComponent {
         const pixelDifferences = this.gameManager.gameData.differences[randomHint];
         this.result.x = pixelDifferences[(pixelDifferences.length - 1) / 2].x;
         this.result.y = pixelDifferences[(pixelDifferences.length - 1) / 2].y;
-        // eslint-disable-next-line no-console
-        console.log(pixelDifferences);
 
         return this.result;
     }
@@ -118,24 +123,24 @@ export class ModeIndiceComponent {
             this.xCadran = 1;
         }
 
-        switch (10 * this.yCadran + this.xCadran) {
-            case 11:
+        switch (multiplicateur * this.yCadran + this.xCadran) {
+            case cadran4:
                 this.gameManager.drawLine(this.b);
                 this.gameManager.drawLine(this.d);
 
-                return 4;
+                return 1;
 
-            case 10:
+            case cadran3:
                 this.gameManager.drawLine(this.a);
                 this.gameManager.drawLine(this.d);
-                return 3;
+                return 1;
 
-            case 1:
+            case cadran2:
                 this.gameManager.drawLine(this.b);
                 this.gameManager.drawLine(this.c);
-                return 2;
+                return 1;
 
-            case 0:
+            case cadran1:
                 this.gameManager.drawLine(this.a);
                 this.gameManager.drawLine(this.c);
                 return 1;
@@ -154,8 +159,8 @@ export class ModeIndiceComponent {
             this.xCadran = 0;
         }
 
-        switch (10 * this.yCadran + this.xCadran) {
-            case 0:
+        switch (multiplicateur * this.yCadran + this.xCadran) {
+            case cadran1:
                 if (coordinate.y < this.centre.y / 2) {
                     this.yCadran = 1;
                     this.gameManager.drawLine2(this.e, this.f);
@@ -168,7 +173,7 @@ export class ModeIndiceComponent {
                     return 1;
                 }
 
-            case 1:
+            case cadran2:
                 if (coordinate.y < this.centre.y / 2) {
                     this.yCadran = 1;
                     this.gameManager.drawLine2(this.f, this.g);
@@ -181,7 +186,7 @@ export class ModeIndiceComponent {
                     return 1;
                 }
 
-            case 10:
+            case cadran3:
                 if (coordinate.y > (this.centre.y * 3) / 2) {
                     this.yCadran = 1;
                     this.gameManager.drawLine2(this.h, this.i);
@@ -194,7 +199,7 @@ export class ModeIndiceComponent {
                     return 1;
                 }
 
-            case 11:
+            case cadran4:
                 if (coordinate.y > (this.centre.y * 3) / 2) {
                     this.yCadran = 1;
                     this.gameManager.drawLine2(this.h, this.j);

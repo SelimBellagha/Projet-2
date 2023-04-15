@@ -54,13 +54,13 @@ describe('GameManagerService', () => {
     });
 
     it('should return the value of toggle', () => {
-        service.state = true;
+        service.cheatState = true;
         service.stateChanger();
-        expect(service.state).toBe(false);
+        expect(service.cheatState).toBe(false);
 
-        service.state = false;
+        service.cheatState = false;
         service.stateChanger();
-        expect(service.state).toBe(true);
+        expect(service.cheatState).toBe(true);
     });
 
     it('flashPixels should not change the final canvas', async () => {
