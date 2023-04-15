@@ -70,6 +70,9 @@ export class GameManagerService {
         }
         return false;
     }
+    sendHintMessage(message: string): void {
+        this.socketService.send('systemMessageSolo', message);
+    }
 
     async verifyDifference(position: Vec2): Promise<boolean> {
         // code temporaire
@@ -107,36 +110,10 @@ export class GameManagerService {
             await this.wait(FLASH_TIME);
         }
     }
-    async createSquare(pixels: Vec2[][], canvas: CanvasRenderingContext2D): Promise<void> {
-        const flashingOriginalImageData = canvas.getImageData(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT);
-
-        for (let i = 0; i <= 1000; i++) {
-            canvas.putImageData(flashingOriginalImageData, i, 0);
-        }
-    }
 
     async wait(ms: number): Promise<void> {
         await new Promise((res) => setTimeout(res, ms));
     }
-    // giveHint(): void {
-    //     const canvasModifier = this.modifiedImageCanvas;
-    //     const canvasOriginal = this.originalImageCanvas;
-    //     const pixelDifferences = this.gameData.differences;
-
-    //     this.flashPixelsCheat(pixelDifferences, canvasModifier);
-    //     this.flashPixelsCheat(pixelDifferences, canvasOriginal);
-    // }
-    // onClick(): void {
-    //     {
-    //         // this.cheatMode.giveHint();
-    //         this.cheatMode.toggle = !this.cheatMode.toggle;
-    //         // this.status = this.toggle ? 'Enable Cheat' : 'Disable Cheat';
-    //     }
-    // }
-    // getToogle(): boolean {
-    //     return this.cheatMode.toggle;
-    // }
-
     stateChanger(): void {
         this.cheatState = !this.cheatState;
     }
@@ -204,6 +181,26 @@ export class GameManagerService {
             }
         }
         return;
+    }
+    drawLine(firstPoint: Vec2): void {
+        // Copier les pixels dee l'image originale vers l'image modifiée
+        const hintImage = this.originalImageCanvas;
+        hintImage.moveTo(320, 240);
+        hintImage.lineTo(firstPoint.x, firstPoint.y);
+        hintImage.stroke();
+    }
+    drawLine2(firstPoint: Vec2, endPoint: Vec2): void {
+        // Copier les pixels dee l'image originale vers l'image modifiée
+        const originalImageData = this.originalImageCanvas.getImageData(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT);
+        this.originalImageCanvas.putImageData(originalImageData, 0, 0);
+        this.originalImageCanvas.moveTo(firstPoint.x, firstPoint.y);
+        this.originalImageCanvas.lineTo(endPoint.x, endPoint.y);
+        this.originalImageCanvas.stroke();
+    }
+
+    giveHint3(coordinate: Vec2): void {
+        this.originalImageCanvas.font = '40px Arial';
+        this.originalImageCanvas.strokeText('Click Here', coordinate.x + 20, coordinate.y + 20);
     }
 
     replacePixels(pixels: Vec2[]): void {
