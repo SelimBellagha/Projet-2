@@ -8,6 +8,10 @@ import { GameManagerService } from './game-manager.service';
 export interface CheatInfo {
     isActivating: boolean;
 }
+export interface NormalHintInfo {
+    firstPos: Vec2;
+    endPos: Vec2;
+}
 
 const ONE_SECOND = 1000;
 @Injectable({
@@ -46,6 +50,7 @@ export class ReplayService {
         this.actionSaver.restart();
         this.gameManager.restartGame();
         this.isPlaying = true;
+        this.actionSaver.messages.length = 0;
         this.startTimer(this.replaySpeed);
     }
     endReplay(): void {
@@ -56,7 +61,11 @@ export class ReplayService {
             case GameActionType.Click:
                 this.gameManager.onPositionClicked(gameAction.info as Vec2);
                 break;
-            case GameActionType.Hint:
+            case GameActionType.NormalHint:
+                this.gameManager.drawLine((gameAction.info as NormalHintInfo).firstPos, (gameAction.info as NormalHintInfo).endPos);
+                break;
+            case GameActionType.LastHint:
+                this.gameManager.giveHint3(gameAction.info as Vec2);
                 break;
             case GameActionType.ActivateCheat:
                 this.gameManager.stateChanger();
@@ -70,9 +79,14 @@ export class ReplayService {
                 }
                 break;
             case GameActionType.Message:
-                if (!this.compareMessages(gameAction.info as Message, this.actionSaver.messages[this.actionSaver.messages.length - 1])) {
+                if (this.actionSaver.messages.length) {
+                    if (!this.compareMessages(gameAction.info as Message, this.actionSaver.messages[this.actionSaver.messages.length - 1])) {
+                        this.actionSaver.messages.push(gameAction.info as Message);
+                    }
+                } else {
                     this.actionSaver.messages.push(gameAction.info as Message);
                 }
+
                 break;
         }
     }

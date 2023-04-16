@@ -55,16 +55,21 @@ export class SoloLimitedTimeComponent implements OnInit, AfterViewInit {
     timer(gameTime: number) {
         const timerInterval = 1000;
         const max = 60;
-        this.secondes = gameTime % max;
-        this.minutes = Math.floor(gameTime / max);
+        this.gameManager.gameTime = gameTime;
+        this.secondes = this.gameManager.gameTime % max;
+        this.minutes = Math.floor(this.gameManager.gameTime / max);
         this.intervalID = window.setInterval(() => {
-            gameTime--;
-            this.secondes = gameTime % max;
-            this.minutes = Math.floor(gameTime / max);
+            this.gameManager.gameTime--;
+            this.secondes = this.gameManager.gameTime % max;
+            this.minutes = Math.floor(this.gameManager.gameTime / max);
             if (this.minutes === 0 && this.secondes === 0) {
                 this.endGame();
             }
         }, timerInterval);
+    }
+
+    stopTimer() {
+        clearInterval(this.intervalID);
     }
 
     ngAfterViewInit() {
@@ -76,7 +81,7 @@ export class SoloLimitedTimeComponent implements OnInit, AfterViewInit {
     }
 
     endGame(): void {
-        clearInterval(this.intervalID);
+        this.stopTimer();
         this.gameManager.playWinAudio();
         this.popUpWindow.nativeElement.style.display = 'block';
     }
@@ -102,6 +107,7 @@ export class SoloLimitedTimeComponent implements OnInit, AfterViewInit {
     }
 
     goToHomePage() {
+        this.stopTimer();
         this.popUpWindow.nativeElement.style.display = 'none';
         this.router.navigate(['home']);
     }

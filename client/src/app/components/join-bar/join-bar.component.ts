@@ -14,7 +14,7 @@ export class JoinBarComponent {
     constructor(private socketService: SocketClientService, private lobbyService: LobbyService) {}
 
     refusePlayer() {
-        this.socketService.send('removeFromQueue', { socketId: this.socketId, gameId: this.lobbyService.roomId });
+        this.socketService.send('removeFromQueue', { socketId: this.socketId, roomId: this.lobbyService.roomId });
     }
 
     acceptPlayer() {

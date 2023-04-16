@@ -48,13 +48,14 @@ export class ActionSaverService {
     addCheatEnableAction(enable: boolean): void {
         this.addAction(GameActionType.ActivateCheat, this.currentTime, { isActivating: enable });
     }
-    addHintAction(): void {
-        //
+    addHintAction(firstPoint: Vec2, endPoint: Vec2): void {
+        this.addAction(GameActionType.NormalHint, this.currentTime, { firstPos: firstPoint, endPos: endPoint });
+    }
+    addLastHintAction(point: Vec2): void {
+        this.addAction(GameActionType.LastHint, this.currentTime, point);
     }
     addChatMessageAction(message: Message): void {
-        if ((this.actionsDone[this.actionsDone.length - 1].info as Message) !== message) {
-            this.addAction(GameActionType.Message, this.currentTime, message);
-        }
+        this.addAction(GameActionType.Message, this.currentTime, message);
     }
     startTimer(): void {
         clearInterval(this.timerId);

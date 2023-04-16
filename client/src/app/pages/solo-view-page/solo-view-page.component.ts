@@ -5,6 +5,7 @@ import { Vec2 } from '@app/interfaces/vec2';
 import { DisplayGameService } from '@app/services/display-game.service';
 import { GameManagerService } from '@app/services/game-manager.service';
 import { LoginFormService } from '@app/services/login-form.service';
+import { SocketClientService } from '@app/services/socket-client-service.service';
 
 @Component({
     selector: 'app-solo-view-page',
@@ -22,7 +23,6 @@ export class SoloViewPageComponent implements OnInit, AfterViewInit {
     nbDifferencesFound: number;
     secondes: number = 0;
     minutes: number = 0;
-    gameTime: number = 0;
     intervalID: number;
 
     inReplay: boolean = false;
@@ -33,6 +33,7 @@ export class SoloViewPageComponent implements OnInit, AfterViewInit {
         private loginService: LoginFormService,
         private displayService: DisplayGameService,
         private gameManager: GameManagerService,
+        private socketService: SocketClientService,
     ) {}
 
     ngOnInit() {
@@ -54,19 +55,21 @@ export class SoloViewPageComponent implements OnInit, AfterViewInit {
     }
 
     stopWatch() {
+        this.gameManager.gameTime = 0;
         const timerInterval = 1000;
         const max = 60;
         this.minutes = 0;
         this.secondes = 0;
-        setInterval(() => {
-            this.gameTime++;
-            this.secondes = this.gameTime % max;
-            this.minutes = Math.floor(this.gameTime / max);
+        this.intervalID = window.setInterval(() => {
+            this.gameManager.gameTime++;
+            this.secondes = this.gameManager.gameTime % max;
+            this.minutes = Math.floor(this.gameManager.gameTime / max);
         }, timerInterval);
     }
 
     startStopWatch = () => {
         this.stopWatch();
+        this.socketService.send('startStopWatch', {});
     };
 
     stopStopWatch() {
@@ -102,6 +105,7 @@ export class SoloViewPageComponent implements OnInit, AfterViewInit {
         this.popUpWindow.nativeElement.style.display = 'block';
     }
     returnSelectionPage(): void {
+        this.stopStopWatch();
         this.router.navigate(['/gameSelection']);
     }
     onReplay(): void {

@@ -7,6 +7,7 @@
     flex-direction: column;
 }
 .waiting-text {
+    margin-top: 4%;
     font-size: 200%;
     font-weight: bold;
     text-align: center;
@@ -14,15 +15,20 @@
 }
 
 .cancel-button {
+    position: absolute;
+    left: 0;
+    top: 0;
+    margin: 5px 0 10px 5px;
+    text-align: center;
+    height: 30px;
+    width: 15%;
     background-color: red;
     color: white;
-    padding: 1%;
-    border: none;
+    border-radius: 10px;
+    border-color: #6da093;
+    font-family: 'Oleo Script Swash Caps';
+    font-size: 15px;
     cursor: pointer;
-    width: 15%;
-    margin-left: 2%;
-    margin-top: 0.5%;
-    opacity: 0.8;
 }
 
 .join-container {

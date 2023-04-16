@@ -52,7 +52,6 @@ export class ChatBoxComponent implements OnInit {
             };
             this.messages.push(message);
             this.actionSaver.addChatMessageAction(message);
-            console.log('System');
         });
 
         this.socketService.on('receiveSystemMessageSolo', (systemMessage: string) => {

@@ -15,6 +15,7 @@ import { ChatBoxComponent } from './components/chat-box/chat-box.component';
 import { CheatComponent } from './components/cheat/cheat.component';
 import { JeuxComponent } from './components/jeux/jeux/jeux.component';
 import { JoinBarComponent } from './components/join-bar/join-bar.component';
+import { ModeIndiceComponent } from './components/mode-indice/mode-indice.component';
 import { ReplayBarComponent } from './components/replay-bar/replay-bar.component';
 import { ConfigurationPageComponent } from './pages/configuration-page/configuration-page.component';
 import { GameCreationPageComponent } from './pages/game-creation-page/game-creation-page.component';
@@ -53,6 +54,7 @@ import { SoloViewPageComponent } from './pages/solo-view-page/solo-view-page.com
         JoinBarComponent,
         ChatBoxComponent,
         ReplayBarComponent,
+        ModeIndiceComponent,
         LimitedTimeTypeComponent,
         SoloLimitedTimeComponent,
         OneVsOneLimitedTimeComponent,

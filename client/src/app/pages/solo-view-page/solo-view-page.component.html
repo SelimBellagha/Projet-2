@@ -6,12 +6,13 @@
             <h2 class="game-info">{{ gameName }} - {{ difficulty }}</h2>
             <p class="game-details">Mode classique</p>
             <p class="game-details">L' image contient {{ nbDifferences }} différences</p>
-            <button class="indice">Obtenir un indice</button>
+            <!-- <button class="indice">Obtenir un indice</button> -->
+            <app-mode-indice></app-mode-indice>
             <app-cheat></app-cheat>
         </div>
 
         <div>
-            <canvas #originalImage #gridCanvas (click)="onClick($event)" width="640px" height="480px"></canvas>
+            <canvas #originalImage #gridCanvas (click)="onClick($event)" width="500px" height="480px"></canvas>
         </div>
     </div>
 
@@ -31,12 +32,15 @@
         </div>
 
         <div>
-            <canvas #modifiedImage (click)="onClick($event)" width="640px" height="480px"></canvas>
+            <canvas #modifiedImage (click)="onClick($event)" width="500px" height="480px"></canvas>
         </div>
     </div>
 
-    <app-chat-box></app-chat-box>
+    <div class="section">
+        <app-chat-box></app-chat-box>
+    </div>
     <app-replay-bar *ngIf="this.inReplay"></app-replay-bar>
+
     <div #popUpWindow class="modal">
         <div class="modal-content">
             <h1 class="congrats">Félicitations {{ username }} ! Vous avez trouvé toutes les différences !</h1>

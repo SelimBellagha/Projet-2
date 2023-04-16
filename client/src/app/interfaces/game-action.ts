@@ -7,6 +7,7 @@ export interface GameAction {
 export enum GameActionType {
     Click,
     ActivateCheat,
-    Hint,
+    NormalHint,
+    LastHint,
     Message,
 }

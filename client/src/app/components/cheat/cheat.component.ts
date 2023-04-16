@@ -9,7 +9,7 @@ import { GameManagerService } from '@app/services/game-manager.service';
 })
 export class CheatComponent {
     toggle = false;
-    status = 'Enable Cheat';
+    status = 'Activer Triche';
 
     constructor(private gameManager: GameManagerService, private actionSaver: ActionSaverService) {}
 
@@ -23,7 +23,7 @@ export class CheatComponent {
         {
             this.toggle = !this.toggle;
             this.gameManager.stateChanger();
-            this.status = this.toggle ? 'Enable Cheat' : 'Disable Cheat';
+            this.status = this.toggle ? 'Activer Triche' : 'Désactiver Triche';
             this.giveHint();
         }
     }

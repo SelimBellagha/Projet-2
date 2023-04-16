@@ -16,22 +16,29 @@ const EIGHT = 8;
 export class SocketServerManager {
     lobbys = new Map<string, Lobby>();
     limitedLobbys = new Map<string, LobbyLimitedTime>();
-    // eslint-disable-next-line @typescript-eslint/no-magic-numbers
-    timerInterval = 1000;
+    soloTimers = new Map<string, TimerManager>();
     sio: io.Server;
-    constructor(server: http.Server, private timerManager: TimerManager, private gameService: GameManager) {
+    constructor(server: http.Server, private gameService: GameManager) {
         this.sio = new io.Server(server, { cors: { origin: '*', methods: ['GET', 'POST'] } });
     }
 
     handleSockets(): void {
         this.sio.on('connection', (socket: Socket) => {
-            // message initial
-            socket.on('startStopWatch', () => {
-                this.timerManager.startStopWatch();
+            socket.on('startStopWatch', (data: { roomId: string }) => {
+                const lobby = this.lobbys.get(data.roomId);
+                if (lobby) {
+                    lobby.timer.startStopWatch();
+                } else {
+                    this.soloTimers.set(socket.id, new TimerManager());
+                    this.soloTimers.get(socket.id)?.startStopWatch();
+                }
             });
 
-            socket.on('startTimer', (timeGame: number) => {
-                this.timerManager.startTimer(timeGame);
+            socket.on('startTimer', (data: { gameTime: number; roomId: string }) => {
+                const lobby = this.limitedLobbys.get(data.roomId);
+                if (lobby) {
+                    lobby.timer.startTimer(data.gameTime);
+                }
             });
 
             socket.on('sendChatToServer', (message: Message) => {
@@ -82,8 +89,16 @@ export class SocketServerManager {
                 this.sio.to(socket.id).emit('receiveSystemMessageSolo', '[' + timeString + '] ' + systemMessage);
             });
 
-            socket.on('getRealTime', () => {
-                socket.emit('getRealTime', this.timerManager.getTimeGame());
+            socket.on('getRealTime', (data: { roomId: string }) => {
+                const lobby = this.lobbys.get(data.roomId);
+                const limitedLobby = this.limitedLobbys.get(data.roomId);
+                if (lobby) {
+                    socket.emit('getRealTime', { realTime: lobby.timer.getTimeGame() });
+                } else if (limitedLobby) {
+                    socket.emit('getRealTime', { realTime: limitedLobby.timer.getTimeGame() });
+                } else {
+                    socket.emit('getRealTime', { realTime: this.soloTimers.get(socket.id)?.getTimeGame() });
+                }
             });
 
             socket.on('createLobby', (data: { gameId: string; playerName: string; roomId: string }) => {
@@ -94,6 +109,7 @@ export class SocketServerManager {
                 const newLobby = new Lobby(host, data.gameId);
                 this.lobbys.set(data.roomId, newLobby);
                 socket.join(data.roomId);
+                this.sio.sockets.emit('updatePlayers', { gameId: data.gameId, available: true });
             });
 
             socket.on('joinQueue', (data: { gameId: string; playerName: string }) => {
@@ -115,8 +131,8 @@ export class SocketServerManager {
                 }
             });
 
-            socket.on('removeFromQueue', (data: { socketId: string; gameId: string }) => {
-                const lobby = this.lobbys.get(this.getRoom(data.gameId));
+            socket.on('removeFromQueue', (data: { socketId: string; roomId: string }) => {
+                const lobby = this.lobbys.get(data.roomId);
                 if (lobby) {
                     lobby.deleteFromQueue(data.socketId);
                     socket.to(data.socketId).emit('refused');
@@ -144,6 +160,8 @@ export class SocketServerManager {
 
             socket.on('deleteRoom', (data: { roomId: string }) => {
                 if (this.lobbys.has(data.roomId)) {
+                    const gameId = this.lobbys.get(data.roomId)?.gameId;
+                    this.sio.sockets.emit('updatePlayers', { gameId, available: false });
                     this.lobbys.delete(data.roomId);
                 } else if (
                     this.limitedLobbys.has(data.roomId) &&
@@ -151,6 +169,8 @@ export class SocketServerManager {
                     this.limitedLobbys.get(data.roomId)?.checkSecondPlayer()
                 ) {
                     this.limitedLobbys.delete(data.roomId);
+                } else {
+                    this.soloTimers.delete(socket.id);
                 }
             });
 
