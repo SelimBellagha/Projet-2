@@ -63,6 +63,36 @@ describe('LoginPageComponent', () => {
         expect(routerSpy).toHaveBeenCalledWith(['/soloView']);
     });
 
+    it('goToGamePage should call onClickSubmit and navigate to salleAttente if limitedTimeGame is true ans game time is true', () => {
+        const name = 'TestName';
+        const input = document.createElement('input');
+        input.id = 'username';
+        input.value = name;
+        spyOn(document, 'getElementById').and.returnValue(input);
+        spyOn(component, 'onClickSubmit');
+        loginServiceSpy.getGameType.and.returnValue(true);
+        loginServiceSpy.getLimitedTimeGame.and.returnValue(true);
+        const routerSpy = spyOn(router, 'navigate');
+        component.goToGamePage();
+        expect(component.onClickSubmit).toHaveBeenCalledWith(name);
+        expect(routerSpy).toHaveBeenCalledWith(['/salleAttente']);
+    });
+
+    it('goToGamePage should call onClickSubmit and navigate to SoloLimitedTime if limitedTimeGame is true ans game time is false', () => {
+        const name = 'TestName';
+        const input = document.createElement('input');
+        input.id = 'username';
+        input.value = name;
+        spyOn(document, 'getElementById').and.returnValue(input);
+        spyOn(component, 'onClickSubmit');
+        loginServiceSpy.getGameType.and.returnValue(false);
+        loginServiceSpy.getLimitedTimeGame.and.returnValue(true);
+        const routerSpy = spyOn(router, 'navigate');
+        component.goToGamePage();
+        expect(component.onClickSubmit).toHaveBeenCalledWith(name);
+        expect(routerSpy).toHaveBeenCalledWith(['/soloLimitedTime']);
+    });
+
     it('goToGamePage should call onClickSubmit and navigate to salleAttente if input is valid and game type is true', () => {
         const name = 'TestName';
         const input = document.createElement('input');

@@ -30,16 +30,6 @@ describe('SoloViewPageComponent', () => {
         differences: [],
         isDifficult: true,
     };
-    /*
-    const gameMock2 = {
-        id: '1',
-        name: 'mock',
-        originalImage: 'mock',
-        modifiedImage: 'mock',
-        nbDifferences: 1,
-        differences: [],
-        isDifficult: false,
-    };*/
 
     beforeEach(async () => {
         gameManagerSpy = jasmine.createSpyObj('GameManagerService', ['onPositionClicked', 'putImages', 'playWinAudio', 'initializeGame']);
