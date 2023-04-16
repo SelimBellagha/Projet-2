@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
 import { GameData } from '@app/interfaces/game-data';
 import { Vec2 } from '@app/interfaces/vec2';
 import { Verification } from '@app/interfaces/verification';
@@ -11,6 +12,9 @@ const FLASH_TIME = 250;
 const ONE_SECOND = 1000;
 const EIGHT = 8;
 const QUART_SECOND = 250;
+const pointY = 240;
+const pointX = 320;
+const indicePixel = 20;
 @Injectable({
     providedIn: 'root',
 })
@@ -19,13 +23,17 @@ export class GameManagerService {
     modifiedImageCanvas: CanvasRenderingContext2D;
     differencesFound: boolean[];
     gameData: GameData;
+    limitedGameData: GameData[];
+    gameNumberMax: number;
     // cheatMode: cheatMode;
     lastDifferenceFound: number = 0;
     locked: boolean;
-    state: boolean = false;
+    cheatState: boolean = false;
+    hintState: boolean = false;
     foundDifferenceCheat: boolean = false;
+    gameTime: number = 0;
 
-    constructor(private differenceVerification: DifferenceVerificationService, private socketService: SocketClientService) {}
+    constructor(private differenceVerification: DifferenceVerificationService, private socketService: SocketClientService, private router: Router) {}
 
     initializeGame(gameData: GameData) {
         if (gameData) {
@@ -34,6 +42,32 @@ export class GameManagerService {
             this.lastDifferenceFound = -1; // change this
             this.locked = false;
         }
+    }
+
+    initializeLimitedGame(limitedGameData: GameData[]) {
+        if (limitedGameData) {
+            this.limitedGameData = limitedGameData;
+            this.gameNumberMax = this.limitedGameData.length;
+            this.locked = false;
+            if (this.router.url === '/soloLimitedTime') {
+                this.initializeGame(this.getRandomGame());
+            }
+        }
+    }
+
+    getRandomGame(): GameData {
+        const max = this.limitedGameData.length - 1;
+        const min = 0;
+        const gameNumber = Math.floor(Math.random() * (max - min + 1) + min);
+        const game = this.limitedGameData[gameNumber];
+        this.limitedGameData.splice(gameNumber, 1);
+        return game;
+    }
+
+    async changeGame() {
+        const newGame = this.getRandomGame();
+        await this.initializeGame(newGame);
+        this.putImages();
     }
 
     async putImages(): Promise<void> {
@@ -58,7 +92,10 @@ export class GameManagerService {
                 this.playDifferenceAudio();
                 this.socketService.send('systemMessage', '[' + timeString + '] ' + 'Différence trouvée par le joueur : ');
                 this.socketService.send('systemMessageSolo', 'Différence trouvée ');
-                this.flashImages(this.gameData.differences[this.lastDifferenceFound]);
+                await this.flashImages(this.gameData.differences[this.lastDifferenceFound]);
+                if (this.router.url === '/soloLimitedTime') {
+                    this.changeGame();
+                }
                 return true;
             } else {
                 await this.errorMessage(position);
@@ -68,6 +105,9 @@ export class GameManagerService {
             this.locked = false;
         }
         return false;
+    }
+    sendHintMessage(message: string): void {
+        this.socketService.send('systemMessageSolo', message);
     }
 
     async verifyDifference(position: Vec2): Promise<boolean> {
@@ -110,27 +150,11 @@ export class GameManagerService {
     async wait(ms: number): Promise<void> {
         await new Promise((res) => setTimeout(res, ms));
     }
-    // giveHint(): void {
-    //     const canvasModifier = this.modifiedImageCanvas;
-    //     const canvasOriginal = this.originalImageCanvas;
-    //     const pixelDifferences = this.gameData.differences;
-
-    //     this.flashPixelsCheat(pixelDifferences, canvasModifier);
-    //     this.flashPixelsCheat(pixelDifferences, canvasOriginal);
-    // }
-    // onClick(): void {
-    //     {
-    //         // this.cheatMode.giveHint();
-    //         this.cheatMode.toggle = !this.cheatMode.toggle;
-    //         // this.status = this.toggle ? 'Enable Cheat' : 'Disable Cheat';
-    //     }
-    // }
-    // getToogle(): boolean {
-    //     return this.cheatMode.toggle;
-    // }
-
     stateChanger(): void {
-        this.state = !this.state;
+        this.cheatState = !this.cheatState;
+    }
+    hintStateChanger(): void {
+        this.hintState = !this.hintState;
     }
     differenceCheatChanger(): void {
         this.foundDifferenceCheat = !this.foundDifferenceCheat;
@@ -150,7 +174,7 @@ export class GameManagerService {
             });
         }
 
-        while (this.state) {
+        while (this.cheatState) {
             if (this.foundDifferenceCheat) {
                 const newOriginalImageData = canvas.getImageData(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT);
                 const newFlashingOriginalImageData = canvas.getImageData(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT);
@@ -194,6 +218,26 @@ export class GameManagerService {
         }
         return;
     }
+    drawLine(firstPoint: Vec2): void {
+        // Copier les pixels dee l'image originale vers l'image modifiée
+        const hintImage = this.originalImageCanvas;
+        hintImage.moveTo(pointX, pointY);
+        hintImage.lineTo(firstPoint.x, firstPoint.y);
+        hintImage.stroke();
+    }
+    drawLine2(firstPoint: Vec2, endPoint: Vec2): void {
+        // Copier les pixels dee l'image originale vers l'image modifiée
+        const originalImageData = this.originalImageCanvas.getImageData(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT);
+        this.originalImageCanvas.putImageData(originalImageData, 0, 0);
+        this.originalImageCanvas.moveTo(firstPoint.x, firstPoint.y);
+        this.originalImageCanvas.lineTo(endPoint.x, endPoint.y);
+        this.originalImageCanvas.stroke();
+    }
+
+    giveHint3(coordinate: Vec2): void {
+        this.originalImageCanvas.font = '40px Arial';
+        this.originalImageCanvas.strokeText('Click Here', coordinate.x + indicePixel, coordinate.y + indicePixel);
+    }
 
     replacePixels(pixels: Vec2[]): void {
         // Copier les pixels dee l'image originale vers l'image modifiée
@@ -211,6 +255,7 @@ export class GameManagerService {
     }
 
     async errorMessage(position: Vec2): Promise<void> {
+        this.playErrorAudio();
         // save originals
         const originalImageData = this.originalImageCanvas.getImageData(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT);
         const modifiedImageData = this.modifiedImageCanvas.getImageData(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT);

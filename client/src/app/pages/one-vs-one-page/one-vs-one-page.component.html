@@ -11,7 +11,7 @@
         </div>
 
         <div>
-            <canvas #originalImage #gridCanvas (click)="onClick($event)" width="600px" height="480px"></canvas>
+            <canvas #originalImage #gridCanvas (click)="onClick($event)" width="500px" height="460px"></canvas>
         </div>
     </div>
 
@@ -23,17 +23,21 @@
                 <p>{{ guestName }} : {{ nbDifferencesFoundUser2 }} différences trouvées</p>
                 <div class="timer">
                     <img src="../../../assets/images/stopwatch.png" class="watch-logo" />
-                    <div>{{ minutes2 }}{{ minutes1 }}:{{ secondes2 }}{{ secondes1 }}</div>
+                    <div>
+                        <div>{{ minutes.toString().padStart(2, '0') }} :{{ secondes.toString().padStart(2, '0') }}</div>
+                    </div>
                 </div>
             </div>
         </div>
 
         <div>
-            <canvas #modifiedImage (click)="onClick($event)" width="600px" height="480px"></canvas>
+            <canvas #modifiedImage (click)="onClick($event)" width="500px" height="460px"></canvas>
         </div>
     </div>
 
+    <div class="section">
     <app-chat-box></app-chat-box>
+    </div>
 
     <div #popUpWindowWin class="modal" id="congratulations">
         <div class="modal-content">

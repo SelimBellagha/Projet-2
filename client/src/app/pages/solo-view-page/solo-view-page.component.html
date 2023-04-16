@@ -6,12 +6,13 @@
             <h2 class="game-info">{{ gameName }} - {{ difficulty }}</h2>
             <p class="game-details">Mode classique</p>
             <p class="game-details">L' image contient {{ nbDifferences }} différences</p>
-            <button class="indice">Obtenir un indice</button>
+            <!-- <button class="indice">Obtenir un indice</button> -->
+            <app-mode-indice></app-mode-indice>
             <app-cheat></app-cheat>
         </div>
 
         <div>
-            <canvas #originalImage #gridCanvas (click)="onClick($event)" width="640px" height="480px"></canvas>
+            <canvas #originalImage #gridCanvas (click)="onClick($event)" width="500px" height="480px"></canvas>
         </div>
     </div>
 
@@ -23,17 +24,21 @@
                 <p>Differences trouvées: {{ nbDifferencesFound }}</p>
                 <div class="timer">
                     <img src="../../../assets/images/stopwatch.png" class="watch-logo" />
-                    <div>{{ minutes2 }}{{ minutes1 }}:{{ secondes2 }}{{ secondes1 }}</div>
+                    <div>
+                        <div>{{ minutes.toString().padStart(2, '0') }} :{{ secondes.toString().padStart(2, '0') }}</div>
+                    </div>
                 </div>
             </div>
         </div>
 
         <div>
-            <canvas #modifiedImage (click)="onClick($event)" width="640px" height="480px"></canvas>
+            <canvas #modifiedImage (click)="onClick($event)" width="500px" height="480px"></canvas>
         </div>
     </div>
 
-    <app-chat-box></app-chat-box> 
+    <div class="section">
+        <app-chat-box></app-chat-box>
+    </div>
 
     <div #popUpWindow class="modal">
         <div class="modal-content">

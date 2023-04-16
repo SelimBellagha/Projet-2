@@ -15,12 +15,16 @@ import { ChatBoxComponent } from './components/chat-box/chat-box.component';
 import { CheatComponent } from './components/cheat/cheat.component';
 import { JeuxComponent } from './components/jeux/jeux/jeux.component';
 import { JoinBarComponent } from './components/join-bar/join-bar.component';
+import { ModeIndiceComponent } from './components/mode-indice/mode-indice.component';
 import { ConfigurationPageComponent } from './pages/configuration-page/configuration-page.component';
 import { GameCreationPageComponent } from './pages/game-creation-page/game-creation-page.component';
+import { LimitedTimeTypeComponent } from './pages/limited-time-type/limited-time-type.component';
 import { LoginPageComponent } from './pages/login-page/login-page.component';
+import { OneVsOneLimitedTimeComponent } from './pages/one-vs-one-limited-time/one-vs-one-limited-time.component';
 import { OneVsOnePageComponent } from './pages/one-vs-one-page/one-vs-one-page.component';
 import { SalleAttenteComponent } from './pages/salle-attente/salle-attente.component';
 import { SelectionPageComponentComponent } from './pages/selection-page-component/selection-page-component.component';
+import { SoloLimitedTimeComponent } from './pages/solo-limited-time/solo-limited-time.component';
 import { SoloViewPageComponent } from './pages/solo-view-page/solo-view-page.component';
 import { ConstantsComponent } from './components/constants/constants.component';
 
@@ -50,6 +54,10 @@ import { ConstantsComponent } from './components/constants/constants.component';
         JoinBarComponent,
         ChatBoxComponent,
         ConstantsComponent,
+        ModeIndiceComponent,
+        LimitedTimeTypeComponent,
+        SoloLimitedTimeComponent,
+        OneVsOneLimitedTimeComponent,
     ],
     imports: [AppMaterialModule, AppRoutingModule, BrowserAnimationsModule, BrowserModule, FormsModule, HttpClientModule],
     providers: [],

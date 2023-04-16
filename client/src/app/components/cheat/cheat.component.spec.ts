@@ -34,13 +34,13 @@ describe('CheatComponent', () => {
         // gameManagerSpy.state = false;
         component.onClick();
         expect(component.toggle).toBe(true);
-        expect(component.status).toBe('Enable Cheat');
+        expect(component.status).toBe('Activer Triche');
         expect(giveHintSpy).toHaveBeenCalled();
         expect(gameManagerSpy.stateChanger).toHaveBeenCalled();
 
         component.onClick();
         expect(component.toggle).toBe(false);
-        expect(component.status).toBe('Disable Cheat');
+        expect(component.status).toBe('Désactiver Triche');
         expect(giveHintSpy).toHaveBeenCalled();
         expect(gameManagerSpy.stateChanger).toHaveBeenCalled();
     });
@@ -49,7 +49,7 @@ describe('CheatComponent', () => {
         const mockSource = '../assets/tests/image_7_diff.bmp';
         component.toggle = true;
         gameManagerSpy.gameData = { originalImage: mockSource, modifiedImage: mockSource } as GameData;
-        gameManagerSpy.state = true;
+        gameManagerSpy.cheatState = true;
         component.giveHint();
         expect(gameManagerSpy.flashPixelsCheat).toHaveBeenCalledWith(gameManagerSpy.gameData.differences, gameManagerSpy.modifiedImageCanvas);
         expect(gameManagerSpy.flashPixelsCheat).toHaveBeenCalledWith(gameManagerSpy.gameData.differences, gameManagerSpy.originalImageCanvas);

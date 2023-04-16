@@ -5,6 +5,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { DisplayGameService } from '@app/services/display-game.service';
 import { LobbyService } from '@app/services/lobby.service';
 import { LoginFormService } from '@app/services/login-form.service';
+import { SocketClientService } from '@app/services/socket-client-service.service';
 import { JeuxComponent } from './jeux.component';
 import SpyObj = jasmine.SpyObj;
 
@@ -15,11 +16,13 @@ describe('JeuxComponent', () => {
     let displayServiceSpy: SpyObj<DisplayGameService>;
     let loginFormSpy: SpyObj<LoginFormService>;
     let lobbyServiceSpy: SpyObj<LobbyService>;
+    let socketService: SpyObj<SocketClientService>;
 
     beforeEach(async () => {
         displayServiceSpy = jasmine.createSpyObj('DisplayGameService', ['loadGame']);
         loginFormSpy = jasmine.createSpyObj('LoginFormService', ['setGameType', 'setPlayerType', 'setGameId']);
         lobbyServiceSpy = jasmine.createSpyObj('LobbyServiceSpy', ['host']);
+        socketService = jasmine.createSpyObj('socketService', ['on']);
         await TestBed.configureTestingModule({
             declarations: [JeuxComponent],
             imports: [RouterTestingModule, HttpClientTestingModule],
@@ -27,6 +30,7 @@ describe('JeuxComponent', () => {
                 { provide: DisplayGameService, useValue: displayServiceSpy },
                 { provide: LoginFormService, useValue: loginFormSpy },
                 { provide: LobbyService, useValue: lobbyServiceSpy },
+                { provide: SocketClientService, useValue: socketService },
             ],
         }).compileComponents();
 
