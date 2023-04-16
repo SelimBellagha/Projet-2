@@ -5,14 +5,14 @@ import { LoginFormService } from '@app/services/login-form.service';
 import { LoginPageComponent } from './login-page.component';
 import SpyObj = jasmine.SpyObj;
 
-xdescribe('LoginPageComponent', () => {
+describe('LoginPageComponent', () => {
     let component: LoginPageComponent;
     let fixture: ComponentFixture<LoginPageComponent>;
     let router: Router;
     let loginServiceSpy: SpyObj<LoginFormService>;
 
     beforeEach(async () => {
-        loginServiceSpy = jasmine.createSpyObj('LoginFormService', ['setFormData', 'getGameType']);
+        loginServiceSpy = jasmine.createSpyObj('LoginFormService', ['setFormData', 'getGameType', 'getLimitedTimeGame']);
         await TestBed.configureTestingModule({
             declarations: [LoginPageComponent],
             imports: [RouterTestingModule],

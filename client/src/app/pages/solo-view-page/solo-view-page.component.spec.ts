@@ -168,7 +168,7 @@ describe('SoloViewPageComponent', () => {
         expect(popUp.nativeElement.style.display).toEqual('block');
     });
 
-    xit('stopWatch should start', () => {
+    it('stopWatch should start', () => {
         const timerTest = 4;
         const waitTime = 5000;
 
