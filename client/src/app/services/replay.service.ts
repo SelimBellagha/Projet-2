@@ -12,6 +12,9 @@ export interface NormalHintInfo {
     firstPos: Vec2;
     endPos: Vec2;
 }
+export interface OpponentDifferenceInfo {
+    id: number;
+}
 
 const ONE_SECOND = 1000;
 @Injectable({
@@ -87,6 +90,9 @@ export class ReplayService {
                     this.actionSaver.messages.push(gameAction.info as Message);
                 }
 
+                break;
+            case GameActionType.OpponentDifference:
+                this.gameManager.opponentFoundDifference((gameAction.info as OpponentDifferenceInfo).id);
                 break;
         }
     }

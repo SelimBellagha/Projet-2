@@ -34,6 +34,8 @@ export class OneVsOnePageComponent implements OnInit, AfterViewInit {
     roomId: string;
     nbDifferenceToWin: number;
 
+    inReplay: boolean = false;
+
     // eslint-disable-next-line max-params
     constructor(
         private router: Router,
@@ -80,7 +82,7 @@ export class OneVsOnePageComponent implements OnInit, AfterViewInit {
             this.nbDifferencesFoundUser2 = data.nbDifferenceInvite;
             if (this.gameManager.lastDifferenceFound !== data.differenceId) {
                 this.gameManager.lastDifferenceFound = data.differenceId;
-                this.gameManager.flashImages(this.gameManager.gameData.differences[data.differenceId]);
+                this.gameManager.opponentFoundDifference(data.differenceId);
             }
             this.winCheck();
         });
@@ -169,5 +171,11 @@ export class OneVsOnePageComponent implements OnInit, AfterViewInit {
                 this.loseGame();
             }
         }
+    }
+    onReplay(): void {
+        this.inReplay = true;
+        this.gameManager.enableReplay();
+        this.popUpWindowWin.nativeElement.style.display = 'none';
+        this.popUpWindowLose.nativeElement.style.display = 'none';
     }
 }

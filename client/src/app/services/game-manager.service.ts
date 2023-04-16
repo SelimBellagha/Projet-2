@@ -324,4 +324,9 @@ export class GameManagerService {
             audio.pause();
         }, soundTime);
     }
+    opponentFoundDifference(differenceId: number): void {
+        this.lastDifferenceFound = differenceId;
+        this.actionSaver.addOpponentAction(differenceId);
+        this.flashImages(this.gameData.differences[differenceId]);
+    }
 }

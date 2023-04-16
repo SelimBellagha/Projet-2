@@ -10,4 +10,5 @@ export enum GameActionType {
     NormalHint,
     LastHint,
     Message,
+    OpponentDifference,
 }

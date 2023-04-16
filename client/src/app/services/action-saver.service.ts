@@ -57,6 +57,9 @@ export class ActionSaverService {
     addChatMessageAction(message: Message): void {
         this.addAction(GameActionType.Message, this.currentTime, message);
     }
+    addOpponentAction(differenceId: number) {
+        this.addAction(GameActionType.OpponentDifference, this.currentTime, { id: differenceId });
+    }
     startTimer(): void {
         clearInterval(this.timerId);
         this.timerId = window.setInterval(() => {
