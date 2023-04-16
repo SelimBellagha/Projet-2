@@ -54,13 +54,13 @@ xdescribe('GameManagerService', () => {
     });
 
     it('should return the value of toggle', () => {
-        service.state = true;
+        service.cheatState = true;
         service.stateChanger();
-        expect(service.state).toBe(false);
+        expect(service.cheatState).toBe(false);
 
-        service.state = false;
+        service.cheatState = false;
         service.stateChanger();
-        expect(service.state).toBe(true);
+        expect(service.cheatState).toBe(true);
     });
 
     it('flashPixels should not change the final canvas', async () => {
@@ -224,9 +224,9 @@ xdescribe('GameManagerService', () => {
             ],
         ];
         service.gameData = { nbDifferences: 1 } as GameData;
-        service.state = true;
+        service.cheatState = true;
         setTimeout(() => {
-            service.state = false;
+            service.cheatState = false;
             // eslint-disable-next-line @typescript-eslint/no-magic-numbers
         }, 1000);
         await service.flashPixelsCheat(pixelsMock, service.originalImageCanvas);
@@ -243,11 +243,11 @@ xdescribe('GameManagerService', () => {
             ],
         ];
         service.gameData = { nbDifferences: 1, differences: [{} as Vec2[]] } as GameData;
-        service.state = true;
+        service.cheatState = true;
         service.foundDifferenceCheat = true;
         service.differencesFound = [false];
         setTimeout(() => {
-            service.state = false;
+            service.cheatState = false;
             // eslint-disable-next-line @typescript-eslint/no-magic-numbers
         }, 1000);
         await service.flashPixelsCheat(pixelsMock, service.originalImageCanvas);
@@ -262,11 +262,11 @@ xdescribe('GameManagerService', () => {
             ],
         ];
         service.gameData = { nbDifferences: 1, differences: [{} as Vec2[]] } as GameData;
-        service.state = true;
+        service.cheatState = true;
         service.foundDifferenceCheat = true;
         service.differencesFound = [true];
         setTimeout(() => {
-            service.state = false;
+            service.cheatState = false;
             // eslint-disable-next-line @typescript-eslint/no-magic-numbers
         }, 1000);
         await service.flashPixelsCheat(pixelsMock, service.originalImageCanvas);

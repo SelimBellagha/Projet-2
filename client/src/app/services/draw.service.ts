@@ -41,6 +41,8 @@ export class DrawService {
         }
 
         this.drawingContext.fillRect(startPosition.x, startPosition.y, xLength, yLength);
+        // eslint-disable-next-line no-console
+        console.log(startPosition.x, startPosition.y);
     }
 
     erase(position: Vec2): void {

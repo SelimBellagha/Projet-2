@@ -49,7 +49,7 @@ describe('CheatComponent', () => {
         const mockSource = '../assets/tests/image_7_diff.bmp';
         component.toggle = true;
         gameManagerSpy.gameData = { originalImage: mockSource, modifiedImage: mockSource } as GameData;
-        gameManagerSpy.state = true;
+        gameManagerSpy.cheatState = true;
         component.giveHint();
         expect(gameManagerSpy.flashPixelsCheat).toHaveBeenCalledWith(gameManagerSpy.gameData.differences, gameManagerSpy.modifiedImageCanvas);
         expect(gameManagerSpy.flashPixelsCheat).toHaveBeenCalledWith(gameManagerSpy.gameData.differences, gameManagerSpy.originalImageCanvas);

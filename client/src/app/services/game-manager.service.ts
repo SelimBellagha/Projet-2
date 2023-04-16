@@ -12,6 +12,9 @@ const FLASH_TIME = 250;
 const ONE_SECOND = 1000;
 const EIGHT = 8;
 const QUART_SECOND = 250;
+const pointY = 240;
+const pointX = 320;
+const indicePixel = 20;
 @Injectable({
     providedIn: 'root',
 })
@@ -25,7 +28,8 @@ export class GameManagerService {
     // cheatMode: cheatMode;
     lastDifferenceFound: number = 0;
     locked: boolean;
-    state: boolean = false;
+    cheatState: boolean = false;
+    hintState: boolean = false;
     foundDifferenceCheat: boolean = false;
     gameTime: number = 0;
 
@@ -102,6 +106,9 @@ export class GameManagerService {
         }
         return false;
     }
+    sendHintMessage(message: string): void {
+        this.socketService.send('systemMessageSolo', message);
+    }
 
     async verifyDifference(position: Vec2): Promise<boolean> {
         // code temporaire
@@ -143,27 +150,11 @@ export class GameManagerService {
     async wait(ms: number): Promise<void> {
         await new Promise((res) => setTimeout(res, ms));
     }
-    // giveHint(): void {
-    //     const canvasModifier = this.modifiedImageCanvas;
-    //     const canvasOriginal = this.originalImageCanvas;
-    //     const pixelDifferences = this.gameData.differences;
-
-    //     this.flashPixelsCheat(pixelDifferences, canvasModifier);
-    //     this.flashPixelsCheat(pixelDifferences, canvasOriginal);
-    // }
-    // onClick(): void {
-    //     {
-    //         // this.cheatMode.giveHint();
-    //         this.cheatMode.toggle = !this.cheatMode.toggle;
-    //         // this.status = this.toggle ? 'Enable Cheat' : 'Disable Cheat';
-    //     }
-    // }
-    // getToogle(): boolean {
-    //     return this.cheatMode.toggle;
-    // }
-
     stateChanger(): void {
-        this.state = !this.state;
+        this.cheatState = !this.cheatState;
+    }
+    hintStateChanger(): void {
+        this.hintState = !this.hintState;
     }
     differenceCheatChanger(): void {
         this.foundDifferenceCheat = !this.foundDifferenceCheat;
@@ -183,7 +174,7 @@ export class GameManagerService {
             });
         }
 
-        while (this.state) {
+        while (this.cheatState) {
             if (this.foundDifferenceCheat) {
                 const newOriginalImageData = canvas.getImageData(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT);
                 const newFlashingOriginalImageData = canvas.getImageData(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT);
@@ -226,6 +217,26 @@ export class GameManagerService {
             }
         }
         return;
+    }
+    drawLine(firstPoint: Vec2): void {
+        // Copier les pixels dee l'image originale vers l'image modifiée
+        const hintImage = this.originalImageCanvas;
+        hintImage.moveTo(pointX, pointY);
+        hintImage.lineTo(firstPoint.x, firstPoint.y);
+        hintImage.stroke();
+    }
+    drawLine2(firstPoint: Vec2, endPoint: Vec2): void {
+        // Copier les pixels dee l'image originale vers l'image modifiée
+        const originalImageData = this.originalImageCanvas.getImageData(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT);
+        this.originalImageCanvas.putImageData(originalImageData, 0, 0);
+        this.originalImageCanvas.moveTo(firstPoint.x, firstPoint.y);
+        this.originalImageCanvas.lineTo(endPoint.x, endPoint.y);
+        this.originalImageCanvas.stroke();
+    }
+
+    giveHint3(coordinate: Vec2): void {
+        this.originalImageCanvas.font = '40px Arial';
+        this.originalImageCanvas.strokeText('Click Here', coordinate.x + indicePixel, coordinate.y + indicePixel);
     }
 
     replacePixels(pixels: Vec2[]): void {
