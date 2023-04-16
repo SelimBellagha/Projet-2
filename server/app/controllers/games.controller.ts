@@ -1,4 +1,5 @@
 import { GameData } from '@app/data/game.interface';
+import { GameConstantsService } from '@app/services/constants-manager.service';
 import { GameManager } from '@app/services/game-manager.service';
 import { Request, Response, Router } from 'express';
 import { StatusCodes } from 'http-status-codes';
@@ -9,12 +10,16 @@ export class GameController {
     router: Router;
     route = '/games';
 
-    constructor(private readonly gameService: GameManager) {
+    constructor(private readonly gameService: GameManager, private readonly constantsManager: GameConstantsService) {
         this.configureRouter();
     }
 
     private configureRouter(): void {
         this.router = Router();
+
+        this.router.get('/constants', async (req: Request, res: Response) => {
+            res.json(await this.constantsManager.getGameConstants());
+        });
 
         // GET games
         this.router.get('/', async (req: Request, res: Response) => {
@@ -76,6 +81,11 @@ export class GameController {
             } catch (error) {
                 res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(error.message);
             }
+        });
+
+        this.router.post('/constants', (req: Request, res: Response) => {
+            this.constantsManager.addGameConstants(req.body);
+            res.sendStatus(StatusCodes.OK);
         });
     }
 }

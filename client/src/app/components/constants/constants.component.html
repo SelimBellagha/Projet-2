@@ -1,0 +1,19 @@
+<div class="container">
+    <div class="form-field">
+      <label for="init-time">Temps initial de compte à rebours:</label>
+      <input id="init-time" type="number" [(ngModel)]="initTime" />
+    </div>
+    <div class="form-field">
+      <label for="penalty-time">Temps de pénalité pour l’utilisation d’un indice:</label>
+      <input id="penalty-time" type="number" [(ngModel)]="penaltyTime" />
+    </div>
+    <div class="form-field">
+      <label for="time-bonus">Temps gagné avec la découverte d’une différence:</label>
+      <input id="time-bonus" type="number" [(ngModel)]="timeBonus" />
+    </div>
+    <div class="button-box">
+      <button class="btn-default" (click)="default()">Par défaut</button>
+      <button class="btn-confirm" (click)="sendConstants()">Confirmer</button>
+    </div>
+</div>
+  

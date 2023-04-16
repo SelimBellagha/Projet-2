@@ -79,20 +79,6 @@ describe('ConfigurationPageComponent', () => {
         expect(routerSpy).toHaveBeenCalledWith(['gameCreation']);
     });
 
-    it('should show the popup window on goToConstants()', () => {
-        const popupWindow = component.popUpWindow.nativeElement;
-        expect(popupWindow.style.display).toEqual('');
-        component.goToConstants();
-        expect(popupWindow.style.display).toEqual('block');
-    });
-
-    it('should hide the popup window on onClosingPopUp()', () => {
-        const popupWindow = component.popUpWindow.nativeElement;
-        popupWindow.style.display = 'block';
-        expect(popupWindow.style.display).toEqual('block');
-        component.onClosingPopUp();
-        expect(popupWindow.style.display).toEqual('none');
-    });
     it('nextPage should set hasNextPage to true if the list of games has more than 4 games ', () => {
         component.games = [{} as Game, {} as Game, {} as Game, {} as Game, {} as Game];
         component.hasNextPage = false;

@@ -30,7 +30,6 @@ export class CheatComponent {
     @HostListener('document:keyup', ['$event'])
     onKeyUp(event: KeyboardEvent) {
         // eslint-disable-next-line no-console
-        console.log('Mode triche active');
         if (event.key === 't' || event.key === 'T') {
             this.onClick();
         }

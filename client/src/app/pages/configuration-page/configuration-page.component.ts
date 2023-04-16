@@ -80,12 +80,4 @@ export class ConfigurationPageComponent implements OnInit {
             this.hasNextPage = true;
         }
     }
-
-    goToConstants(): void {
-        this.popUpWindow.nativeElement.style.display = 'block';
-    }
-
-    onClosingPopUp(): void {
-        this.popUpWindow.nativeElement.style.display = 'none';
-    }
 }
