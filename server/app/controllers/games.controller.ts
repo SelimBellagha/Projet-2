@@ -68,7 +68,7 @@ export class GameController {
         this.router.delete('/:id', async (req: Request, res: Response) => {
             try {
                 const gameToDelete = await this.gameService.deleteGame(req.params.id);
-                if (!gameToDelete) {
+                if (gameToDelete === false) {
                     res.status(StatusCodes.NOT_FOUND).json('The requested game cannot be deleted as it does not exist');
                 } else {
                     res.status(StatusCodes.OK).json('The game with the requested id has been deleted');
