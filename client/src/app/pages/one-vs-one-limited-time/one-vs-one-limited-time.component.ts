@@ -100,7 +100,7 @@ export class OneVsOneLimitedTimeComponent implements OnInit, AfterViewInit {
             this.gameManager.gameTime = this.gameTime;
             this.secondes = this.gameTime % max;
             this.minutes = Math.floor(this.gameTime / max);
-            if (this.minutes === 0 && this.secondes === 0) {
+            if (this.minutes <= 0 && this.secondes <= 0) {
                 this.secondes = 0;
                 this.minutes = 0;
                 this.endGame();
