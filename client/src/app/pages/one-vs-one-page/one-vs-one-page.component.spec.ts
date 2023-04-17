@@ -50,6 +50,7 @@ describe('OneVsOnePageComponent', () => {
             'playWinAudio',
             'initializeGame',
             'flashImages',
+            'opponentFoundDifference',
         ]);
         displayServiceSpy = jasmine.createSpyObj('DisplayGameService', ['loadGame', 'convertDifficulty'], { game: gameMock1 as unknown as GameData });
         loginServiceSpy = jasmine.createSpyObj('LoginFormService', ['getFormData']);
@@ -193,7 +194,7 @@ describe('OneVsOnePageComponent', () => {
         socketHelper.peerSideEmit('differenceUpdate', { nbDifferenceHost: 0, nbDifferenceInvite: 1, differenceId: 0 });
         expect(component.nbDifferencesFoundUser1).toEqual(0);
         expect(component.nbDifferencesFoundUser2).toEqual(1);
-        expect(gameManagerSpy.flashImages).toHaveBeenCalled();
+        expect(gameManagerSpy.opponentFoundDifference).toHaveBeenCalled();
     });
 
     it('winGame  should be calld when receiving event "winGame" from socket', () => {
