@@ -1,4 +1,5 @@
-import { Constants, TEST_GAME_CONSTANTS_JSON_PATH } from '@common/constants';
+import { TEST_GAME_CONSTANTS_JSON_PATH } from "../data/test-constants"
+import { Constants } from "@common/constants";
 import { GameConstantsService } from '@app/services/constants-manager.service';
 import { expect } from 'chai';
 import * as fs from 'fs';
@@ -20,7 +21,7 @@ describe('Game constants service', () => {
         gamesConstantsService['jsonPath'] = TEST_GAME_CONSTANTS_JSON_PATH;
     });
 
-    xit('should get all game constants', async () => {
+    it('should get all game constants', async () => {
         const string = JSON.stringify(gameConstantsObject);
         fs.writeFileSync(TEST_GAME_CONSTANTS_JSON_PATH, string, 'utf-8');
         const gamesConstants = await gamesConstantsService.getGameConstants();
@@ -28,7 +29,7 @@ describe('Game constants service', () => {
         fs.unlinkSync(TEST_GAME_CONSTANTS_JSON_PATH);
     });
 
-    xit('appendJSON should add a game constant to game-constants.json', async () => {
+    it('appendJSON should add a game constant to game-constants.json', async () => {
         fs.writeFileSync(TEST_GAME_CONSTANTS_JSON_PATH, JSON.stringify(gameConstantsObject), 'utf-8');
         await gamesConstantsService.appendJSON(newConstants);
         const constantsObject = JSON.parse(fs.readFileSync(TEST_GAME_CONSTANTS_JSON_PATH, 'utf-8'));

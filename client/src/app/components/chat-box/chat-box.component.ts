@@ -1,9 +1,12 @@
 /* eslint-disable @typescript-eslint/no-magic-numbers */
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ElementRef, ViewChild   } from '@angular/core';
+
 import { ActivatedRoute } from '@angular/router';
 import { LoginFormService } from '@app/services/login-form.service';
 import { SocketClientService } from '@app/services/socket-client-service.service';
+import { MouseFocusService } from '@app/mouse-focus.service';
 import { Message } from '@common/chatMessage';
+
 
 @Component({
     selector: 'app-chat-box',
@@ -11,21 +14,41 @@ import { Message } from '@common/chatMessage';
     styleUrls: ['./chat-box.component.scss'],
 })
 export class ChatBoxComponent implements OnInit {
+    @ViewChild('chatInput') chatInput: ElementRef;
+
     gameId: string;
     messages: Message[] = [];
     message: string = '';
     pageName: string | undefined;
 
-    constructor(public route: ActivatedRoute, public socketService: SocketClientService, private gameUtils: LoginFormService) {
+    constructor(public route: ActivatedRoute, public socketService: SocketClientService, private gameUtils: LoginFormService, private mouseFocus: MouseFocusService) {
         const snapshot = route.snapshot;
         this.pageName = snapshot.routeConfig?.path?.toString();
     }
+    ngAfterViewInit() {
+        this.chatInput.nativeElement.addEventListener('focus', () => {
+          this.mouseFocus.isFocusOnchat = true;
+        });
+        
+        this.chatInput.nativeElement.addEventListener('blur', () => {
+          this.mouseFocus.isFocusOnchat = false;
+        });
+      }
+    
 
     ngOnInit() {
         this.socketService.connect();
         this.gameId = this.gameUtils.getGameId();
         this.handleSockets();
     }
+    onFocus() {
+        console.log('Input is focused');
+        this.mouseFocus.isFocusOnchat = true
+      }
+      onBlur() {
+        console.log('Input is blurred');
+        this.mouseFocus.isFocusOnchat = false
+      }
 
     handleSockets() {
         this.socketService.on('receiveChatMessage', (data: Message) => {
@@ -90,4 +113,5 @@ export class ChatBoxComponent implements OnInit {
     isMultiplayerMode() {
         return this.pageName === 'oneVSone';
     }
+
 }

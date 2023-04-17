@@ -1,4 +1,5 @@
 import { Component, HostListener } from '@angular/core';
+import { MouseFocusService } from '@app/mouse-focus.service';
 import { GameManagerService } from '@app/services/game-manager.service';
 
 // const QUART_SECOND = 5000;
@@ -11,7 +12,7 @@ import { GameManagerService } from '@app/services/game-manager.service';
 
 // const btn = document.getElementById('btn');
 export class CheatComponent {
-    constructor(private gameManager: GameManagerService) {}
+    constructor(private gameManager: GameManagerService, private mouseFocus: MouseFocusService) {}
 
     // eslint-disable-next-line @typescript-eslint/member-ordering
     toggle = false;
@@ -29,7 +30,7 @@ export class CheatComponent {
     // eslint-disable-next-line @typescript-eslint/member-ordering
     @HostListener('document:keyup', ['$event'])
     onKeyUp(event: KeyboardEvent) {
-        if (event.key === 't' || event.key === 'T') {
+        if ((event.key === 't' || event.key === 'T') && !this.mouseFocus.isFocusOnchat) {
             this.onClick();
         }
     }
