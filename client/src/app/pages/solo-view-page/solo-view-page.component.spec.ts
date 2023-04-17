@@ -158,22 +158,6 @@ describe('SoloViewPageComponent', () => {
         expect(popUp.nativeElement.style.display).toEqual('block');
     });
 
-    xit('stopWatch should start', () => {
-        const timerTest = 4;
-        const waitTime = 5000;
-
-        const time = component.secondes;
-        expect(time).toBeGreaterThanOrEqual(0);
-        const timerSpy = spyOn(component, 'startStopWatch');
-        component.startStopWatch();
-        expect(timerSpy).toHaveBeenCalled();
-        jasmine.clock().install();
-        jasmine.clock().tick(waitTime);
-        const time2 = component.secondes;
-        expect(time2).toBeGreaterThanOrEqual(timerTest);
-        jasmine.clock().uninstall();
-    });
-
     it('startTimer should call timer()', () => {
         const spy = spyOn(component, 'stopWatch');
         component.startStopWatch();
