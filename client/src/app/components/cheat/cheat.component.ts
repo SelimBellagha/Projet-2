@@ -21,10 +21,12 @@ export class CheatComponent {
     }
     onClick(): void {
         {
-            this.toggle = !this.toggle;
-            this.gameManager.stateChanger();
-            this.status = this.toggle ? 'Activer Triche' : 'Désactiver Triche';
-            this.giveHint();
+            if (!this.gameManager.replayMode) {
+                this.toggle = !this.toggle;
+                this.gameManager.stateChanger();
+                this.status = this.toggle ? 'Activer Triche' : 'Désactiver Triche';
+                this.giveHint();
+            }
         }
     }
     giveHint(): void {

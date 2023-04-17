@@ -61,6 +61,9 @@ export class ModeIndiceComponent {
     }
     onClick(): void {
         {
+            if (this.gameManager.replayMode) {
+                return;
+            }
             if (this.counter < 3) {
                 this.gameManager.sendHintMessage(this.hints[this.counter]);
                 switch (this.counter) {
