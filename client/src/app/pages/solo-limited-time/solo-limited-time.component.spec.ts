@@ -71,23 +71,25 @@ describe('SoloLimitedTimeComponent', () => {
 
     it('timer should countdown the timer', () => {
         spyOn(component, 'endGame');
-
+        const max = 60;
+        const waitTime = 1000;
+        const secondToWait = 28;
         jasmine.clock().install();
 
         const gameTime = 30;
         component.timer(gameTime);
         expect(component.minutes).toBe(0);
-        expect(component.secondes).toBe(gameTime % 60);
+        expect(component.secondes).toBe(gameTime % max);
 
-        jasmine.clock().tick(1000);
+        jasmine.clock().tick(waitTime);
         expect(component.minutes).toBe(0);
-        expect(component.secondes).toBe((gameTime % 60) - 1);
+        expect(component.secondes).toBe((gameTime % max) - 1);
 
-        jasmine.clock().tick(28000);
+        jasmine.clock().tick(waitTime * secondToWait);
         expect(component.minutes).toBe(0);
         expect(component.secondes).toBe(1);
 
-        jasmine.clock().tick(1000);
+        jasmine.clock().tick(waitTime);
         expect(component.minutes).toBe(0);
         expect(component.secondes).toBe(0);
         expect(component.endGame).toHaveBeenCalled();
