@@ -12,8 +12,20 @@ export class LoginPageComponent {
     username: string;
     constructor(private router: Router, private loginService: LoginFormService, private lobbyService: LobbyService) {}
 
+    returnBack() {
+        if (this.loginService.getLimitedTimeGame()) {
+            this.goToLimitedType();
+        } else {
+            this.goToGameSelection();
+        }
+    }
+
     goToGameSelection(): void {
         this.router.navigate(['/gameSelection']);
+    }
+
+    goToLimitedType() {
+        this.router.navigate(['/limitedTimeType']);
     }
 
     onClickSubmit(name: string) {

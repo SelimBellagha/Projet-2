@@ -118,4 +118,24 @@ describe('LoginPageComponent', () => {
     it('validateUsername should return true if name contains non-whitespace characters', () => {
         expect(component.validateUsername('PlayerName')).toBe(true);
     });
+
+    it('goToLimitedType should navigate to LimitedType page', () => {
+        const routerSpy = spyOn(router, 'navigate');
+        component.goToLimitedType();
+        expect(routerSpy).toHaveBeenCalledWith(['/limitedTimeType']);
+    });
+
+    it('returnBack should call to goToGameSelection if getLimitedTimeGame return false', () => {
+        loginServiceSpy.getLimitedTimeGame.and.returnValue(false);
+        const goToGameSelectionSpy = spyOn(component, 'goToGameSelection');
+        component.returnBack();
+        expect(goToGameSelectionSpy).toHaveBeenCalled();
+    });
+
+    it('returnBack should call to goToLimitedType if getLimitedTimeGame return true', () => {
+        loginServiceSpy.getLimitedTimeGame.and.returnValue(true);
+        const goToLimitedTypeSpy = spyOn(component, 'goToLimitedType');
+        component.returnBack();
+        expect(goToLimitedTypeSpy).toHaveBeenCalled();
+    });
 });
