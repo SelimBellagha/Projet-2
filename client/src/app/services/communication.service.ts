@@ -1,6 +1,7 @@
 import { HttpClient, HttpParams, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { GameData, TopScore } from '@app/interfaces/game.interface';
+import { Constants } from '@common/constants';
 import { Message } from '@common/message';
 import { Observable, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
@@ -40,22 +41,12 @@ export class CommunicationService {
         this.http.delete(`${this.baseUrl}/games/${id}`, { params }).subscribe();
     }
 
-    getAllScores(): Observable<TopScore[]> {
-        return this.http.get<TopScore[]>(`${this.baseUrl}/scores`);
+    sendConstants(gameConstants: Constants): Observable<void> {
+        return this.http.post<void>(`${this.baseUrl}/games/constants`, gameConstants).pipe(catchError(this.handleError<void>('sendConstants')));
     }
 
-    getGameScores(gameId: string, gameType: string): Observable<TopScore[]> {
-        const params = new HttpParams().set('gameId', gameId).set('gameType', gameType);
-        return this.http.get<TopScore[]>(`${this.baseUrl}/scores/${gameId}/${gameType}`, { params });
-    }
-
-    addScore(score: TopScore): Observable<boolean> {
-        return this.http.post<boolean>(`${this.baseUrl}/scores`, score);
-    }
-
-    resetGameScores(gameId: string): void {
-        const params = new HttpParams().set('gameId', gameId);
-        this.http.delete(`${this.baseUrl}/scores/${gameId}`, { params }).subscribe();
+    getConstants(): Observable<Constants> {
+        return this.http.get<Constants>(this.baseUrl + '/games/constants').pipe(catchError(this.handleError<Constants>('getConstants')));
     }
 
     private handleError<T>(request: string, result?: T): (error: Error) => Observable<T> {
