@@ -28,25 +28,25 @@ export class ModeIndiceComponent {
     // coordinates for the cadrans
     a: Vec2 = { x: 0, y: 240 };
 
-    c: Vec2 = { x: 320, y: 0 };
+    c: Vec2 = { x: 240, y: 0 };
 
     b: Vec2 = { x: 640, y: 240 };
 
-    d: Vec2 = { x: 320, y: 480 };
+    d: Vec2 = { x: 240, y: 480 };
 
     e: Vec2 = { x: 0, y: 120 };
 
-    f: Vec2 = { x: 320, y: 120 };
+    f: Vec2 = { x: 240, y: 120 };
 
     g: Vec2 = { x: 640, y: 120 };
 
     h: Vec2 = { x: 0, y: 360 };
 
-    i: Vec2 = { x: 320, y: 360 };
+    i: Vec2 = { x: 240, y: 360 };
 
     j: Vec2 = { x: 640, y: 360 };
 
-    centre: Vec2 = { x: 320, y: 240 };
+    centre: Vec2 = { x: 240, y: 240 };
 
     status = '3 Indices Inactive';
 
@@ -69,6 +69,7 @@ export class ModeIndiceComponent {
                         this.gameManager.hintStateChanger();
                         this.status = this.hints[this.counter];
                         this.counter++;
+                        this.gameManager.timePenalty();
                         this.findCadran1(this.setUpCoordinates());
                         break;
                     case 1:
@@ -76,6 +77,7 @@ export class ModeIndiceComponent {
                         this.gameManager.hintStateChanger();
                         this.status = this.hints[this.counter];
                         this.counter++;
+                        this.gameManager.timePenalty();
                         this.findCadran2(this.setUpCoordinates());
                         break;
                     case 2:
@@ -83,6 +85,7 @@ export class ModeIndiceComponent {
                         this.gameManager.hintStateChanger();
                         this.status = this.hints[this.counter];
                         this.counter++;
+                        this.gameManager.timePenalty();
                         this.gameManager.giveHint3(this.setUpCoordinates3());
                         break;
                 }
