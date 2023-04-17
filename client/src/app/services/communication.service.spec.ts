@@ -3,11 +3,18 @@ import { TestBed } from '@angular/core/testing';
 import { GameData } from '@app/interfaces/game.interface';
 import { CommunicationService } from '@app/services/communication.service';
 import { Message } from '@common/message';
+import { Constants } from '@common/constants';
+import { of } from 'rxjs';
 
 describe('CommunicationService', () => {
     let httpMock: HttpTestingController;
     let service: CommunicationService;
     let baseUrl: string;
+    const constants: Constants = {
+        initTime: 30,
+        penaltyTime: 5,
+        timeBonus: 5,
+    };
 
     beforeEach(() => {
         TestBed.configureTestingModule({
@@ -135,5 +142,31 @@ describe('CommunicationService', () => {
         const req = httpMock.expectOne(`${baseUrl}/example`);
         expect(req.request.method).toBe('GET');
         req.error(new ProgressEvent('Random error occurred'));
+    });
+
+    it('sendConstants() should succeed (HttpClient called once) ', () => {
+        service.sendConstants(constants).subscribe({
+            next: () => {
+                expect();
+            },
+            error: fail,
+        });
+
+        const req = httpMock.expectOne(`${baseUrl}/games/constants`);
+        expect(req.request.method).toBe('POST');
+        req.flush(of(undefined));
+    });
+
+    it('getConstants() should return constants', async () => {
+        service.getConstants().subscribe({
+            next: (response) => {
+                expect(response).toEqual(constants);
+            },
+            error: fail,
+        });
+
+        const req = httpMock.expectOne(`${baseUrl}/games/constants`);
+        expect(req.request.method).toBe('GET');
+        req.flush(constants);
     });
 });

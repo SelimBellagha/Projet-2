@@ -37,23 +37,12 @@
             </div>
         </div>
     </div>
+    <app-constants></app-constants>
 
     <div class="button-container">
         <button class="button-choice" (click)="goToCreationPage()">Accéder à la Vue de création de jeu</button>
-        <button class="button-choice" (click)="goToConstants()">Constantes de jeu</button>
 
         <button class="button-choice">Accéder à l'historique des parties jouées</button>
         <button class="button-choice">Remettre les données à leur état initial</button>
-    </div>
-
-    <div #popUpWindow class="modal">
-        <div class="modal-content">
-            <li>temps initial du compte à rebours : 30 secondes</li>
-            <li>temps gagné avec la découverte d’une différence : 5 secondes</li>
-            <li>temps de pénalité pour l’utilisation d’un indice : 5 secondes</li>
-            <div class="close-button">
-                <button (click)="onClosingPopUp()">Fermer</button>
-            </div>
-        </div>
     </div>
 </body>

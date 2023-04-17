@@ -26,6 +26,7 @@ import { SalleAttenteComponent } from './pages/salle-attente/salle-attente.compo
 import { SelectionPageComponentComponent } from './pages/selection-page-component/selection-page-component.component';
 import { SoloLimitedTimeComponent } from './pages/solo-limited-time/solo-limited-time.component';
 import { SoloViewPageComponent } from './pages/solo-view-page/solo-view-page.component';
+import { ConstantsComponent } from './components/constants/constants.component';
 
 /**
  * Main module that is used in main.ts.
@@ -52,6 +53,7 @@ import { SoloViewPageComponent } from './pages/solo-view-page/solo-view-page.com
         SalleAttenteComponent,
         JoinBarComponent,
         ChatBoxComponent,
+        ConstantsComponent,
         ModeIndiceComponent,
         LimitedTimeTypeComponent,
         SoloLimitedTimeComponent,
