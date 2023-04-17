@@ -1,5 +1,6 @@
 <body class="container">
-    <button class="quit-button" (click)="goToGiveUp()">Abandonner la partie</button>
+    <button *ngIf="!inReplay" class="quit-button" (click)="goToGiveUp()">Abandonner la partie</button>
+    <button *ngIf="inReplay" class="quit-button" (click)="goToHomePage()">Quitter la reprise</button>
 
     <div class="section">
         <div class="main-container">
