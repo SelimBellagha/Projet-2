@@ -24,6 +24,7 @@ export class SoloViewPageComponent implements OnInit, AfterViewInit {
     secondes: number = 0;
     minutes: number = 0;
     intervalID: number;
+    gameTime: number;
 
     // eslint-disable-next-line max-params
     constructor(
@@ -53,6 +54,7 @@ export class SoloViewPageComponent implements OnInit, AfterViewInit {
     }
 
     stopWatch() {
+        this.gameTime = 0;
         this.gameManager.gameTime = 0;
         const timerInterval = 1000;
         const max = 60;
@@ -60,7 +62,8 @@ export class SoloViewPageComponent implements OnInit, AfterViewInit {
         this.secondes = 0;
         this.intervalID = window.setInterval(() => {
             this.gameManager.gameTime++;
-            this.secondes = this.gameManager.gameTime % max;
+            this.gameTime = this.gameManager.gameTime;
+            this.secondes = this.gameTime % max;
             this.minutes = Math.floor(this.gameManager.gameTime / max);
         }, timerInterval);
     }

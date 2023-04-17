@@ -58,13 +58,13 @@ export class SoloLimitedTimeComponent implements OnInit, AfterViewInit {
     timer(gameTime: number) {
         const timerInterval = 1000;
         const max = 60;
-        this.gameTime = gameTime;
-        this.gameManager.gameTime = this.gameTime;
+        this.gameManager.gameTime = gameTime;
+        this.gameTime = this.gameManager.gameTime;
         this.secondes = this.gameTime % max;
         this.minutes = Math.floor(this.gameTime / max);
         this.intervalID = window.setInterval(() => {
-            this.gameTime--;
-            this.gameManager.gameTime = this.gameTime;
+            this.gameManager.gameTime--;
+            this.gameTime = this.gameManager.gameTime;
             this.secondes = this.gameTime % max;
             this.minutes = Math.floor(this.gameTime / max);
             if (this.minutes <= 0 && this.secondes <= 0) {
