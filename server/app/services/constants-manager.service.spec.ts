@@ -37,9 +37,8 @@ describe('Game constants service', () => {
     });
 
     it('addGameConstants should call appendJSON', async () => {
-        const appendJSONSpy = gamesConstantsService['appendJSON'] = sinon.spy();
+        const appendJSONSpy = (gamesConstantsService['appendJSON'] = sinon.spy());
         await gamesConstantsService.addGameConstants(newConstants);
         sinon.assert.calledWith(appendJSONSpy, newConstants);
     });
 });
-
