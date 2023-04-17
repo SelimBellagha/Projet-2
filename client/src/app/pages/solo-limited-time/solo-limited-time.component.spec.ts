@@ -6,7 +6,7 @@ import { MouseButton } from '@app/components/play-area/play-area.component';
 import { GameData } from '@app/interfaces/game.interface';
 import { DisplayGameService } from '@app/services/display-game.service';
 import { GameManagerService } from '@app/services/game-manager.service';
-import { LobbyService } from '@app/services/lobby.service';
+import { LimitedTimeLobbyService } from '@app/services/limited-time-lobby.service';
 import { SoloLimitedTimeComponent } from './solo-limited-time.component';
 import SpyObj = jasmine.SpyObj;
 
@@ -15,10 +15,10 @@ describe('SoloLimitedTimeComponent', () => {
     let fixture: ComponentFixture<SoloLimitedTimeComponent>;
     let gameManagerSpy: SpyObj<GameManagerService>;
     let displayGameSpy: SpyObj<DisplayGameService>;
-    let lobbySpy: SpyObj<LobbyService>;
+    let limitedLobbySpy: SpyObj<LimitedTimeLobbyService>;
     let router: Router;
 
-    const gameMock1 = {
+    const gameMock1: GameData = {
         id: '0',
         name: 'mock',
         originalImage: 'mock',
@@ -29,18 +29,22 @@ describe('SoloLimitedTimeComponent', () => {
     };
 
     beforeEach(async () => {
-        gameManagerSpy = jasmine.createSpyObj('GameManagerService', ['onPositionClicked', 'putImages', 'playWinAudio', 'initializeGame'], {
-            gameData: gameMock1 as unknown as GameData,
-        });
-        lobbySpy = jasmine.createSpyObj('LobbyService', { firstGame: 0 });
-        displayGameSpy = jasmine.createSpyObj('DisplayGameService', ['convertDifficulty']);
+        gameManagerSpy = jasmine.createSpyObj(
+            'GameManagerService',
+            ['onPositionClicked', 'putImages', 'playWinAudio', 'initializeGame', 'initializeLimitedGame'],
+            {
+                gameData: gameMock1 as unknown as GameData,
+            },
+        );
+        displayGameSpy = jasmine.createSpyObj('DisplayGameService', ['convertDifficulty', 'loadAllGames']);
+        limitedLobbySpy = jasmine.createSpyObj('LimitedTimeLobbyService', { roomId: 'id' });
         await TestBed.configureTestingModule({
             declarations: [SoloLimitedTimeComponent],
             imports: [RouterTestingModule, HttpClientTestingModule],
             providers: [
                 { provide: GameManagerService, useValue: gameManagerSpy },
                 { provide: DisplayGameService, useValue: displayGameSpy },
-                { provide: LobbyService, useValue: lobbySpy },
+                { provide: LimitedTimeLobbyService, useValue: limitedLobbySpy },
             ],
         }).compileComponents();
 
@@ -129,5 +133,21 @@ describe('SoloLimitedTimeComponent', () => {
         await component.goToHomePage();
         expect(routerSpy).toHaveBeenCalledWith(['home']);
         expect(stopTimerSpy).toHaveBeenCalled();
+    });
+
+    it('if not firstGame, should call loadAllGames', () => {
+        expect(displayGameSpy.loadAllGames).toHaveBeenCalled();
+    });
+
+    it('if not firstGame and if tempGames, should call initializeLimitedGame', async () => {
+        displayGameSpy.tempGames = [gameMock1];
+        await component.ngOnInit();
+        expect(gameManagerSpy.initializeLimitedGame).toHaveBeenCalled();
+    });
+
+    it('if firstGame, should call initializeGame', () => {
+        limitedLobbySpy.firstGame = 1;
+        component.ngOnInit();
+        expect(gameManagerSpy.initializeGame).toHaveBeenCalled();
     });
 });
