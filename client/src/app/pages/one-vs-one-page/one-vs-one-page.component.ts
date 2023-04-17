@@ -46,7 +46,7 @@ export class OneVsOnePageComponent implements OnInit, AfterViewInit {
 
     ngOnInit() {
         this.roomId = this.lobbyService.roomId;
-        if (this.lobbyService.host === false) {
+        if (!this.lobbyService.host) {
             this.socketService.on('getHostName', (data: { hostName: string }) => {
                 this.opponentUsername = data.hostName;
                 this.hostName = data.hostName;
@@ -161,9 +161,9 @@ export class OneVsOnePageComponent implements OnInit, AfterViewInit {
 
     winCheck() {
         if (this.nbDifferencesFoundUser1 === this.nbDifferenceToWin || this.nbDifferencesFoundUser2 === this.nbDifferenceToWin) {
-            if (this.nbDifferencesFoundUser1 === this.nbDifferenceToWin && this.lobbyService.host === true) {
+            if (this.nbDifferencesFoundUser1 === this.nbDifferenceToWin && this.lobbyService.host) {
                 this.winGame();
-            } else if (this.nbDifferencesFoundUser2 === this.nbDifferenceToWin && this.lobbyService.host === false) {
+            } else if (this.nbDifferencesFoundUser2 === this.nbDifferenceToWin && !this.lobbyService.host) {
                 this.winGame();
             } else {
                 this.loseGame();

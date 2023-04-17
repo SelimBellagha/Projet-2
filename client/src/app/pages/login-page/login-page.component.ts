@@ -46,7 +46,7 @@ export class LoginPageComponent {
                 } else {
                     this.router.navigate(['/soloLimitedTime']);
                 }
-            } else if (this.loginService.getGameType() === false) {
+            } else if (!this.loginService.getGameType()) {
                 this.router.navigate(['/soloView']);
                 this.lobbyService.roomId = '0';
             } else {
