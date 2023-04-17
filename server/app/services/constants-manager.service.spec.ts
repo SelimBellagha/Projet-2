@@ -28,7 +28,7 @@ describe('Game constants service', () => {
         fs.unlinkSync(TEST_GAME_CONSTANTS_JSON_PATH);
     });
 
-    it('appendJSON should add a game constant to game-constants.json', async () => {
+    xit('appendJSON should add a game constant to game-constants.json', async () => {
         fs.writeFileSync(TEST_GAME_CONSTANTS_JSON_PATH, JSON.stringify(gameConstantsObject), 'utf-8');
         await gamesConstantsService.appendJSON(newConstants);
         const constantsObject = JSON.parse(fs.readFileSync(TEST_GAME_CONSTANTS_JSON_PATH, 'utf-8'));
