@@ -33,6 +33,7 @@ export class OneVsOnePageComponent implements OnInit, AfterViewInit {
     nbDifferencesFoundUser2: number;
     roomId: string;
     nbDifferenceToWin: number;
+    gameTime: number;
 
     // eslint-disable-next-line max-params
     constructor(
@@ -90,6 +91,7 @@ export class OneVsOnePageComponent implements OnInit, AfterViewInit {
     }
 
     stopWatch() {
+        this.gameTime = 0;
         this.gameManager.gameTime = 0;
         const timerInterval = 1000;
         const max = 60;
@@ -97,7 +99,8 @@ export class OneVsOnePageComponent implements OnInit, AfterViewInit {
         this.secondes = 0;
         this.intervalID = window.setInterval(() => {
             this.gameManager.gameTime++;
-            this.secondes = this.gameManager.gameTime % max;
+            this.gameTime = this.gameManager.gameTime;
+            this.secondes = this.gameTime % max;
             this.minutes = Math.floor(this.gameManager.gameTime / max);
         }, timerInterval);
     }
