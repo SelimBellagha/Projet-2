@@ -128,7 +128,7 @@ describe('SalleAttenteComponent', () => {
         expect(mockRouter.navigate).toHaveBeenCalledWith(['/limitedOneVsOne']);
     });
 
-    it('receiving "updateQueue" from socket should update the queue', () => {
+    it('receive "updateQueue" from socket should update the queue', () => {
         const spyRefuse = spyOn(component, 'refuseListen');
         const spySend = spyOn(socketServiceMock, 'send');
         loginSpy.getGameId.and.returnValue('gameId');

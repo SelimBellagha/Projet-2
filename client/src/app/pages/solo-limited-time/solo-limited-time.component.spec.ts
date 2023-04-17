@@ -73,31 +73,34 @@ describe('SoloLimitedTimeComponent', () => {
         expect(window.clearInterval).toHaveBeenCalledWith(intervalId);
     });
 
-    it('timer should countdown the timer', () => {
-        spyOn(component, 'endGame');
-        const max = 60;
-        const waitTime = 1000;
-        const secondToWait = 28;
+    it('should start and stop the timer', () => {
+        const secondTest = 1000;
         jasmine.clock().install();
+        component.timer(3);
 
-        const gameTime = 30;
-        component.timer(gameTime);
+        jasmine.clock().tick(secondTest);
         expect(component.minutes).toBe(0);
-        expect(component.secondes).toBe(gameTime % max);
+        expect(component.secondes).toBe(2);
 
-        jasmine.clock().tick(waitTime);
-        expect(component.minutes).toBe(0);
-        expect(component.secondes).toBe((gameTime % max) - 1);
-
-        jasmine.clock().tick(waitTime * secondToWait);
+        jasmine.clock().tick(secondTest);
         expect(component.minutes).toBe(0);
         expect(component.secondes).toBe(1);
 
-        jasmine.clock().tick(waitTime);
-        expect(component.minutes).toBe(0);
-        expect(component.secondes).toBe(0);
-        expect(component.endGame).toHaveBeenCalled();
+        component.stopTimer();
 
+        jasmine.clock().tick(secondTest);
+        expect(component.minutes).toBe(0);
+        expect(component.secondes).toBe(1);
+        jasmine.clock().uninstall();
+    });
+
+    it('should call endGame when timer ends', () => {
+        const secondTest = 1000;
+        const endSpy = spyOn(component, 'endGame');
+        jasmine.clock().install();
+        component.timer(1);
+        jasmine.clock().tick(secondTest);
+        expect(endSpy).toHaveBeenCalled();
         jasmine.clock().uninstall();
     });
 
