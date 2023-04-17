@@ -95,7 +95,7 @@ export class OneVsOnePageComponent implements OnInit, AfterViewInit {
         const max = 60;
         this.minutes = 0;
         this.secondes = 0;
-        setInterval(() => {
+        this.intervalID = window.setInterval(() => {
             this.gameManager.gameTime++;
             this.secondes = this.gameManager.gameTime % max;
             this.minutes = Math.floor(this.gameManager.gameTime / max);
