@@ -8,7 +8,7 @@ export class GameConstantsService {
         return JSON.parse(await readFile('./app/services/constantes.json', 'utf8'));
     }
 
-    addGameConstants(newConstants: Constants) {
+    async addGameConstants(newConstants: Constants) {
         this.appendJSON(newConstants);
     }
 
@@ -18,6 +18,6 @@ export class GameConstantsService {
         gamesConstants.initTime = newConstants.initTime;
         gamesConstants.penaltyTime = newConstants.penaltyTime;
         gamesConstants.timeBonus = newConstants.timeBonus;
-        await writeFile('./app/services/constantes.json', JSON.stringify(gamesConstants, null), 'utf8');
+        await writeFile('./app/services/constantes.json', JSON.stringify(gamesConstants), 'utf8');
     }
 }

@@ -1,8 +1,9 @@
-import { Constants, STRINGIFY_SPACES, TEST_GAME_CONSTANTS_JSON_PATH } from '@common/constants';
+import { Constants, TEST_GAME_CONSTANTS_JSON_PATH } from '@common/constants';
 import { GameConstantsService } from '@app/services/constants-manager.service';
 import { expect } from 'chai';
 import * as fs from 'fs';
 import { Container } from 'typedi';
+import * as sinon from 'sinon';
 
 describe('Game constants service', () => {
     let newConstants: Constants;
@@ -19,18 +20,26 @@ describe('Game constants service', () => {
         gamesConstantsService['jsonPath'] = TEST_GAME_CONSTANTS_JSON_PATH;
     });
 
-    /* it('should get all game constants', async () => {
-        fs.writeFileSync(TEST_GAME_CONSTANTS_JSON_PATH, JSON.stringify(gameConstantsObject, null, STRINGIFY_SPACES), 'utf-8');
+    xit('should get all game constants', async () => {
+        const string = JSON.stringify(gameConstantsObject);
+        fs.writeFileSync(TEST_GAME_CONSTANTS_JSON_PATH, string, 'utf-8');
         const gamesConstants = await gamesConstantsService.getGameConstants();
         expect(gamesConstants).to.deep.equals(gameConstantsObject);
         fs.unlinkSync(TEST_GAME_CONSTANTS_JSON_PATH);
-    });*/
+    });
 
-    it('addGameConstants should add a game constant to game-constants.json', (done) => {
-        fs.writeFileSync(TEST_GAME_CONSTANTS_JSON_PATH, JSON.stringify(gameConstantsObject, null, STRINGIFY_SPACES), 'utf-8');
-        gamesConstantsService.addGameConstants(newConstants);
+    it('appendJSON should add a game constant to game-constants.json', async () => {
+        fs.writeFileSync(TEST_GAME_CONSTANTS_JSON_PATH, JSON.stringify(gameConstantsObject), 'utf-8');
+        await gamesConstantsService.appendJSON(newConstants);
         const constantsObject = JSON.parse(fs.readFileSync(TEST_GAME_CONSTANTS_JSON_PATH, 'utf-8'));
         expect(constantsObject).to.deep.equals(newConstants);
-        done();
+        fs.unlinkSync(TEST_GAME_CONSTANTS_JSON_PATH);
+    });
+
+    it('addGameConstants should call appendJSON', async () => {
+        const appendJSONSpy = gamesConstantsService['appendJSON'] = sinon.spy();
+        await gamesConstantsService.addGameConstants(newConstants);
+        sinon.assert.calledWith(appendJSONSpy, newConstants);
     });
 });
+
