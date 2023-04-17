@@ -3,8 +3,10 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { MouseButton } from '@app/components/play-area/play-area.component';
+import { GameData } from '@app/interfaces/game.interface';
 import { DisplayGameService } from '@app/services/display-game.service';
 import { GameManagerService } from '@app/services/game-manager.service';
+import { LobbyService } from '@app/services/lobby.service';
 import { SoloLimitedTimeComponent } from './solo-limited-time.component';
 import SpyObj = jasmine.SpyObj;
 
@@ -13,10 +15,24 @@ describe('SoloLimitedTimeComponent', () => {
     let fixture: ComponentFixture<SoloLimitedTimeComponent>;
     let gameManagerSpy: SpyObj<GameManagerService>;
     let displayGameSpy: SpyObj<DisplayGameService>;
+    let lobbySpy: SpyObj<LobbyService>;
     let router: Router;
 
+    const gameMock1 = {
+        id: '0',
+        name: 'mock',
+        originalImage: 'mock',
+        modifiedImage: 'mock',
+        nbDifferences: 1,
+        differences: [],
+        isDifficult: true,
+    };
+
     beforeEach(async () => {
-        gameManagerSpy = jasmine.createSpyObj('GameManagerService', ['onPositionClicked', 'putImages', 'playWinAudio', 'initializeGame']);
+        gameManagerSpy = jasmine.createSpyObj('GameManagerService', ['onPositionClicked', 'putImages', 'playWinAudio', 'initializeGame'], {
+            gameData: gameMock1 as unknown as GameData,
+        });
+        lobbySpy = jasmine.createSpyObj('LobbyService', { firstGame: 0 });
         displayGameSpy = jasmine.createSpyObj('DisplayGameService', ['convertDifficulty']);
         await TestBed.configureTestingModule({
             declarations: [SoloLimitedTimeComponent],
@@ -24,6 +40,7 @@ describe('SoloLimitedTimeComponent', () => {
             providers: [
                 { provide: GameManagerService, useValue: gameManagerSpy },
                 { provide: DisplayGameService, useValue: displayGameSpy },
+                { provide: LobbyService, useValue: lobbySpy },
             ],
         }).compileComponents();
 
@@ -95,7 +112,7 @@ describe('SoloLimitedTimeComponent', () => {
         expect(component.putNewGame).toHaveBeenCalled();
     });
 
-    xit('should end game when nbDifferencesFound equals gameNumberMax', async () => {
+    it('should end game when nbDifferencesFound equals gameNumberMax', async () => {
         gameManagerSpy.onPositionClicked.and.returnValue(Promise.resolve(true));
         spyOn(component, 'endGame');
         gameManagerSpy.gameNumberMax = 1;
