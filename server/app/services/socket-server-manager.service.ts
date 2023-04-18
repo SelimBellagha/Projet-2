@@ -9,6 +9,7 @@ import { Socket } from 'socket.io';
 import { Service } from 'typedi';
 import { GameManager } from './game-manager.service';
 import { TimerManager } from './timer-manager.service';
+import { TopScore } from '@app/data/top-scores.interface';
 
 const EIGHT = 8;
 
@@ -83,26 +84,12 @@ export class SocketServerManager {
                 this.sio.to(lobby?.secondPlayer.socketId).emit('receiveSystemMessage', systemMessage + playerName);
             });
 
-            socket.on('globalMessage', async () => {
+            socket.on('globalMessage', async (newScore: TopScore) => {
                 const now: Date = new Date();
                 const timeString: string = now.toTimeString().slice(0, EIGHT);
-                //   const scores = this.gameService.getScores()
-                const scores = [
-                    {
-                        playerName: 'test',
-                        position: 1,
-                        gameType: 'test',
-                    },
-                ];
-                const scoreCount = scores.length;
-                for (let i = 0; i < scoreCount; i++) {
-                    const playerName = scores[i].playerName;
-                    const position = scores[i].position;
-                    const nomJeu = scores[i].gameType;
-                    const message = `${timeString} - ${playerName} obtient la ${position} place dans les meilleurs temps du jeu ${nomJeu}}`;
-
-                    this.sio.emit('receiveSystemMessage', message);
-                }
+                const message = `${timeString} - ${newScore.playerName} obtient la ${newScore.position} place dans les meilleurs temps du jeu ${newScore.gameType}`;
+                this.sio.emit('receiveSystemMessage', message);
+             
             });
 
             socket.on('systemMessageSolo', (systemMessage: string) => {
