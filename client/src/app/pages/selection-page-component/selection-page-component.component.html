@@ -16,21 +16,21 @@
         </div>
     </div>
     <div class="buttons-align">
-        <div *ngIf="hasNextPage === false">
+        <div *ngIf="!hasNextPage">
             <button disabled="disabled">Précédent</button>
             <button disabled="disabled">Suivant</button>
         </div>
 
-        <div *ngIf="hasNextPage === true">
-            <div *ngIf="hasNext === false" class="buttons">
+        <div *ngIf="hasNextPage">
+            <div *ngIf="!hasNext" class="buttons">
                 <button (click)="previous()" id="previousInput">Précédent</button>
                 <button disabled="disabled">Suivant</button>
             </div>
-            <div *ngIf="hasPrevious === false" class="buttons">
+            <div *ngIf="!hasPrevious" class="buttons">
                 <button disabled="disabled">Précédent</button>
                 <button id="nextInput" (click)="next()">Suivant</button>
             </div>
-            <div *ngIf="hasNext === true && hasPrevious === true" class="buttons">
+            <div *ngIf="hasNext && hasPrevious" class="buttons">
                 <button (click)="previous()">Précédent</button>
                 <button (click)="next()" id="nextInput">Suivant</button>
             </div>

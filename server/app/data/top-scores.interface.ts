@@ -5,3 +5,8 @@ export interface TopScore {
     time: string;
     playerName: string;
 }
+
+export interface AddedScoreResult {
+    isAdded: boolean;
+    positionIndex: string;
+}

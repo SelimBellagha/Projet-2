@@ -5,6 +5,7 @@ import { Player } from '@app/interfaces/player';
 import { Vec2 } from '@app/interfaces/vec2';
 import { DisplayGameService } from '@app/services/display-game.service';
 import { GameManagerService } from '@app/services/game-manager.service';
+import { HistoryService } from '@app/services/history.service';
 import { LimitedTimeLobbyService } from '@app/services/limited-time-lobby.service';
 import { SocketClientService } from '@app/services/socket-client-service.service';
 
@@ -24,12 +25,14 @@ export class OneVsOneLimitedTimeComponent implements OnInit, AfterViewInit {
     secondPlayerName: string;
     gameName: string;
     difficulty: string;
-    nbDifferences: number;
     minutes: number = 0;
     secondes: number = 0;
     intervalID: number;
     nbDifferencesFound: number;
-    nbDifferenceToWin: number;
+    nbDifferences: number;
+    gameTime: number;
+
+    startDate: Date;
 
     // eslint-disable-next-line max-params
     constructor(
@@ -38,7 +41,10 @@ export class OneVsOneLimitedTimeComponent implements OnInit, AfterViewInit {
         private gameManager: GameManagerService,
         private socketService: SocketClientService,
         private limitedTimeLobbyService: LimitedTimeLobbyService,
-    ) {}
+        private historyService: HistoryService,
+    ) {
+        this.startDate = new Date();
+    }
 
     async ngOnInit() {
         this.socketService.on('getPlayers', (data: { firstPlayer: Player; secondPlayer: Player }) => {
@@ -61,6 +67,15 @@ export class OneVsOneLimitedTimeComponent implements OnInit, AfterViewInit {
             this.gameManager.putImages();
         }
         this.socketService.send('gamesNumber', { gamesNumber: this.gameManager.limitedGameData.length, roomId: this.limitedTimeLobbyService.roomId });
+        this.historyService.history = {
+            startDate: this.startDate.toLocaleString(),
+            gameLength: 'tempLength',
+            gameMode: 'Temps Limite',
+            namePlayer1: this.firstPlayerName,
+            namePlayer2: this.secondPlayerName,
+            winnerName: '',
+            nameAbandon: '',
+        };
     }
 
     async ngAfterViewInit() {
@@ -79,7 +94,7 @@ export class OneVsOneLimitedTimeComponent implements OnInit, AfterViewInit {
         });
         this.socketService.on('limitedTimeGiveUp', () => {
             this.limitedTimeLobbyService.differencesFound = this.nbDifferencesFound;
-            this.router.navigate(['soloLimitedTime']);
+            this.router.navigate(['/soloLimitedTime']);
         });
     }
 
@@ -89,16 +104,20 @@ export class OneVsOneLimitedTimeComponent implements OnInit, AfterViewInit {
     }
 
     timer(gameTime: number) {
-        this.gameManager.gameTime = gameTime;
         const timerInterval = 1000;
         const max = 60;
-        this.secondes = this.gameManager.gameTime % max;
-        this.minutes = Math.floor(this.gameManager.gameTime / max);
+        this.gameManager.gameTime = gameTime;
+        this.gameTime = this.gameManager.gameTime;
+        this.secondes = this.gameTime % max;
+        this.minutes = Math.floor(this.gameTime / max);
         this.intervalID = window.setInterval(() => {
             this.gameManager.gameTime--;
-            this.secondes = this.gameManager.gameTime % max;
-            this.minutes = Math.floor(this.gameManager.gameTime / max);
-            if (this.minutes === 0 && this.secondes === 0) {
+            this.gameTime = this.gameManager.gameTime;
+            this.secondes = this.gameTime % max;
+            this.minutes = Math.floor(this.gameTime / max);
+            if (this.minutes <= 0 && this.secondes <= 0) {
+                this.secondes = 0;
+                this.minutes = 0;
                 this.endGame();
             }
         }, timerInterval);
@@ -113,13 +132,15 @@ export class OneVsOneLimitedTimeComponent implements OnInit, AfterViewInit {
     }
 
     endGame(): void {
-        clearInterval(this.intervalID);
+        this.historyService.history.gameLength = this.historyService.findGameLength(this.startDate);
+        this.displayService.addHistory(this.historyService.history);
+        this.stopTimer();
         this.gameManager.playWinAudio();
         this.popUpWindow.nativeElement.style.display = 'block';
     }
     goToHomePage() {
         this.popUpWindow.nativeElement.style.display = 'none';
-        this.router.navigate(['home']);
+        this.router.navigate(['/home']);
     }
 
     giveUp() {
@@ -142,9 +163,7 @@ export class OneVsOneLimitedTimeComponent implements OnInit, AfterViewInit {
         if (event.button === MouseButton.Left) {
             const mousePosition: Vec2 = { x: event.offsetX, y: event.offsetY };
             if (await this.gameManager.onPositionClicked(mousePosition)) {
-                // Incrementer le cpt de differences
                 this.socketService.send('limitedDifferenceFound', { roomId: this.limitedTimeLobbyService.roomId });
-                // Si on a tout trouvé, finir le jeu.
             }
         }
     }

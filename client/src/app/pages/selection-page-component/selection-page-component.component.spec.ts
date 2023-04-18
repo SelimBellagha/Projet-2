@@ -97,6 +97,7 @@ describe('SelectionPageComponentComponent', () => {
         component.checkPlayers();
         expect(component.gamesDisplayed[0].playerInGame).toEqual('Rejoindre');
     });
+
     it('checkPlayers should set playerInGame to "Créer" if there is no players in the game', () => {
         component.gamesDisplayed = [{ playerInGame: '0' } as Game];
         component.checkPlayers();

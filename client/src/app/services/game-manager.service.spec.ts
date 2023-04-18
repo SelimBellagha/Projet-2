@@ -1,5 +1,6 @@
 import { HttpClientModule } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
+import { RouterTestingModule } from '@angular/router/testing';
 import { CanvasTestHelper } from '@app/classes/canvas-test-helper';
 import { GameData } from '@app/interfaces/game-data';
 import { Vec2 } from '@app/interfaces/vec2';
@@ -8,24 +9,18 @@ import { DifferenceVerificationService } from './difference-verification.service
 import { GameManagerService } from './game-manager.service';
 import SpyObj = jasmine.SpyObj;
 
-xdescribe('GameManagerService', () => {
+describe('GameManagerService', () => {
     let service: GameManagerService;
     const CANVAS_WIDTH = 640;
     const CANVAS_HEIGHT = 480;
     const PIXEL_SIZE = 4;
     const whiteValue = 255;
     let differenceVerificationSpy: SpyObj<DifferenceVerificationService>;
-    // let canvas: CanvasRenderingContext2D;
-    // const mockCanvas = document.createElement('canvas');
-    // const mockContext = mockCanvas.getContext('2d') as CanvasRenderingContext2D;
-    // const mockImageData = new ImageData(640, 480);
 
     beforeEach(() => {
         differenceVerificationSpy = jasmine.createSpyObj('DifferenceVerificationService', ['differenceVerification']);
-        // spyOn(mockContext, 'getImageData').and.returnValue(mockImageData);
-        // spyOn(mockContext, 'putImageData');
         TestBed.configureTestingModule({
-            imports: [HttpClientModule],
+            imports: [HttpClientModule, RouterTestingModule],
             providers: [{ provide: DifferenceVerificationService, useValue: differenceVerificationSpy }],
         });
         service = TestBed.inject(GameManagerService);

@@ -30,16 +30,6 @@ describe('SoloViewPageComponent', () => {
         differences: [],
         isDifficult: true,
     };
-    /*
-    const gameMock2 = {
-        id: '1',
-        name: 'mock',
-        originalImage: 'mock',
-        modifiedImage: 'mock',
-        nbDifferences: 1,
-        differences: [],
-        isDifficult: false,
-    };*/
 
     beforeEach(async () => {
         gameManagerSpy = jasmine.createSpyObj('GameManagerService', ['onPositionClicked', 'putImages', 'playWinAudio', 'initializeGame']);
@@ -168,21 +158,6 @@ describe('SoloViewPageComponent', () => {
         popUp.nativeElement.style.display = 'none';
         component.goToCongratulations();
         expect(popUp.nativeElement.style.display).toEqual('block');
-    });
-
-    xit('stopWatch should start', () => {
-        const timerTest = 4;
-        const waitTime = 5000;
-
-        const time = component.secondes;
-        expect(time).toBeGreaterThanOrEqual(0);
-        const timerSpy = spyOn(component, 'startStopWatch');
-        component.startStopWatch();
-        expect(timerSpy).toHaveBeenCalled();
-        setTimeout(() => {
-            const time2 = component.secondes;
-            expect(time2).toBeGreaterThanOrEqual(timerTest);
-        }, waitTime);
     });
 
     it('startTimer should call timer()', () => {

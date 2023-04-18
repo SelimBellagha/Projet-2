@@ -55,8 +55,7 @@ export class ChatBoxComponent implements OnInit {
 
     handleSockets() {
         this.socketService.on('receiveChatMessage', (data: Message) => {
-            console.log('hellosss' + data);
-            this.messages.push(data);
+        this.messages.push(data);
         });
 
         this.socketService.on('receiveSystemMessage', (systemMessage: string) => {

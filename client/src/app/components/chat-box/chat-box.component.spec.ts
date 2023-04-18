@@ -100,7 +100,7 @@ describe('ChatBoxComponent', () => {
         expect(spy).toHaveBeenCalledWith(message);
     });
 
-    /* it('should add a message when calling addMessage', () => {
+    it('should add a message when calling addMessage', () => {
         const message: Message = {
             text: 'Hello',
             roomId: '123',
@@ -120,5 +120,46 @@ describe('ChatBoxComponent', () => {
 
         expect(component.messages).toEqual([message]);
         expect(component.message).toBe('');
-    });*/
+    });
+
+    it('should handle system message sockets', () => {
+        const message: Message = {
+          text: 'The game has started!',
+          roomId: '123',
+          isSender: false,
+          isSystem: true,
+          name: '',
+        };
+        const spy = spyOn(component.messages, 'push');
+        /* eslint-disable */
+        mockSocketService.on.and.callFake((event: string, callback: any) => {
+          if (event === 'receiveSystemMessage') {
+            callback(message);
+          }
+        });
+        /* eslint-enable */
+        component.ngOnInit();
+      
+        expect(mockSocketService.on).toHaveBeenCalledWith('receiveSystemMessage', jasmine.any(Function));
+        expect(spy).toHaveBeenCalledWith(message);
+    });
+      
+      it('should add a system message when calling addSystemMessage', () => {
+        const message: Message = {
+          text: 'The game has started!',
+          roomId: '123',
+          isSender: false,
+          isSystem: true,
+          name: '',
+        };
+      
+        mockSocketService.send.and.callFake((event: string, data: unknown) => {
+          expect(event).toBe('sendSystemToServer');
+          expect(data).toEqual(message);
+        });
+      
+        component.addMessage();
+      
+        expect(component.messages).toEqual([message]);
+      });   
 });

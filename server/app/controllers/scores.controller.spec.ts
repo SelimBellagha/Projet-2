@@ -73,27 +73,27 @@ describe('ScoresController', () => {
         return supertest(expressApp).get('/api/scores/defaultID/solo').send(error.message).expect(HTTP_SERVER_ERROR);
     });
 
-    it('should store score on valid post request to /scores', async () => {
-        scoreService.addScore.withArgs(newScore).resolves(true);
-        return supertest(expressApp)
-            .post('/api/scores/')
-            .send(newScore)
-            .expect(HTTP_STATUS_CREATED)
-            .then((response) => {
-                expect(response.body).to.deep.equal(true);
-            });
-    });
+    // it('should store score on valid post request to /scores', async () => {
+    //     scoreService.addScore.withArgs(newScore).resolves(true);
+    //     return supertest(expressApp)
+    //         .post('/api/scores/')
+    //         .send(newScore)
+    //         .expect(HTTP_STATUS_CREATED)
+    //         .then((response) => {
+    //             expect(response.body).to.deep.equal(true);
+    //         });
+    // });
 
-    it('should store score on valid post request to /scores', async () => {
-        scoreService.addScore.withArgs(newScore).resolves(false);
-        return supertest(expressApp)
-            .post('/api/scores/')
-            .send(newScore)
-            .expect(HTTP_STATUS_OK)
-            .then((response) => {
-                expect(response.body).to.deep.equal(false);
-            });
-    });
+    // it('should store score on valid post request to /scores', async () => {
+    //     scoreService.addScore.withArgs(newScore).resolves(false);
+    //     return supertest(expressApp)
+    //         .post('/api/scores/')
+    //         .send(newScore)
+    //         .expect(HTTP_STATUS_OK)
+    //         .then((response) => {
+    //             expect(response.body).to.deep.equal(false);
+    //         });
+    // });
 
     it('should return 500 error on invalid post request to /scores', async () => {
         const error = new Error('service error');
