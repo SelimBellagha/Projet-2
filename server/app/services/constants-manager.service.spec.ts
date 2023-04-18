@@ -1,5 +1,5 @@
-import { TEST_GAME_CONSTANTS_JSON_PATH } from "../data/test-constants"
-import { Constants } from "@common/constants";
+import { TEST_GAME_CONSTANTS_JSON_PATH } from '@app/data/test-constants';
+import { Constants } from '@common/constants';
 import { GameConstantsService } from '@app/services/constants-manager.service';
 import { expect } from 'chai';
 import * as fs from 'fs';

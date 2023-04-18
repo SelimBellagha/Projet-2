@@ -35,7 +35,13 @@ export class DisplayGameService {
     }
 
     checkPlayerScore(newScore: TopScore) {
-        this.comm.addScore(newScore).subscribe((added: boolean) => (this.isScoreAdded = added));
+        this.comm.addScore(newScore).subscribe((added: boolean) => this.sendGlobalMessage(added));
+    }
+
+    sendGlobalMessage(isNewScore: boolean) {
+        console.log('mouad zamel');
+        this.socketService.send('globalMessage', isNewScore);
+        this.isScoreAdded = isNewScore;
     }
 
     convertDifficulty(game: GameData) {

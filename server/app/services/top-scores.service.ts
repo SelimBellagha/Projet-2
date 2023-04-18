@@ -7,6 +7,7 @@ import { Service } from 'typedi';
 import { DatabaseService } from './database.service';
 @Service()
 export class TopScoresService {
+    gameScores: TopScore[] = [];
     jsonPath = path.join(__dirname + '../../../../../app/data/default_scores.json');
     constructor(private databaseService: DatabaseService) {}
 
@@ -24,6 +25,8 @@ export class TopScoresService {
     }
 
     async getAllTopScores(): Promise<TopScore[]> {
+        this.gameScores = await this.collection.find({}).toArray();
+
         return this.collection
             .find({})
             .toArray()
@@ -115,5 +118,9 @@ export class TopScoresService {
             score.gameId = gameId;
         }
         await this.collection.insertMany(defaultScores);
+    }
+
+    async getDefaultScores(): Promise<TopScore[]> {
+        return await TopScoresService.getDefaultScores(this.jsonPath);
     }
 }

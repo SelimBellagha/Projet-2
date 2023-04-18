@@ -83,6 +83,28 @@ export class SocketServerManager {
                 this.sio.to(lobby?.secondPlayer.socketId).emit('receiveSystemMessage', systemMessage + playerName);
             });
 
+            socket.on('globalMessage', async () => {
+                const now: Date = new Date();
+                const timeString: string = now.toTimeString().slice(0, EIGHT);
+                //   const scores = this.gameService.getScores()
+                const scores = [
+                    {
+                        playerName: 'test',
+                        position: 1,
+                        gameType: 'test',
+                    },
+                ];
+                const scoreCount = scores.length;
+                for (let i = 0; i < scoreCount; i++) {
+                    const playerName = scores[i].playerName;
+                    const position = scores[i].position;
+                    const nomJeu = scores[i].gameType;
+                    const message = `${timeString} - ${playerName} obtient la ${position} place dans les meilleurs temps du jeu ${nomJeu}}`;
+
+                    this.sio.emit('receiveSystemMessage', message);
+                }
+            });
+
             socket.on('systemMessageSolo', (systemMessage: string) => {
                 const now: Date = new Date();
                 const timeString: string = now.toTimeString().slice(0, EIGHT);

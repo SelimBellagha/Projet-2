@@ -4,13 +4,14 @@ import * as path from 'path';
 import { Service } from 'typedi';
 import { v4 as uuidv4 } from 'uuid';
 import { TopScoresService } from './top-scores.service';
+import { TopScore } from '@app/data/top-scores.interface';
 
 @Service()
 export class GameManager {
     tempGame: GameData;
     jsonPath = path.join(__dirname + '../../../../../app/data/games.json');
 
-    constructor(private topScoreService: TopScoresService) {}
+    constructor(public topScoreService: TopScoresService) {}
 
     async writeToJsonFile(filePath: string, data: string) {
         return await fs.promises.writeFile(filePath, data);
@@ -52,6 +53,19 @@ export class GameManager {
         } else {
             return false;
         }
+    }
+    getScores(): TopScore[] {
+        if (!this.topScoreService.gameScores)
+            return [
+                {
+                    gameId: '1',
+                    gameType: '1',
+                    position: '1',
+                    time: '1',
+                    playerName: '1',
+                },
+            ];
+        return this.topScoreService.gameScores;
     }
 
     async verificationInPicture(positionX: number, positionY: number, id: string) {

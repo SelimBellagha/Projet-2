@@ -1,12 +1,11 @@
 /* eslint-disable @typescript-eslint/no-magic-numbers */
-import { Component, OnInit, ElementRef, ViewChild   } from '@angular/core';
+import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
 
 import { ActivatedRoute } from '@angular/router';
 import { LoginFormService } from '@app/services/login-form.service';
 import { SocketClientService } from '@app/services/socket-client-service.service';
 import { MouseFocusService } from '@app/mouse-focus.service';
 import { Message } from '@common/chatMessage';
-
 
 @Component({
     selector: 'app-chat-box',
@@ -21,20 +20,24 @@ export class ChatBoxComponent implements OnInit {
     message: string = '';
     pageName: string | undefined;
 
-    constructor(public route: ActivatedRoute, public socketService: SocketClientService, private gameUtils: LoginFormService, private mouseFocus: MouseFocusService) {
+    constructor(
+        public route: ActivatedRoute,
+        public socketService: SocketClientService,
+        private gameUtils: LoginFormService,
+        private mouseFocus: MouseFocusService,
+    ) {
         const snapshot = route.snapshot;
         this.pageName = snapshot.routeConfig?.path?.toString();
     }
     ngAfterViewInit() {
         this.chatInput.nativeElement.addEventListener('focus', () => {
-          this.mouseFocus.isFocusOnchat = true;
+            this.mouseFocus.isFocusOnchat = true;
         });
-        
+
         this.chatInput.nativeElement.addEventListener('blur', () => {
-          this.mouseFocus.isFocusOnchat = false;
+            this.mouseFocus.isFocusOnchat = false;
         });
-      }
-    
+    }
 
     ngOnInit() {
         this.socketService.connect();
@@ -43,15 +46,16 @@ export class ChatBoxComponent implements OnInit {
     }
     onFocus() {
         console.log('Input is focused');
-        this.mouseFocus.isFocusOnchat = true
-      }
-      onBlur() {
+        this.mouseFocus.isFocusOnchat = true;
+    }
+    onBlur() {
         console.log('Input is blurred');
-        this.mouseFocus.isFocusOnchat = false
-      }
+        this.mouseFocus.isFocusOnchat = false;
+    }
 
     handleSockets() {
         this.socketService.on('receiveChatMessage', (data: Message) => {
+            console.log('hellosss' + data);
             this.messages.push(data);
         });
 
@@ -113,5 +117,4 @@ export class ChatBoxComponent implements OnInit {
     isMultiplayerMode() {
         return this.pageName === 'oneVSone';
     }
-
 }

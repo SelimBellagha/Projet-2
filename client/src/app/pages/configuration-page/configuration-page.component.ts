@@ -82,4 +82,35 @@ export class ConfigurationPageComponent implements OnInit {
             this.hasNextPage = true;
         }
     }
+
+    goToConstants(): void {
+        this.popUpWindow.nativeElement.style.display = 'block';
+    }
+
+    goToReset(): void {
+        this.popUpWindow2.nativeElement.style.display = 'block';
+    }
+
+    goToDelete(): void {
+        this.popUpWindow3.nativeElement.style.display = 'block';
+    }
+
+    resetAllScores() {
+        this.displayGames.resetAllScores();
+        this.popUpWindow2.nativeElement.style.display = 'none';
+    }
+
+    deleteAllGames() {
+        this.popUpWindow3.nativeElement.style.display = 'none';
+    }
+
+    onClosingPopUp(popUpNumber: number): void {
+        if (popUpNumber === 1) {
+            this.popUpWindow.nativeElement.style.display = 'none';
+        } else if (popUpNumber === 2) {
+            this.popUpWindow2.nativeElement.style.display = 'none';
+        } else {
+            this.popUpWindow3.nativeElement.style.display = 'none';
+        }
+    }
 }
