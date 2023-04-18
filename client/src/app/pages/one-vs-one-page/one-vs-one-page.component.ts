@@ -37,6 +37,7 @@ export class OneVsOnePageComponent implements OnInit, AfterViewInit {
     nbDifferencesFoundUser2: number;
     roomId: string;
     nbDifferenceToWin: number;
+    gameTime: number;
 
     newScore: TopScore = {
         position: 'tempPosition',
@@ -71,7 +72,7 @@ export class OneVsOnePageComponent implements OnInit, AfterViewInit {
             nameAbandon: '',
         };
         this.roomId = this.lobbyService.roomId;
-        if (this.lobbyService.host === false) {
+        if (!this.lobbyService.host) {
             this.socketService.on('getHostName', (data: { hostName: string }) => {
                 this.opponentUsername = data.hostName;
                 this.hostName = data.hostName;
@@ -141,14 +142,16 @@ export class OneVsOnePageComponent implements OnInit, AfterViewInit {
     }
 
     stopWatch() {
+        this.gameTime = 0;
         this.gameManager.gameTime = 0;
         const timerInterval = 1000;
         const max = 60;
         this.minutes = 0;
         this.secondes = 0;
-        setInterval(() => {
+        this.intervalID = window.setInterval(() => {
             this.gameManager.gameTime++;
-            this.secondes = this.gameManager.gameTime % max;
+            this.gameTime = this.gameManager.gameTime;
+            this.secondes = this.gameTime % max;
             this.minutes = Math.floor(this.gameManager.gameTime / max);
         }, timerInterval);
     }
@@ -237,11 +240,11 @@ export class OneVsOnePageComponent implements OnInit, AfterViewInit {
     winCheck() {
         if (this.nbDifferencesFoundUser1 === this.nbDifferenceToWin || this.nbDifferencesFoundUser2 === this.nbDifferenceToWin) {
             this.newScore.gameId = this.gameId;
-            if (this.nbDifferencesFoundUser1 === this.nbDifferenceToWin && this.lobbyService.host === true) {
+            if (this.nbDifferencesFoundUser1 === this.nbDifferenceToWin && this.lobbyService.host) {
                 this.newScore.playerName = this.hostName;
                 this.historyService.history.winnerName = this.hostName;
                 this.winGame();
-            } else if (this.nbDifferencesFoundUser2 === this.nbDifferenceToWin && this.lobbyService.host === false) {
+            } else if (this.nbDifferencesFoundUser2 === this.nbDifferenceToWin && !this.lobbyService.host) {
                 this.newScore.playerName = this.guestName;
                 this.historyService.history.winnerName = this.guestName;
                 this.winGame();

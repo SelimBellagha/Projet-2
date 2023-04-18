@@ -6,6 +6,8 @@ import { StatusCodes } from 'http-status-codes';
 import { createStubInstance, SinonStubbedInstance } from 'sinon';
 import * as supertest from 'supertest';
 import { Container } from 'typedi';
+import { Constants } from '@common/constants';
+import { GameConstantsService } from '@app/services/constants-manager.service';
 
 const HTTP_STATUS_OK = StatusCodes.OK;
 const HTTP_STATUS_CREATED = StatusCodes.CREATED;
@@ -39,14 +41,26 @@ describe('GameController', () => {
         },
     ] as GameData[];
     let gameService: SinonStubbedInstance<GameManager>;
+    let gamesConstantsService: SinonStubbedInstance<GameConstantsService>;
     let expressApp: Express.Application;
+    const baseConstants: Constants = {
+        initTime: 30,
+        penaltyTime: 5,
+        timeBonus: 5,
+    };
 
     beforeEach(async () => {
         gameService = createStubInstance(GameManager);
+        gamesConstantsService = createStubInstance(GameConstantsService);
         gameService.getAllGames.resolves(gamesData);
         const app = Container.get(Application);
         Object.defineProperty(app['gamesController'], 'gameService', { value: gameService });
+        // Object.defineProperty(app['gamesController'], 'gameConstantsService', { value: gamesConstantsService });
         expressApp = app.app;
+    });
+
+    afterEach(() => {
+        gamesConstantsService.getGameConstants.restore();
     });
 
     it('should return an array of games on valid get request to /games', async () => {
@@ -132,4 +146,18 @@ describe('GameController', () => {
         gameService.verificationInPicture.throws(error);
         return supertest(expressApp).get('/api/games/difference/1').send(error.message).expect(HTTP_SERVER_ERROR);
     });
+
+    it('should add the game constants on valid post request to /games/constants', async () => {
+        return await supertest(expressApp).post('/api/games/constants').send({ baseConstants }).expect(StatusCodes.OK);
+    });
+
+    /* it('should return an GameConstants of constants on valid get request to /games/constants', async () => {
+        gamesConstantsService.getGameConstants.resolves(baseConstants);
+        return supertest(expressApp)
+            .get('/api/games/constants')
+            .expect(StatusCodes.OK)
+            .then((response) => {
+                expect(response.body).to.deep.equal(baseConstants);
+            });
+    });*/
 });

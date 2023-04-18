@@ -1,5 +1,6 @@
 import { HttpClientModule } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
+import { RouterTestingModule } from '@angular/router/testing';
 import { CanvasTestHelper } from '@app/classes/canvas-test-helper';
 import { GameData } from '@app/interfaces/game-data';
 import { Vec2 } from '@app/interfaces/vec2';
@@ -8,24 +9,18 @@ import { DifferenceVerificationService } from './difference-verification.service
 import { GameManagerService } from './game-manager.service';
 import SpyObj = jasmine.SpyObj;
 
-xdescribe('GameManagerService', () => {
+describe('GameManagerService', () => {
     let service: GameManagerService;
     const CANVAS_WIDTH = 640;
     const CANVAS_HEIGHT = 480;
     const PIXEL_SIZE = 4;
     const whiteValue = 255;
     let differenceVerificationSpy: SpyObj<DifferenceVerificationService>;
-    // let canvas: CanvasRenderingContext2D;
-    // const mockCanvas = document.createElement('canvas');
-    // const mockContext = mockCanvas.getContext('2d') as CanvasRenderingContext2D;
-    // const mockImageData = new ImageData(640, 480);
 
     beforeEach(() => {
         differenceVerificationSpy = jasmine.createSpyObj('DifferenceVerificationService', ['differenceVerification']);
-        // spyOn(mockContext, 'getImageData').and.returnValue(mockImageData);
-        // spyOn(mockContext, 'putImageData');
         TestBed.configureTestingModule({
-            imports: [HttpClientModule],
+            imports: [HttpClientModule, RouterTestingModule],
             providers: [{ provide: DifferenceVerificationService, useValue: differenceVerificationSpy }],
         });
         service = TestBed.inject(GameManagerService);
@@ -54,13 +49,13 @@ xdescribe('GameManagerService', () => {
     });
 
     it('should return the value of toggle', () => {
-        service.state = true;
+        service.cheatState = true;
         service.stateChanger();
-        expect(service.state).toBe(false);
+        expect(service.cheatState).toBe(false);
 
-        service.state = false;
+        service.cheatState = false;
         service.stateChanger();
-        expect(service.state).toBe(true);
+        expect(service.cheatState).toBe(true);
     });
 
     it('flashPixels should not change the final canvas', async () => {
@@ -224,9 +219,9 @@ xdescribe('GameManagerService', () => {
             ],
         ];
         service.gameData = { nbDifferences: 1 } as GameData;
-        service.state = true;
+        service.cheatState = true;
         setTimeout(() => {
-            service.state = false;
+            service.cheatState = false;
             // eslint-disable-next-line @typescript-eslint/no-magic-numbers
         }, 1000);
         await service.flashPixelsCheat(pixelsMock, service.originalImageCanvas);
@@ -243,11 +238,11 @@ xdescribe('GameManagerService', () => {
             ],
         ];
         service.gameData = { nbDifferences: 1, differences: [{} as Vec2[]] } as GameData;
-        service.state = true;
+        service.cheatState = true;
         service.foundDifferenceCheat = true;
         service.differencesFound = [false];
         setTimeout(() => {
-            service.state = false;
+            service.cheatState = false;
             // eslint-disable-next-line @typescript-eslint/no-magic-numbers
         }, 1000);
         await service.flashPixelsCheat(pixelsMock, service.originalImageCanvas);
@@ -262,11 +257,11 @@ xdescribe('GameManagerService', () => {
             ],
         ];
         service.gameData = { nbDifferences: 1, differences: [{} as Vec2[]] } as GameData;
-        service.state = true;
+        service.cheatState = true;
         service.foundDifferenceCheat = true;
         service.differencesFound = [true];
         setTimeout(() => {
-            service.state = false;
+            service.cheatState = false;
             // eslint-disable-next-line @typescript-eslint/no-magic-numbers
         }, 1000);
         await service.flashPixelsCheat(pixelsMock, service.originalImageCanvas);

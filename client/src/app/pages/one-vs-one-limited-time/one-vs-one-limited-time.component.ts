@@ -25,12 +25,12 @@ export class OneVsOneLimitedTimeComponent implements OnInit, AfterViewInit {
     secondPlayerName: string;
     gameName: string;
     difficulty: string;
-    nbDifferences: number;
     minutes: number = 0;
     secondes: number = 0;
     intervalID: number;
     nbDifferencesFound: number;
-    nbDifferenceToWin: number;
+    nbDifferences: number;
+    gameTime: number;
 
     startDate: Date;
 
@@ -94,7 +94,7 @@ export class OneVsOneLimitedTimeComponent implements OnInit, AfterViewInit {
         });
         this.socketService.on('limitedTimeGiveUp', () => {
             this.limitedTimeLobbyService.differencesFound = this.nbDifferencesFound;
-            this.router.navigate(['soloLimitedTime']);
+            this.router.navigate(['/soloLimitedTime']);
         });
     }
 
@@ -104,16 +104,20 @@ export class OneVsOneLimitedTimeComponent implements OnInit, AfterViewInit {
     }
 
     timer(gameTime: number) {
-        this.gameManager.gameTime = gameTime;
         const timerInterval = 1000;
         const max = 60;
-        this.secondes = this.gameManager.gameTime % max;
-        this.minutes = Math.floor(this.gameManager.gameTime / max);
+        this.gameManager.gameTime = gameTime;
+        this.gameTime = this.gameManager.gameTime;
+        this.secondes = this.gameTime % max;
+        this.minutes = Math.floor(this.gameTime / max);
         this.intervalID = window.setInterval(() => {
             this.gameManager.gameTime--;
-            this.secondes = this.gameManager.gameTime % max;
-            this.minutes = Math.floor(this.gameManager.gameTime / max);
-            if (this.minutes === 0 && this.secondes === 0) {
+            this.gameTime = this.gameManager.gameTime;
+            this.secondes = this.gameTime % max;
+            this.minutes = Math.floor(this.gameTime / max);
+            if (this.minutes <= 0 && this.secondes <= 0) {
+                this.secondes = 0;
+                this.minutes = 0;
                 this.endGame();
             }
         }, timerInterval);
@@ -130,13 +134,13 @@ export class OneVsOneLimitedTimeComponent implements OnInit, AfterViewInit {
     endGame(): void {
         this.historyService.history.gameLength = this.historyService.findGameLength(this.startDate);
         this.displayService.addHistory(this.historyService.history);
-        clearInterval(this.intervalID);
+        this.stopTimer();
         this.gameManager.playWinAudio();
         this.popUpWindow.nativeElement.style.display = 'block';
     }
     goToHomePage() {
         this.popUpWindow.nativeElement.style.display = 'none';
-        this.router.navigate(['home']);
+        this.router.navigate(['/home']);
     }
 
     giveUp() {
@@ -159,9 +163,7 @@ export class OneVsOneLimitedTimeComponent implements OnInit, AfterViewInit {
         if (event.button === MouseButton.Left) {
             const mousePosition: Vec2 = { x: event.offsetX, y: event.offsetY };
             if (await this.gameManager.onPositionClicked(mousePosition)) {
-                // Incrementer le cpt de differences
                 this.socketService.send('limitedDifferenceFound', { roomId: this.limitedTimeLobbyService.roomId });
-                // Si on a tout trouvé, finir le jeu.
             }
         }
     }

@@ -21,6 +21,7 @@ export class SoloLimitedTimeComponent implements OnInit, AfterViewInit {
     gameName: string;
     difficulty: string;
     nbDifferences: number;
+    gameTime: number;
     nbDifferencesFound: number;
     minutes: number = 0;
     secondes: number = 0;
@@ -54,6 +55,9 @@ export class SoloLimitedTimeComponent implements OnInit, AfterViewInit {
         this.gameName = this.gameManager.gameData.name;
         this.difficulty = this.displayService.convertDifficulty(this.gameManager.gameData);
         this.gameManager.putImages();
+        // TODO changer time avec temps vue de config
+        const time = 30;
+        this.timer(time);
         this.historyService.history = {
             startDate: this.startDate.toLocaleString(),
             gameLength: 'tempLength',
@@ -65,18 +69,21 @@ export class SoloLimitedTimeComponent implements OnInit, AfterViewInit {
         };
     }
 
-    // lorsqu on récupere le temps dans la BD si le t>2:00 set le timer a 2:00 ou le faire dans la configuration
     timer(gameTime: number) {
         const timerInterval = 1000;
         const max = 60;
         this.gameManager.gameTime = gameTime;
-        this.secondes = this.gameManager.gameTime % max;
-        this.minutes = Math.floor(this.gameManager.gameTime / max);
+        this.gameTime = this.gameManager.gameTime;
+        this.secondes = this.gameTime % max;
+        this.minutes = Math.floor(this.gameTime / max);
         this.intervalID = window.setInterval(() => {
             this.gameManager.gameTime--;
-            this.secondes = this.gameManager.gameTime % max;
-            this.minutes = Math.floor(this.gameManager.gameTime / max);
-            if (this.minutes === 0 && this.secondes === 0) {
+            this.gameTime = this.gameManager.gameTime;
+            this.secondes = this.gameTime % max;
+            this.minutes = Math.floor(this.gameTime / max);
+            if (this.minutes <= 0 && this.secondes <= 0) {
+                this.secondes = 0;
+                this.minutes = 0;
                 this.endGame();
             }
         }, timerInterval);
@@ -89,9 +96,6 @@ export class SoloLimitedTimeComponent implements OnInit, AfterViewInit {
     ngAfterViewInit() {
         this.gameManager.modifiedImageCanvas = this.modifiedCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         this.gameManager.originalImageCanvas = this.originalCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
-        // TODO changer time avec temps vue de config
-        const time = 30;
-        this.timer(time);
     }
 
     endGame(): void {
