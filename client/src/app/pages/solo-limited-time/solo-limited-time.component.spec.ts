@@ -37,7 +37,7 @@ describe('SoloLimitedTimeComponent', () => {
             },
         );
         displayGameSpy = jasmine.createSpyObj('DisplayGameService', ['convertDifficulty', 'loadAllGames']);
-        limitedLobbySpy = jasmine.createSpyObj('LimitedTimeLobbyService', { roomId: 'id' });
+        limitedLobbySpy = jasmine.createSpyObj('LimitedTimeLobbyService', ['getTimeInfo'], { roomId: 'id' });
         await TestBed.configureTestingModule({
             declarations: [SoloLimitedTimeComponent],
             imports: [RouterTestingModule, HttpClientTestingModule],
@@ -148,9 +148,9 @@ describe('SoloLimitedTimeComponent', () => {
         expect(gameManagerSpy.initializeLimitedGame).toHaveBeenCalled();
     });
 
-    it('if firstGame, should call initializeGame', () => {
+    it('if firstGame, should call initializeGame', async () => {
         limitedLobbySpy.firstGame = 1;
-        component.ngOnInit();
+        await component.ngOnInit();
         expect(gameManagerSpy.initializeGame).toHaveBeenCalled();
     });
 });

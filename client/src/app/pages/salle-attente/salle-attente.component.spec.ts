@@ -1,3 +1,4 @@
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { SocketTestHelper } from '@app/classes/socket-test-helper';
@@ -30,6 +31,7 @@ describe('SalleAttenteComponent', () => {
 
         await TestBed.configureTestingModule({
             declarations: [SalleAttenteComponent],
+            imports: [HttpClientTestingModule],
             providers: [
                 { provide: Router, useValue: { navigate: jasmine.createSpy('navigate') } },
                 { provide: SocketClientService, useValue: socketServiceMock },

@@ -36,6 +36,7 @@ export class SoloLimitedTimeComponent implements OnInit, AfterViewInit {
     ) {}
 
     async ngOnInit() {
+        await this.limitedTimeLobbyService.getTimeInfo();
         if (!this.limitedTimeLobbyService.firstGame) {
             this.nbDifferencesFound = 0;
             await this.displayService.loadAllGames();
@@ -50,9 +51,7 @@ export class SoloLimitedTimeComponent implements OnInit, AfterViewInit {
         this.gameName = this.gameManager.gameData.name;
         this.difficulty = this.displayService.convertDifficulty(this.gameManager.gameData);
         this.gameManager.putImages();
-        // TODO changer time avec temps vue de config
-        const time = 30;
-        this.timer(time);
+        this.timer(this.limitedTimeLobbyService.initialTime);
     }
 
     timer(gameTime: number) {
@@ -96,6 +95,7 @@ export class SoloLimitedTimeComponent implements OnInit, AfterViewInit {
             if (await this.gameManager.onPositionClicked(mousePosition)) {
                 // Incremented le cpt de differences
                 this.nbDifferencesFound++;
+                this.gameManager.gameTime += this.limitedTimeLobbyService.timeBonus;
                 await this.putNewGame();
                 if (this.nbDifferencesFound === this.gameManager.gameNumberMax) {
                     this.endGame();

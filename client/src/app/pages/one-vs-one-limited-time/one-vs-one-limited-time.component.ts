@@ -41,6 +41,7 @@ export class OneVsOneLimitedTimeComponent implements OnInit, AfterViewInit {
     ) {}
 
     async ngOnInit() {
+        await this.limitedTimeLobbyService.getTimeInfo();
         this.socketService.on('getPlayers', (data: { firstPlayer: Player; secondPlayer: Player }) => {
             this.limitedTimeLobbyService.firstPlayer = data.firstPlayer;
             this.limitedTimeLobbyService.secondPlayer = data.secondPlayer;
@@ -48,9 +49,8 @@ export class OneVsOneLimitedTimeComponent implements OnInit, AfterViewInit {
             this.secondPlayerName = this.limitedTimeLobbyService.secondPlayer.playerName;
         });
         // TODO changer constante avec temps de vue de config
-        const time = 30;
-        this.startTimer(time);
         this.nbDifferencesFound = 0;
+        this.startTimer(this.limitedTimeLobbyService.initialTime);
         await this.displayService.loadAllGames();
         if (this.displayService.tempGames) {
             await this.gameManager.initializeLimitedGame(this.displayService.tempGames);
@@ -68,6 +68,7 @@ export class OneVsOneLimitedTimeComponent implements OnInit, AfterViewInit {
         this.gameManager.originalImageCanvas = this.originalCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         this.gameManager.putImages();
         this.socketService.on('LimitedDifferenceUpdate', async (data: { nbDifferences: number; newGame: number }) => {
+            this.gameManager.gameTime += this.limitedTimeLobbyService.timeBonus;
             this.nbDifferencesFound = data.nbDifferences;
             await this.gameManager.initializeGame(this.gameManager.limitedGameData[data.newGame]);
             this.gameManager.putImages();
