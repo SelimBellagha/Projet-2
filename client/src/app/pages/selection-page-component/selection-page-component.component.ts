@@ -44,9 +44,6 @@ export class SelectionPageComponentComponent implements OnInit {
         }
         await this.checkGames();
         this.lobbyService.deleteLobby();
-        if (this.lobbyService.roomId) {
-            this.socketManager.send('deleteRoom', { roomId: this.lobbyService.roomId });
-        }
     }
 
     async checkGames() {

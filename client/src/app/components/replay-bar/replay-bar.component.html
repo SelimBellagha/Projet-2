@@ -3,3 +3,12 @@
     <button (click)="onStart()">Recommencer</button>
     <button (click)="onSetSpeed()">Vitesse</button>
 </div>
+<div #popUpWindow class="modal">
+    <div class="modal-content">
+        <h1 class="congrats">Reprise Terminée !</h1>
+        <div class="close-button">
+            <button id="replay-button" (click)="onReplay()">Retour à la reprise</button>
+            <button id="close-button" (click)="goToHomePage()">Quitter la reprise</button>
+        </div>
+    </div>
+</div>

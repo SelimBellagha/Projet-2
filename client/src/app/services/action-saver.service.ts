@@ -16,8 +16,6 @@ export class ActionSaverService {
     messages: Message[];
     private actionsDone: GameAction[] = [];
 
-    //  constructor(private socketService: SocketClientService) {}
-
     addAction(actionType: GameActionType, actionTime: number, actionInfo: object): void {
         if (!this.isInReplay) {
             this.actionsDone.push({ type: actionType, time: actionTime, info: actionInfo });
@@ -28,7 +26,6 @@ export class ActionSaverService {
         this.nextActionIndex = 0;
         this.isInReplay = false;
         this.currentTime = 1;
-        // this.socketService.send('startStopWatch');
         this.startTimer();
     }
     getNextAction(): GameAction {
@@ -42,7 +39,6 @@ export class ActionSaverService {
         return this.actionsDone.length;
     }
     addClickAction(position: Vec2): void {
-        // this.socketService.send('getRealTime');
         this.addAction(GameActionType.Click, this.currentTime, position);
     }
     addCheatEnableAction(enable: boolean): void {

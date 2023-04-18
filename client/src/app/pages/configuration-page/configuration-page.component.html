@@ -8,7 +8,7 @@
     <div class="main-container">
         <div *ngFor="let game of gamesDisplayed">
             <app-jeux
-                [customId] = "game.id"
+                [customId]="game.id"
                 [customTitle]="game.title"
                 [customDifficulty]="game.difficulty"
                 [isConfigurationMode]="true"
@@ -17,44 +17,32 @@
         </div>
     </div>
     <div class="buttons-align">
-        <div *ngIf="hasNextPage === false">
-            <button disabled="disabled" >Précédent</button>
-            <button disabled="disabled" >Suivant</button>
+        <div *ngIf="!hasNextPage">
+            <button disabled="disabled">Précédent</button>
+            <button disabled="disabled">Suivant</button>
         </div>
 
-        <div *ngIf="hasNextPage === true">
-            <div *ngIf="hasNext === false" class="buttons">
+        <div *ngIf="hasNextPage">
+            <div *ngIf="!hasNext" class="buttons">
                 <button (click)="previous()" id="previousInput">Précédent</button>
                 <button disabled="disabled">Suivant</button>
             </div>
-            <div *ngIf="hasPrevious === false" class="buttons">
+            <div *ngIf="!hasPrevious" class="buttons">
                 <button disabled="disabled">Précédent</button>
                 <button id="nextInput" (click)="next()">Suivant</button>
             </div>
-            <div *ngIf="hasNext === true && hasPrevious === true" class="buttons">
+            <div *ngIf="hasNext && hasPrevious" class="buttons">
                 <button (click)="previous()" id="previousInput">Précédent</button>
                 <button (click)="next()" id="nextInput">Suivant</button>
             </div>
         </div>
     </div>
+    <app-constants></app-constants>
 
     <div class="button-container">
         <button class="button-choice" (click)="goToCreationPage()">Accéder à la Vue de création de jeu</button>
-        <button class="button-choice" (click)="goToConstants()">Constantes de jeu</button>
 
         <button class="button-choice">Accéder à l'historique des parties jouées</button>
         <button class="button-choice">Remettre les données à leur état initial</button>
     </div>
-
-    <div #popUpWindow class="modal">
-        <div class="modal-content">
-            <li>temps initial du compte à rebours : 30 secondes</li>
-            <li>temps gagné avec la découverte d’une différence : 5 secondes</li>
-            <li>temps de pénalité pour l’utilisation d’un indice : 5 secondes</li>
-            <div class="close-button">
-                <button (click)="onClosingPopUp()">Fermer</button>
-            </div>
-        </div>
-    </div>
 </body>
-

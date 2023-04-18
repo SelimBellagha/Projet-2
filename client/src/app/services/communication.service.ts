@@ -1,6 +1,7 @@
 import { HttpClient, HttpParams, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { GameData } from '@app/interfaces/game.interface';
+import { Constants } from '@common/constants';
 import { Message } from '@common/message';
 import { Observable, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
@@ -38,6 +39,14 @@ export class CommunicationService {
     deleteGame(id: string): void {
         const params = new HttpParams().set('id', id);
         this.http.delete(`${this.baseUrl}/games/${id}`, { params }).subscribe();
+    }
+
+    sendConstants(gameConstants: Constants): Observable<void> {
+        return this.http.post<void>(`${this.baseUrl}/games/constants`, gameConstants).pipe(catchError(this.handleError<void>('sendConstants')));
+    }
+
+    getConstants(): Observable<Constants> {
+        return this.http.get<Constants>(this.baseUrl + '/games/constants').pipe(catchError(this.handleError<Constants>('getConstants')));
     }
 
     private handleError<T>(request: string, result?: T): (error: Error) => Observable<T> {

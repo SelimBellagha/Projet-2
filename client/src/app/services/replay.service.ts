@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { ElementRef, Injectable } from '@angular/core';
 import { GameAction, GameActionType } from '@app/interfaces/game-action';
 import { Vec2 } from '@app/interfaces/vec2';
 import { Message } from '@common/chatMessage';
@@ -25,16 +25,11 @@ export class ReplayService {
     currentReplayTime = 0;
     timerId: number;
     isPlaying: boolean = false;
-
+    endPopUp: ElementRef<HTMLDivElement>;
     constructor(private gameManager: GameManagerService, private actionSaver: ActionSaverService) {}
 
-    reset(): void {
-        //
-        //
-    }
     getNextAction(): GameAction {
-        const action = this.actionSaver.getNextAction();
-        return action;
+        return this.actionSaver.getNextAction();
     }
     setCurrentSpeed(speed: number): void {
         this.replaySpeed = speed;
@@ -58,6 +53,7 @@ export class ReplayService {
     }
     endReplay(): void {
         clearInterval(this.timerId);
+        this.endPopUp.nativeElement.style.display = 'block';
     }
     doAction(gameAction: GameAction): void {
         switch (gameAction.type) {
