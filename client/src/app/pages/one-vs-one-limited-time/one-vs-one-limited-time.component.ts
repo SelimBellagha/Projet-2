@@ -5,6 +5,7 @@ import { Player } from '@app/interfaces/player';
 import { Vec2 } from '@app/interfaces/vec2';
 import { DisplayGameService } from '@app/services/display-game.service';
 import { GameManagerService } from '@app/services/game-manager.service';
+import { HistoryService } from '@app/services/history.service';
 import { LimitedTimeLobbyService } from '@app/services/limited-time-lobby.service';
 import { SocketClientService } from '@app/services/socket-client-service.service';
 
@@ -31,6 +32,8 @@ export class OneVsOneLimitedTimeComponent implements OnInit, AfterViewInit {
     nbDifferencesFound: number;
     nbDifferenceToWin: number;
 
+    startDate: Date;
+
     // eslint-disable-next-line max-params
     constructor(
         private router: Router,
@@ -38,7 +41,10 @@ export class OneVsOneLimitedTimeComponent implements OnInit, AfterViewInit {
         private gameManager: GameManagerService,
         private socketService: SocketClientService,
         private limitedTimeLobbyService: LimitedTimeLobbyService,
-    ) {}
+        private historyService: HistoryService,
+    ) {
+        this.startDate = new Date();
+    }
 
     async ngOnInit() {
         this.socketService.on('getPlayers', (data: { firstPlayer: Player; secondPlayer: Player }) => {
@@ -61,6 +67,15 @@ export class OneVsOneLimitedTimeComponent implements OnInit, AfterViewInit {
             this.gameManager.putImages();
         }
         this.socketService.send('gamesNumber', { gamesNumber: this.gameManager.limitedGameData.length, roomId: this.limitedTimeLobbyService.roomId });
+        this.historyService.history = {
+            startDate: this.startDate.toLocaleString(),
+            gameLength: 'tempLength',
+            gameMode: 'Temps Limite',
+            namePlayer1: this.firstPlayerName,
+            namePlayer2: this.secondPlayerName,
+            winnerName: '',
+            nameAbandon: '',
+        };
     }
 
     async ngAfterViewInit() {
@@ -113,6 +128,8 @@ export class OneVsOneLimitedTimeComponent implements OnInit, AfterViewInit {
     }
 
     endGame(): void {
+        this.historyService.history.gameLength = this.historyService.findGameLength(this.startDate);
+        this.displayService.addHistory(this.historyService.history);
         clearInterval(this.intervalID);
         this.gameManager.playWinAudio();
         this.popUpWindow.nativeElement.style.display = 'block';

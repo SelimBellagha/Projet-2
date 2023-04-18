@@ -1,5 +1,6 @@
 import { HttpClient, HttpParams, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { GameHistory } from '@app/interfaces/game-history';
 import { GameData, TopScore } from '@app/interfaces/game.interface';
 import { Message } from '@common/message';
 import { Observable, of } from 'rxjs';
@@ -16,6 +17,10 @@ export class CommunicationService {
 
     basicGet(): Observable<Message> {
         return this.http.get<Message>(this.baseUrl + '/example').pipe(catchError(this.handleError<Message>('basicGet')));
+    }
+
+    getDate(): Observable<Date> {
+        return this.http.get<Date>(this.baseUrl + '/date');
     }
 
     getAllGames(): Observable<GameData[]> {
@@ -56,6 +61,18 @@ export class CommunicationService {
     resetGameScores(gameId: string): void {
         const params = new HttpParams().set('gameId', gameId);
         this.http.delete(`${this.baseUrl}/scores/${gameId}`, { params }).subscribe();
+    }
+
+    getGameHistory(): Observable<GameHistory[]> {
+        return this.http.get<GameHistory[]>(`${this.baseUrl}/history`).pipe(catchError(this.handleError<GameHistory[]>('getGameHistory')));
+    }
+
+    addNewGameHistory(gameHistory: GameHistory): void {
+        this.http.post(`${this.baseUrl}/history`, gameHistory).subscribe();
+    }
+
+    deleteGameHistory(): void {
+        this.http.delete(`${this.baseUrl}/history`).subscribe();
     }
 
     private handleError<T>(request: string, result?: T): (error: Error) => Observable<T> {

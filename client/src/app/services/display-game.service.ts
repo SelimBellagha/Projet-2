@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { GameHistory } from '@app/interfaces/game-history';
 import { GameData, TopScore } from '@app/interfaces/game.interface';
 import { Game } from '@app/pages/selection-page-component/selection-page-component.component';
 import { firstValueFrom } from 'rxjs';
@@ -11,10 +12,9 @@ import { SocketClientService } from './socket-client-service.service';
 export class DisplayGameService {
     game: GameData;
     games: Game[] = [];
+    history: GameHistory[] = [];
     tempGames: GameData[] = [];
     gameId: string;
-    soloScores: TopScore[] = [];
-    oneVOneScores: TopScore[] = [];
     isScoreAdded: boolean = false;
     constructor(private comm: CommunicationService, private socketService: SocketClientService) {}
 
@@ -38,12 +38,29 @@ export class DisplayGameService {
         this.comm.addScore(newScore).subscribe((added: boolean) => (this.isScoreAdded = added));
     }
 
+    addHistory(newHistory: GameHistory) {
+        this.comm.addNewGameHistory(newHistory);
+    }
+
     convertDifficulty(game: GameData) {
         if (game.isDifficult) {
             return 'difficile';
         } else {
             return 'facile';
         }
+    }
+
+    deleteGameHistory() {
+        this.comm.deleteGameHistory();
+    }
+
+    getCurrentDate() {
+        return this.comm.getDate();
+    }
+
+    async getHistory() {
+        const source = this.comm.getGameHistory();
+        this.history = await firstValueFrom(source);
     }
 
     async updateLobbyAvailability() {

@@ -5,8 +5,8 @@ import { TopScore } from '@app/interfaces/game.interface';
 import { Vec2 } from '@app/interfaces/vec2';
 import { DisplayGameService } from '@app/services/display-game.service';
 import { GameManagerService } from '@app/services/game-manager.service';
+import { HistoryService } from '@app/services/history.service';
 import { LoginFormService } from '@app/services/login-form.service';
-import { SocketClientService } from '@app/services/socket-client-service.service';
 
 @Component({
     selector: 'app-solo-view-page',
@@ -33,6 +33,7 @@ export class SoloViewPageComponent implements OnInit, AfterViewInit {
         time: 'tempTime',
         playerName: 'tempName',
     };
+    startDate: Date;
 
     // eslint-disable-next-line max-params
     constructor(
@@ -40,11 +41,22 @@ export class SoloViewPageComponent implements OnInit, AfterViewInit {
         private loginService: LoginFormService,
         private displayService: DisplayGameService,
         private gameManager: GameManagerService,
-        private socketService: SocketClientService,
-    ) {}
+        private historyService: HistoryService,
+    ) {
+        this.startDate = new Date();
+    }
 
     ngOnInit() {
         this.username = this.loginService.getFormData();
+        this.historyService.history = {
+            startDate: this.startDate.toLocaleString(),
+            gameLength: 'tempLength',
+            gameMode: 'Classique',
+            namePlayer1: this.username,
+            namePlayer2: '',
+            winnerName: '',
+            nameAbandon: '',
+        };
         this.startStopWatch();
         this.nbDifferencesFound = 0;
         if (this.displayService.game) {
@@ -77,25 +89,30 @@ export class SoloViewPageComponent implements OnInit, AfterViewInit {
 
     startStopWatch = () => {
         this.stopWatch();
-        this.socketService.send('startStopWatch', {});
     };
 
     stopStopWatch() {
         clearInterval(this.intervalID);
     }
 
-    endGame(): void {
-        this.stopStopWatch();
-        this.newScore.gameId = this.gameId;
+    getGameTime() {
         const doubleDigitsSeconds = 10;
         if (this.secondes < doubleDigitsSeconds) {
             const seconds = '0' + this.secondes;
-            this.newScore.time = this.minutes + ':' + seconds;
+            return this.minutes + ':' + seconds;
         } else {
-            this.newScore.time = this.minutes + ':' + this.secondes;
+            return this.minutes + ':' + this.secondes;
         }
+    }
+
+    endGame(): void {
+        this.stopStopWatch();
+        this.newScore.gameId = this.gameId;
+        this.newScore.time = this.getGameTime();
+        this.historyService.history.gameLength = this.historyService.findGameLength(this.startDate);
         this.newScore.playerName = this.username;
         this.displayService.checkPlayerScore(this.newScore);
+        this.displayService.addHistory(this.historyService.history);
         this.gameManager.playWinAudio();
         this.popUpWindow.nativeElement.style.display = 'block';
     }
@@ -124,6 +141,14 @@ export class SoloViewPageComponent implements OnInit, AfterViewInit {
     }
     returnSelectionPage(): void {
         this.stopStopWatch();
+        this.router.navigate(['/gameSelection']);
+    }
+
+    abandonGame(): void {
+        this.stopStopWatch();
+        this.historyService.history.gameLength = this.historyService.findGameLength(this.startDate);
+        this.historyService.history.nameAbandon = this.historyService.history.namePlayer1;
+        this.displayService.addHistory(this.historyService.history);
         this.router.navigate(['/gameSelection']);
     }
 }

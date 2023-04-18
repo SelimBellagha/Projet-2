@@ -5,6 +5,7 @@ import { TopScore } from '@app/interfaces/game.interface';
 import { Vec2 } from '@app/interfaces/vec2';
 import { DisplayGameService } from '@app/services/display-game.service';
 import { GameManagerService } from '@app/services/game-manager.service';
+import { HistoryService } from '@app/services/history.service';
 import { LobbyService } from '@app/services/lobby.service';
 import { LoginFormService } from '@app/services/login-form.service';
 import { SocketClientService } from '@app/services/socket-client-service.service';
@@ -20,6 +21,7 @@ export class OneVsOnePageComponent implements OnInit, AfterViewInit {
     @ViewChild('popUpWindowWin') popUpWindowWin: ElementRef<HTMLDivElement>;
     @ViewChild('popUpWindowLose') popUpWindowLose: ElementRef<HTMLDivElement>;
     @ViewChild('popUpWindowGiveUp') popUpWindowGiveUp: ElementRef<HTMLDivElement>;
+    @ViewChild('popUpWindowAbandonWin') popUpWindowAbandonWin: ElementRef<HTMLDivElement>;
     myUsername: string;
     opponentUsername: string;
     hostName: string;
@@ -43,6 +45,7 @@ export class OneVsOnePageComponent implements OnInit, AfterViewInit {
         time: 'tempTime',
         playerName: 'tempName',
     };
+    startDate: Date;
 
     // eslint-disable-next-line max-params
     constructor(
@@ -52,9 +55,21 @@ export class OneVsOnePageComponent implements OnInit, AfterViewInit {
         private gameManager: GameManagerService,
         private socketService: SocketClientService,
         private lobbyService: LobbyService,
-    ) {}
+        private historyService: HistoryService,
+    ) {
+        this.startDate = new Date();
+    }
 
     ngOnInit() {
+        this.historyService.history = {
+            startDate: this.startDate.toLocaleString(),
+            gameLength: 'tempLength',
+            gameMode: 'Classique',
+            namePlayer1: 'tempName1',
+            namePlayer2: '',
+            winnerName: '',
+            nameAbandon: '',
+        };
         this.roomId = this.lobbyService.roomId;
         if (this.lobbyService.host === false) {
             this.socketService.on('getHostName', (data: { hostName: string }) => {
@@ -110,6 +125,18 @@ export class OneVsOnePageComponent implements OnInit, AfterViewInit {
                 const seconds = data.realTime - minutes * secondsInMinute;
                 this.newScore.time = String(minutes) + ':' + String(seconds);
             }
+            this.historyService.history.namePlayer1 = this.hostName;
+            this.historyService.history.namePlayer2 = this.guestName;
+        });
+        this.socketService.on('systemMessage', (data: { name: string }) => {
+            this.historyService.history.namePlayer1 = this.hostName;
+            this.historyService.history.namePlayer2 = this.guestName;
+            this.historyService.history.nameAbandon = data.name;
+            if (data.name === this.hostName) {
+                this.historyService.history.winnerName = this.guestName;
+            } else {
+                this.historyService.history.winnerName = this.hostName;
+            }
         });
     }
 
@@ -145,30 +172,46 @@ export class OneVsOnePageComponent implements OnInit, AfterViewInit {
     winGameAfterGiveUp(): void {
         this.stopStopWatch();
         this.gameManager.playWinAudio();
-        this.popUpWindowWin.nativeElement.style.display = 'block';
+        this.popUpWindowAbandonWin.nativeElement.style.display = 'block';
     }
 
     winGame(): void {
+        this.historyService.history.gameLength = this.historyService.findGameLength(this.startDate);
         this.socketService.send('getRealTime', { roomId: this.roomId });
         this.stopStopWatch();
         this.gameManager.playWinAudio();
         this.popUpWindowWin.nativeElement.style.display = 'block';
     }
-    goToHomePage() {
-        this.displayService.checkPlayerScore(this.newScore);
-        this.popUpWindowWin.nativeElement.style.display = 'none';
+    goToHomePageLoser() {
         this.popUpWindowLose.nativeElement.style.display = 'none';
+        this.router.navigate(['home']);
+    }
+    goToHomePageAfterAbandon() {
+        this.historyService.history.gameLength = this.historyService.findGameLength(this.startDate);
+        this.displayService.addHistory(this.historyService.history);
+        this.popUpWindowGiveUp.nativeElement.style.display = 'none';
+        this.router.navigate(['home']);
+    }
+    goToHomePageWinner() {
+        this.displayService.checkPlayerScore(this.newScore);
+        this.displayService.addHistory(this.historyService.history);
+        this.popUpWindowWin.nativeElement.style.display = 'none';
+        this.router.navigate(['home']);
+    }
+
+    goToHomePageAbandonWinner() {
+        this.popUpWindowAbandonWin.nativeElement.style.display = 'none';
         this.router.navigate(['home']);
     }
 
     giveUp() {
-        this.socketService.send('giveUp', { roomId: this.roomId });
-        this.socketService.send('systemMessage', ' a abandonné la partie');
-        this.goToHomePage();
+        this.goToHomePageAfterAbandon();
     }
 
     goToGiveUp() {
         this.popUpWindowGiveUp.nativeElement.style.display = 'block';
+        this.socketService.send('giveUp', { roomId: this.roomId });
+        this.socketService.send('systemMessage', ' a abandonné la partie');
     }
 
     goToStay() {
@@ -196,9 +239,11 @@ export class OneVsOnePageComponent implements OnInit, AfterViewInit {
             this.newScore.gameId = this.gameId;
             if (this.nbDifferencesFoundUser1 === this.nbDifferenceToWin && this.lobbyService.host === true) {
                 this.newScore.playerName = this.hostName;
+                this.historyService.history.winnerName = this.hostName;
                 this.winGame();
             } else if (this.nbDifferencesFoundUser2 === this.nbDifferenceToWin && this.lobbyService.host === false) {
                 this.newScore.playerName = this.guestName;
+                this.historyService.history.winnerName = this.guestName;
                 this.winGame();
             } else {
                 this.loseGame();

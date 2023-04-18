@@ -42,7 +42,7 @@
         <button class="button-choice" (click)="goToCreationPage()">Accéder à la Vue de création de jeu</button>
         <button class="button-choice" (click)="goToConstants()">Constantes de jeu</button>
 
-        <button class="button-choice">Accéder à l'historique des parties jouées</button>
+        <button class="button-choice" (click)="goToHistory()">Accéder à l'historique des parties jouées</button>
         <button class="button-choice" (click)="goToReset()">Reinitialiser tous les TOP 3</button>
         <button class="button-choice" (click)="goToDelete()">Supprimer toutes les fiches de jeu</button>
     </div>
@@ -74,6 +74,79 @@
             <div class="close-button">
                 <button (click)="deleteAllGames()">Oui</button>
                 <button (click)="onClosingPopUp(3)">Non</button>
+            </div>
+        </div>
+    </div>
+    <div #popUpWindow4 class="modal">
+        <div class="modal-content">
+            <div>Historique des parties jouées:</div>
+            <div>
+                <table class="place">
+                    <tr>
+                        <th>Date/Heure debut partie</th>
+                        <th>Duree Partie</th>
+                        <th>Mode de jeu</th>
+                        <th>Nom Premier Joueur</th>
+                        <th>Nom Deuxieme Joueur</th>
+                    </tr>
+                    <tr *ngFor="let history of gameHistory">
+                        <td>{{ history.startDate }}</td>
+                        <td>{{ history.gameLength }}</td>
+                        <td>{{ history.gameMode }}</td>
+                        <ng-container
+                            *ngIf="history.nameAbandon !== history.namePlayer1 && history.winnerName !== history.namePlayer1; else crossOut"
+                        >
+                            <td>{{ history.namePlayer1 }}</td>
+                        </ng-container>
+                        <ng-template #crossOut>
+                            <ng-container *ngIf="history.nameAbandon === history.namePlayer1; else Bold">
+                                <td>
+                                    <s>{{ history.namePlayer1 }}</s>
+                                </td>
+                            </ng-container>
+                        </ng-template>
+                        <ng-template #Bold>
+                            <td>
+                                <b>{{ history.namePlayer1 }}</b>
+                            </td>
+                        </ng-template>
+                        <ng-container
+                            *ngIf="
+                                history.namePlayer2 !== '' &&
+                                    history.nameAbandon !== history.namePlayer2 &&
+                                    history.winnerName !== history.namePlayer2;
+                                else crossOut2
+                            "
+                        >
+                            <td>{{ history.namePlayer2 }}</td>
+                        </ng-container>
+                        <ng-template #crossOut2>
+                            <ng-container *ngIf="history.nameAbandon === history.namePlayer2; else Bold2">
+                                <td>
+                                    <s>{{ history.namePlayer2 }}</s>
+                                </td>
+                            </ng-container>
+                        </ng-template>
+                        <ng-template #Bold2>
+                            <td>
+                                <b>{{ history.namePlayer2 }}</b>
+                            </td>
+                        </ng-template>
+                    </tr>
+                </table>
+            </div>
+            <div class="close-button">
+                <button (click)="goToDeleteHistory()">Supprimer l'historique</button>
+                <button (click)="onClosingPopUp(4)">Fermer l'historique</button>
+            </div>
+        </div>
+    </div>
+    <div #popUpWindow5 class="modal">
+        <div class="modal-content">
+            <div class="deleteWarning">Êtes-vous sûrs de vouloir supprimer l'historique de jeu?</div>
+            <div class="close-button">
+                <button (click)="deleteHistory()">Oui</button>
+                <button (click)="onClosingPopUp(5)">Non</button>
             </div>
         </div>
     </div>
