@@ -36,7 +36,7 @@ describe('SoloLimitedTimeComponent', () => {
                 gameData: gameMock1 as unknown as GameData,
             },
         );
-        displayGameSpy = jasmine.createSpyObj('DisplayGameService', ['convertDifficulty', 'loadAllGames']);
+        displayGameSpy = jasmine.createSpyObj('DisplayGameService', ['convertDifficulty', 'loadAllGames', 'addHistory']);
         limitedLobbySpy = jasmine.createSpyObj('LimitedTimeLobbyService', { roomId: 'id' });
         await TestBed.configureTestingModule({
             declarations: [SoloLimitedTimeComponent],
@@ -62,6 +62,7 @@ describe('SoloLimitedTimeComponent', () => {
         const stopTimerSpy = spyOn(component, 'stopTimer');
         component.endGame();
         expect(stopTimerSpy).toHaveBeenCalled();
+        expect(displayGameSpy.addHistory).toHaveBeenCalled();
         expect(gameManagerSpy.playWinAudio).toHaveBeenCalled();
     });
 
@@ -115,7 +116,7 @@ describe('SoloLimitedTimeComponent', () => {
         gameManagerSpy.onPositionClicked.and.returnValue(Promise.resolve(true));
         spyOn(component, 'putNewGame');
         const event = new MouseEvent('click', { button: MouseButton.Left });
-        displayGameSpy.convertDifficulty.and.returnValue('Niveau: difficile');
+        displayGameSpy.convertDifficulty.and.returnValue('difficile');
         await component.onClick(event);
         expect(component.nbDifferencesFound).toBe(1);
         expect(component.putNewGame).toHaveBeenCalled();

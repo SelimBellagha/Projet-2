@@ -20,14 +20,15 @@ export class HistoryService {
 
     findGameLength(start: Date) {
         const currentTime = new Date();
-        const totalSeconds = Math.floor((currentTime.getTime() - start.getTime()) / 1000);
+        const milliseconds = 1000;
+        const totalSeconds = Math.floor((currentTime.getTime() - start.getTime()) / milliseconds);
         return this.convertGameLength(totalSeconds);
     }
 
     convertGameLength(lengthInSeconds: number): string {
-        const minutes = Math.floor(lengthInSeconds / 60);
-        const seconds = lengthInSeconds % 60;
-        // const formattedMinutes = `${minutes}`.padStart(2, '0');
+        const minuteToSeconds = 60;
+        const minutes = Math.floor(lengthInSeconds / minuteToSeconds);
+        const seconds = lengthInSeconds % minuteToSeconds;
         const formattedSeconds = `${seconds}`.padStart(2, '0');
         return `${minutes}:${formattedSeconds}`;
     }

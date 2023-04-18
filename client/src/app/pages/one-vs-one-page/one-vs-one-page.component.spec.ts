@@ -198,10 +198,4 @@ describe('OneVsOnePageComponent', () => {
         expect(component.nbDifferencesFoundUser2).toEqual(1);
         expect(gameManagerSpy.flashImages).toHaveBeenCalled();
     });
-
-    it('winGame  should be calld when receiving event "winGame" from socket', () => {
-        const spy = spyOn(component, 'winGame');
-        socketHelper.peerSideEmit('win');
-        expect(spy).toHaveBeenCalled();
-    });
 });

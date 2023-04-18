@@ -19,7 +19,6 @@ describe('JeuxComponent', () => {
     let loginFormSpy: SpyObj<LoginFormService>;
     let lobbyServiceSpy: SpyObj<LobbyService>;
     let commService: CommunicationService;
-    let communicationSpy: SpyObj<CommunicationService>;
     let socketService: SpyObj<SocketClientService>;
 
     beforeEach(async () => {
@@ -27,6 +26,7 @@ describe('JeuxComponent', () => {
         loginFormSpy = jasmine.createSpyObj('LoginFormService', ['setGameType', 'setPlayerType', 'setGameId']);
         lobbyServiceSpy = jasmine.createSpyObj('LobbyServiceSpy', ['host']);
         socketService = jasmine.createSpyObj('socketService', ['on']);
+
         await TestBed.configureTestingModule({
             declarations: [JeuxComponent],
             imports: [RouterTestingModule, HttpClientTestingModule],
@@ -34,7 +34,6 @@ describe('JeuxComponent', () => {
                 { provide: DisplayGameService, useValue: displayServiceSpy },
                 { provide: LoginFormService, useValue: loginFormSpy },
                 { provide: LobbyService, useValue: lobbyServiceSpy },
-                { provide: CommunicationService, useValue: communicationSpy },
                 CommunicationService,
                 { provide: SocketClientService, useValue: socketService },
             ],
@@ -58,7 +57,6 @@ describe('JeuxComponent', () => {
                 },
             ]),
         );
-        communicationSpy = jasmine.createSpyObj('CommunicationService', ['deleteGame']);
     });
 
     it('should create', () => {
@@ -138,20 +136,19 @@ describe('JeuxComponent', () => {
         component.onClosingPopUp2();
         expect(popupWindow.style.display).toEqual('none');
     });
-    /*
+
     it('deleteGame should delete the game and close pop up', () => {
+        const spy = spyOn(component, 'onClosingPopUp');
         component.deleteGame();
-        // commService.deleteGame(component.customId);
-        expect(communicationSpy.deleteGame).toHaveBeenCalled();
-        expect(component.onClosingPopUp()).toHaveBeenCalled();
+        expect(spy).toHaveBeenCalled();
     });
 
     it('resetGameScores should reset the game scores and close pop up', () => {
+        const spy = spyOn(component, 'onClosingPopUp2');
         component.resetGameScores();
-        // expect(commService.resetGameScores).toHaveBeenCalled();
-        expect(component.onClosingPopUp2()).toHaveBeenCalled();
+        expect(spy).toHaveBeenCalled();
     });
-*/
+
     it('loadSoloScores should load the top scores', () => {
         component.ngOnInit();
         component.loadSoloScores();

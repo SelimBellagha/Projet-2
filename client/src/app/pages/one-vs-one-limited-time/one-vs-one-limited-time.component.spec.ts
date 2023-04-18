@@ -62,7 +62,7 @@ describe('OneVsOneLimitedTimeComponent', () => {
         socketHelper = new SocketTestHelper();
         socketServiceMock = new SocketClientService();
         socketServiceMock.socket = socketHelper as unknown as Socket;
-        displayGamesSpy = jasmine.createSpyObj('DisplayGameService', ['convertDifficulty', 'loadAllGames']);
+        displayGamesSpy = jasmine.createSpyObj('DisplayGameService', ['convertDifficulty', 'loadAllGames', 'addHistory']);
         limitedTimeLobbySpy = jasmine.createSpyObj('LimitedTimeLobbyService', { roomId: 1 });
         gameManagerSpy = jasmine.createSpyObj(
             'gameManagerSpy',
@@ -117,10 +117,10 @@ describe('OneVsOneLimitedTimeComponent', () => {
 
     it('on initialization, if tempGames, should set game infos', async () => {
         displayGamesSpy.tempGames = [gameMock1];
-        displayGamesSpy.convertDifficulty.and.returnValue('Niveau: difficile');
+        displayGamesSpy.convertDifficulty.and.returnValue('difficile');
         await component.ngOnInit();
         expect(component.gameName).toBe('mock');
-        expect(component.difficulty).toBe('Niveau: difficile');
+        expect(component.difficulty).toBe('difficile');
         expect(gameManagerSpy.putImages).toHaveBeenCalled();
     });
 
@@ -194,6 +194,7 @@ describe('OneVsOneLimitedTimeComponent', () => {
         const stopTimerSpy = spyOn(component, 'stopTimer');
         component.endGame();
         expect(stopTimerSpy).toHaveBeenCalled();
+        expect(displayGamesSpy.addHistory).toHaveBeenCalled();
         expect(gameManagerSpy.playWinAudio).toHaveBeenCalled();
     });
 
@@ -225,5 +226,20 @@ describe('OneVsOneLimitedTimeComponent', () => {
         const event = new MouseEvent('click', { button: MouseButton.Left });
         await component.onClick(event);
         expect(spySend).toHaveBeenCalledWith('limitedDifferenceFound', { roomId: limitedTimeLobbySpy.roomId });
+    });
+
+    it('should show the popup window on goToGiveUp()', async () => {
+        const popupWindow = component.popUpWindowGiveUp.nativeElement;
+        expect(popupWindow.style.display).toEqual('');
+        await component.goToGiveUp();
+        expect(popupWindow.style.display).toEqual('block');
+    });
+
+    it('should hide the popup window on goToStay()', () => {
+        const popupWindow = component.popUpWindowGiveUp.nativeElement;
+        popupWindow.style.display = 'block';
+        expect(popupWindow.style.display).toEqual('block');
+        component.goToStay();
+        expect(popupWindow.style.display).toEqual('none');
     });
 });

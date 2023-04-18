@@ -18,11 +18,10 @@ const display = 4;
     styleUrls: ['./configuration-page.component.scss'],
 })
 export class ConfigurationPageComponent implements OnInit {
-    @ViewChild('popUpWindow') popUpWindow: ElementRef<HTMLDivElement>;
-    @ViewChild('popUpWindow2') popUpWindow2: ElementRef<HTMLDivElement>;
-    @ViewChild('popUpWindow3') popUpWindow3: ElementRef<HTMLDivElement>;
-    @ViewChild('popUpWindow4') popUpWindow4: ElementRef<HTMLDivElement>;
-    @ViewChild('popUpWindow5') popUpWindow5: ElementRef<HTMLDivElement>;
+    @ViewChild('popUpResetScores') popUpResetScores: ElementRef<HTMLDivElement>;
+    @ViewChild('popUpDeleteGames') popUpDeleteGames: ElementRef<HTMLDivElement>;
+    @ViewChild('popUpHistory') popUpHistory: ElementRef<HTMLDivElement>;
+    @ViewChild('popUpDeleteHistory') popUpDeleteHistory: ElementRef<HTMLDivElement>;
     componentNumber: number = 0;
     hasPrevious: boolean = false;
     hasNext: boolean = false;
@@ -87,63 +86,55 @@ export class ConfigurationPageComponent implements OnInit {
         }
     }
 
-    goToConstants(): void {
-        this.popUpWindow.nativeElement.style.display = 'block';
-    }
-
     goToReset(): void {
-        this.popUpWindow2.nativeElement.style.display = 'block';
+        this.popUpResetScores.nativeElement.style.display = 'block';
     }
 
     goToDelete(): void {
-        this.popUpWindow3.nativeElement.style.display = 'block';
+        this.popUpDeleteGames.nativeElement.style.display = 'block';
     }
 
     resetAllScores() {
         this.displayGames.resetAllScores();
-        this.onClosingPopUp(2);
+        this.onClosingPopUp('reset');
     }
 
     deleteAllGames() {
-        this.onClosingPopUp(3);
+        this.onClosingPopUp('deleteGames');
     }
 
     async goToHistory() {
         await this.displayGames.getHistory();
         this.gameHistory = this.displayGames.history;
-        this.popUpWindow4.nativeElement.style.display = 'block';
+        this.popUpHistory.nativeElement.style.display = 'block';
     }
 
     goToDeleteHistory() {
-        this.popUpWindow5.nativeElement.style.display = 'block';
+        this.popUpDeleteHistory.nativeElement.style.display = 'block';
     }
 
     deleteHistory() {
         this.displayGames.deleteGameHistory();
-        this.onClosingPopUp(5);
-        this.onClosingPopUp(4);
+        this.onClosingPopUp('deleteHistory');
+        this.onClosingPopUp('history');
     }
 
-    onClosingPopUp(popUpNumber: number): void {
-        switch (popUpNumber) {
-            case 1: {
-                this.popUpWindow.nativeElement.style.display = 'none';
+    onClosingPopUp(popUpName: string): void {
+        switch (popUpName) {
+            case 'reset': {
+                this.popUpResetScores.nativeElement.style.display = 'none';
                 break;
             }
-            case 2: {
-                this.popUpWindow2.nativeElement.style.display = 'none';
+            case 'deleteGames': {
+                this.popUpDeleteGames.nativeElement.style.display = 'none';
                 break;
             }
-            case 3: {
-                this.popUpWindow3.nativeElement.style.display = 'none';
+            case 'history': {
+                this.popUpHistory.nativeElement.style.display = 'none';
                 break;
             }
-            case 4: {
-                this.popUpWindow4.nativeElement.style.display = 'none';
-                break;
-            }
-            case 5: {
-                this.popUpWindow5.nativeElement.style.display = 'none';
+            case 'deleteHistory': {
+                this.popUpDeleteHistory.nativeElement.style.display = 'none';
                 break;
             }
         }

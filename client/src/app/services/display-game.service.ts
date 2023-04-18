@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { AddedScoreResult } from '@app/interfaces/added-score-result';
 import { GameHistory } from '@app/interfaces/game-history';
 import { GameData, TopScore } from '@app/interfaces/game.interface';
 import { Game } from '@app/pages/selection-page-component/selection-page-component.component';
@@ -16,6 +17,7 @@ export class DisplayGameService {
     tempGames: GameData[] = [];
     gameId: string;
     isScoreAdded: boolean = false;
+    newScorePosition: string = 'temp';
     constructor(private comm: CommunicationService, private socketService: SocketClientService) {}
 
     loadGame(gameId: string) {
@@ -35,7 +37,10 @@ export class DisplayGameService {
     }
 
     checkPlayerScore(newScore: TopScore) {
-        this.comm.addScore(newScore).subscribe((added: boolean) => (this.isScoreAdded = added));
+        this.comm.addScore(newScore).subscribe((response: AddedScoreResult) => {
+            this.isScoreAdded = response.isAdded;
+            this.newScorePosition = response.positionIndex;
+        });
     }
 
     addHistory(newHistory: GameHistory) {

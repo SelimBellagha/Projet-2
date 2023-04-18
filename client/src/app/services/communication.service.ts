@@ -1,5 +1,6 @@
 import { HttpClient, HttpParams, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { AddedScoreResult } from '@app/interfaces/added-score-result';
 import { GameHistory } from '@app/interfaces/game-history';
 import { GameData, TopScore } from '@app/interfaces/game.interface';
 import { Constants } from '@common/constants';
@@ -63,8 +64,8 @@ export class CommunicationService {
         return this.http.get<TopScore[]>(`${this.baseUrl}/scores/${gameId}/${gameType}`, { params });
     }
 
-    addScore(score: TopScore): Observable<boolean> {
-        return this.http.post<boolean>(`${this.baseUrl}/scores`, score);
+    addScore(score: TopScore): Observable<AddedScoreResult> {
+        return this.http.post<AddedScoreResult>(`${this.baseUrl}/scores`, score);
     }
 
     resetGameScores(gameId: string): void {

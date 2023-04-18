@@ -15,7 +15,7 @@ describe('ConfigurationPageComponent', () => {
     let socketManagerSpy: SpyObj<SocketClientService>;
 
     beforeEach(async () => {
-        displayGamesSpy = jasmine.createSpyObj('DisplayGameService', ['loadAllGames']);
+        displayGamesSpy = jasmine.createSpyObj('DisplayGameService', ['loadAllGames', 'getHistory', 'resetAllScores', 'deleteGameHistory']);
         socketManagerSpy = jasmine.createSpyObj('DisplayGameService', ['isSocketAlive', 'connect']);
 
         await TestBed.configureTestingModule({
@@ -72,42 +72,94 @@ describe('ConfigurationPageComponent', () => {
         expect(previousSpy).toHaveBeenCalled();
     });
 
-    it(' clicking on Accéder à la Vue de création de jeu button should navigate to game creation Page', () => {
+    it('clicking on Accéder à la Vue de création de jeu button should navigate to game creation Page', () => {
         const routerSpy = spyOn(router, 'navigate');
 
         component.goToCreationPage();
         expect(routerSpy).toHaveBeenCalledWith(['gameCreation']);
     });
 
-    it('should show the popup window on goToConstants()', () => {
-        const popupWindow = component.popUpWindow.nativeElement;
+    it('should show the popup window on goToReset()', async () => {
+        const popupWindow = component.popUpResetScores.nativeElement;
         expect(popupWindow.style.display).toEqual('');
-        component.goToConstants();
+        await component.goToReset();
         expect(popupWindow.style.display).toEqual('block');
     });
 
-    it('should hide the popup window on onClosingPopUp(1)', () => {
-        const popupWindow = component.popUpWindow.nativeElement;
+    it('should show the popup window on goToDelete()', async () => {
+        const popupWindow = component.popUpDeleteGames.nativeElement;
+        expect(popupWindow.style.display).toEqual('');
+        await component.goToDelete();
+        expect(popupWindow.style.display).toEqual('block');
+    });
+
+    it('should hide the popup window on resetAllScores()', async () => {
+        const popupWindow = component.popUpResetScores.nativeElement;
         popupWindow.style.display = 'block';
         expect(popupWindow.style.display).toEqual('block');
-        component.onClosingPopUp(1);
+        component.resetAllScores();
+        expect(displayGamesSpy.resetAllScores).toHaveBeenCalled();
         expect(popupWindow.style.display).toEqual('none');
     });
 
-    it('should hide the popup window on onClosingPopUp(2)', () => {
-        const popupWindow = component.popUpWindow2.nativeElement;
+    it('should show the popup window on goToHistory()', async () => {
+        const popupWindow = component.popUpHistory.nativeElement;
+        expect(popupWindow.style.display).toEqual('');
+        await component.goToHistory();
+        expect(displayGamesSpy.getHistory).toHaveBeenCalled();
+        expect(popupWindow.style.display).toEqual('block');
+    });
+
+    it('should show the popup window on goToDeleteHistory()', async () => {
+        const popupWindow = component.popUpDeleteHistory.nativeElement;
+        expect(popupWindow.style.display).toEqual('');
+        await component.goToDeleteHistory();
+        expect(popupWindow.style.display).toEqual('block');
+    });
+
+    it('should hide the popup window on onClosingPopUp(history)', () => {
+        const popupWindow = component.popUpHistory.nativeElement;
         popupWindow.style.display = 'block';
         expect(popupWindow.style.display).toEqual('block');
-        component.onClosingPopUp(2);
+        component.onClosingPopUp('history');
         expect(popupWindow.style.display).toEqual('none');
     });
 
-    it('should hide the popup window on onClosingPopUp(3)', () => {
-        const popupWindow = component.popUpWindow3.nativeElement;
+    it('should hide the popup window on deleteAllGames()', () => {
+        const popupWindow = component.popUpDeleteGames.nativeElement;
         popupWindow.style.display = 'block';
         expect(popupWindow.style.display).toEqual('block');
-        component.onClosingPopUp(3);
+        component.deleteAllGames();
         expect(popupWindow.style.display).toEqual('none');
+    });
+
+    it('should hide the popup window on onClosingPopUp(reset)', () => {
+        const popupWindow = component.popUpResetScores.nativeElement;
+        popupWindow.style.display = 'block';
+        expect(popupWindow.style.display).toEqual('block');
+        component.onClosingPopUp('reset');
+        expect(popupWindow.style.display).toEqual('none');
+    });
+
+    it('should hide the popup window on onClosingPopUp(deleteHistory)', () => {
+        const popupWindow = component.popUpDeleteHistory.nativeElement;
+        popupWindow.style.display = 'block';
+        expect(popupWindow.style.display).toEqual('block');
+        component.onClosingPopUp('deleteHistory');
+        expect(popupWindow.style.display).toEqual('none');
+    });
+
+    it('should hide the popup window and delete history on deleteHistory', () => {
+        const popupWindowDelete = component.popUpDeleteHistory.nativeElement;
+        const popupWindowHistory = component.popUpHistory.nativeElement;
+        popupWindowDelete.style.display = 'block';
+        popupWindowHistory.style.display = 'block';
+        expect(popupWindowDelete.style.display).toEqual('block');
+        expect(popupWindowHistory.style.display).toEqual('block');
+        component.deleteHistory();
+        expect(displayGamesSpy.deleteGameHistory).toHaveBeenCalled();
+        expect(popupWindowDelete.style.display).toEqual('none');
+        expect(popupWindowHistory.style.display).toEqual('none');
     });
 
     it('nextPage should set hasNextPage to true if the list of games has more than 4 games ', () => {

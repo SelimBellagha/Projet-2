@@ -1,5 +1,5 @@
 import { DATABASE_COLLECTION } from '@app/data/db-constants';
-import { TopScore } from '@app/data/top-scores.interface';
+import { AddedScoreResult, TopScore } from '@app/data/top-scores.interface';
 import * as fs from 'fs';
 import { Collection } from 'mongodb';
 import * as path from 'path';
@@ -46,7 +46,9 @@ export class TopScoresService {
         const currentScores = await this.sortTopScores(newScore.gameId, newScore.gameType);
         let indexVal = '-1';
         for (const score of currentScores) {
-            if (score.time > newScore.time) {
+            if (score.time === newScore.time) {
+                break;
+            } else if (score.time > newScore.time) {
                 indexVal = score.position;
                 break;
             }
@@ -54,7 +56,7 @@ export class TopScoresService {
         return indexVal;
     }
 
-    async addScore(newScore: TopScore): Promise<boolean> {
+    async addScore(newScore: TopScore): Promise<AddedScoreResult> {
         const indexToReplace = await this.validateScore(newScore);
         const noScoreChange = '-1';
         if (indexToReplace !== noScoreChange) {
@@ -94,9 +96,9 @@ export class TopScoresService {
                     break;
                 }
             }
-            return true;
+            return { isAdded: true, positionIndex: newScore.position };
         } else {
-            return false;
+            return { isAdded: false, positionIndex: noScoreChange };
         }
     }
 
