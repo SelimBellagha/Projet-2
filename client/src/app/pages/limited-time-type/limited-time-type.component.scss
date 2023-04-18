@@ -2,24 +2,82 @@ body {
     background-color: #b5d8b5;
 }
 
-p {
-    font-size: x-large;
-    padding-top: 5%;
+.return-button {
+    position: absolute;
+    left: 0;
+    top: 0;
+    margin-top: 5px;
+    margin-left: 5px;
     text-align: center;
+    font-weight: bold;
+    height: 30px;
+    width: 100px;
+    background-color: #6da093;
+    color: white;
+    border-radius: 10px;
+    border-color: #6da093;
+    font-family: 'Oleo Script Swash Caps';
+    font-size: 15px;
+}
+h1 {
+    text-align: center;
+    font-family: 'Times New Roman';
+    font-style: italic;
 }
 
-div {
-    position: absolute;
-    top: 50%;
-    width: 100%;
+.note {
+    text-align: center;
+    font-weight: bold;
+    color: rgb(220, 93, 93);
 }
 
-.solo-button {
-    position: absolute;
-    left: 45%;
+.container {
+    display: flex;
+    margin: 10% 4% 0 17%;
+    background-color: #fffafa;
+    border-radius: 5px;
+    max-height: max-content; 
+    max-width: 70%;
 }
 
-.multi-button {
-    position: absolute;
-    right: 45%;
+.section {
+    flex: 1;
+    border: 1px dashed #000000;
+}
+
+.tool-icons {
+    width: 90px;
+    height: 90px;
+}
+
+.description{
+    margin-left: 15px;
+}
+
+.tool-button {
+    cursor: pointer;
+    font-weight: bold;
+    background-color: rgba(255, 255, 255, 0.812);
+    border-color: rgba(178, 177, 177, 0.592);
+    width: 30%;
+    height: 60%;
+    margin: 3% 0 3% 30%;   
+}
+
+.icon-description {
+    position: relative;
+    height: max-content;
+    width: max-content;
+    background: rgba(245, 245, 245, 0.823);
+    border: 1px solid red;
+    padding: 10px 5px 0 5px;
+    color: black;
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity .2s, visibility .2s;
+}
+
+.tool-button:hover .icon-description, .tool-label:hover .icon-description{
+  visibility: visible;
+  opacity: 1;
 }

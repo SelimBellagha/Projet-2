@@ -1,7 +1,40 @@
 <body>
-    <p>Choose your Game Type</p>
-    <div class="button-container">
-        <button class="solo-button" (click)="goToSoloLimitedTime()">Solo</button>
-        <button class="multi-button" (click)="goToCoopLimitedTime()">Coop</button>
+    <button class="return-button" (click)="goToHomePage()"> Retour</button>
+    <h1>Choississez un type de jeu</h1>
+    <p class="note">Note: Une différence trouvée donne un supplément de temps</p>
+
+    <div class="container">
+        <div class = "section">
+            <button class="tool-button" (click)="goToSoloLimitedTime()">
+                <h1>SOLO</h1>
+                <img class="tool-icons" src="./assets/images/solo.png" alt="solo-icon "/>
+                <div class="icon-description">
+                    <p class="details">Cliquer pour jouer en solo</p>  
+                </div>
+            </button>
+
+            <div class="description">
+                <p>En solo, trouvez une différence sur chaque paire d'images dans le temps imparti.</p>
+                <p>L'utilisation d'un indice entraine une pénalité de temps.</p>
+            </div>   
+        </div>
+        
+
+        <div class = "section">
+            <button class="tool-button" (click)="goToCoopLimitedTime()">
+                <h1> COOPÉRATIF </h1>
+                <img class="tool-icons" src="./assets/images/coop.png" alt="coop-icon "/>
+                <div class="icon-description">
+                    <p class="details">Cliquer pour jouer en coopératif</p>  
+                </div>
+            </button>
+
+            <div class="description">
+                <p>En coopératif, vous êtes associé avec un autre joueur.</p>
+                <p> Trouver ensemble  une différence sur chaque paire d'images dans le temps imparti. </p>
+            </div>
+            
+        </div>
+        
     </div>
 </body>

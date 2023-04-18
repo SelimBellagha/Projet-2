@@ -19,4 +19,8 @@ export class LimitedTimeTypeComponent {
         this.loginService.setGameType(true);
         this.router.navigate(['/loginPage']);
     }
+
+    goToHomePage() {
+        this.router.navigate(['/home']);
+    }
 }
