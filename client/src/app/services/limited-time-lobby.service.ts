@@ -10,4 +10,5 @@ export class LimitedTimeLobbyService {
     roomId: string;
     firstGame: number;
     differencesFound: number;
+    timerId: number;
 }

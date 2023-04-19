@@ -3,24 +3,31 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
+import { LimitedTimeLobbyService } from '@app/services/limited-time-lobby.service';
 import { GiveUpComponent } from './give-up.component';
 import SpyObj = jasmine.SpyObj;
 
 describe('GiveUpComponent', () => {
     let component: GiveUpComponent;
     let fixture: ComponentFixture<GiveUpComponent>;
+    let lobbySpy: SpyObj<LimitedTimeLobbyService>;
     let matDialogSpy: SpyObj<MatDialog>;
-    let router: Router;
+    let routerSpy: SpyObj<Router>;
     beforeEach(async () => {
         matDialogSpy = jasmine.createSpyObj('MatDialog', ['closeAll']);
+        lobbySpy = jasmine.createSpyObj('LimitedTimeLobbyService', [], { timerid: null });
+        routerSpy = jasmine.createSpyObj('Router', ['navigate'], { url: '/limitedOneVsOne' });
         await TestBed.configureTestingModule({
-            declarations: [GiveUpComponent],
             imports: [RouterTestingModule],
-            providers: [{ provide: MatDialog, useValue: matDialogSpy }],
+            declarations: [GiveUpComponent],
+            providers: [
+                { provide: MatDialog, useValue: matDialogSpy },
+                { provide: LimitedTimeLobbyService, useValue: lobbySpy },
+                { provide: Router, useValue: routerSpy },
+            ],
         }).compileComponents();
 
         fixture = TestBed.createComponent(GiveUpComponent);
-        router = TestBed.inject(Router);
         component = fixture.componentInstance;
         fixture.detectChanges();
     });
@@ -33,9 +40,13 @@ describe('GiveUpComponent', () => {
         expect(matDialogSpy.closeAll).toHaveBeenCalled();
     });
     it('giveUp should close Component and navigate to home', () => {
-        const spy = spyOn(router, 'navigate');
         component.giveUp();
         expect(matDialogSpy.closeAll).toHaveBeenCalled();
-        expect(spy).toHaveBeenCalledWith(['home']);
+        expect(routerSpy.navigate).toHaveBeenCalledWith(['/home']);
+    });
+    it('giveUp should call clearInterval if current game is limitedOnevsOne', () => {
+        const spy = spyOn(window, 'clearInterval');
+        component.giveUp();
+        expect(spy).toHaveBeenCalled();
     });
 });

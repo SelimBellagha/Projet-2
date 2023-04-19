@@ -1,6 +1,6 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { SocketTestHelper } from '@app/classes/socket-test-helper';
@@ -78,7 +78,7 @@ describe('OneVsOneLimitedTimeComponent', () => {
         );
         matDialogSpy = jasmine.createSpyObj('MatDialog', ['open']);
         await TestBed.configureTestingModule({
-            imports: [RouterTestingModule, HttpClientTestingModule],
+            imports: [RouterTestingModule, HttpClientTestingModule, MatDialogModule],
             providers: [
                 { provide: SocketClientService, useValue: socketServiceMock },
                 { provide: DisplayGameService, useValue: displayGamesSpy },
@@ -205,7 +205,7 @@ describe('OneVsOneLimitedTimeComponent', () => {
     it('goToHomePage should navigate to home', async () => {
         const routerSpy = spyOn(router, 'navigate');
         component.goToHomePage();
-        expect(routerSpy).toHaveBeenCalledWith(['home']);
+        expect(routerSpy).toHaveBeenCalledWith(['/home']);
     });
 
     it('giveUp should two events : "limitedTimeGiveUp" and "systemMessage"', async () => {
