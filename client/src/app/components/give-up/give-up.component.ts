@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 
@@ -7,10 +7,8 @@ import { Router } from '@angular/router';
     templateUrl: './give-up.component.html',
     styleUrls: ['./give-up.component.scss'],
 })
-export class GiveUpComponent implements OnInit {
+export class GiveUpComponent {
     constructor(private router: Router, private dialogRef: MatDialog) {}
-
-    ngOnInit(): void {}
 
     goToStay() {
         this.dialogRef.closeAll();

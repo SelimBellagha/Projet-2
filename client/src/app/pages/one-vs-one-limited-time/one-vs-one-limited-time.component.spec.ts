@@ -1,9 +1,12 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { SocketTestHelper } from '@app/classes/socket-test-helper';
+import { GiveUpComponent } from '@app/components/give-up/give-up.component';
 import { MouseButton } from '@app/components/play-area/play-area.component';
+import { TimeOffComponent } from '@app/components/time-off/time-off.component';
 import { GameData } from '@app/interfaces/game.interface';
 import { Player } from '@app/interfaces/player';
 import { DisplayGameService } from '@app/services/display-game.service';
@@ -57,6 +60,7 @@ describe('OneVsOneLimitedTimeComponent', () => {
     let gameManagerSpy: SpyObj<GameManagerService>;
     let router: Router;
     let limitedTimeLobbySpy: SpyObj<LimitedTimeLobbyService>;
+    let matDialogSpy: SpyObj<MatDialog>;
 
     beforeEach(async () => {
         socketHelper = new SocketTestHelper();
@@ -72,7 +76,7 @@ describe('OneVsOneLimitedTimeComponent', () => {
                 gameData: gameMock1,
             },
         );
-
+        matDialogSpy = jasmine.createSpyObj('MatDialog', ['open']);
         await TestBed.configureTestingModule({
             imports: [RouterTestingModule, HttpClientTestingModule],
             providers: [
@@ -80,6 +84,7 @@ describe('OneVsOneLimitedTimeComponent', () => {
                 { provide: DisplayGameService, useValue: displayGamesSpy },
                 { provide: GameManagerService, useValue: gameManagerSpy },
                 { provide: LimitedTimeLobbyService, useValue: limitedTimeLobbySpy },
+                { provide: MatDialog, useValue: matDialogSpy },
             ],
             declarations: [OneVsOneLimitedTimeComponent],
         }).compileComponents();
@@ -180,9 +185,9 @@ describe('OneVsOneLimitedTimeComponent', () => {
         jasmine.clock().uninstall();
     });
 
-    it('should call endGame when timer ends', () => {
-        const secondTest = 1000;
-        const endSpy = spyOn(component, 'endGame');
+    it('should call timeOff when timer ends', () => {
+        const secondTest = 1001;
+        const endSpy = spyOn(component, 'timeOff');
         jasmine.clock().install();
         component.timer(1);
         jasmine.clock().tick(secondTest);
@@ -199,8 +204,8 @@ describe('OneVsOneLimitedTimeComponent', () => {
 
     it('goToHomePage should navigate to home', async () => {
         const routerSpy = spyOn(router, 'navigate');
-        await component.goToHomePage();
-        expect(routerSpy).toHaveBeenCalledWith(['/home']);
+        component.goToHomePage();
+        expect(routerSpy).toHaveBeenCalledWith(['home']);
     });
 
     it('giveUp should two events : "limitedTimeGiveUp" and "systemMessage"', async () => {
@@ -225,5 +230,15 @@ describe('OneVsOneLimitedTimeComponent', () => {
         const event = new MouseEvent('click', { button: MouseButton.Left });
         await component.onClick(event);
         expect(spySend).toHaveBeenCalledWith('limitedDifferenceFound', { roomId: limitedTimeLobbySpy.roomId });
+    });
+    it('timeOff should open TimeOffComponent and stop Timer', () => {
+        const spy = spyOn(component, 'stopTimer');
+        component.timeOff();
+        expect(matDialogSpy.open).toHaveBeenCalledWith(TimeOffComponent);
+        expect(spy).toHaveBeenCalled();
+    });
+    it('goToGiveUp should open GiveUpComponent ', () => {
+        component.goToGiveUp();
+        expect(matDialogSpy.open).toHaveBeenCalledWith(GiveUpComponent);
     });
 });

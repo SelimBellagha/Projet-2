@@ -1,5 +1,6 @@
 import { HttpClientModule } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { GameData } from '@app/interfaces/game.interface';
@@ -19,7 +20,7 @@ describe('SoloViewPageComponent', () => {
     let loginServiceSpy: SpyObj<LoginFormService>;
     let socketService: SpyObj<SocketClientService>;
     let router: Router;
-
+    let matDialogSpy: SpyObj<MatDialog>;
     const username = 'testName';
     const gameMock1 = {
         id: '0',
@@ -36,7 +37,7 @@ describe('SoloViewPageComponent', () => {
         displayServiceSpy = jasmine.createSpyObj('DisplayGameService', ['loadGame', 'convertDifficulty'], { game: gameMock1 as unknown as GameData });
         loginServiceSpy = jasmine.createSpyObj('LoginFormService', ['getFormData']);
         socketService = jasmine.createSpyObj('SocketClientService', ['send']);
-
+        matDialogSpy = jasmine.createSpyObj('MatDialog', ['open']);
         loginServiceSpy.getFormData.and.returnValue(username);
 
         await TestBed.configureTestingModule({
@@ -47,6 +48,7 @@ describe('SoloViewPageComponent', () => {
                 { provide: DisplayGameService, useValue: displayServiceSpy },
                 { provide: LoginFormService, useValue: loginServiceSpy },
                 { provide: SocketClientService, useValue: socketService },
+                { provide: MatDialog, useValue: matDialogSpy },
             ],
         }).compileComponents();
 

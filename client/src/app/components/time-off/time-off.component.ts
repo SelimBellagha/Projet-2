@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 
@@ -7,11 +7,8 @@ import { Router } from '@angular/router';
     templateUrl: './time-off.component.html',
     styleUrls: ['./time-off.component.scss'],
 })
-export class TimeOffComponent implements OnInit {
+export class TimeOffComponent {
     constructor(private router: Router, private dialogRef: MatDialog) {}
-
-    ngOnInit(): void {}
-
     goToHomePage() {
         this.dialogRef.closeAll();
         this.router.navigate(['home']);

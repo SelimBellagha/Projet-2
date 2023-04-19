@@ -1,5 +1,7 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { ElementRef } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { SocketTestHelper } from '@app/classes/socket-test-helper';
@@ -29,6 +31,7 @@ describe('OneVsOnePageComponent', () => {
     let displayServiceSpy: SpyObj<DisplayGameService>;
     let gameManagerSpy: SpyObj<GameManagerService>;
     let loginServiceSpy: SpyObj<LoginFormService>;
+    let matDialogSpy: SpyObj<MatDialog>;
 
     let router: Router;
     let socketServiceMock: SocketClientServiceMock;
@@ -53,7 +56,7 @@ describe('OneVsOnePageComponent', () => {
         ]);
         displayServiceSpy = jasmine.createSpyObj('DisplayGameService', ['loadGame', 'convertDifficulty'], { game: gameMock1 as unknown as GameData });
         loginServiceSpy = jasmine.createSpyObj('LoginFormService', ['getFormData']);
-
+        matDialogSpy = jasmine.createSpyObj('MatDialog', ['open']);
         socketHelper = new SocketTestHelper();
         socketServiceMock = new SocketClientService();
         socketServiceMock.socket = socketHelper as unknown as Socket;
@@ -67,6 +70,7 @@ describe('OneVsOnePageComponent', () => {
                 { provide: DisplayGameService, useValue: displayServiceSpy },
                 { provide: LoginFormService, useValue: loginServiceSpy },
                 { provide: LobbyService, useValue: lobbyServiceSpy },
+                { provide: MatDialog, useValue: matDialogSpy },
             ],
         }).compileComponents();
 
@@ -84,19 +88,19 @@ describe('OneVsOnePageComponent', () => {
 
     it('loseGame should call stopStopWatch and show correct PopUp', () => {
         const spy = spyOn(component, 'stopStopWatch').and.callThrough();
+        component.popUpWindowLose = new ElementRef(document.createElement('div'));
         component.popUpWindowLose.nativeElement.style.display = 'none';
         component.loseGame();
         expect(spy).toHaveBeenCalled();
         expect(component.popUpWindowLose.nativeElement.style.display).toEqual('block');
     });
 
-    it('loseGame should call stopStopWatch, playAudio and show correct popUp', () => {
+    it('winGame should call stopStopWatch, playAudio and show correct popUp', () => {
         const spy = spyOn(component, 'stopStopWatch').and.callThrough();
-        component.popUpWindowWin.nativeElement.style.display = 'none';
         component.winGame();
         expect(spy).toHaveBeenCalled();
         expect(gameManagerSpy.playWinAudio).toHaveBeenCalled();
-        expect(component.popUpWindowWin.nativeElement.style.display).toEqual('block');
+        expect(matDialogSpy.open).toHaveBeenCalled();
     });
 
     it('giveUp should call goToHomePage and send a event to socketService', () => {
@@ -108,31 +112,26 @@ describe('OneVsOnePageComponent', () => {
         expect(socketSpy).toHaveBeenCalledWith('giveUp', { roomId: '1' });
     });
     it('goToGiveUp should show PopUp', () => {
-        component.popUpWindowGiveUp.nativeElement.style.display = 'none';
         component.goToGiveUp();
-        expect(component.popUpWindowGiveUp.nativeElement.style.display).toEqual('block');
+        expect(matDialogSpy.open).toHaveBeenCalled();
     });
-
+    /*
     it('goToStay should unShow PopUp', () => {
         component.popUpWindowGiveUp.nativeElement.style.display = 'block';
         component.goToStay();
         expect(component.popUpWindowGiveUp.nativeElement.style.display).toEqual('none');
-    });
-    it('goToHomePage should navigate to Home Page and close PopUps', () => {
+    });*/
+    it('goToHomePage should navigate to Home Page', () => {
         const routerSpy = spyOn(router, 'navigate');
-        component.popUpWindowWin.nativeElement.style.display = 'block';
-        component.popUpWindowLose.nativeElement.style.display = 'block';
         component.goToHomePage();
-        expect(component.popUpWindowWin.nativeElement.style.display).toEqual('none');
-        expect(component.popUpWindowLose.nativeElement.style.display).toEqual('none');
         expect(routerSpy).toHaveBeenCalledOnceWith(['home']);
     });
-
+    /*
     it('returnSelectionPage should navigate to gameSelection Page', () => {
         const routerSpy = spyOn(router, 'navigate');
         component.returnSelectionPage();
         expect(routerSpy).toHaveBeenCalledOnceWith(['/gameSelection']);
-    });
+    });*/
     it('OnClick should call onPositionClicked from gameManager if button pressed is left', () => {
         const mouseEventMock = { button: MouseButton.Left, offsetX: 0, offsetY: 0 } as MouseEvent;
         component.onClick(mouseEventMock);

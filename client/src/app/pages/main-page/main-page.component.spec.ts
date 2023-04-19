@@ -81,4 +81,10 @@ describe('MainPageComponent', () => {
         expect(routerSpy).toHaveBeenCalled();
         expect(routerSpy).toHaveBeenCalledWith(['/gameSelection']);
     });
+    it('goToLimitedTimeGame should navigate to limitedTimeType Page', () => {
+        const routerSpy = spyOn(router, 'navigate');
+        component.goToLimitedTimeGame();
+        expect(routerSpy).toHaveBeenCalled();
+        expect(routerSpy).toHaveBeenCalledWith(['/limitedTimeType']);
+    });
 });
