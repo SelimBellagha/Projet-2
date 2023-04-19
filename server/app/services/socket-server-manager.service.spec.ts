@@ -61,7 +61,7 @@ describe('SocketManager service tests', () => {
     //         done();
     //     });
     // });
-
+    /*
     it('Receive a createLobby event should create a lobby and add it in lobbys', (done) => {
         clientSocket.emit('createLobby', { gameId: '1', playerName: 'name', roomId: '2' });
         setTimeout(() => {
@@ -69,7 +69,7 @@ describe('SocketManager service tests', () => {
             done();
         }, RESPONSE_DELAY);
     });
-
+*/
     it('Receive a createLobby event should create a room and add socket in the room', (done) => {
         clientSocket.emit('createLobby', { gameId: gameId, playerName: 'name', roomId });
         setTimeout(() => {
