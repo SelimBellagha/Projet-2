@@ -13,6 +13,8 @@ const DEFAULT_SPEED = 1;
 export class ReplayBarComponent implements AfterViewInit {
     @ViewChild('popUpWindow') popUpWindow: ElementRef<HTMLDivElement>;
     speed: number = 1;
+    pause: boolean = false;
+    temp: boolean;
     constructor(private replayManager: ReplayService, private router: Router) {}
     ngAfterViewInit(): void {
         this.replayManager.setCurrentSpeed(1);
@@ -20,6 +22,8 @@ export class ReplayBarComponent implements AfterViewInit {
     }
 
     onPause(): void {
+        this.temp  = !this.pause;
+        this.pause = this.temp;
         this.replayManager.pauseReplay();
     }
     onStart(): void {
