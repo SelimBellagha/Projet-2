@@ -76,7 +76,7 @@ describe('Score service', () => {
         expect(result).to.deep.equals('-1');
     });
 
-    xit('should return "-1" if new score doesnt beat current scores because it is equal to an existing score', async () => {
+    it('should return "-1" if new score doesnt beat current scores because it is equal to an existing score', async () => {
         const newScore = {
             position: '1',
             gameId: 'defaultID',

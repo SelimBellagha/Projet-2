@@ -8,7 +8,7 @@ import { io as ioClient, Socket } from 'socket.io-client';
 import { Container } from 'typedi';
 import { SocketServerManager } from './socket-server-manager.service';
 const RESPONSE_DELAY = 200;
-xdescribe('SocketManager service tests', () => {
+describe('SocketManager service tests', () => {
     let service: SocketServerManager;
     let server: Server;
     let clientSocket: Socket;
@@ -38,30 +38,29 @@ xdescribe('SocketManager service tests', () => {
         sinon.restore();
     });
 
-    // xit('Receive a startStopWatch event should call startStopWatch', (done) => {
-    //     service.lobbys.set(roomId, lobby);
-    //     const spy = sinon.spy(lobby.timer, 'startStopWatch');
-    //     clientSocket.emit('startStopWatch', { roomId });
-    //     setTimeout(() => {
-    //         expect(spy.called).to.equal(true);
-    //         done();
-    //     }, RESPONSE_DELAY);
-    // });
+    it('Receive a startStopWatch event should call startStopWatch', (done) => {
+        service.lobbys.set(roomId, lobby);
+        const spy = sinon.spy(lobby.timer, 'startStopWatch');
+        clientSocket.emit('startStopWatch', { roomId });
+        setTimeout(() => {
+            expect(spy.called).to.equal(true);
+            done();
+        }, RESPONSE_DELAY);
+    });
 
-    // xit('Receive a getRealTime event should emit a getRealTime event', (done) => {
-    //     const timeToGet = [1, 1];
-    //     lobby.timer.secondes = 1;
-    //     lobby.timer.minutes = 1;
-    //     clientSocket.emit('getRealTime');
-    //     clientSocket.on('getRealTime', (timerInfo: number[]) => {
-    //         expect(timeToGet[0]).to.be.equal(timerInfo[0]);
-    //         expect(timeToGet[1]).to.be.equal(timerInfo[1]);
-    //         expect(timeToGet[2]).to.be.equal(timerInfo[2]);
-    //         expect(timeToGet[3]).to.be.equal(timerInfo[3]);
-    //         done();
-    //     });
-    // });
-    /*
+    it('Receive a getRealTime event should emit a getRealTime event', (done) => {
+        const testTime = 2;
+        const waitingTime = 2100;
+        clientSocket.emit('startStopWatch', {});
+        clientSocket.on('getRealTime', (data: { realTime: number }) => {
+            expect(data.realTime).to.equal(testTime);
+            done();
+        });
+        setTimeout(() => {
+            clientSocket.emit('getRealTime', {});
+        }, waitingTime);
+    });
+
     it('Receive a createLobby event should create a lobby and add it in lobbys', (done) => {
         clientSocket.emit('createLobby', { gameId: '1', playerName: 'name', roomId: '2' });
         setTimeout(() => {
@@ -69,7 +68,7 @@ xdescribe('SocketManager service tests', () => {
             done();
         }, RESPONSE_DELAY);
     });
-*/
+
     xit('Receive a createLobby event should create a room and add socket in the room', (done) => {
         clientSocket.emit('createLobby', { gameId: gameId, playerName: 'name', roomId });
         setTimeout(() => {
