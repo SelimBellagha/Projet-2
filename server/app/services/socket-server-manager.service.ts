@@ -38,6 +38,19 @@ export class SocketServerManager {
                 const lobby = this.limitedLobbys.get(data.roomId);
                 if (lobby) {
                     lobby.timer.startTimer(data.gameTime);
+                } else {
+                    this.soloTimers.set(socket.id, new TimerManager());
+                    this.soloTimers.get(socket.id)?.startTimer(data.gameTime);
+                }
+            });
+
+            socket.on('addToTimer', (data: { timeToAdd: number; roomId: string }) => {
+                const limitedLobby = this.limitedLobbys.get(data.roomId);
+                const soloTimer = this.soloTimers.get(socket.id);
+                if (limitedLobby) {
+                    limitedLobby.timer.gameTime += data.timeToAdd;
+                } else if (soloTimer) {
+                    soloTimer.gameTime += data.timeToAdd;
                 }
             });
 

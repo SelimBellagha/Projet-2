@@ -148,6 +148,10 @@ export class OneVsOneLimitedTimeComponent implements OnInit, AfterViewInit {
             const mousePosition: Vec2 = { x: event.offsetX, y: event.offsetY };
             if (await this.gameManager.onPositionClicked(mousePosition)) {
                 this.socketService.send('limitedDifferenceFound', { roomId: this.limitedTimeLobbyService.roomId });
+                this.socketService.send('addToTimer', {
+                    timeToAdd: this.limitedTimeLobbyService.timeBonus,
+                    roomId: this.limitedTimeLobbyService.roomId,
+                });
             }
         }
     }

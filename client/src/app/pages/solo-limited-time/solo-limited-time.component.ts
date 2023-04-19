@@ -6,6 +6,7 @@ import { DisplayGameService } from '@app/services/display-game.service';
 import { GameManagerService } from '@app/services/game-manager.service';
 import { LimitedTimeLobbyService } from '@app/services/limited-time-lobby.service';
 import { LoginFormService } from '@app/services/login-form.service';
+import { SocketClientService } from '@app/services/socket-client-service.service';
 
 @Component({
     selector: 'app-solo-limited-time',
@@ -33,6 +34,7 @@ export class SoloLimitedTimeComponent implements OnInit, AfterViewInit {
         private displayService: DisplayGameService,
         private gameManager: GameManagerService,
         private limitedTimeLobbyService: LimitedTimeLobbyService,
+        private socketService: SocketClientService,
     ) {}
 
     async ngOnInit() {
@@ -52,6 +54,7 @@ export class SoloLimitedTimeComponent implements OnInit, AfterViewInit {
         this.difficulty = this.displayService.convertDifficulty(this.gameManager.gameData);
         this.gameManager.putImages();
         this.timer(this.limitedTimeLobbyService.initialTime);
+        this.socketService.send('startTimer', { gameTime: 30 });
     }
 
     timer(gameTime: number) {
@@ -66,6 +69,7 @@ export class SoloLimitedTimeComponent implements OnInit, AfterViewInit {
             this.gameTime = this.gameManager.gameTime;
             this.secondes = this.gameTime % max;
             this.minutes = Math.floor(this.gameTime / max);
+            this.socketService.send('getRealTime', {});
             if (this.minutes <= 0 && this.secondes <= 0) {
                 this.secondes = 0;
                 this.minutes = 0;
@@ -95,12 +99,12 @@ export class SoloLimitedTimeComponent implements OnInit, AfterViewInit {
             if (await this.gameManager.onPositionClicked(mousePosition)) {
                 // Incremented le cpt de differences
                 this.nbDifferencesFound++;
+                this.socketService.send('addToTimer', { timeToAdd: this.limitedTimeLobbyService.timeBonus });
                 this.gameManager.gameTime += this.limitedTimeLobbyService.timeBonus;
                 await this.putNewGame();
                 if (this.nbDifferencesFound === this.gameManager.gameNumberMax) {
                     this.endGame();
                 }
-                // Si on a tout trouvé, finir le jeu.
             }
         }
     }
