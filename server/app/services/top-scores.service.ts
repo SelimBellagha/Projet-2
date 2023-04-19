@@ -47,8 +47,11 @@ export class TopScoresService {
         let indexVal = '-1';
         for (const score of currentScores) {
             if (score.time === newScore.time) {
-                break;
-            } else if (score.time > newScore.time) {
+                return indexVal;
+            }
+        }
+        for (const score of currentScores) {
+            if (score.time > newScore.time) {
                 indexVal = score.position;
                 break;
             }
@@ -96,7 +99,7 @@ export class TopScoresService {
                     break;
                 }
             }
-            return { isAdded: true, positionIndex: newScore.position };
+            return { isAdded: true, positionIndex: indexToReplace };
         } else {
             return { isAdded: false, positionIndex: noScoreChange };
         }

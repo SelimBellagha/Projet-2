@@ -59,10 +59,6 @@ export class DisplayGameService {
         this.comm.deleteGameHistory();
     }
 
-    getCurrentDate() {
-        return this.comm.getDate();
-    }
-
     async getHistory() {
         const source = this.comm.getGameHistory();
         this.history = await firstValueFrom(source);

@@ -6,6 +6,7 @@ import { MouseButton } from '@app/components/play-area/play-area.component';
 import { GameData } from '@app/interfaces/game.interface';
 import { DisplayGameService } from '@app/services/display-game.service';
 import { GameManagerService } from '@app/services/game-manager.service';
+import { HistoryService } from '@app/services/history.service';
 import { LimitedTimeLobbyService } from '@app/services/limited-time-lobby.service';
 import { SoloLimitedTimeComponent } from './solo-limited-time.component';
 import SpyObj = jasmine.SpyObj;
@@ -16,6 +17,7 @@ describe('SoloLimitedTimeComponent', () => {
     let gameManagerSpy: SpyObj<GameManagerService>;
     let displayGameSpy: SpyObj<DisplayGameService>;
     let limitedLobbySpy: SpyObj<LimitedTimeLobbyService>;
+    let historyServiceSpy: SpyObj<HistoryService>;
     let router: Router;
 
     const gameMock1: GameData = {
@@ -38,6 +40,7 @@ describe('SoloLimitedTimeComponent', () => {
         );
         displayGameSpy = jasmine.createSpyObj('DisplayGameService', ['convertDifficulty', 'loadAllGames', 'addHistory']);
         limitedLobbySpy = jasmine.createSpyObj('LimitedTimeLobbyService', { roomId: 'id' });
+        historyServiceSpy = jasmine.createSpyObj('HistoryService', ['findGameLength']);
         await TestBed.configureTestingModule({
             declarations: [SoloLimitedTimeComponent],
             imports: [RouterTestingModule, HttpClientTestingModule],
@@ -45,6 +48,7 @@ describe('SoloLimitedTimeComponent', () => {
                 { provide: GameManagerService, useValue: gameManagerSpy },
                 { provide: DisplayGameService, useValue: displayGameSpy },
                 { provide: LimitedTimeLobbyService, useValue: limitedLobbySpy },
+                { provide: HistoryService, useValue: historyServiceSpy },
             ],
         }).compileComponents();
 
@@ -153,5 +157,22 @@ describe('SoloLimitedTimeComponent', () => {
         limitedLobbySpy.firstGame = 1;
         component.ngOnInit();
         expect(gameManagerSpy.initializeGame).toHaveBeenCalled();
+    });
+
+    it('goToHomePageAfterQuit should unShow PopUp and navigate to home', () => {
+        component.popUpWindow.nativeElement.style.display = 'block';
+        const routerSpy = spyOn(router, 'navigate');
+        component.startDate = new Date();
+        component.goToHomePageAfterQuit();
+        expect(historyServiceSpy.findGameLength).toHaveBeenCalledWith(component.startDate);
+        expect(displayGameSpy.addHistory).toHaveBeenCalledWith(historyServiceSpy.history);
+        expect(component.popUpWindow.nativeElement.style.display).toEqual('none');
+        expect(routerSpy).toHaveBeenCalledOnceWith(['home']);
+    });
+
+    it('goToCongratulations should show popUp', () => {
+        component.popUpWindow.nativeElement.style.display = 'none';
+        component.goToCongratulations();
+        expect(component.popUpWindow.nativeElement.style.display).toEqual('block');
     });
 });

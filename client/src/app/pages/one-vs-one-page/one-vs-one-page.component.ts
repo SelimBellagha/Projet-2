@@ -115,17 +115,7 @@ export class OneVsOnePageComponent implements OnInit, AfterViewInit {
             this.winGameAfterGiveUp();
         });
         this.socketService.on('getRealTime', (data: { realTime: number }) => {
-            const doubleDigits = 10;
-            const secondsInMinute = 60;
-            if (data.realTime < doubleDigits) {
-                this.newScore.time = '0:0' + String(data.realTime);
-            } else if (data.realTime < secondsInMinute && data.realTime > doubleDigits - 1) {
-                this.newScore.time = '0:' + String(data.realTime);
-            } else {
-                const minutes = Math.floor(data.realTime / secondsInMinute);
-                const seconds = data.realTime - minutes * secondsInMinute;
-                this.newScore.time = String(minutes) + ':' + String(seconds);
-            }
+            this.newScore.time = this.convertTimeToString(data.realTime);
             this.historyService.history.namePlayer1 = this.hostName;
             this.historyService.history.namePlayer2 = this.guestName;
         });
@@ -139,6 +129,15 @@ export class OneVsOnePageComponent implements OnInit, AfterViewInit {
                 this.historyService.history.winnerName = this.hostName;
             }
         });
+    }
+
+    convertTimeToString(seconds: number): string {
+        const secondsInMinute = 60;
+        const doubleDigits = 10;
+        const minutes: number = Math.floor(seconds / secondsInMinute);
+        const remainingSeconds: number = seconds % secondsInMinute;
+        const formattedSeconds: string = remainingSeconds < doubleDigits ? `0${remainingSeconds}` : `${remainingSeconds}`;
+        return `${minutes}:${formattedSeconds}`;
     }
 
     stopWatch() {

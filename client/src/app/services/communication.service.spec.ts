@@ -1,9 +1,10 @@
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
-import { GameData } from '@app/interfaces/game.interface';
+import { GameHistory } from '@app/interfaces/game-history';
+import { GameData, TopScore } from '@app/interfaces/game.interface';
 import { CommunicationService } from '@app/services/communication.service';
-import { Message } from '@common/message';
 import { Constants } from '@common/constants';
+import { Message } from '@common/message';
 import { of } from 'rxjs';
 
 describe('CommunicationService', () => {
@@ -142,6 +143,114 @@ describe('CommunicationService', () => {
         const req = httpMock.expectOne(`${baseUrl}/example`);
         expect(req.request.method).toBe('GET');
         req.error(new ProgressEvent('Random error occurred'));
+    });
+
+    it('should return expected scores for getAllScores', () => {
+        const mockScoreData: TopScore[] = [
+            {
+                position: '1',
+                gameId: 'test1',
+                gameType: 'test1',
+                time: '0:20',
+                playerName: 'test1',
+            },
+            {
+                position: '2',
+                gameId: 'test2',
+                gameType: 'test2',
+                time: '0:40',
+                playerName: 'test2',
+            },
+            {
+                position: '3',
+                gameId: 'test3',
+                gameType: 'test3',
+                time: '0:55',
+                playerName: 'test3',
+            },
+        ];
+
+        service.getAllScores().subscribe((scores) => {
+            expect(scores.length).toBe(3);
+            expect(scores).toEqual(mockScoreData);
+        });
+
+        const req = httpMock.expectOne(`${baseUrl}/scores`);
+        expect(req.request.method).toBe('GET');
+        req.flush(mockScoreData);
+    });
+
+    it('should add new score to server', () => {
+        const mockNewScore: TopScore = {
+            position: 'test',
+            gameId: 'test',
+            gameType: 'test',
+            time: '0:10',
+            playerName: 'test',
+        };
+        service.addScore(mockNewScore).subscribe();
+
+        const req = httpMock.expectOne(`${baseUrl}/scores`);
+        expect(req.request.method).toBe('POST');
+        expect(req.request.body).toEqual(mockNewScore);
+        req.flush(mockNewScore);
+    });
+
+    it('should return expected histories for getGameHistory', () => {
+        const mockHistoryData: GameHistory[] = [
+            {
+                startDate: 'test1',
+                gameLength: 'test1',
+                gameMode: 'test1',
+                namePlayer1: 'test1',
+                namePlayer2: 'test1',
+                winnerName: 'test1',
+                nameAbandon: 'test1',
+            },
+            {
+                startDate: 'test2',
+                gameLength: 'test2',
+                gameMode: 'test2',
+                namePlayer1: 'test2',
+                namePlayer2: 'test2',
+                winnerName: 'test2',
+                nameAbandon: 'test2',
+            },
+        ];
+
+        service.getGameHistory().subscribe((history) => {
+            expect(history.length).toBe(2);
+            expect(history).toEqual(mockHistoryData);
+        });
+
+        const req = httpMock.expectOne(`${baseUrl}/history`);
+        expect(req.request.method).toBe('GET');
+        req.flush(mockHistoryData);
+    });
+
+    it('should add new score to server', () => {
+        const mockNewHistory: GameHistory = {
+            startDate: 'test1',
+            gameLength: 'test1',
+            gameMode: 'test1',
+            namePlayer1: 'test1',
+            namePlayer2: 'test1',
+            winnerName: 'test1',
+            nameAbandon: 'test1',
+        };
+        service.addNewGameHistory(mockNewHistory);
+
+        const req = httpMock.expectOne(`${baseUrl}/history`);
+        expect(req.request.method).toBe('POST');
+        expect(req.request.body).toEqual(mockNewHistory);
+        req.flush(mockNewHistory);
+    });
+
+    it('should delete history from server', () => {
+        service.deleteGameHistory();
+        const req = httpMock.expectOne(`${baseUrl}/history`);
+        expect(req.request.method).toBe('DELETE');
+        req.flush({});
     });
 
     it('sendConstants() should succeed (HttpClient called once) ', () => {

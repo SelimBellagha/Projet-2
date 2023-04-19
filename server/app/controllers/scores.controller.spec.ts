@@ -74,24 +74,13 @@ describe('ScoresController', () => {
     });
 
     it('should store score on valid post request to /scores', async () => {
-        scoreService.addScore.withArgs(newScore).resolves(true);
-        return supertest(expressApp)
-            .post('/api/scores/')
-            .send(newScore)
-            .expect(HTTP_STATUS_CREATED)
-            .then((response) => {
-                expect(response.body).to.deep.equal(true);
-            });
-    });
-
-    it('should store score on valid post request to /scores', async () => {
-        scoreService.addScore.withArgs(newScore).resolves(false);
+        scoreService.addScore.withArgs(newScore).resolves({ isAdded: true, positionIndex: '1' });
         return supertest(expressApp)
             .post('/api/scores/')
             .send(newScore)
             .expect(HTTP_STATUS_OK)
             .then((response) => {
-                expect(response.body).to.deep.equal(false);
+                expect(response.body).to.deep.equal({ isAdded: true, positionIndex: '1' });
             });
     });
 
