@@ -63,7 +63,7 @@ describe('OneVsOneLimitedTimeComponent', () => {
         socketServiceMock = new SocketClientService();
         socketServiceMock.socket = socketHelper as unknown as Socket;
         displayGamesSpy = jasmine.createSpyObj('DisplayGameService', ['convertDifficulty', 'loadAllGames', 'addHistory']);
-        limitedTimeLobbySpy = jasmine.createSpyObj('LimitedTimeLobbyService', { roomId: 1 });
+        limitedTimeLobbySpy = jasmine.createSpyObj('LimitedTimeLobbyService', ['getTimeInfo'], { roomId: 1 });
         gameManagerSpy = jasmine.createSpyObj(
             'gameManagerSpy',
             ['putImages', 'initializeGame', 'initializeLimitedGame', 'playWinAudio', 'onPositionClicked'],
@@ -101,10 +101,12 @@ describe('OneVsOneLimitedTimeComponent', () => {
         expect(component.secondPlayerName).toBe(player2.playerName);
     });
 
-    it('should start timer and call loadAllGames on initialization', () => {
+    it('should start timer and call loadAllGames on initialization', async () => {
         const timerSpy = spyOn(component, 'startTimer');
-        component.ngOnInit();
-        expect(timerSpy).toHaveBeenCalled();
+        const time = 30;
+        limitedTimeLobbySpy.initialTime = time;
+        await component.ngOnInit();
+        expect(timerSpy).toHaveBeenCalledWith(time);
         expect(displayGamesSpy.loadAllGames).toHaveBeenCalled();
     });
 
