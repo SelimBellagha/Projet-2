@@ -151,11 +151,6 @@ export class SoloLimitedTimeComponent implements OnInit, AfterViewInit {
         this.historyService.history.nameAbandon = this.username;
         this.historyService.history.gameLength = this.historyService.findGameLength(this.startDate);
         this.displayService.addHistory(this.historyService.history);
-        this.popUpWindow.nativeElement.style.display = 'none';
-        this.router.navigate(['home']);
-    }
-
-    goToCongratulations() {
-        this.popUpWindow.nativeElement.style.display = 'block';
+        this.goToGiveup();
     }
 }
