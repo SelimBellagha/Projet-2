@@ -9,13 +9,11 @@ import { GameManagerService } from '@app/services/game-manager.service';
     styleUrls: ['./cheat.component.scss'],
 })
 export class CheatComponent {
+    toggle = false;
+    status = 'Activer Triche';
     constructor(private gameManager: GameManagerService, private mouseFocus: MouseFocusService, private actionSaver: ActionSaverService) {}
 
     // eslint-disable-next-line @typescript-eslint/member-ordering
-
-    toggle = false;
-    status = 'Activer Triche';
-
 
     @HostListener('document:keyup', ['$event'])
     onKeyUp(event: KeyboardEvent) {

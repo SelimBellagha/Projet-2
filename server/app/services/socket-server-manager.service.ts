@@ -98,11 +98,11 @@ export class SocketServerManager {
                 this.sio.to(lobby?.secondPlayer.socketId).emit('receiveSystemMessage', systemMessage + playerName);
             });
 
-            // fontionatester
             socket.on('globalMessage', async (newScore: TopScore) => {
                 const now: Date = new Date();
                 const timeString: string = now.toTimeString().slice(0, EIGHT);
-                const message = `${timeString} - ${newScore.playerName} obtient la ${newScore.position} place dans les meilleurs temps du jeu ${newScore.gameType}`;
+                const message = `${timeString} - ${newScore.playerName} obtient la ${newScore.position} place dans 
+                les meilleurs temps du jeu ${newScore.gameType}`;
                 this.sio.emit('receiveSystemMessage', message);
             });
 
