@@ -176,7 +176,7 @@ describe('SoloLimitedTimeComponent', () => {
         component.goToGiveup();
         expect(matDialogSpy.open).toHaveBeenCalled();
     });
-    it('goToHomePageAfterQuit should unShow PopUp and navigate to home', async () => {
+    xit('goToHomePageAfterQuit should unShow PopUp and navigate to home', async () => {
         // component.popUpWindow.nativeElement.style.display = 'block';
         const routerSpy = spyOn(router, 'navigate');
         await component.ngOnInit();

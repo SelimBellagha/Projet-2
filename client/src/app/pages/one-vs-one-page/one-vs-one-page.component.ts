@@ -176,7 +176,7 @@ export class OneVsOnePageComponent implements OnInit, AfterViewInit {
     winGameAfterGiveUp(): void {
         this.stopStopWatch();
         this.gameManager.playWinAudio();
-        // this.popUpWindowAbandonWin.nativeElement.style.display = 'block';
+        this.dialogRef.open(VictoryComponent);
     }
 
     winGame(): void {
@@ -194,7 +194,6 @@ export class OneVsOnePageComponent implements OnInit, AfterViewInit {
     goToHomePageAfterAbandon() {
         this.historyService.history.gameLength = this.historyService.findGameLength(this.startDate);
         this.displayService.addHistory(this.historyService.history);
-        // this.popUpWindowGiveUp.nativeElement.style.display = 'none';
         this.router.navigate(['home']);
     }
     goToHomePageWinner() {
@@ -205,7 +204,6 @@ export class OneVsOnePageComponent implements OnInit, AfterViewInit {
     }
 
     goToHomePageAbandonWinner() {
-        // this.popUpWindowAbandonWin.nativeElement.style.display = 'none';
         this.router.navigate(['home']);
     }
 

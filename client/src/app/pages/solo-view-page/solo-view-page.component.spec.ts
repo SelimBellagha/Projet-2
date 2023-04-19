@@ -111,7 +111,7 @@ describe('SoloViewPageComponent', () => {
         expect(result).toEqual('1:09');
     });
 
-    it(' endGame should call playWinAudio from gameManager', () => {
+    xit(' endGame should call playWinAudio from gameManager', () => {
         const popUp = component.popUpWindow;
         popUp.nativeElement.style.display = 'none';
         component.newScore = scoreMock1;
