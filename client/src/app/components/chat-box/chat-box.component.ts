@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-magic-numbers */
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 
 import { ActivatedRoute } from '@angular/router';
 import { MouseFocusService } from '@app/mouse-focus.service';
@@ -13,7 +13,7 @@ import { Message } from '@common/chatMessage';
     templateUrl: './chat-box.component.html',
     styleUrls: ['./chat-box.component.scss'],
 })
-export class ChatBoxComponent implements OnInit {
+export class ChatBoxComponent implements OnInit, AfterViewInit {
     @ViewChild('chatInput') chatInput: ElementRef;
 
     gameId: string;
