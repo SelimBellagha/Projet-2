@@ -9,22 +9,22 @@ describe('TimerManager', () => {
     });
 
     it('should set the gameTime and start the timer', () => {
+        const secondesWait = 1000;
         const minute = 60;
         timerManager.startTimer(minute);
         expect(timerManager.getTimeGame()).to.equal(minute);
-        // We need to wait for the timer to tick
         setTimeout(() => {
-            expect(timerManager.minutes).to.eql(1);
-            expect(timerManager.secondes).to.equal(58);
-        }, 2000);
+            expect(timerManager.minutes).to.eql(0);
+            expect(timerManager.secondes).to.equal(minute - 2);
+        }, secondesWait * 2);
     });
 
     it('should start the stopwatch', () => {
         timerManager.startStopWatch();
-        // We need to wait for the stopwatch to tick
+        const secondesWait = 1000;
         setTimeout(() => {
             expect(timerManager.minutes).to.be.above(0);
             expect(timerManager.secondes).to.be.above(0);
-        }, 2000);
+        }, secondesWait * 2);
     });
 });
