@@ -1,0 +1,31 @@
+{
+    "gameHistory": [
+        {
+            "startDate": "4/15/2023, 10:35:55 PM",
+            "gameLength": "0:03",
+            "gameMode": "Classique",
+            "namePlayer1": "Selim",
+            "namePlayer2": "Deb",
+            "winnerName": "Selim",
+            "nameAbandon": "Deb"
+        },
+        {
+            "startDate": "4/15/2023, 10:36:32 PM",
+            "gameLength": "0:11",
+            "gameMode": "Classique",
+            "namePlayer1": "Joe",
+            "namePlayer2": "Asimina",
+            "winnerName": "Joe",
+            "nameAbandon": ""
+        },
+        {
+            "startDate": "4/15/2023, 10:37:06 PM",
+            "gameLength": "0:18",
+            "gameMode": "Classique",
+            "namePlayer1": "Asimina",
+            "namePlayer2": "",
+            "winnerName": "",
+            "nameAbandon": ""
+        }
+    ]
+}

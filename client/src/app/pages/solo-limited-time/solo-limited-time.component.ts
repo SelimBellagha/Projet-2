@@ -7,8 +7,10 @@ import { VictoryComponent } from '@app/components/victory/victory.component';
 import { Vec2 } from '@app/interfaces/vec2';
 import { DisplayGameService } from '@app/services/display-game.service';
 import { GameManagerService } from '@app/services/game-manager.service';
+import { HistoryService } from '@app/services/history.service';
 import { LimitedTimeLobbyService } from '@app/services/limited-time-lobby.service';
 import { LoginFormService } from '@app/services/login-form.service';
+import { SocketClientService } from '@app/services/socket-client-service.service';
 
 @Component({
     selector: 'app-solo-limited-time',
@@ -27,6 +29,7 @@ export class SoloLimitedTimeComponent implements OnInit, AfterViewInit {
     minutes: number = 0;
     secondes: number = 0;
     intervalID: number;
+    startDate: Date;
 
     // eslint-disable-next-line max-params
     constructor(
@@ -35,9 +38,14 @@ export class SoloLimitedTimeComponent implements OnInit, AfterViewInit {
         private displayService: DisplayGameService,
         private gameManager: GameManagerService,
         private limitedTimeLobbyService: LimitedTimeLobbyService,
-    ) {}
+        private socketService: SocketClientService,
+        private historyService: HistoryService,
+    ) {
+        this.startDate = new Date();
+    }
 
     async ngOnInit() {
+        await this.limitedTimeLobbyService.getTimeInfo();
         if (!this.limitedTimeLobbyService.firstGame) {
             this.nbDifferencesFound = 0;
             await this.displayService.loadAllGames();
@@ -52,9 +60,17 @@ export class SoloLimitedTimeComponent implements OnInit, AfterViewInit {
         this.gameName = this.gameManager.gameData.name;
         this.difficulty = this.displayService.convertDifficulty(this.gameManager.gameData);
         this.gameManager.putImages();
-        // TODO changer time avec temps vue de config
-        const time = 30;
-        this.timer(time);
+        this.timer(this.limitedTimeLobbyService.initialTime);
+        this.socketService.send('startTimer', { gameTime: this.limitedTimeLobbyService.initialTime });
+        this.historyService.history = {
+            startDate: this.startDate.toLocaleString(),
+            gameLength: 'tempLength',
+            gameMode: 'Temps Limite',
+            namePlayer1: this.username,
+            namePlayer2: '',
+            winnerName: '',
+            nameAbandon: '',
+        };
     }
 
     timer(gameTime: number) {
@@ -69,6 +85,7 @@ export class SoloLimitedTimeComponent implements OnInit, AfterViewInit {
             this.gameTime = this.gameManager.gameTime;
             this.secondes = this.gameTime % max;
             this.minutes = Math.floor(this.gameTime / max);
+            this.socketService.send('getRealTime', {});
             if (this.minutes <= 0 && this.secondes <= 0) {
                 this.secondes = 0;
                 this.minutes = 0;
@@ -87,6 +104,8 @@ export class SoloLimitedTimeComponent implements OnInit, AfterViewInit {
     }
 
     endGame(): void {
+        this.historyService.history.gameLength = this.historyService.findGameLength(this.startDate);
+        this.displayService.addHistory(this.historyService.history);
         this.stopTimer();
         this.gameManager.playWinAudio();
         this.goToCongratulations();
@@ -98,6 +117,8 @@ export class SoloLimitedTimeComponent implements OnInit, AfterViewInit {
             if (await this.gameManager.onPositionClicked(mousePosition)) {
                 // Incremented le cpt de differences
                 this.nbDifferencesFound++;
+                this.socketService.send('addToTimer', { timeToAdd: this.limitedTimeLobbyService.timeBonus });
+                this.gameManager.gameTime += this.limitedTimeLobbyService.timeBonus;
                 await this.putNewGame();
                 if (this.nbDifferencesFound === this.gameManager.gameNumberMax) {
                     this.endGame();
@@ -123,5 +144,18 @@ export class SoloLimitedTimeComponent implements OnInit, AfterViewInit {
     timeOff() {
         this.stopTimer();
         this.dialogRef.open(TimeOffComponent);
+    }
+
+    goToHomePageAfterQuit() {
+        this.stopTimer();
+        this.historyService.history.nameAbandon = this.username;
+        this.historyService.history.gameLength = this.historyService.findGameLength(this.startDate);
+        this.displayService.addHistory(this.historyService.history);
+        this.popUpWindow.nativeElement.style.display = 'none';
+        this.router.navigate(['home']);
+    }
+
+    goToCongratulations() {
+        this.popUpWindow.nativeElement.style.display = 'block';
     }
 }

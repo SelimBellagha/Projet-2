@@ -1,12 +1,12 @@
 <body class="container">
-    <button class="quit-button" (click)="goToGiveup()">Abandonner la partie</button>
+    <button class="quit-button" (click)="goToHomePageAfterQuit()">Abandonner la partie</button>
 
     <div class="section">
         <div class="main-container">
             <h2 class="game-info">{{ gameName }} - {{ difficulty }}</h2>
             <p class="game-details">Mode Temps Limité</p>
             <p class="game-details">Trouvez une différence sur chaque paire d'images</p>
-            <button class="indice">Obtenir un indice</button>
+            <app-mode-indice></app-mode-indice>
             <app-cheat></app-cheat>
         </div>
 

@@ -1,1 +1,33 @@
-{"allGames":[{"id":"0","name":"Game1","originalImage":"","modifiedImage":"","nbDifferences":8,"differences":[[]],"isDifficult":true},{"id":"1","name":"Game2","originalImage":"","modifiedImage":"","nbDifferences":6,"differences":[[{"x":2,"y":2},{"x":3,"y":3}]],"isDifficult":false},{"id":"2","name":"Game3","originalImage":"","modifiedImage":"","nbDifferences":5,"differences":[[{"x":1,"y":2},{"x":1,"y":3}]],"isDifficult":false}]}
+{
+    "allGames": [
+        { "id": "0", "name": "Game1", "originalImage": "", "modifiedImage": "", "nbDifferences": 8, "differences": [[]], "isDifficult": true },
+        {
+            "id": "1",
+            "name": "Game2",
+            "originalImage": "",
+            "modifiedImage": "",
+            "nbDifferences": 6,
+            "differences": [
+                [
+                    { "x": 2, "y": 2 },
+                    { "x": 3, "y": 3 }
+                ]
+            ],
+            "isDifficult": false
+        },
+        {
+            "id": "2",
+            "name": "Game3",
+            "originalImage": "",
+            "modifiedImage": "",
+            "nbDifferences": 5,
+            "differences": [
+                [
+                    { "x": 1, "y": 2 },
+                    { "x": 1, "y": 3 }
+                ]
+            ],
+            "isDifficult": false
+        }
+    ]
+}

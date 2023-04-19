@@ -1,9 +1,9 @@
 import { GameData } from '@app/data/game.interface';
 import { expect } from 'chai';
+import * as fs from 'fs';
+import * as path from 'path';
 import { Container } from 'typedi';
 import { GameManager } from './game-manager.service';
-import * as path from 'path';
-import * as fs from 'fs';
 
 describe('Game service', () => {
     let gameService: GameManager;

@@ -9,6 +9,7 @@ import { Player } from '@app/interfaces/player';
 import { Vec2 } from '@app/interfaces/vec2';
 import { DisplayGameService } from '@app/services/display-game.service';
 import { GameManagerService } from '@app/services/game-manager.service';
+import { HistoryService } from '@app/services/history.service';
 import { LimitedTimeLobbyService } from '@app/services/limited-time-lobby.service';
 import { SocketClientService } from '@app/services/socket-client-service.service';
 
@@ -33,6 +34,8 @@ export class OneVsOneLimitedTimeComponent implements OnInit, AfterViewInit {
     nbDifferences: number;
     gameTime: number;
 
+    startDate: Date;
+
     // eslint-disable-next-line max-params
     constructor(
         private router: Router,
@@ -41,9 +44,13 @@ export class OneVsOneLimitedTimeComponent implements OnInit, AfterViewInit {
         private gameManager: GameManagerService,
         private socketService: SocketClientService,
         private limitedTimeLobbyService: LimitedTimeLobbyService,
-    ) {}
+        private historyService: HistoryService,
+    ) {
+        this.startDate = new Date();
+    }
 
     async ngOnInit() {
+        await this.limitedTimeLobbyService.getTimeInfo();
         this.socketService.on('getPlayers', (data: { firstPlayer: Player; secondPlayer: Player }) => {
             this.limitedTimeLobbyService.firstPlayer = data.firstPlayer;
             this.limitedTimeLobbyService.secondPlayer = data.secondPlayer;
@@ -51,9 +58,8 @@ export class OneVsOneLimitedTimeComponent implements OnInit, AfterViewInit {
             this.secondPlayerName = this.limitedTimeLobbyService.secondPlayer.playerName;
         });
         // TODO changer constante avec temps de vue de config
-        const time = 30;
-        this.startTimer(time);
         this.nbDifferencesFound = 0;
+        this.startTimer(this.limitedTimeLobbyService.initialTime);
         await this.displayService.loadAllGames();
         if (this.displayService.tempGames) {
             await this.gameManager.initializeLimitedGame(this.displayService.tempGames);
@@ -64,6 +70,15 @@ export class OneVsOneLimitedTimeComponent implements OnInit, AfterViewInit {
             this.gameManager.putImages();
         }
         this.socketService.send('gamesNumber', { gamesNumber: this.gameManager.limitedGameData.length, roomId: this.limitedTimeLobbyService.roomId });
+        this.historyService.history = {
+            startDate: this.startDate.toLocaleString(),
+            gameLength: 'tempLength',
+            gameMode: 'Temps Limite',
+            namePlayer1: this.firstPlayerName,
+            namePlayer2: this.secondPlayerName,
+            winnerName: '',
+            nameAbandon: '',
+        };
     }
 
     async ngAfterViewInit() {
@@ -71,6 +86,7 @@ export class OneVsOneLimitedTimeComponent implements OnInit, AfterViewInit {
         this.gameManager.originalImageCanvas = this.originalCanvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
         this.gameManager.putImages();
         this.socketService.on('LimitedDifferenceUpdate', async (data: { nbDifferences: number; newGame: number }) => {
+            this.gameManager.gameTime += this.limitedTimeLobbyService.timeBonus;
             this.nbDifferencesFound = data.nbDifferences;
             await this.gameManager.initializeGame(this.gameManager.limitedGameData[data.newGame]);
             this.gameManager.putImages();
@@ -125,6 +141,8 @@ export class OneVsOneLimitedTimeComponent implements OnInit, AfterViewInit {
     }
 
     endGame(): void {
+        this.historyService.history.gameLength = this.historyService.findGameLength(this.startDate);
+        this.displayService.addHistory(this.historyService.history);
         this.stopTimer();
         this.gameManager.playWinAudio();
         this.dialogRef.open(VictoryComponent);
@@ -151,6 +169,10 @@ export class OneVsOneLimitedTimeComponent implements OnInit, AfterViewInit {
             const mousePosition: Vec2 = { x: event.offsetX, y: event.offsetY };
             if (await this.gameManager.onPositionClicked(mousePosition)) {
                 this.socketService.send('limitedDifferenceFound', { roomId: this.limitedTimeLobbyService.roomId });
+                this.socketService.send('addToTimer', {
+                    timeToAdd: this.limitedTimeLobbyService.timeBonus,
+                    roomId: this.limitedTimeLobbyService.roomId,
+                });
             }
         }
     }

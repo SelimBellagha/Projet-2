@@ -28,25 +28,25 @@ export class ModeIndiceComponent {
     // coordinates for the cadrans
     a: Vec2 = { x: 0, y: 240 };
 
-    c: Vec2 = { x: 320, y: 0 };
+    c: Vec2 = { x: 250, y: 0 };
 
-    b: Vec2 = { x: 640, y: 240 };
+    b: Vec2 = { x: 500, y: 240 };
 
-    d: Vec2 = { x: 320, y: 480 };
+    d: Vec2 = { x: 250, y: 480 };
 
     e: Vec2 = { x: 0, y: 120 };
 
-    f: Vec2 = { x: 320, y: 120 };
+    f: Vec2 = { x: 250, y: 120 };
 
-    g: Vec2 = { x: 640, y: 120 };
+    g: Vec2 = { x: 500, y: 120 };
 
     h: Vec2 = { x: 0, y: 360 };
 
-    i: Vec2 = { x: 320, y: 360 };
+    i: Vec2 = { x: 250, y: 360 };
 
-    j: Vec2 = { x: 640, y: 360 };
+    j: Vec2 = { x: 500, y: 360 };
 
-    centre: Vec2 = { x: 320, y: 240 };
+    centre: Vec2 = { x: 250, y: 240 };
 
     status = '3 Indices Inactive';
 
@@ -69,6 +69,7 @@ export class ModeIndiceComponent {
                         this.gameManager.hintStateChanger();
                         this.status = this.hints[this.counter];
                         this.counter++;
+                        this.gameManager.timePenalty();
                         this.findCadran1(this.setUpCoordinates());
                         break;
                     case 1:
@@ -76,6 +77,7 @@ export class ModeIndiceComponent {
                         this.gameManager.hintStateChanger();
                         this.status = this.hints[this.counter];
                         this.counter++;
+                        this.gameManager.timePenalty();
                         this.findCadran2(this.setUpCoordinates());
                         break;
                     case 2:
@@ -83,6 +85,7 @@ export class ModeIndiceComponent {
                         this.gameManager.hintStateChanger();
                         this.status = this.hints[this.counter];
                         this.counter++;
+                        this.gameManager.timePenalty();
                         this.gameManager.giveHint3(this.setUpCoordinates3());
                         break;
                 }
@@ -116,10 +119,10 @@ export class ModeIndiceComponent {
         return this.result;
     }
     findCadran1(coordinate: Vec2): number {
-        if (coordinate.y > this.centre.y) {
+        if (coordinate.y >= this.centre.y) {
             this.yCadran = 1;
         }
-        if (coordinate.x > this.centre.x) {
+        if (coordinate.x >= this.centre.x) {
             this.xCadran = 1;
         }
 
@@ -148,12 +151,12 @@ export class ModeIndiceComponent {
         return 0;
     }
     findCadran2(coordinate: Vec2): number {
-        if (coordinate.y > this.centre.y) {
+        if (coordinate.y >= this.centre.y) {
             this.yCadran = 1;
         } else {
             this.yCadran = 0;
         }
-        if (coordinate.x > this.centre.x) {
+        if (coordinate.x >= this.centre.x) {
             this.xCadran = 1;
         } else {
             this.xCadran = 0;
@@ -161,7 +164,7 @@ export class ModeIndiceComponent {
 
         switch (multiplicateur * this.yCadran + this.xCadran) {
             case cadran1:
-                if (coordinate.y < this.centre.y / 2) {
+                if (coordinate.y <= this.centre.y / 2) {
                     this.yCadran = 1;
                     this.gameManager.drawLine2(this.e, this.f);
                     this.gameManager.drawLine2(this.f, this.c);
@@ -174,7 +177,7 @@ export class ModeIndiceComponent {
                 }
 
             case cadran2:
-                if (coordinate.y < this.centre.y / 2) {
+                if (coordinate.y <= this.centre.y / 2) {
                     this.yCadran = 1;
                     this.gameManager.drawLine2(this.f, this.g);
                     this.gameManager.drawLine2(this.f, this.c);
@@ -187,7 +190,7 @@ export class ModeIndiceComponent {
                 }
 
             case cadran3:
-                if (coordinate.y > (this.centre.y * 3) / 2) {
+                if (coordinate.y <= (this.centre.y * 3) / 2) {
                     this.yCadran = 1;
                     this.gameManager.drawLine2(this.h, this.i);
                     this.gameManager.drawLine2(this.i, this.centre);
@@ -200,9 +203,9 @@ export class ModeIndiceComponent {
                 }
 
             case cadran4:
-                if (coordinate.y > (this.centre.y * 3) / 2) {
+                if (coordinate.y <= (this.centre.y * 3) / 2) {
                     this.yCadran = 1;
-                    this.gameManager.drawLine2(this.h, this.j);
+                    this.gameManager.drawLine2(this.h, this.i);
                     this.gameManager.drawLine2(this.i, this.centre);
                     return 1;
                 } else {

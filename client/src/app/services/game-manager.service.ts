@@ -5,6 +5,7 @@ import { Vec2 } from '@app/interfaces/vec2';
 import { Verification } from '@app/interfaces/verification';
 import { DifferenceVerificationService } from './difference-verification.service';
 import { DEFAULT_HEIGHT, DEFAULT_WIDTH } from './draw.service';
+import { LimitedTimeLobbyService } from './limited-time-lobby.service';
 import { SocketClientService } from './socket-client-service.service';
 
 const PIXEL_SIZE = 4;
@@ -13,8 +14,8 @@ const ONE_SECOND = 1000;
 const EIGHT = 8;
 const QUART_SECOND = 250;
 const pointY = 240;
-const pointX = 320;
-const indicePixel = 20;
+const pointX = 250;
+
 @Injectable({
     providedIn: 'root',
 })
@@ -33,7 +34,13 @@ export class GameManagerService {
     foundDifferenceCheat: boolean = false;
     gameTime: number = 0;
 
-    constructor(private differenceVerification: DifferenceVerificationService, private socketService: SocketClientService, private router: Router) {}
+    // eslint-disable-next-line max-params
+    constructor(
+        private differenceVerification: DifferenceVerificationService,
+        private socketService: SocketClientService,
+        private router: Router,
+        private limitedTimeLobby: LimitedTimeLobbyService,
+    ) {}
 
     initializeGame(gameData: GameData) {
         if (gameData) {
@@ -235,8 +242,16 @@ export class GameManagerService {
     }
 
     giveHint3(coordinate: Vec2): void {
-        this.originalImageCanvas.font = '40px Arial';
-        this.originalImageCanvas.strokeText('Click Here', coordinate.x + indicePixel, coordinate.y + indicePixel);
+        this.originalImageCanvas.font = '30px Arial';
+        this.originalImageCanvas.strokeText('Click Here', coordinate.x, coordinate.y);
+    }
+
+    timePenalty(): void {
+        if (this.router.url === '/soloLimitedTime') {
+            this.gameTime -= this.limitedTimeLobby.penaltyTime;
+        } else if (this.router.url === '/soloView') {
+            this.gameTime += this.limitedTimeLobby.penaltyTime;
+        }
     }
 
     replacePixels(pixels: Vec2[]): void {

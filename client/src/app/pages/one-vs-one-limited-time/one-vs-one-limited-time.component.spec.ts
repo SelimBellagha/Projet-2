@@ -66,8 +66,8 @@ describe('OneVsOneLimitedTimeComponent', () => {
         socketHelper = new SocketTestHelper();
         socketServiceMock = new SocketClientService();
         socketServiceMock.socket = socketHelper as unknown as Socket;
-        displayGamesSpy = jasmine.createSpyObj('DisplayGameService', ['convertDifficulty', 'loadAllGames']);
-        limitedTimeLobbySpy = jasmine.createSpyObj('LimitedTimeLobbyService', { roomId: 1 });
+        displayGamesSpy = jasmine.createSpyObj('DisplayGameService', ['convertDifficulty', 'loadAllGames', 'addHistory']);
+        limitedTimeLobbySpy = jasmine.createSpyObj('LimitedTimeLobbyService', ['getTimeInfo'], { roomId: 1 });
         gameManagerSpy = jasmine.createSpyObj(
             'gameManagerSpy',
             ['putImages', 'initializeGame', 'initializeLimitedGame', 'playWinAudio', 'onPositionClicked'],
@@ -106,10 +106,12 @@ describe('OneVsOneLimitedTimeComponent', () => {
         expect(component.secondPlayerName).toBe(player2.playerName);
     });
 
-    it('should start timer and call loadAllGames on initialization', () => {
+    it('should start timer and call loadAllGames on initialization', async () => {
         const timerSpy = spyOn(component, 'startTimer');
-        component.ngOnInit();
-        expect(timerSpy).toHaveBeenCalled();
+        const time = 30;
+        limitedTimeLobbySpy.initialTime = time;
+        await component.ngOnInit();
+        expect(timerSpy).toHaveBeenCalledWith(time);
         expect(displayGamesSpy.loadAllGames).toHaveBeenCalled();
     });
 
@@ -122,10 +124,10 @@ describe('OneVsOneLimitedTimeComponent', () => {
 
     it('on initialization, if tempGames, should set game infos', async () => {
         displayGamesSpy.tempGames = [gameMock1];
-        displayGamesSpy.convertDifficulty.and.returnValue('Niveau: difficile');
+        displayGamesSpy.convertDifficulty.and.returnValue('difficile');
         await component.ngOnInit();
         expect(component.gameName).toBe('mock');
-        expect(component.difficulty).toBe('Niveau: difficile');
+        expect(component.difficulty).toBe('difficile');
         expect(gameManagerSpy.putImages).toHaveBeenCalled();
     });
 
@@ -199,6 +201,7 @@ describe('OneVsOneLimitedTimeComponent', () => {
         const stopTimerSpy = spyOn(component, 'stopTimer');
         component.endGame();
         expect(stopTimerSpy).toHaveBeenCalled();
+        expect(displayGamesSpy.addHistory).toHaveBeenCalled();
         expect(gameManagerSpy.playWinAudio).toHaveBeenCalled();
     });
 

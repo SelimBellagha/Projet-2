@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { TopScore } from '@app/interfaces/game.interface';
 import { DisplayGameService } from '@app/services/display-game.service';
 import { LobbyService } from '@app/services/lobby.service';
 import { SocketClientService } from '@app/services/socket-client-service.service';
@@ -29,6 +30,8 @@ export class SelectionPageComponentComponent implements OnInit {
     marge: number = display;
     games: Game[];
     gamesDisplayed: Game[];
+    soloDefault: TopScore[];
+    oneVOneDefault: TopScore[];
 
     // eslint-disable-next-line max-params
     constructor(
