@@ -1,4 +1,6 @@
+/* eslint-disable max-classes-per-file */
 import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { Component } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -20,7 +22,16 @@ class SocketClientServiceMock extends SocketClientService {
     // eslint-disable-next-line @typescript-eslint/no-empty-function
     override connect() {}
 }
-
+@Component({
+    selector: 'app-chat-box',
+    template: '',
+})
+class MockChatComponent {}
+@Component({
+    selector: 'app-cheat',
+    template: '',
+})
+class MockCheatComponent {}
 describe('OneVsOnePageComponent', () => {
     let component: OneVsOnePageComponent;
     let fixture: ComponentFixture<OneVsOnePageComponent>;
@@ -60,7 +71,7 @@ describe('OneVsOnePageComponent', () => {
         socketServiceMock.socket = socketHelper as unknown as Socket;
 
         await TestBed.configureTestingModule({
-            declarations: [OneVsOnePageComponent],
+            declarations: [OneVsOnePageComponent, MockChatComponent, MockCheatComponent],
             imports: [RouterTestingModule, HttpClientTestingModule],
             providers: [
                 { provide: SocketClientService, useValue: socketServiceMock },

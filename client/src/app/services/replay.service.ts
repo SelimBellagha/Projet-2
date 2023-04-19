@@ -34,7 +34,6 @@ export class ReplayService {
     setCurrentSpeed(speed: number): void {
         this.replaySpeed = speed;
         this.gameManager.replaySpeed = speed;
-        // if is playing?
         clearInterval(this.timerId);
         this.startTimer(this.replaySpeed);
     }
