@@ -8,23 +8,25 @@ describe('TimerManager', () => {
         timerManager = new TimerManager();
     });
 
-    xit('should set the gameTime and start the timer', () => {
-        const secondesWait = 1000;
-        const minute = 60;
-        timerManager.startTimer(minute);
-        expect(timerManager.getTimeGame()).to.equal(minute);
+    it('should set the gameTime and start the timer', (done) => {
+        const secondesWait = 1050;
+        const timeTest = 60;
+        timerManager.startTimer(timeTest);
+        expect(timerManager.getTimeGame()).to.equal(timeTest);
         setTimeout(() => {
             expect(timerManager.minutes).to.eql(0);
-            expect(timerManager.secondes).to.equal(minute - 2);
+            expect(timerManager.secondes).to.equal(timeTest - 2);
+            done();
         }, secondesWait * 2);
     });
 
-    xit('should start the stopwatch', () => {
+    it('should start the stopwatch', (done) => {
         timerManager.startStopWatch();
-        const secondesWait = 1000;
+        const secondesWait = 1050;
         setTimeout(() => {
-            expect(timerManager.minutes).to.be.above(0);
-            expect(timerManager.secondes).to.be.above(0);
+            expect(timerManager.minutes).to.be.eql(0);
+            expect(timerManager.secondes).to.be.eql(2);
+            done();
         }, secondesWait * 2);
     });
 });
