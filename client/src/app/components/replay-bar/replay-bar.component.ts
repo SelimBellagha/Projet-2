@@ -22,7 +22,7 @@ export class ReplayBarComponent implements AfterViewInit {
     }
 
     onPause(): void {
-        this.temp  = !this.pause;
+        this.temp = !this.pause;
         this.pause = this.temp;
         this.replayManager.pauseReplay();
     }

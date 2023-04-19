@@ -1,8 +1,8 @@
 <div class="buttons">
     <button class="tool-button" (click)="onPause()">
-        <img class="tool-icons" *ngIf="this.pause == true" src="./assets/images/play-button.png" alt="pause-icon"/>
+        <img class="tool-icons" *ngIf="this.pause" src="./assets/images/play-button.png" alt="pause-icon"/>
 
-        <img class="tool-icons" *ngIf="this.pause == false"src="./assets/images/video-pause-button.png" alt="pause-icon"/>
+        <img class="tool-icons" *ngIf="this.pause"src="./assets/images/video-pause-button.png" alt="pause-icon"/>
         <div class="icon-description">
             <p class="note">Pause/Continuer</p>
         </div>
