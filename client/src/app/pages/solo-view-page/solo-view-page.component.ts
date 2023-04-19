@@ -1,6 +1,8 @@
 import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { MouseButton } from '@app/components/play-area/play-area.component';
+import { VictoryComponent } from '@app/components/victory/victory.component';
 import { Vec2 } from '@app/interfaces/vec2';
 import { DisplayGameService } from '@app/services/display-game.service';
 import { GameManagerService } from '@app/services/game-manager.service';
@@ -15,7 +17,6 @@ import { SocketClientService } from '@app/services/socket-client-service.service
 export class SoloViewPageComponent implements OnInit, AfterViewInit {
     @ViewChild('modifiedImage') modifiedCanvas: ElementRef<HTMLCanvasElement>;
     @ViewChild('originalImage') originalCanvas: ElementRef<HTMLCanvasElement>;
-    @ViewChild('popUpWindow') popUpWindow: ElementRef<HTMLDivElement>;
     username: string;
     gameName: string;
     difficulty: string;
@@ -33,6 +34,7 @@ export class SoloViewPageComponent implements OnInit, AfterViewInit {
         private displayService: DisplayGameService,
         private gameManager: GameManagerService,
         private socketService: SocketClientService,
+        private dialogRef: MatDialog,
     ) {}
 
     ngOnInit() {
@@ -80,7 +82,7 @@ export class SoloViewPageComponent implements OnInit, AfterViewInit {
     endGame(): void {
         this.stopStopWatch();
         this.gameManager.playWinAudio();
-        this.popUpWindow.nativeElement.style.display = 'block';
+        this.goToCongratulations();
     }
 
     async onClick(event: MouseEvent): Promise<void> {
@@ -97,14 +99,11 @@ export class SoloViewPageComponent implements OnInit, AfterViewInit {
             }
         }
     }
-    goToHomePage() {
-        this.popUpWindow.nativeElement.style.display = 'none';
-        this.router.navigate(['home']);
-    }
 
     goToCongratulations() {
-        this.popUpWindow.nativeElement.style.display = 'block';
+        this.dialogRef.open(VictoryComponent);
     }
+
     returnSelectionPage(): void {
         this.stopStopWatch();
         this.router.navigate(['/gameSelection']);

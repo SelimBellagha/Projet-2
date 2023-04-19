@@ -1,6 +1,9 @@
 import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
+import { GiveUpComponent } from '@app/components/give-up/give-up.component';
 import { MouseButton } from '@app/components/play-area/play-area.component';
+import { VictoryComponent } from '@app/components/victory/victory.component';
 import { Vec2 } from '@app/interfaces/vec2';
 import { DisplayGameService } from '@app/services/display-game.service';
 import { GameManagerService } from '@app/services/game-manager.service';
@@ -18,7 +21,6 @@ export class OneVsOnePageComponent implements OnInit, AfterViewInit {
     @ViewChild('originalImage') originalCanvas: ElementRef<HTMLCanvasElement>;
     @ViewChild('popUpWindowWin') popUpWindowWin: ElementRef<HTMLDivElement>;
     @ViewChild('popUpWindowLose') popUpWindowLose: ElementRef<HTMLDivElement>;
-    @ViewChild('popUpWindowGiveUp') popUpWindowGiveUp: ElementRef<HTMLDivElement>;
     myUsername: string;
     opponentUsername: string;
     hostName: string;
@@ -38,6 +40,7 @@ export class OneVsOnePageComponent implements OnInit, AfterViewInit {
     // eslint-disable-next-line max-params
     constructor(
         private router: Router,
+        private dialogRef: MatDialog,
         private loginService: LoginFormService,
         private displayService: DisplayGameService,
         private gameManager: GameManagerService,
@@ -124,11 +127,10 @@ export class OneVsOnePageComponent implements OnInit, AfterViewInit {
     winGame(): void {
         this.stopStopWatch();
         this.gameManager.playWinAudio();
-        this.popUpWindowWin.nativeElement.style.display = 'block';
+        this.dialogRef.open(VictoryComponent);
     }
+
     goToHomePage() {
-        this.popUpWindowWin.nativeElement.style.display = 'none';
-        this.popUpWindowLose.nativeElement.style.display = 'none';
         this.router.navigate(['home']);
     }
 
@@ -139,18 +141,9 @@ export class OneVsOnePageComponent implements OnInit, AfterViewInit {
     }
 
     goToGiveUp() {
-        this.popUpWindowGiveUp.nativeElement.style.display = 'block';
+        this.dialogRef.open(GiveUpComponent);
     }
 
-    goToStay() {
-        this.popUpWindowGiveUp.nativeElement.style.display = 'none';
-    }
-
-    returnSelectionPage(): void {
-        this.router.navigate(['/gameSelection']);
-    }
-
-    /// ////A adapter selon les joueurs
     async onClick(event: MouseEvent): Promise<void> {
         if (event.button === MouseButton.Left) {
             const mousePosition: Vec2 = { x: event.offsetX, y: event.offsetY };

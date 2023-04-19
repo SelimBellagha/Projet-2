@@ -1,6 +1,10 @@
 import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
+import { GiveUpComponent } from '@app/components/give-up/give-up.component';
 import { MouseButton } from '@app/components/play-area/play-area.component';
+import { TimeOffComponent } from '@app/components/time-off/time-off.component';
+import { VictoryComponent } from '@app/components/victory/victory.component';
 import { Player } from '@app/interfaces/player';
 import { Vec2 } from '@app/interfaces/vec2';
 import { DisplayGameService } from '@app/services/display-game.service';
@@ -16,8 +20,6 @@ import { SocketClientService } from '@app/services/socket-client-service.service
 export class OneVsOneLimitedTimeComponent implements OnInit, AfterViewInit {
     @ViewChild('modifiedImage') modifiedCanvas: ElementRef<HTMLCanvasElement>;
     @ViewChild('originalImage') originalCanvas: ElementRef<HTMLCanvasElement>;
-    @ViewChild('popUpWindow') popUpWindow: ElementRef<HTMLDivElement>;
-    @ViewChild('popUpWindowGiveUp') popUpWindowGiveUp: ElementRef<HTMLDivElement>;
     myUsername: string;
     opponentUsername: string;
     firstPlayerName: string;
@@ -34,6 +36,7 @@ export class OneVsOneLimitedTimeComponent implements OnInit, AfterViewInit {
     // eslint-disable-next-line max-params
     constructor(
         private router: Router,
+        private dialogRef: MatDialog,
         private displayService: DisplayGameService,
         private gameManager: GameManagerService,
         private socketService: SocketClientService,
@@ -103,7 +106,7 @@ export class OneVsOneLimitedTimeComponent implements OnInit, AfterViewInit {
             if (this.minutes <= 0 && this.secondes <= 0) {
                 this.secondes = 0;
                 this.minutes = 0;
-                this.endGame();
+                this.timeOff();
             }
         }, timerInterval);
     }
@@ -116,14 +119,15 @@ export class OneVsOneLimitedTimeComponent implements OnInit, AfterViewInit {
         clearInterval(this.intervalID);
     }
 
+    timeOff() {
+        this.stopTimer();
+        this.dialogRef.open(TimeOffComponent);
+    }
+
     endGame(): void {
         this.stopTimer();
         this.gameManager.playWinAudio();
-        this.popUpWindow.nativeElement.style.display = 'block';
-    }
-    goToHomePage() {
-        this.popUpWindow.nativeElement.style.display = 'none';
-        this.router.navigate(['/home']);
+        this.dialogRef.open(VictoryComponent);
     }
 
     giveUp() {
@@ -133,15 +137,14 @@ export class OneVsOneLimitedTimeComponent implements OnInit, AfterViewInit {
         this.goToHomePage();
     }
 
+    goToHomePage() {
+        this.router.navigate(['home']);
+    }
+
     goToGiveUp() {
-        this.popUpWindowGiveUp.nativeElement.style.display = 'block';
+        this.dialogRef.open(GiveUpComponent);
     }
 
-    goToStay() {
-        this.popUpWindowGiveUp.nativeElement.style.display = 'none';
-    }
-
-    /// ////A adapter selon les joueurs
     async onClick(event: MouseEvent): Promise<void> {
         if (event.button === MouseButton.Left) {
             const mousePosition: Vec2 = { x: event.offsetX, y: event.offsetY };

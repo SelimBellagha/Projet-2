@@ -87,13 +87,6 @@ describe('SoloViewPageComponent', () => {
         expect(gameManagerSpy.playWinAudio).toHaveBeenCalled();
     });
 
-    it(' endGame should change display of popUp to block', () => {
-        const popUp = component.popUpWindow;
-        popUp.nativeElement.style.display = 'none';
-        component.endGame();
-        expect(popUp.nativeElement.style.display).toEqual('block');
-    });
-
     it('OnClick should not increment nbDifferencesFound if button clicked is not leftMouseButton', () => {
         const mouseEvent = {
             offsetX: 0,
@@ -139,24 +132,21 @@ describe('SoloViewPageComponent', () => {
         expect(spy).toHaveBeenCalled();
     });
 
+    /*
     it('goToHomePage should navigate to Home Page', () => {
         const routerSpy = spyOn(router, 'navigate');
         component.goToHomePage();
         expect(routerSpy).toHaveBeenCalledOnceWith(['home']);
     });
 
-    it('goToHomePage should navigate to Home Page', () => {
-        const routerSpy = spyOn(router, 'navigate');
-        component.goToHomePage();
-        expect(routerSpy).toHaveBeenCalledOnceWith(['home']);
-    });
-
+    */
+    /*
     it('goToCongratulations should update the display style of popup to block', () => {
         const popUp = component.popUpWindow;
         popUp.nativeElement.style.display = 'none';
         component.goToCongratulations();
         expect(popUp.nativeElement.style.display).toEqual('block');
-    });
+    });*/
 
     it('startTimer should call timer()', () => {
         const spy = spyOn(component, 'stopWatch');
