@@ -34,6 +34,7 @@ export class ReplayService {
     setCurrentSpeed(speed: number): void {
         this.replaySpeed = speed;
         this.gameManager.replaySpeed = speed;
+        // if is playing?
         clearInterval(this.timerId);
         this.startTimer(this.replaySpeed);
     }
@@ -53,6 +54,9 @@ export class ReplayService {
     }
     endReplay(): void {
         clearInterval(this.timerId);
+        this.showPopUp();
+    }
+    showPopUp(): void {
         this.endPopUp.nativeElement.style.display = 'block';
     }
     doAction(gameAction: GameAction): void {
@@ -60,12 +64,15 @@ export class ReplayService {
             case GameActionType.Click:
                 this.gameManager.onPositionClicked(gameAction.info as Vec2);
                 break;
+
             case GameActionType.NormalHint:
                 this.gameManager.drawLine((gameAction.info as NormalHintInfo).firstPos, (gameAction.info as NormalHintInfo).endPos);
                 break;
+
             case GameActionType.LastHint:
                 this.gameManager.giveHint3(gameAction.info as Vec2);
                 break;
+
             case GameActionType.ActivateCheat:
                 this.gameManager.stateChanger();
                 if ((gameAction.info as CheatInfo).isActivating) {
@@ -77,6 +84,7 @@ export class ReplayService {
                     this.gameManager.flashPixelsCheat(pixelDifferences, canvasOriginal);
                 }
                 break;
+
             case GameActionType.Message:
                 if (this.actionSaver.messages.length) {
                     if (!this.compareMessages(gameAction.info as Message, this.actionSaver.messages[this.actionSaver.messages.length - 1])) {
@@ -85,8 +93,8 @@ export class ReplayService {
                 } else {
                     this.actionSaver.messages.push(gameAction.info as Message);
                 }
-
                 break;
+
             case GameActionType.OpponentDifference:
                 this.gameManager.opponentFoundDifference((gameAction.info as OpponentDifferenceInfo).id);
                 break;
@@ -101,6 +109,7 @@ export class ReplayService {
         this.timerId = window.setInterval(() => {
             if (this.isPlaying) {
                 this.currentReplayTime++;
+
                 while (this.getNextAction() && this.getNextAction().time === this.currentReplayTime) {
                     this.doAction(this.getNextAction());
                     this.actionSaver.nextActionIndex++;
