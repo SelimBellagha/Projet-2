@@ -1,6 +1,8 @@
 import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { MouseButton } from '@app/components/play-area/play-area.component';
+import { VictoryComponent } from '@app/components/victory/victory.component';
 import { TopScore } from '@app/interfaces/game.interface';
 import { Vec2 } from '@app/interfaces/vec2';
 import { DisplayGameService } from '@app/services/display-game.service';
@@ -42,6 +44,8 @@ export class SoloViewPageComponent implements OnInit, AfterViewInit {
         private loginService: LoginFormService,
         private displayService: DisplayGameService,
         private gameManager: GameManagerService,
+        // private socketService: SocketClientService,
+        private dialogRef: MatDialog,
         private historyService: HistoryService,
     ) {
         this.startDate = new Date();
@@ -117,7 +121,7 @@ export class SoloViewPageComponent implements OnInit, AfterViewInit {
         this.displayService.checkPlayerScore(this.newScore);
         this.displayService.addHistory(this.historyService.history);
         this.gameManager.playWinAudio();
-        this.popUpWindow.nativeElement.style.display = 'block';
+        this.goToCongratulations();
     }
 
     async onClick(event: MouseEvent): Promise<void> {
@@ -134,14 +138,11 @@ export class SoloViewPageComponent implements OnInit, AfterViewInit {
             }
         }
     }
-    goToHomePage() {
-        this.popUpWindow.nativeElement.style.display = 'none';
-        this.router.navigate(['home']);
-    }
 
     goToCongratulations() {
-        this.popUpWindow.nativeElement.style.display = 'block';
+        this.dialogRef.open(VictoryComponent);
     }
+
     returnSelectionPage(): void {
         this.stopStopWatch();
         this.router.navigate(['/gameSelection']);

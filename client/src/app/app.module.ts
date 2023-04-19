@@ -1,6 +1,7 @@
 import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { MatDialogModule } from '@angular/material/dialog';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { PlayAreaComponent } from '@app/components/play-area/play-area.component';
@@ -14,9 +15,12 @@ import { MaterialPageComponent } from '@app/pages/material-page/material-page.co
 import { ChatBoxComponent } from './components/chat-box/chat-box.component';
 import { CheatComponent } from './components/cheat/cheat.component';
 import { ConstantsComponent } from './components/constants/constants.component';
+import { GiveUpComponent } from './components/give-up/give-up.component';
 import { JeuxComponent } from './components/jeux/jeux/jeux.component';
 import { JoinBarComponent } from './components/join-bar/join-bar.component';
 import { ModeIndiceComponent } from './components/mode-indice/mode-indice.component';
+import { TimeOffComponent } from './components/time-off/time-off.component';
+import { VictoryComponent } from './components/victory/victory.component';
 import { ConfigurationPageComponent } from './pages/configuration-page/configuration-page.component';
 import { GameCreationPageComponent } from './pages/game-creation-page/game-creation-page.component';
 import { LimitedTimeTypeComponent } from './pages/limited-time-type/limited-time-type.component';
@@ -58,8 +62,11 @@ import { SoloViewPageComponent } from './pages/solo-view-page/solo-view-page.com
         LimitedTimeTypeComponent,
         SoloLimitedTimeComponent,
         OneVsOneLimitedTimeComponent,
+        VictoryComponent,
+        TimeOffComponent,
+        GiveUpComponent,
     ],
-    imports: [AppMaterialModule, AppRoutingModule, BrowserAnimationsModule, BrowserModule, FormsModule, HttpClientModule],
+    imports: [AppMaterialModule, AppRoutingModule, BrowserAnimationsModule, BrowserModule, FormsModule, HttpClientModule, MatDialogModule],
     providers: [],
     bootstrap: [AppComponent],
 })
