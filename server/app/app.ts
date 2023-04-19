@@ -3,6 +3,7 @@ import { HttpException } from '@app/classes/http.exception';
 import { DateController } from '@app/controllers/date.controller';
 import { ExampleController } from '@app/controllers/example.controller';
 import { GameController } from '@app/controllers/games.controller';
+import { ScoresController } from '@app/controllers/scores.controller';
 import * as cookieParser from 'cookie-parser';
 import * as cors from 'cors';
 import * as express from 'express';
@@ -10,6 +11,8 @@ import { StatusCodes } from 'http-status-codes';
 import * as swaggerJSDoc from 'swagger-jsdoc';
 import * as swaggerUi from 'swagger-ui-express';
 import { Service } from 'typedi';
+import { HistoryController } from './controllers/game-history.controller';
+import { DatabaseService } from './services/database.service';
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 import bodyParser = require('body-parser');
 
@@ -19,10 +22,14 @@ export class Application {
     private readonly internalError: number = StatusCodes.INTERNAL_SERVER_ERROR;
     private readonly swaggerOptions: swaggerJSDoc.Options;
 
+    // eslint-disable-next-line max-params
     constructor(
         private readonly exampleController: ExampleController,
         private readonly dateController: DateController,
         private gamesController: GameController,
+        private scoresController: ScoresController,
+        private readonly databaseService: DatabaseService,
+        private historyController: HistoryController,
     ) {
         this.app = express();
 
@@ -40,6 +47,8 @@ export class Application {
         this.config();
 
         this.bindRoutes();
+
+        this.connectDatabase();
     }
 
     bindRoutes(): void {
@@ -47,10 +56,17 @@ export class Application {
         this.app.use('/api/example', this.exampleController.router);
         this.app.use('/api/date', this.dateController.router);
         this.app.use('/api/games', this.gamesController.router);
+        this.app.use('/api/scores', this.scoresController.router);
+        this.app.use('/api/history', this.historyController.router);
         this.app.use('/', (req, res) => {
             res.redirect('/api/docs');
         });
         this.errorHandling();
+    }
+
+    private connectDatabase(): void {
+        // Connect to the mongoDB database
+        this.databaseService.start();
     }
 
     private config(): void {

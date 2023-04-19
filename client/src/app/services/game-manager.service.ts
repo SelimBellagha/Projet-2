@@ -13,8 +13,9 @@ const ONE_SECOND = 1000;
 const EIGHT = 8;
 const QUART_SECOND = 250;
 const pointY = 240;
-const pointX = 320;
-const indicePixel = 20;
+const pointX = 250;
+const timePenalty = 20;
+
 @Injectable({
     providedIn: 'root',
 })
@@ -235,8 +236,16 @@ export class GameManagerService {
     }
 
     giveHint3(coordinate: Vec2): void {
-        this.originalImageCanvas.font = '40px Arial';
-        this.originalImageCanvas.strokeText('Click Here', coordinate.x + indicePixel, coordinate.y + indicePixel);
+        this.originalImageCanvas.font = '30px Arial';
+        this.originalImageCanvas.strokeText('Click Here', coordinate.x, coordinate.y);
+    }
+
+    timePenalty(): void {
+        if (this.router.url === '/soloLimitedTime') {
+            this.gameTime = this.gameTime - timePenalty;
+        } else if (this.router.url === '/soloView') {
+            this.gameTime = this.gameTime + timePenalty;
+        }
     }
 
     replacePixels(pixels: Vec2[]): void {

@@ -4,6 +4,7 @@ import { AddressInfo } from 'net';
 import { Service } from 'typedi';
 import { GameManager } from './services/game-manager.service';
 import { SocketServerManager } from './services/socket-server-manager.service';
+import { TopScoresService } from './services/top-scores.service';
 
 @Service()
 export class Server {
@@ -13,6 +14,7 @@ export class Server {
     private server: http.Server;
     private socketManager: SocketServerManager;
     private gameService: GameManager;
+    private scoreService: TopScoresService;
 
     constructor(private readonly application: Application) {}
 
@@ -30,7 +32,7 @@ export class Server {
         this.application.app.set('port', Server.appPort);
 
         this.server = http.createServer(this.application.app);
-        this.gameService = new GameManager();
+        this.gameService = new GameManager(this.scoreService);
 
         this.socketManager = new SocketServerManager(this.server, this.gameService);
         this.socketManager.handleSockets();
