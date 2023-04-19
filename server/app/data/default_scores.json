@@ -1,0 +1,10 @@
+{
+    "defaultScores": [
+        { "position": "3", "gameId": "defaultID", "gameType": "solo", "time": "2:30", "playerName": "Mario" },
+        { "position": "2", "gameId": "defaultID", "gameType": "solo", "time": "2:15", "playerName": "Luigi" },
+        { "position": "1", "gameId": "defaultID", "gameType": "solo", "time": "2:00", "playerName": "Minnie" },
+        { "position": "3", "gameId": "defaultID", "gameType": "1v1", "time": "2:30", "playerName": "Mickey" },
+        { "position": "2", "gameId": "defaultID", "gameType": "1v1", "time": "2:15", "playerName": "Daisy" },
+        { "position": "1", "gameId": "defaultID", "gameType": "1v1", "time": "2:00", "playerName": "Pluto" }
+    ]
+}

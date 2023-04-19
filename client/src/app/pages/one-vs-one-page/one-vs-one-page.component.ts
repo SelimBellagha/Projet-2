@@ -1,9 +1,14 @@
 import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
+import { GiveUpComponent } from '@app/components/give-up/give-up.component';
 import { MouseButton } from '@app/components/play-area/play-area.component';
+import { VictoryComponent } from '@app/components/victory/victory.component';
+import { TopScore } from '@app/interfaces/game.interface';
 import { Vec2 } from '@app/interfaces/vec2';
 import { DisplayGameService } from '@app/services/display-game.service';
 import { GameManagerService } from '@app/services/game-manager.service';
+import { HistoryService } from '@app/services/history.service';
 import { LobbyService } from '@app/services/lobby.service';
 import { LoginFormService } from '@app/services/login-form.service';
 import { SocketClientService } from '@app/services/socket-client-service.service';
@@ -18,11 +23,11 @@ export class OneVsOnePageComponent implements OnInit, AfterViewInit {
     @ViewChild('originalImage') originalCanvas: ElementRef<HTMLCanvasElement>;
     @ViewChild('popUpWindowWin') popUpWindowWin: ElementRef<HTMLDivElement>;
     @ViewChild('popUpWindowLose') popUpWindowLose: ElementRef<HTMLDivElement>;
-    @ViewChild('popUpWindowGiveUp') popUpWindowGiveUp: ElementRef<HTMLDivElement>;
     myUsername: string;
     opponentUsername: string;
     hostName: string;
     guestName: string;
+    gameId: string;
     gameName: string;
     difficulty: string;
     nbDifferences: number;
@@ -35,19 +40,41 @@ export class OneVsOnePageComponent implements OnInit, AfterViewInit {
     nbDifferenceToWin: number;
     gameTime: number;
 
+    newScore: TopScore = {
+        position: 'tempPosition',
+        gameId: 'tempId',
+        gameType: '1v1',
+        time: 'tempTime',
+        playerName: 'tempName',
+    };
+    startDate: Date;
+
     inReplay: boolean = false;
 
     // eslint-disable-next-line max-params
     constructor(
         private router: Router,
+        private dialogRef: MatDialog,
         private loginService: LoginFormService,
         private displayService: DisplayGameService,
         private gameManager: GameManagerService,
         private socketService: SocketClientService,
         private lobbyService: LobbyService,
-    ) {}
+        private historyService: HistoryService,
+    ) {
+        this.startDate = new Date();
+    }
 
     ngOnInit() {
+        this.historyService.history = {
+            startDate: this.startDate.toLocaleString(),
+            gameLength: 'tempLength',
+            gameMode: 'Classique',
+            namePlayer1: 'tempName1',
+            namePlayer2: '',
+            winnerName: '',
+            nameAbandon: '',
+        };
         this.roomId = this.lobbyService.roomId;
         if (!this.lobbyService.host) {
             this.socketService.on('getHostName', (data: { hostName: string }) => {
@@ -67,6 +94,7 @@ export class OneVsOnePageComponent implements OnInit, AfterViewInit {
         this.nbDifferencesFoundUser2 = 0;
         if (this.displayService.game) {
             this.gameManager.initializeGame(this.displayService.game);
+            this.gameId = this.displayService.game.id;
             this.gameName = this.displayService.game.name;
             this.difficulty = this.displayService.convertDifficulty(this.displayService.game);
             this.nbDifferences = this.displayService.game.nbDifferences;
@@ -88,8 +116,32 @@ export class OneVsOnePageComponent implements OnInit, AfterViewInit {
             this.winCheck();
         });
         this.socketService.on('win', () => {
-            this.winGame();
+            this.winGameAfterGiveUp();
         });
+        this.socketService.on('getRealTime', (data: { realTime: number }) => {
+            this.newScore.time = this.convertTimeToString(data.realTime);
+            this.historyService.history.namePlayer1 = this.hostName;
+            this.historyService.history.namePlayer2 = this.guestName;
+        });
+        this.socketService.on('systemMessage', (data: { name: string }) => {
+            this.historyService.history.namePlayer1 = this.hostName;
+            this.historyService.history.namePlayer2 = this.guestName;
+            this.historyService.history.nameAbandon = data.name;
+            if (data.name === this.hostName) {
+                this.historyService.history.winnerName = this.guestName;
+            } else {
+                this.historyService.history.winnerName = this.hostName;
+            }
+        });
+    }
+
+    convertTimeToString(seconds: number): string {
+        const secondsInMinute = 60;
+        const doubleDigits = 10;
+        const minutes: number = Math.floor(seconds / secondsInMinute);
+        const remainingSeconds: number = seconds % secondsInMinute;
+        const formattedSeconds: string = remainingSeconds < doubleDigits ? `0${remainingSeconds}` : `${remainingSeconds}`;
+        return `${minutes}:${formattedSeconds}`;
     }
 
     stopWatch() {
@@ -123,36 +175,52 @@ export class OneVsOnePageComponent implements OnInit, AfterViewInit {
         this.popUpWindowLose.nativeElement.style.display = 'block';
     }
 
-    winGame(): void {
+    winGameAfterGiveUp(): void {
         this.stopStopWatch();
         this.gameManager.playWinAudio();
-        this.popUpWindowWin.nativeElement.style.display = 'block';
+        this.dialogRef.open(VictoryComponent);
+        this.inReplay = true;
     }
+
+    winGame(): void {
+        this.historyService.history.gameLength = this.historyService.findGameLength(this.startDate);
+        this.socketService.send('getRealTime', { roomId: this.roomId });
+        this.stopStopWatch();
+        this.gameManager.playWinAudio();
+        this.dialogRef.open(VictoryComponent);
+        this.inReplay = true;
+    }
+
     goToHomePage() {
+        this.router.navigate(['home']);
+    }
+
+    goToHomePageAfterAbandon() {
+        this.historyService.history.gameLength = this.historyService.findGameLength(this.startDate);
+        this.displayService.addHistory(this.historyService.history);
+        this.router.navigate(['home']);
+    }
+    goToHomePageWinner() {
+        this.displayService.checkPlayerScore(this.newScore);
+        this.displayService.addHistory(this.historyService.history);
         this.popUpWindowWin.nativeElement.style.display = 'none';
-        this.popUpWindowLose.nativeElement.style.display = 'none';
+        this.router.navigate(['home']);
+    }
+
+    goToHomePageAbandonWinner() {
         this.router.navigate(['home']);
     }
 
     giveUp() {
-        this.socketService.send('giveUp', { roomId: this.roomId });
-        this.socketService.send('systemMessage', ' a abandonné la partie');
-        this.goToHomePage();
+        this.goToHomePageAfterAbandon();
     }
 
     goToGiveUp() {
-        this.popUpWindowGiveUp.nativeElement.style.display = 'block';
+        this.dialogRef.open(GiveUpComponent);
+        this.socketService.send('giveUp', { roomId: this.roomId });
+        this.socketService.send('systemMessage', ' a abandonné la partie');
     }
 
-    goToStay() {
-        this.popUpWindowGiveUp.nativeElement.style.display = 'none';
-    }
-
-    returnSelectionPage(): void {
-        this.router.navigate(['/gameSelection']);
-    }
-
-    /// ////A adapter selon les joueurs
     async onClick(event: MouseEvent): Promise<void> {
         if (event.button === MouseButton.Left && !this.inReplay) {
             const mousePosition: Vec2 = { x: event.offsetX, y: event.offsetY };
@@ -166,9 +234,14 @@ export class OneVsOnePageComponent implements OnInit, AfterViewInit {
 
     winCheck() {
         if (this.nbDifferencesFoundUser1 === this.nbDifferenceToWin || this.nbDifferencesFoundUser2 === this.nbDifferenceToWin) {
+            this.newScore.gameId = this.gameId;
             if (this.nbDifferencesFoundUser1 === this.nbDifferenceToWin && this.lobbyService.host) {
+                this.newScore.playerName = this.hostName;
+                this.historyService.history.winnerName = this.hostName;
                 this.winGame();
             } else if (this.nbDifferencesFoundUser2 === this.nbDifferenceToWin && !this.lobbyService.host) {
+                this.newScore.playerName = this.guestName;
+                this.historyService.history.winnerName = this.guestName;
                 this.winGame();
             } else {
                 this.loseGame();

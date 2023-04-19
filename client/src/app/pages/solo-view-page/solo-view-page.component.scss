@@ -55,8 +55,7 @@ body {
 }
 
 .watch-logo {
-    width: 6%;
-    margin-top: 9px;
+    width: 6.2%;
 }
 
 .timer {
@@ -66,7 +65,7 @@ body {
 }
 .section {
     flex: 1;
-    margin-left: 2%;
+    margin-left: 0.5%;
 }
 
 #penalty {
@@ -81,73 +80,4 @@ body {
 canvas {
     border: black solid 2px;
     background-color: white;
-}
-
-.congrats {
-    text-align: center;
-    font-weight: bold;
-    font-family: serif;
-    font-style: italic;
-    font-size: xx-large;
-}
-
-.close-button {
-    text-align: right;
-}
-
-.modal {
-    display: none;
-    position: fixed;
-    z-index: 1;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background-image: url('../../../assets/images/confettis.gif');
-    overflow: auto;
-    background-color: rgba(0, 0, 0, 0.4);
-    align-self: center;
-    visibility: visible;
-    -webkit-animation: fadeIn 1s;
-    animation: fadeIn 1s;
-}
-.modal-content {
-    background-color: #ede1db;
-    margin: 5% auto;
-    padding: 20px;
-    border: 1px solid #888;
-    width: 50%;
-}
-
-.modal-content::after {
-    content: '';
-    position: absolute;
-    top: 100%;
-    left: 50%;
-    margin-left: -5px;
-    border-width: 5px;
-    border-style: solid;
-    border-color: #555 transparent transparent transparent;
-}
-
-.close-button {
-    text-align: right;
-}
-
-@-webkit-keyframes fadeIn {
-    from {
-        opacity: 0;
-    }
-    to {
-        opacity: 1;
-    }
-}
-
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-    }
-    to {
-        opacity: 1;
-    }
 }

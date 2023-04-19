@@ -1,11 +1,10 @@
 <body class="container">
-    <button *ngIf="!inReplay" class="quit-button" (click)="returnSelectionPage()">Abandonner la partie</button>
-    <button *ngIf="inReplay" class="quit-button" (click)="returnSelectionPage()">Quitter la reprise</button>
-
+    <button *ngIf="!inReplay" class="quit-button" (click)="abandonGame()">Abandonner la partie</button>
+    <button *ngIf="inReplay" class="quit-button" (click)="returnSelectionPage()">Quitter la reprise </button>
     <div class="section">
         <div class="main-container">
             <h2 class="game-info">{{ gameName }} - {{ difficulty }}</h2>
-            <p class="game-details">Mode classique</p>
+            <p class="game-details">Mode Classique</p>
             <p class="game-details">L' image contient {{ nbDifferences }} différences</p>
             <!-- <button class="indice">Obtenir un indice</button> -->
             <app-mode-indice></app-mode-indice>
@@ -13,7 +12,7 @@
         </div>
 
         <div>
-            <canvas #originalImage #gridCanvas (click)="onClick($event)" width="500px" height="480px"></canvas>
+            <canvas #originalImage #gridCanvas (click)="onClick($event)" width="640px" height="480px"></canvas>
         </div>
     </div>
 
@@ -22,7 +21,7 @@
             <div class="game-details">
                 <p id="penalty">Pénalités pour utilisation d'indice : 00: XX</p>
                 <p>Indices restants: X</p>
-                <p>Differences trouvées: {{ nbDifferencesFound }}</p>
+                <p>Differences trouvées par {{username}}: {{ nbDifferencesFound }}</p>
                 <div class="timer">
                     <img src="../../../assets/images/stopwatch.png" class="watch-logo" />
                     <div class="time">
@@ -34,7 +33,7 @@
         </div>
 
         <div>
-            <canvas #modifiedImage (click)="onClick($event)" width="500px" height="480px"></canvas>
+            <canvas #modifiedImage (click)="onClick($event)" width="640px" height="480px"></canvas>
         </div>
     </div>
 
@@ -42,13 +41,4 @@
         <app-chat-box></app-chat-box>
     </div>
 
-    <div #popUpWindow class="modal">
-        <div class="modal-content">
-            <h1 class="congrats">Félicitations {{ username }} ! Vous avez trouvé toutes les différences !</h1>
-            <div class="close-button">
-                <button id="replay-button" (click)="onReplay()">Open replay Menu</button>
-                <button id="close-button" (click)="goToHomePage()">Fermer</button>
-            </div>
-        </div>
-    </div>
 </body>

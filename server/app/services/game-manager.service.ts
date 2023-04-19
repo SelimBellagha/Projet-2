@@ -1,13 +1,16 @@
 import { GameData } from '@app/data/game.interface';
-import { Service } from 'typedi';
 import * as fs from 'fs';
 import * as path from 'path';
+import { Service } from 'typedi';
 import { v4 as uuidv4 } from 'uuid';
+import { TopScoresService } from './top-scores.service';
 
 @Service()
 export class GameManager {
     tempGame: GameData;
     jsonPath = path.join(__dirname + '../../../../../app/data/games.json');
+
+    constructor(private topScoreService: TopScoresService) {}
 
     async writeToJsonFile(filePath: string, data: string) {
         return await fs.promises.writeFile(filePath, data);
@@ -34,6 +37,7 @@ export class GameManager {
         newGame.id = gameId;
         allGames.push(newGame);
         this.writeToJsonFile(this.jsonPath, JSON.stringify({ allGames }));
+        this.topScoreService.addDefaultScores(gameId);
     }
 
     async deleteGame(id: string): Promise<boolean> {
@@ -43,6 +47,7 @@ export class GameManager {
             const allGames = gamesData.filter((games) => games.id !== id);
             const gamesToSave = JSON.stringify({ allGames });
             await this.writeToJsonFile(this.jsonPath, gamesToSave);
+            this.topScoreService.deleteGameScores(id);
             return true;
         } else {
             return false;

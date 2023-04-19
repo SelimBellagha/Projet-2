@@ -6,6 +6,7 @@ import { Verification } from '@app/interfaces/verification';
 import { ActionSaverService } from './action-saver.service';
 import { DifferenceVerificationService } from './difference-verification.service';
 import { DEFAULT_HEIGHT, DEFAULT_WIDTH } from './draw.service';
+import { LimitedTimeLobbyService } from './limited-time-lobby.service';
 import { SocketClientService } from './socket-client-service.service';
 
 const PIXEL_SIZE = 4;
@@ -36,11 +37,13 @@ export class GameManagerService {
     timeTest: number = 1;
 
     // eslint-disable-next-line max-params
+    // eslint-disable-next-line max-params
     constructor(
         private differenceVerification: DifferenceVerificationService,
         private socketService: SocketClientService,
         private actionSaver: ActionSaverService,
         private router: Router,
+        private limitedTimeLobby: LimitedTimeLobbyService,
     ) {}
 
     initializeGame(gameData: GameData) {
@@ -250,7 +253,13 @@ export class GameManagerService {
         this.originalImageCanvas.font = '40px Arial';
         this.originalImageCanvas.strokeText('Click Here', coordinate.x + indicePixel, coordinate.y + indicePixel);
     }
-
+    timePenalty(): void {
+        if (this.router.url === '/soloLimitedTime') {
+            this.gameTime -= this.limitedTimeLobby.penaltyTime;
+        } else if (this.router.url === '/soloView') {
+            this.gameTime += this.limitedTimeLobby.penaltyTime;
+        }
+    }
     replacePixels(pixels: Vec2[]): void {
         // Copier les pixels dee l'image originale vers l'image modifiée
         const originalImageData = this.originalImageCanvas.getImageData(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT);
