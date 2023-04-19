@@ -1,10 +1,11 @@
 /* eslint-disable @typescript-eslint/no-magic-numbers */
-import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 
 import { ActivatedRoute } from '@angular/router';
+import { MouseFocusService } from '@app/mouse-focus.service';
+import { ActionSaverService } from '@app/services/action-saver.service';
 import { LoginFormService } from '@app/services/login-form.service';
 import { SocketClientService } from '@app/services/socket-client-service.service';
-import { MouseFocusService } from '@app/mouse-focus.service';
 import { Message } from '@common/chatMessage';
 
 @Component({
@@ -20,11 +21,13 @@ export class ChatBoxComponent implements OnInit {
     message: string = '';
     pageName: string | undefined;
 
+    // eslint-disable-next-line max-params
     constructor(
         public route: ActivatedRoute,
         public socketService: SocketClientService,
         private gameUtils: LoginFormService,
         private mouseFocus: MouseFocusService,
+        private actionSaver: ActionSaverService,
     ) {
         const snapshot = route.snapshot;
         this.pageName = snapshot.routeConfig?.path?.toString();
@@ -43,6 +46,7 @@ export class ChatBoxComponent implements OnInit {
         this.socketService.connect();
         this.gameId = this.gameUtils.getGameId();
         this.handleSockets();
+        this.actionSaver.messages = this.messages;
     }
     onFocus() {
         this.mouseFocus.isFocusOnchat = true;
@@ -53,6 +57,7 @@ export class ChatBoxComponent implements OnInit {
 
     handleSockets() {
         this.socketService.on('receiveChatMessage', (data: Message) => {
+            this.actionSaver.addChatMessageAction(data);
             this.messages.push(data);
         });
 
@@ -66,6 +71,7 @@ export class ChatBoxComponent implements OnInit {
                 name,
             };
             this.messages.push(message);
+            this.actionSaver.addChatMessageAction(message);
         });
 
         this.socketService.on('receiveSystemMessageSolo', (systemMessage: string) => {
@@ -77,7 +83,10 @@ export class ChatBoxComponent implements OnInit {
                 isSystem: true,
                 name,
             };
-            if (!this.isMultiplayerMode()) this.messages.push(message);
+            if (!this.isMultiplayerMode()) {
+                this.messages.push(message);
+                this.actionSaver.addChatMessageAction(message);
+            }
         });
     }
 

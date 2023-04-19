@@ -42,11 +42,7 @@ export class ScoresController {
             try {
                 const score: TopScore = req.body;
                 const response = await this.scoreService.addScore(score);
-                if (response) {
-                    res.status(StatusCodes.CREATED).send(response);
-                } else {
-                    res.status(StatusCodes.OK).send(response);
-                }
+                res.status(StatusCodes.OK).send(response);
             } catch (error) {
                 res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(error.message);
             }

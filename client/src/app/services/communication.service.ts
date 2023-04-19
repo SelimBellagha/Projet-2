@@ -21,10 +21,6 @@ export class CommunicationService {
         return this.http.get<Message>(this.baseUrl + '/example').pipe(catchError(this.handleError<Message>('basicGet')));
     }
 
-    getDate(): Observable<Date> {
-        return this.http.get<Date>(this.baseUrl + '/date');
-    }
-
     getAllGames(): Observable<GameData[]> {
         return this.http.get<GameData[]>(`${this.baseUrl}/games`).pipe(catchError(this.handleError<GameData[]>('getAllGames')));
     }

@@ -30,6 +30,12 @@ export class DisplayGameService {
         await this.convertAllGames();
     }
 
+    deleteAllGames() {
+        for (const game of this.tempGames) {
+            this.comm.deleteGame(game.id);
+        }
+    }
+
     resetAllScores() {
         for (const game of this.tempGames) {
             this.comm.resetGameScores(game.id);
@@ -42,7 +48,6 @@ export class DisplayGameService {
         });
     }
 
-    // fonctionatester
     sendGlobalMessage(newScore: TopScore, response: AddedScoreResult) {
         this.isScoreAdded = response.isAdded;
         this.newScorePosition = response.positionIndex;
@@ -64,10 +69,6 @@ export class DisplayGameService {
 
     deleteGameHistory() {
         this.comm.deleteGameHistory();
-    }
-
-    getCurrentDate() {
-        return this.comm.getDate();
     }
 
     async getHistory() {

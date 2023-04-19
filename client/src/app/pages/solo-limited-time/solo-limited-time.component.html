@@ -4,9 +4,9 @@
     <div class="section">
         <div class="main-container">
             <h2 class="game-info">{{ gameName }} - {{ difficulty }}</h2>
-            <p class="game-details">Mode classique</p>
-            <p class="game-details">L' image contient {{ nbDifferences }} différences</p>
-            <button class="indice">Obtenir un indice</button>
+            <p class="game-details">Mode Temps Limité</p>
+            <p class="game-details">Trouvez une différence sur chaque paire d'images</p>
+            <app-mode-indice></app-mode-indice>
             <app-cheat></app-cheat>
         </div>
 
@@ -20,7 +20,7 @@
             <div class="game-details">
                 <p id="penalty">Pénalités pour utilisation d'indice : 00: XX</p>
                 <p>Indices restants: X</p>
-                <p>Differences trouvées: {{ nbDifferencesFound }}</p>
+                <p>Differences trouvées par {{username}}: {{ nbDifferencesFound }}</p>
                 <div class="timer">
                     <img src="../../../assets/images/stopwatch.png" class="watch-logo" />
                     <div>{{ minutes.toString().padStart(2, '0') }} :{{ secondes.toString().padStart(2, '0') }}</div>
@@ -33,14 +33,7 @@
         </div>
     </div>
 
-    <app-chat-box></app-chat-box>
-
-    <div #popUpWindow class="modal">
-        <div class="modal-content">
-            <h1 class="congrats">Félicitations {{ username }} ! Vous avez trouvé toutes les différences !</h1>
-            <div class="close-button">
-                <button id="close-button" (click)="goToHomePage()">Fermer</button>
-            </div>
-        </div>
+    <div class="section">
+        <app-chat-box></app-chat-box>
     </div>
 </body>

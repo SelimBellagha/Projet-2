@@ -15,7 +15,13 @@ describe('ConfigurationPageComponent', () => {
     let socketManagerSpy: SpyObj<SocketClientService>;
 
     beforeEach(async () => {
-        displayGamesSpy = jasmine.createSpyObj('DisplayGameService', ['loadAllGames', 'getHistory', 'resetAllScores', 'deleteGameHistory']);
+        displayGamesSpy = jasmine.createSpyObj('DisplayGameService', [
+            'loadAllGames',
+            'getHistory',
+            'resetAllScores',
+            'deleteGameHistory',
+            'deleteAllGames',
+        ]);
         socketManagerSpy = jasmine.createSpyObj('DisplayGameService', ['isSocketAlive', 'connect']);
 
         await TestBed.configureTestingModule({
@@ -130,6 +136,7 @@ describe('ConfigurationPageComponent', () => {
         popupWindow.style.display = 'block';
         expect(popupWindow.style.display).toEqual('block');
         component.deleteAllGames();
+        expect(displayGamesSpy.deleteAllGames).toHaveBeenCalled();
         expect(popupWindow.style.display).toEqual('none');
     });
 

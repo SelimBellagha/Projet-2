@@ -24,14 +24,16 @@ body {
 
 .container {
     display: flex;
+    max-width: 99%;
 }
+
 
 .main-container {
     position: relative;
     background-color: #fffafa;
     border: dotted salmon;
     border-radius: 5px;
-    max-height: 90%;
+    height: 20%;
     max-width: 100%;
     padding: 2%;
     margin: 5% 0 4%;
@@ -52,8 +54,7 @@ body {
 }
 
 .watch-logo {
-    width: 6%;
-    margin-top: 9px;
+    width: 6.2%;
 }
 
 .timer {
@@ -64,7 +65,7 @@ body {
 
 .section {
     flex: 1;
-    margin-left: 2%;
+    margin-left: 0.5%;
 }
 
 #penalty {
@@ -106,16 +107,6 @@ canvas {
     border-color: rgb(2, 97, 2);
 }
 
-#button-stay {
-    background-color: green;
-    border-color: rgb(2, 97, 2);
-}
-
-#button-home {
-    background-color: red;
-    border-color: rgb(198, 2, 2);
-}
-
 .modal {
     display: none;
     position: fixed;
@@ -132,9 +123,6 @@ canvas {
     animation: fadeIn 1s;
 }
 
-#congratulations {
-    background-image: url('../../../assets/images/confettis.gif');
-}
 .modal-content {
     border: black solid 10px;
     background-color: #ede1db;
@@ -175,104 +163,4 @@ canvas {
     to {
         opacity: 1;
     }
-}
-
-.message-box-holder {
-    width: 100%;
-    margin: 5px 0 0 0;
-    display: flex;
-    flex-flow: column;
-    align-items: flex-end;
-}
-
-.name {
-    font-size: 12px;
-    color: #30649c;
-    align-self: flex-start;
-    font-weight: bold;
-}
-
-.line {
-    border:3px solid  #666;
-}
-
-.event {
-color: red;
-}
-
-.sender {
-    padding-left: 87%;
-}
-
-.messages{
-    padding: 6px 10px;
-    border-radius: 6px 0 6px 0;
-    position: relative;
-    background: rgba(100, 170, 0, 0.1);
-    border: 2px solid rgba(100, 170, 0, 0.1);
-    color: #6c6c6c;
-    font-size: 12px;
-}
-
-.server {
-    background: rgb(253, 246, 248);
-    border: 2px solid red;
-    align-self: flex-start;
-}
-
-.receiver {
-    background: rgba(0, 114, 135, 0.1);
-    border: 2px solid rgba(0, 114, 135, 0.1);
-    align-self: flex-start;
-}
-
-.server::after, .receiver::after{
-    border: 10px solid transparent;
-    border-bottom: 10px solid rgba(0, 114, 135, 0.2);
-}
-
-//
-
-.chat-input-holder {
-    display:flex;
-    border-top: 1px solid rgba(0, 0, 0, 0.1);
-}
-
-.chat-input {
-    resize: none;
-    padding: 5px 10px;
-    height: 40px;
-    font-family: 'Lato', sans-serif;
-    font-size: 14px;
-    color: #999999;
-    flex: 1;
-    border: none;
-    background: rgba(0, 0, 0, 0.05);
-    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-    position: relative;
-}
-
-.chat-input:focus,
-.message-send:focus {
-    outline: none;
-}
-
-.message-send::-moz-focus-inner {
-    border: 0;
-    padding: 0;
-}
-
-.message-send {
-    border-bottom-right-radius: 15%;
-    border: none;
-    background: #9cc900;
-    background: -moz-linear-gradient(180deg, #ff9500, #d68b00);
-    background: -webkit-linear-gradient(180deg, #ff9500, #d68b00);
-    background: -o-linear-gradient(180deg, #ff9500, #d68b00);
-    background: -ms-linear-gradient(180deg, #ff9500, #d68b00);
-    background: linear-gradient(180deg, #ff9500, #d68b00);
-    color: white;
-    font-size: 12px;
-    padding: 0 15px;
-    text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.3);
 }

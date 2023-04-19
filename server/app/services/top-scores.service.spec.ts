@@ -76,6 +76,18 @@ describe('Score service', () => {
         expect(result).to.deep.equals('-1');
     });
 
+    it('should return "-1" if new score doesnt beat current scores because it is equal to an existing score', async () => {
+        const newScore = {
+            position: '1',
+            gameId: 'defaultID',
+            gameType: 'solo',
+            time: '1:30',
+            playerName: 'TestName2',
+        };
+        const result = await scoreService.validateScore(newScore);
+        expect(result).to.deep.equals('-1');
+    });
+
     it('should return index to replace if new score beats current score', async () => {
         const newScore = {
             position: '1',
@@ -88,7 +100,7 @@ describe('Score service', () => {
         expect(result).to.deep.equals('1');
     });
 
-    it('should return true if new score beats current 1st place score', async () => {
+    it('should return true and "1" if new score beats current 1st place score', async () => {
         const newScore = {
             position: 'defaultPosition',
             gameId: 'defaultID',
@@ -97,10 +109,10 @@ describe('Score service', () => {
             playerName: 'TestName2',
         };
         const result = await scoreService.addScore(newScore);
-        expect(result).to.deep.equals(true);
+        expect(result).to.deep.equals({ isAdded: true, positionIndex: '1' });
     });
 
-    it('should return true if new score beats current 2nd place score', async () => {
+    it('should return true and "2" if new score beats current 2nd place score', async () => {
         const newScore = {
             position: 'defaultPosition',
             gameId: 'defaultID',
@@ -109,22 +121,22 @@ describe('Score service', () => {
             playerName: 'TestName2',
         };
         const result = await scoreService.addScore(newScore);
-        expect(result).to.deep.equals(true);
+        expect(result).to.deep.equals({ isAdded: true, positionIndex: '2' });
     });
 
-    it('should return true if new score beats current 3rd place score', async () => {
+    it('should return true and "3" if new score beats current 3rd place score', async () => {
         const newScore = {
             position: 'defaultPosition',
             gameId: 'defaultID',
             gameType: 'solo',
-            time: '2:10',
+            time: '1:35',
             playerName: 'TestName2',
         };
         const result = await scoreService.addScore(newScore);
-        expect(result).to.deep.equals(true);
+        expect(result).to.deep.equals({ isAdded: true, positionIndex: '3' });
     });
 
-    it('should return false if new score is not added to best scores', async () => {
+    it('should return false and "-1" if new score is not added to best scores', async () => {
         const newScore = {
             position: '1',
             gameId: 'defaultID',
@@ -133,7 +145,7 @@ describe('Score service', () => {
             playerName: 'TestName2',
         };
         const result = await scoreService.addScore(newScore);
-        expect(result).to.deep.equals(false);
+        expect(result).to.deep.equals({ isAdded: false, positionIndex: '-1' });
     });
 
     it('should delete existing scores for given game id', async () => {

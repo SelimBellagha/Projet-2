@@ -100,6 +100,7 @@ export class ConfigurationPageComponent implements OnInit {
     }
 
     deleteAllGames() {
+        this.displayGames.deleteAllGames();
         this.onClosingPopUp('deleteGames');
     }
 

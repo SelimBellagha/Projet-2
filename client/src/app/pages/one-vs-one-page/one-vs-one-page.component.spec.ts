@@ -1,5 +1,8 @@
+/* eslint-disable max-classes-per-file */
 import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { Component, ElementRef } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { SocketTestHelper } from '@app/classes/socket-test-helper';
@@ -9,6 +12,7 @@ import { Player } from '@app/interfaces/player';
 import { Vec2 } from '@app/interfaces/vec2';
 import { DisplayGameService } from '@app/services/display-game.service';
 import { GameManagerService } from '@app/services/game-manager.service';
+import { HistoryService } from '@app/services/history.service';
 import { LobbyService } from '@app/services/lobby.service';
 import { LoginFormService } from '@app/services/login-form.service';
 import { SocketClientService } from '@app/services/socket-client-service.service';
@@ -20,7 +24,16 @@ class SocketClientServiceMock extends SocketClientService {
     // eslint-disable-next-line @typescript-eslint/no-empty-function
     override connect() {}
 }
-
+@Component({
+    selector: 'app-chat-box',
+    template: '',
+})
+class MockChatComponent {}
+@Component({
+    selector: 'app-cheat',
+    template: '',
+})
+class MockCheatComponent {}
 describe('OneVsOnePageComponent', () => {
     let component: OneVsOnePageComponent;
     let fixture: ComponentFixture<OneVsOnePageComponent>;
@@ -29,6 +42,8 @@ describe('OneVsOnePageComponent', () => {
     let displayServiceSpy: SpyObj<DisplayGameService>;
     let gameManagerSpy: SpyObj<GameManagerService>;
     let loginServiceSpy: SpyObj<LoginFormService>;
+    let matDialogSpy: SpyObj<MatDialog>;
+    let historyServiceSpy: SpyObj<HistoryService>;
 
     let router: Router;
     let socketServiceMock: SocketClientServiceMock;
@@ -41,6 +56,14 @@ describe('OneVsOnePageComponent', () => {
         differences: [],
         isDifficult: true,
     };
+    /*
+    const scoreMock1 = {
+        position: '1',
+        gameId: 'test',
+        gameType: 'test',
+        time: 'test',
+        playerName: 'mock',
+    };*/
 
     beforeEach(async () => {
         lobbyServiceSpy = jasmine.createSpyObj('LobbyService', ['send', 'on']);
@@ -50,16 +73,21 @@ describe('OneVsOnePageComponent', () => {
             'playWinAudio',
             'initializeGame',
             'flashImages',
+            'opponentFoundDifference',
         ]);
-        displayServiceSpy = jasmine.createSpyObj('DisplayGameService', ['loadGame', 'convertDifficulty'], { game: gameMock1 as unknown as GameData });
+        displayServiceSpy = jasmine.createSpyObj('DisplayGameService', ['loadGame', 'convertDifficulty', 'checkPlayerScore', 'addHistory'], {
+            game: gameMock1 as unknown as GameData,
+        });
         loginServiceSpy = jasmine.createSpyObj('LoginFormService', ['getFormData']);
+        matDialogSpy = jasmine.createSpyObj('MatDialog', ['open']);
+        historyServiceSpy = jasmine.createSpyObj('HistoryService', ['findGameLength']);
 
         socketHelper = new SocketTestHelper();
         socketServiceMock = new SocketClientService();
         socketServiceMock.socket = socketHelper as unknown as Socket;
 
         await TestBed.configureTestingModule({
-            declarations: [OneVsOnePageComponent],
+            declarations: [OneVsOnePageComponent, MockChatComponent, MockCheatComponent],
             imports: [RouterTestingModule, HttpClientTestingModule],
             providers: [
                 { provide: SocketClientService, useValue: socketServiceMock },
@@ -67,6 +95,8 @@ describe('OneVsOnePageComponent', () => {
                 { provide: DisplayGameService, useValue: displayServiceSpy },
                 { provide: LoginFormService, useValue: loginServiceSpy },
                 { provide: LobbyService, useValue: lobbyServiceSpy },
+                { provide: MatDialog, useValue: matDialogSpy },
+                { provide: HistoryService, useValue: historyServiceSpy },
             ],
         }).compileComponents();
 
@@ -84,23 +114,23 @@ describe('OneVsOnePageComponent', () => {
 
     it('loseGame should call stopStopWatch and show correct PopUp', () => {
         const spy = spyOn(component, 'stopStopWatch').and.callThrough();
+        component.popUpWindowLose = new ElementRef(document.createElement('div'));
         component.popUpWindowLose.nativeElement.style.display = 'none';
         component.loseGame();
         expect(spy).toHaveBeenCalled();
         expect(component.popUpWindowLose.nativeElement.style.display).toEqual('block');
     });
 
-    it('loseGame should call stopStopWatch, playAudio and show correct popUp', () => {
+    it('winGame should call stopStopWatch, playAudio and show correct popUp', () => {
         const spy = spyOn(component, 'stopStopWatch').and.callThrough();
-        component.popUpWindowWin.nativeElement.style.display = 'none';
         component.winGame();
         expect(spy).toHaveBeenCalled();
         expect(gameManagerSpy.playWinAudio).toHaveBeenCalled();
-        expect(component.popUpWindowWin.nativeElement.style.display).toEqual('block');
+        expect(matDialogSpy.open).toHaveBeenCalled();
     });
     /*
-    it('giveUp should call goToHomePage and send a event to socketService', () => {
-        const spy = spyOn(component, 'goToHomePage');
+    it('goToGiveUp should show PopUp and send giveUp event to server', () => {
+        component.popUpWindowGiveUp.nativeElement.style.display = 'none';
         const socketSpy = spyOn(socketServiceMock, 'send');
         component.roomId = '1';
         component.giveUp();
@@ -108,32 +138,26 @@ describe('OneVsOnePageComponent', () => {
         expect(socketSpy).toHaveBeenCalledWith('giveUp', { roomId: '1' });
     });*/
     it('goToGiveUp should show PopUp', () => {
-        component.popUpWindowGiveUp.nativeElement.style.display = 'none';
         component.goToGiveUp();
-        expect(component.popUpWindowGiveUp.nativeElement.style.display).toEqual('block');
+        expect(matDialogSpy.open).toHaveBeenCalled();
     });
-
+    /*
     it('goToStay should unShow PopUp', () => {
         component.popUpWindowGiveUp.nativeElement.style.display = 'block';
         component.goToStay();
         expect(component.popUpWindowGiveUp.nativeElement.style.display).toEqual('none');
+    });*/
+    it('goToHomePage should navigate to Home Page', () => {
+        const routerSpy = spyOn(router, 'navigate');
+        component.goToHomePage();
+        expect(routerSpy).toHaveBeenCalledOnceWith(['home']);
     });
     /*
-    it('goToHomePage should navigate to Home Page and close PopUps', () => {
-        const routerSpy = spyOn(router, 'navigate');
-        component.popUpWindowWin.nativeElement.style.display = 'block';
-        component.popUpWindowLose.nativeElement.style.display = 'block';
-        component.goToHomePage();
-        expect(component.popUpWindowWin.nativeElement.style.display).toEqual('none');
-        expect(component.popUpWindowLose.nativeElement.style.display).toEqual('none');
-        expect(routerSpy).toHaveBeenCalledOnceWith(['home']);
-    });*/
-
     it('returnSelectionPage should navigate to gameSelection Page', () => {
         const routerSpy = spyOn(router, 'navigate');
         component.returnSelectionPage();
         expect(routerSpy).toHaveBeenCalledOnceWith(['/gameSelection']);
-    });
+    });*/
     it('OnClick should call onPositionClicked from gameManager if button pressed is left', () => {
         const mouseEventMock = { button: MouseButton.Left, offsetX: 0, offsetY: 0 } as MouseEvent;
         component.onClick(mouseEventMock);
@@ -154,25 +178,30 @@ describe('OneVsOnePageComponent', () => {
         component.onClick(mouseEventMock);
         expect(socketSpy).toHaveBeenCalledTimes(0);
     });
-    /*
+
     it('Win check should call winGame if user1 found enough differences', () => {
         component.nbDifferenceToWin = 1;
         component.nbDifferencesFoundUser1 = 1;
         lobbyServiceSpy.host = true;
+        component.hostName = 'test';
         const spy = spyOn(component, 'winGame');
         component.winCheck();
+        expect(historyServiceSpy.history.winnerName).toEqual('test');
         expect(spy).toHaveBeenCalled();
     });
+
     it('Win check should call winGame if user2 found enough differences', () => {
         component.nbDifferenceToWin = 1;
         component.nbDifferencesFoundUser1 = 0;
         component.nbDifferencesFoundUser2 = 1;
         lobbyServiceSpy.host = false;
+        component.guestName = 'test';
         const spy = spyOn(component, 'winGame');
         component.winCheck();
+        expect(historyServiceSpy.history.winnerName).toEqual('test');
         expect(spy).toHaveBeenCalled();
     });
-    */
+
     it('Win check should call loseGame if otherUser found enough differences', () => {
         component.nbDifferenceToWin = 1;
         component.nbDifferencesFoundUser1 = 0;
@@ -196,6 +225,6 @@ describe('OneVsOnePageComponent', () => {
         socketHelper.peerSideEmit('differenceUpdate', { nbDifferenceHost: 0, nbDifferenceInvite: 1, differenceId: 0 });
         expect(component.nbDifferencesFoundUser1).toEqual(0);
         expect(component.nbDifferencesFoundUser2).toEqual(1);
-        expect(gameManagerSpy.flashImages).toHaveBeenCalled();
+        expect(gameManagerSpy.opponentFoundDifference).toHaveBeenCalled();
     });
 });

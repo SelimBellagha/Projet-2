@@ -20,13 +20,13 @@ describe('ScoresController', () => {
         { position: '2', gameId: 'defaultID', gameType: '1v1', time: '2:15', playerName: 'Daisy' },
         { position: '1', gameId: 'defaultID', gameType: '1v1', time: '2:00', playerName: 'Pluto' },
     ] as TopScore[];
-    // const newScore: TopScore = {
-    //     position: '1',
-    //     gameId: 'defaultID',
-    //     gameType: 'solo',
-    //     time: '1:30',
-    //     playerName: 'TestName',
-    // };
+    const newScore: TopScore = {
+        position: '1',
+        gameId: 'defaultID',
+        gameType: 'solo',
+        time: '1:30',
+        playerName: 'TestName',
+    };
     let scoreService: SinonStubbedInstance<TopScoresService>;
     let expressApp: Express.Application;
 
@@ -73,27 +73,16 @@ describe('ScoresController', () => {
         return supertest(expressApp).get('/api/scores/defaultID/solo').send(error.message).expect(HTTP_SERVER_ERROR);
     });
 
-    // it('should store score on valid post request to /scores', async () => {
-    //     scoreService.addScore.withArgs(newScore).resolves(true);
-    //     return supertest(expressApp)
-    //         .post('/api/scores/')
-    //         .send(newScore)
-    //         .expect(HTTP_STATUS_CREATED)
-    //         .then((response) => {
-    //             expect(response.body).to.deep.equal(true);
-    //         });
-    // });
-
-    // it('should store score on valid post request to /scores', async () => {
-    //     scoreService.addScore.withArgs(newScore).resolves(false);
-    //     return supertest(expressApp)
-    //         .post('/api/scores/')
-    //         .send(newScore)
-    //         .expect(HTTP_STATUS_OK)
-    //         .then((response) => {
-    //             expect(response.body).to.deep.equal(false);
-    //         });
-    // });
+    it('should store score on valid post request to /scores', async () => {
+        scoreService.addScore.withArgs(newScore).resolves({ isAdded: true, positionIndex: '1' });
+        return supertest(expressApp)
+            .post('/api/scores/')
+            .send(newScore)
+            .expect(HTTP_STATUS_OK)
+            .then((response) => {
+                expect(response.body).to.deep.equal({ isAdded: true, positionIndex: '1' });
+            });
+    });
 
     it('should return 500 error on invalid post request to /scores', async () => {
         const error = new Error('service error');

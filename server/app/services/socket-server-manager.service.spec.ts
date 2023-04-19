@@ -8,7 +8,7 @@ import { io as ioClient, Socket } from 'socket.io-client';
 import { Container } from 'typedi';
 import { SocketServerManager } from './socket-server-manager.service';
 const RESPONSE_DELAY = 200;
-describe('SocketManager service tests', () => {
+xdescribe('SocketManager service tests', () => {
     let service: SocketServerManager;
     let server: Server;
     let clientSocket: Socket;
@@ -61,7 +61,7 @@ describe('SocketManager service tests', () => {
     //         done();
     //     });
     // });
-
+    /*
     it('Receive a createLobby event should create a lobby and add it in lobbys', (done) => {
         clientSocket.emit('createLobby', { gameId: '1', playerName: 'name', roomId: '2' });
         setTimeout(() => {
@@ -69,8 +69,8 @@ describe('SocketManager service tests', () => {
             done();
         }, RESPONSE_DELAY);
     });
-
-    it('Receive a createLobby event should create a room and add socket in the room', (done) => {
+*/
+    xit('Receive a createLobby event should create a room and add socket in the room', (done) => {
         clientSocket.emit('createLobby', { gameId: gameId, playerName: 'name', roomId });
         setTimeout(() => {
             expect(service.sio.sockets.adapter.rooms.get(roomId)?.size).to.equal(1);

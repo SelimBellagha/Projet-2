@@ -10,3 +10,7 @@ export const MIN_PENALTY_TIME = 1;
 export const MAX_PENALTY_TIME = 15;
 export const MIN_BONUS_TIME = 1;
 export const MAX_BONUS_TIME = 15;
+
+export const TEST_JSON_PATH = './assets/test.json';
+export const TEST_GAME_CONSTANTS_JSON_PATH = './assets/test-game-constants.json';
+export const STRINGIFY_SPACES = 4;
