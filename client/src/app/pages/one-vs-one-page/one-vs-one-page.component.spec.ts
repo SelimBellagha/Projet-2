@@ -1,5 +1,6 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { MatDialogModule } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { SocketTestHelper } from '@app/classes/socket-test-helper';
@@ -60,7 +61,7 @@ describe('OneVsOnePageComponent', () => {
 
         await TestBed.configureTestingModule({
             declarations: [OneVsOnePageComponent],
-            imports: [RouterTestingModule, HttpClientTestingModule],
+            imports: [RouterTestingModule, HttpClientTestingModule, MatDialogModule],
             providers: [
                 { provide: SocketClientService, useValue: socketServiceMock },
                 { provide: GameManagerService, useValue: gameManagerSpy },
@@ -90,13 +91,11 @@ describe('OneVsOnePageComponent', () => {
         expect(component.popUpWindowLose.nativeElement.style.display).toEqual('block');
     });
 
-    it('loseGame should call stopStopWatch, playAudio and show correct popUp', () => {
+    it('loseGame should call stopStopWatch and playAudio', () => {
         const spy = spyOn(component, 'stopStopWatch').and.callThrough();
-        component.popUpWindowWin.nativeElement.style.display = 'none';
         component.winGame();
         expect(spy).toHaveBeenCalled();
         expect(gameManagerSpy.playWinAudio).toHaveBeenCalled();
-        expect(component.popUpWindowWin.nativeElement.style.display).toEqual('block');
     });
 
     it('giveUp should call goToHomePage and send a event to socketService', () => {
@@ -107,32 +106,13 @@ describe('OneVsOnePageComponent', () => {
         expect(spy).toHaveBeenCalled();
         expect(socketSpy).toHaveBeenCalledWith('giveUp', { roomId: '1' });
     });
-    it('goToGiveUp should show PopUp', () => {
-        component.popUpWindowGiveUp.nativeElement.style.display = 'none';
-        component.goToGiveUp();
-        expect(component.popUpWindowGiveUp.nativeElement.style.display).toEqual('block');
-    });
 
-    it('goToStay should unShow PopUp', () => {
-        component.popUpWindowGiveUp.nativeElement.style.display = 'block';
-        component.goToStay();
-        expect(component.popUpWindowGiveUp.nativeElement.style.display).toEqual('none');
-    });
-    it('goToHomePage should navigate to Home Page and close PopUps', () => {
+    it('goToHomePage should navigate to Home Page', () => {
         const routerSpy = spyOn(router, 'navigate');
-        component.popUpWindowWin.nativeElement.style.display = 'block';
-        component.popUpWindowLose.nativeElement.style.display = 'block';
         component.goToHomePage();
-        expect(component.popUpWindowWin.nativeElement.style.display).toEqual('none');
-        expect(component.popUpWindowLose.nativeElement.style.display).toEqual('none');
         expect(routerSpy).toHaveBeenCalledOnceWith(['home']);
     });
 
-    it('returnSelectionPage should navigate to gameSelection Page', () => {
-        const routerSpy = spyOn(router, 'navigate');
-        component.returnSelectionPage();
-        expect(routerSpy).toHaveBeenCalledOnceWith(['/gameSelection']);
-    });
     it('OnClick should call onPositionClicked from gameManager if button pressed is left', () => {
         const mouseEventMock = { button: MouseButton.Left, offsetX: 0, offsetY: 0 } as MouseEvent;
         component.onClick(mouseEventMock);

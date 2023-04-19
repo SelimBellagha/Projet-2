@@ -1,5 +1,6 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { MatDialogModule } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { SocketTestHelper } from '@app/classes/socket-test-helper';
@@ -74,7 +75,7 @@ describe('OneVsOneLimitedTimeComponent', () => {
         );
 
         await TestBed.configureTestingModule({
-            imports: [RouterTestingModule, HttpClientTestingModule],
+            imports: [RouterTestingModule, HttpClientTestingModule, MatDialogModule],
             providers: [
                 { provide: SocketClientService, useValue: socketServiceMock },
                 { provide: DisplayGameService, useValue: displayGamesSpy },

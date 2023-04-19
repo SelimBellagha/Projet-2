@@ -138,7 +138,7 @@ export class OneVsOneLimitedTimeComponent implements OnInit, AfterViewInit {
     }
 
     goToHomePage() {
-        this.router.navigate(['home']);
+        this.router.navigate(['/home']);
     }
 
     goToGiveUp() {

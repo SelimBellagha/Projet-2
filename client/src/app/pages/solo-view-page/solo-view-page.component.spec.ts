@@ -1,5 +1,6 @@
 import { HttpClientModule } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { MatDialogModule } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { GameData } from '@app/interfaces/game.interface';
@@ -40,7 +41,7 @@ describe('SoloViewPageComponent', () => {
         loginServiceSpy.getFormData.and.returnValue(username);
 
         await TestBed.configureTestingModule({
-            imports: [RouterTestingModule, HttpClientModule],
+            imports: [RouterTestingModule, HttpClientModule, MatDialogModule],
             declarations: [SoloViewPageComponent],
             providers: [
                 { provide: GameManagerService, useValue: gameManagerSpy },

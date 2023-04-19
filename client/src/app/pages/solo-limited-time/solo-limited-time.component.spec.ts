@@ -1,6 +1,6 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { Router } from '@angular/router';
+import { MatDialogModule } from '@angular/material/dialog';
 import { RouterTestingModule } from '@angular/router/testing';
 import { MouseButton } from '@app/components/play-area/play-area.component';
 import { GameData } from '@app/interfaces/game.interface';
@@ -16,7 +16,6 @@ describe('SoloLimitedTimeComponent', () => {
     let gameManagerSpy: SpyObj<GameManagerService>;
     let displayGameSpy: SpyObj<DisplayGameService>;
     let limitedLobbySpy: SpyObj<LimitedTimeLobbyService>;
-    let router: Router;
 
     const gameMock1: GameData = {
         id: '0',
@@ -40,7 +39,7 @@ describe('SoloLimitedTimeComponent', () => {
         limitedLobbySpy = jasmine.createSpyObj('LimitedTimeLobbyService', { roomId: 'id' });
         await TestBed.configureTestingModule({
             declarations: [SoloLimitedTimeComponent],
-            imports: [RouterTestingModule, HttpClientTestingModule],
+            imports: [RouterTestingModule, HttpClientTestingModule, MatDialogModule],
             providers: [
                 { provide: GameManagerService, useValue: gameManagerSpy },
                 { provide: DisplayGameService, useValue: displayGameSpy },
@@ -49,7 +48,6 @@ describe('SoloLimitedTimeComponent', () => {
         }).compileComponents();
 
         fixture = TestBed.createComponent(SoloLimitedTimeComponent);
-        router = TestBed.inject(Router);
         component = fixture.componentInstance;
         fixture.detectChanges();
     });
@@ -129,17 +127,6 @@ describe('SoloLimitedTimeComponent', () => {
         await component.onClick(event);
         expect(component.endGame).toHaveBeenCalled();
     });
-
-    /*
-
-    it('goToHomePage should navigate to home and call stopTimer', async () => {
-        const routerSpy = spyOn(router, 'navigate');
-        const stopTimerSpy = spyOn(component, 'stopTimer');
-        await component.goToHomePage();
-        expect(routerSpy).toHaveBeenCalledWith(['home']);
-        expect(stopTimerSpy).toHaveBeenCalled();
-    });
-    */
 
     it('if not firstGame, should call loadAllGames', () => {
         expect(displayGameSpy.loadAllGames).toHaveBeenCalled();

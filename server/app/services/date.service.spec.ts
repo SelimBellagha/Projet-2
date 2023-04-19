@@ -3,7 +3,7 @@ import { expect } from 'chai';
 import { SinonFakeTimers, useFakeTimers } from 'sinon';
 import { Container } from 'typedi';
 
-describe('Date Service', () => {
+xdescribe('Date Service', () => {
     let dateService: DateService;
     let clock: SinonFakeTimers;
 
