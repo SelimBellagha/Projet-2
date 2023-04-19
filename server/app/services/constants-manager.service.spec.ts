@@ -1,9 +1,9 @@
-import { Constants, TEST_GAME_CONSTANTS_JSON_PATH } from '@common/constants';
 import { GameConstantsService } from '@app/services/constants-manager.service';
+import { Constants, TEST_GAME_CONSTANTS_JSON_PATH } from '@common/constants';
 import { expect } from 'chai';
 import * as fs from 'fs';
-import { Container } from 'typedi';
 import * as sinon from 'sinon';
+import { Container } from 'typedi';
 
 describe('Game constants service', () => {
     let newConstants: Constants;
@@ -20,15 +20,14 @@ describe('Game constants service', () => {
         gamesConstantsService['jsonPath'] = TEST_GAME_CONSTANTS_JSON_PATH;
     });
 
-    xit('should get all game constants', async () => {
-        const string = JSON.stringify(gameConstantsObject);
-        fs.writeFileSync(TEST_GAME_CONSTANTS_JSON_PATH, string, 'utf-8');
+    it('should get all game constants', async () => {
+        const readFileStub = sinon.stub(fs.promises, 'readFile').resolves(JSON.stringify(gameConstantsObject));
         const gamesConstants = await gamesConstantsService.getGameConstants();
-        expect(gamesConstants).to.deep.equals(gameConstantsObject);
-        fs.unlinkSync(TEST_GAME_CONSTANTS_JSON_PATH);
+        expect(gamesConstants).to.deep.equal(gameConstantsObject);
+        readFileStub.restore();
     });
 
-    xit('appendJSON should add a game constant to game-constants.json', async () => {
+    it('appendJSON should add a game constant to game-constants.json', async () => {
         fs.writeFileSync(TEST_GAME_CONSTANTS_JSON_PATH, JSON.stringify(gameConstantsObject), 'utf-8');
         await gamesConstantsService.appendJSON(newConstants);
         const constantsObject = JSON.parse(fs.readFileSync(TEST_GAME_CONSTANTS_JSON_PATH, 'utf-8'));
