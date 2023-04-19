@@ -1,6 +1,10 @@
 import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
+import { GiveUpComponent } from '@app/components/give-up/give-up.component';
 import { MouseButton } from '@app/components/play-area/play-area.component';
+import { TimeOffComponent } from '@app/components/time-off/time-off.component';
+import { VictoryComponent } from '@app/components/victory/victory.component';
 import { Vec2 } from '@app/interfaces/vec2';
 import { DisplayGameService } from '@app/services/display-game.service';
 import { GameManagerService } from '@app/services/game-manager.service';
@@ -17,7 +21,6 @@ import { SocketClientService } from '@app/services/socket-client-service.service
 export class SoloLimitedTimeComponent implements OnInit, AfterViewInit {
     @ViewChild('modifiedImage') modifiedCanvas: ElementRef<HTMLCanvasElement>;
     @ViewChild('originalImage') originalCanvas: ElementRef<HTMLCanvasElement>;
-    @ViewChild('popUpWindow') popUpWindow: ElementRef<HTMLDivElement>;
     username: string;
     gameName: string;
     difficulty: string;
@@ -31,6 +34,7 @@ export class SoloLimitedTimeComponent implements OnInit, AfterViewInit {
 
     // eslint-disable-next-line max-params
     constructor(
+        private dialogRef: MatDialog,
         private router: Router,
         private loginService: LoginFormService,
         private displayService: DisplayGameService,
@@ -87,7 +91,7 @@ export class SoloLimitedTimeComponent implements OnInit, AfterViewInit {
             if (this.minutes <= 0 && this.secondes <= 0) {
                 this.secondes = 0;
                 this.minutes = 0;
-                this.endGame();
+                this.timeOff();
             }
         }, timerInterval);
     }
@@ -106,7 +110,7 @@ export class SoloLimitedTimeComponent implements OnInit, AfterViewInit {
         this.displayService.addHistory(this.historyService.history);
         this.stopTimer();
         this.gameManager.playWinAudio();
-        this.popUpWindow.nativeElement.style.display = 'block';
+        this.goToCongratulations();
     }
 
     async onClick(event: MouseEvent): Promise<void> {
@@ -130,10 +134,18 @@ export class SoloLimitedTimeComponent implements OnInit, AfterViewInit {
         this.difficulty = this.displayService.convertDifficulty(this.gameManager.gameData);
     }
 
-    goToHomePage() {
+    goToGiveup() {
+        this.limitedTimeLobbyService.timerId = this.intervalID;
+        this.dialogRef.open(GiveUpComponent);
+    }
+
+    goToCongratulations() {
+        this.dialogRef.open(VictoryComponent);
+    }
+
+    timeOff() {
         this.stopTimer();
-        this.popUpWindow.nativeElement.style.display = 'none';
-        this.router.navigate(['home']);
+        this.dialogRef.open(TimeOffComponent);
     }
 
     goToHomePageAfterQuit() {
@@ -141,11 +153,6 @@ export class SoloLimitedTimeComponent implements OnInit, AfterViewInit {
         this.historyService.history.nameAbandon = this.username;
         this.historyService.history.gameLength = this.historyService.findGameLength(this.startDate);
         this.displayService.addHistory(this.historyService.history);
-        this.popUpWindow.nativeElement.style.display = 'none';
         this.router.navigate(['home']);
-    }
-
-    goToCongratulations() {
-        this.popUpWindow.nativeElement.style.display = 'block';
     }
 }

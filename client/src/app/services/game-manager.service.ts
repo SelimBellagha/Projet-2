@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { GameData } from '@app/interfaces/game-data';
 import { Vec2 } from '@app/interfaces/vec2';
 import { Verification } from '@app/interfaces/verification';
+import { ActionSaverService } from './action-saver.service';
 import { DifferenceVerificationService } from './difference-verification.service';
 import { DEFAULT_HEIGHT, DEFAULT_WIDTH } from './draw.service';
 import { LimitedTimeLobbyService } from './limited-time-lobby.service';
@@ -13,9 +14,7 @@ const FLASH_TIME = 250;
 const ONE_SECOND = 1000;
 const EIGHT = 8;
 const QUART_SECOND = 250;
-const pointY = 240;
-const pointX = 250;
-
+const indicePixel = 20;
 @Injectable({
     providedIn: 'root',
 })
@@ -33,11 +32,16 @@ export class GameManagerService {
     hintState: boolean = false;
     foundDifferenceCheat: boolean = false;
     gameTime: number = 0;
+    replayMode: boolean = false;
+    replaySpeed: number = 1;
+    timeTest: number = 1;
 
+    // eslint-disable-next-line max-params
     // eslint-disable-next-line max-params
     constructor(
         private differenceVerification: DifferenceVerificationService,
         private socketService: SocketClientService,
+        private actionSaver: ActionSaverService,
         private router: Router,
         private limitedTimeLobby: LimitedTimeLobbyService,
     ) {}
@@ -46,8 +50,11 @@ export class GameManagerService {
         if (gameData) {
             this.gameData = gameData;
             this.differencesFound = new Array<boolean>(gameData.nbDifferences).fill(false);
-            this.lastDifferenceFound = -1; // change this
+            this.lastDifferenceFound = -1;
             this.locked = false;
+            this.replayMode = false;
+            this.replaySpeed = 1;
+            this.actionSaver.reset();
         }
     }
 
@@ -92,13 +99,16 @@ export class GameManagerService {
     async onPositionClicked(position: Vec2): Promise<boolean> {
         if (!this.locked) {
             this.locked = true;
+            this.actionSaver.addClickAction(position);
             const now: Date = new Date();
             const timeString: string = now.toTimeString().slice(0, EIGHT);
             if (await this.verifyDifference(position)) {
                 this.locked = false;
                 this.playDifferenceAudio();
-                this.socketService.send('systemMessage', '[' + timeString + '] ' + 'Différence trouvée par le joueur : ');
-                this.socketService.send('systemMessageSolo', 'Différence trouvée ');
+                if (!this.replayMode) {
+                    this.socketService.send('systemMessage', '[' + timeString + '] ' + 'Différence trouvée par le joueur : ');
+                    this.socketService.send('systemMessageSolo', 'Différence trouvée ');
+                }
                 await this.flashImages(this.gameData.differences[this.lastDifferenceFound]);
                 if (this.router.url === '/soloLimitedTime') {
                     this.changeGame();
@@ -106,8 +116,10 @@ export class GameManagerService {
                 return true;
             } else {
                 await this.errorMessage(position);
-                this.socketService.send('systemMessage', '[' + timeString + '] ' + 'Erreur faite par le joueur : ');
-                this.socketService.send('systemMessageSolo', 'Erreur ');
+                if (!this.replayMode) {
+                    this.socketService.send('systemMessage', '[' + timeString + '] ' + 'Erreur faite par le joueur : ');
+                    this.socketService.send('systemMessageSolo', 'Erreur ');
+                }
             }
             this.locked = false;
         }
@@ -148,9 +160,9 @@ export class GameManagerService {
         });
         for (let i = 0; i <= 3; i++) {
             canvas.putImageData(flashingOriginalImageData, 0, 0);
-            await this.wait(FLASH_TIME);
+            await this.wait(FLASH_TIME / this.replaySpeed);
             canvas.putImageData(originalImageData, 0, 0);
-            await this.wait(FLASH_TIME);
+            await this.wait(FLASH_TIME / this.replaySpeed);
         }
     }
 
@@ -201,51 +213,46 @@ export class GameManagerService {
                 }
 
                 canvas.putImageData(newFlashingOriginalImageData, 0, 0);
-                await this.wait(QUART_SECOND);
+                await this.wait(QUART_SECOND / this.replaySpeed);
                 canvas.putImageData(newOriginalImageData, 0, 0);
-                await this.wait(QUART_SECOND);
+                await this.wait(QUART_SECOND / this.replaySpeed);
                 canvas.putImageData(newFlashingOriginalImageData, 0, 0);
-                await this.wait(QUART_SECOND);
+                await this.wait(QUART_SECOND / this.replaySpeed);
                 canvas.putImageData(newOriginalImageData, 0, 0);
-                await this.wait(QUART_SECOND);
+                await this.wait(QUART_SECOND / this.replaySpeed);
                 canvas.putImageData(newFlashingOriginalImageData, 0, 0);
                 canvas.putImageData(newOriginalImageData, 0, 0);
             } else {
                 canvas.putImageData(flashingOriginalImageData, 0, 0);
-                await this.wait(QUART_SECOND);
+                await this.wait(QUART_SECOND / this.replaySpeed);
                 canvas.putImageData(originalImageData, 0, 0);
-                await this.wait(QUART_SECOND);
+                await this.wait(QUART_SECOND / this.replaySpeed);
                 canvas.putImageData(flashingOriginalImageData, 0, 0);
-                await this.wait(QUART_SECOND);
+                await this.wait(QUART_SECOND / this.replaySpeed);
                 canvas.putImageData(originalImageData, 0, 0);
-                await this.wait(QUART_SECOND);
+                await this.wait(QUART_SECOND / this.replaySpeed);
                 canvas.putImageData(flashingOriginalImageData, 0, 0);
                 canvas.putImageData(originalImageData, 0, 0);
             }
         }
         return;
     }
-    drawLine(firstPoint: Vec2): void {
-        // Copier les pixels dee l'image originale vers l'image modifiée
-        const hintImage = this.originalImageCanvas;
-        hintImage.moveTo(pointX, pointY);
-        hintImage.lineTo(firstPoint.x, firstPoint.y);
-        hintImage.stroke();
-    }
-    drawLine2(firstPoint: Vec2, endPoint: Vec2): void {
-        // Copier les pixels dee l'image originale vers l'image modifiée
-        const originalImageData = this.originalImageCanvas.getImageData(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT);
-        this.originalImageCanvas.putImageData(originalImageData, 0, 0);
+
+    drawLine(firstPoint: Vec2, endPoint: Vec2): void {
+        this.actionSaver.addHintAction(firstPoint, endPoint);
+        this.originalImageCanvas.beginPath();
         this.originalImageCanvas.moveTo(firstPoint.x, firstPoint.y);
         this.originalImageCanvas.lineTo(endPoint.x, endPoint.y);
+        this.originalImageCanvas.strokeStyle = 'red';
+        this.originalImageCanvas.lineWidth = 1;
         this.originalImageCanvas.stroke();
     }
 
     giveHint3(coordinate: Vec2): void {
-        this.originalImageCanvas.font = '30px Arial';
-        this.originalImageCanvas.strokeText('Click Here', coordinate.x, coordinate.y);
+        this.actionSaver.addLastHintAction(coordinate);
+        this.originalImageCanvas.font = '40px Arial';
+        this.originalImageCanvas.strokeText('Click Here', coordinate.x + indicePixel, coordinate.y + indicePixel);
     }
-
     timePenalty(): void {
         if (this.router.url === '/soloLimitedTime') {
             this.gameTime -= this.limitedTimeLobby.penaltyTime;
@@ -253,7 +260,6 @@ export class GameManagerService {
             this.gameTime += this.limitedTimeLobby.penaltyTime;
         }
     }
-
     replacePixels(pixels: Vec2[]): void {
         // Copier les pixels dee l'image originale vers l'image modifiée
         const originalImageData = this.originalImageCanvas.getImageData(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT);
@@ -277,7 +283,7 @@ export class GameManagerService {
         // put error
         this.drawError(this.originalImageCanvas, position);
         this.drawError(this.modifiedImageCanvas, position);
-        await this.wait(ONE_SECOND);
+        await this.wait(ONE_SECOND / this.replaySpeed);
         // restore Canvas
         this.originalImageCanvas.putImageData(originalImageData, 0, 0);
         this.modifiedImageCanvas.putImageData(modifiedImageData, 0, 0);
@@ -292,6 +298,16 @@ export class GameManagerService {
         for (let i = 0; i < word.length; i++) {
             context.fillText(word[i], startPosition.x + step * i, startPosition.y);
         }
+    }
+    enableReplay(): void {
+        this.replayMode = true;
+    }
+
+    restartGame(): void {
+        this.putImages();
+        this.differencesFound = new Array<boolean>(this.gameData.nbDifferences).fill(false);
+        this.lastDifferenceFound = -1;
+        this.locked = false;
     }
 
     playWinAudio() {
@@ -316,5 +332,10 @@ export class GameManagerService {
         setInterval(() => {
             audio.pause();
         }, soundTime);
+    }
+    opponentFoundDifference(differenceId: number): void {
+        this.lastDifferenceFound = differenceId;
+        this.actionSaver.addOpponentAction(differenceId);
+        this.flashImages(this.gameData.differences[differenceId]);
     }
 }

@@ -1,0 +1,30 @@
+   button {
+   margin: 5px 0 5px 30px;
+    text-align: center;
+    font-weight: bold;
+    height: 30px;
+    width: 40%;
+    color: white;
+    border-radius: 10px;
+    font-family: 'Oleo Script Swash Caps';
+    font-size: 15px;
+   }
+
+.quit {
+    text-align: center;
+    font-weight: bold;
+    font-family: serif;
+    font-size: xx-large;
+}
+
+#button-stay {
+    background-color: green;
+    border-color: rgb(2, 97, 2);
+}
+
+#button-home {
+    background-color: red;
+    border-color: rgb(198, 2, 2);
+}
+
+

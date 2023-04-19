@@ -30,8 +30,7 @@
             "app/server.ts",
             "app/app.ts",
             "app/services/socket-server-manager.service.ts",
-            "app/classes/lobby-limited-time.ts",
-            "app/services/constants-manager.service.ts"
+            "app/classes/lobby-limited-time.ts"
         ],
         "require": [
             "ts-node/register",
@@ -62,7 +61,7 @@
         "mock-fs": "^5.2.0",
         "module-alias": "2.2.2",
         "mongodb": "^4.5.0",
-        "mongodb-memory-server": "^8.12.1",
+        "mongodb-memory-server": "^8.12.2",
         "prettier": "2.7.1",
         "reflect-metadata": "0.1.13",
         "serve-favicon": "2.5.0",

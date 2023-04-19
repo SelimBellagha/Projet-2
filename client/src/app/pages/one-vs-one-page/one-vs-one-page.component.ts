@@ -1,6 +1,9 @@
 import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
+import { GiveUpComponent } from '@app/components/give-up/give-up.component';
 import { MouseButton } from '@app/components/play-area/play-area.component';
+import { VictoryComponent } from '@app/components/victory/victory.component';
 import { TopScore } from '@app/interfaces/game.interface';
 import { Vec2 } from '@app/interfaces/vec2';
 import { DisplayGameService } from '@app/services/display-game.service';
@@ -20,8 +23,6 @@ export class OneVsOnePageComponent implements OnInit, AfterViewInit {
     @ViewChild('originalImage') originalCanvas: ElementRef<HTMLCanvasElement>;
     @ViewChild('popUpWindowWin') popUpWindowWin: ElementRef<HTMLDivElement>;
     @ViewChild('popUpWindowLose') popUpWindowLose: ElementRef<HTMLDivElement>;
-    @ViewChild('popUpWindowGiveUp') popUpWindowGiveUp: ElementRef<HTMLDivElement>;
-    @ViewChild('popUpWindowAbandonWin') popUpWindowAbandonWin: ElementRef<HTMLDivElement>;
     myUsername: string;
     opponentUsername: string;
     hostName: string;
@@ -48,9 +49,12 @@ export class OneVsOnePageComponent implements OnInit, AfterViewInit {
     };
     startDate: Date;
 
+    inReplay: boolean = false;
+
     // eslint-disable-next-line max-params
     constructor(
         private router: Router,
+        private dialogRef: MatDialog,
         private loginService: LoginFormService,
         private displayService: DisplayGameService,
         private gameManager: GameManagerService,
@@ -107,7 +111,7 @@ export class OneVsOnePageComponent implements OnInit, AfterViewInit {
             this.nbDifferencesFoundUser2 = data.nbDifferenceInvite;
             if (this.gameManager.lastDifferenceFound !== data.differenceId) {
                 this.gameManager.lastDifferenceFound = data.differenceId;
-                this.gameManager.flashImages(this.gameManager.gameData.differences[data.differenceId]);
+                this.gameManager.opponentFoundDifference(data.differenceId);
             }
             this.winCheck();
         });
@@ -174,7 +178,8 @@ export class OneVsOnePageComponent implements OnInit, AfterViewInit {
     winGameAfterGiveUp(): void {
         this.stopStopWatch();
         this.gameManager.playWinAudio();
-        this.popUpWindowAbandonWin.nativeElement.style.display = 'block';
+        this.dialogRef.open(VictoryComponent);
+        this.inReplay = true;
     }
 
     winGame(): void {
@@ -182,16 +187,17 @@ export class OneVsOnePageComponent implements OnInit, AfterViewInit {
         this.socketService.send('getRealTime', { roomId: this.roomId });
         this.stopStopWatch();
         this.gameManager.playWinAudio();
-        this.popUpWindowWin.nativeElement.style.display = 'block';
+        this.dialogRef.open(VictoryComponent);
+        this.inReplay = true;
     }
-    goToHomePageLoser() {
-        this.popUpWindowLose.nativeElement.style.display = 'none';
+
+    goToHomePage() {
         this.router.navigate(['home']);
     }
+
     goToHomePageAfterAbandon() {
         this.historyService.history.gameLength = this.historyService.findGameLength(this.startDate);
         this.displayService.addHistory(this.historyService.history);
-        this.popUpWindowGiveUp.nativeElement.style.display = 'none';
         this.router.navigate(['home']);
     }
     goToHomePageWinner() {
@@ -202,7 +208,6 @@ export class OneVsOnePageComponent implements OnInit, AfterViewInit {
     }
 
     goToHomePageAbandonWinner() {
-        this.popUpWindowAbandonWin.nativeElement.style.display = 'none';
         this.router.navigate(['home']);
     }
 
@@ -211,22 +216,13 @@ export class OneVsOnePageComponent implements OnInit, AfterViewInit {
     }
 
     goToGiveUp() {
-        this.popUpWindowGiveUp.nativeElement.style.display = 'block';
+        this.dialogRef.open(GiveUpComponent);
         this.socketService.send('giveUp', { roomId: this.roomId });
         this.socketService.send('systemMessage', ' a abandonné la partie');
     }
 
-    goToStay() {
-        this.popUpWindowGiveUp.nativeElement.style.display = 'none';
-    }
-
-    returnSelectionPage(): void {
-        this.router.navigate(['/gameSelection']);
-    }
-
-    /// ////A adapter selon les joueurs
     async onClick(event: MouseEvent): Promise<void> {
-        if (event.button === MouseButton.Left) {
+        if (event.button === MouseButton.Left && !this.inReplay) {
             const mousePosition: Vec2 = { x: event.offsetX, y: event.offsetY };
             if (await this.gameManager.onPositionClicked(mousePosition)) {
                 // Incrementer le cpt de differences
@@ -251,5 +247,11 @@ export class OneVsOnePageComponent implements OnInit, AfterViewInit {
                 this.loseGame();
             }
         }
+    }
+    onReplay(): void {
+        this.inReplay = true;
+        this.gameManager.enableReplay();
+        this.popUpWindowWin.nativeElement.style.display = 'none';
+        this.popUpWindowLose.nativeElement.style.display = 'none';
     }
 }
