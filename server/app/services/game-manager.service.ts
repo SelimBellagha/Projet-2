@@ -4,7 +4,6 @@ import * as path from 'path';
 import { Service } from 'typedi';
 import { v4 as uuidv4 } from 'uuid';
 import { TopScoresService } from './top-scores.service';
-import { TopScore } from '@app/data/top-scores.interface';
 
 @Service()
 export class GameManager {
@@ -53,19 +52,6 @@ export class GameManager {
         } else {
             return false;
         }
-    }
-    getScores(): TopScore[] {
-        if (!this.topScoreService.gameScores)
-            return [
-                {
-                    gameId: '1',
-                    gameType: '1',
-                    position: '1',
-                    time: '1',
-                    playerName: '1',
-                },
-            ];
-        return this.topScoreService.gameScores;
     }
 
     async verificationInPicture(positionX: number, positionY: number, id: string) {

@@ -121,8 +121,4 @@ export class TopScoresService {
         }
         await this.collection.insertMany(defaultScores);
     }
-
-    async getDefaultScores(): Promise<TopScore[]> {
-        return await TopScoresService.getDefaultScores(this.jsonPath);
-    }
 }

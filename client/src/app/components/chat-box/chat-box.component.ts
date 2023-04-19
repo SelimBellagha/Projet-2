@@ -45,17 +45,15 @@ export class ChatBoxComponent implements OnInit {
         this.handleSockets();
     }
     onFocus() {
-        console.log('Input is focused');
         this.mouseFocus.isFocusOnchat = true;
     }
     onBlur() {
-        console.log('Input is blurred');
         this.mouseFocus.isFocusOnchat = false;
     }
 
     handleSockets() {
         this.socketService.on('receiveChatMessage', (data: Message) => {
-        this.messages.push(data);
+            this.messages.push(data);
         });
 
         this.socketService.on('receiveSystemMessage', (systemMessage: string) => {

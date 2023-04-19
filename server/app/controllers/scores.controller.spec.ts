@@ -20,13 +20,13 @@ describe('ScoresController', () => {
         { position: '2', gameId: 'defaultID', gameType: '1v1', time: '2:15', playerName: 'Daisy' },
         { position: '1', gameId: 'defaultID', gameType: '1v1', time: '2:00', playerName: 'Pluto' },
     ] as TopScore[];
-    const newScore: TopScore = {
-        position: '1',
-        gameId: 'defaultID',
-        gameType: 'solo',
-        time: '1:30',
-        playerName: 'TestName',
-    };
+    // const newScore: TopScore = {
+    //     position: '1',
+    //     gameId: 'defaultID',
+    //     gameType: 'solo',
+    //     time: '1:30',
+    //     playerName: 'TestName',
+    // };
     let scoreService: SinonStubbedInstance<TopScoresService>;
     let expressApp: Express.Application;
 

@@ -42,14 +42,13 @@ export class DisplayGameService {
         });
     }
 
-    //fonctionatester
+    // fonctionatester
     sendGlobalMessage(newScore: TopScore, response: AddedScoreResult) {
         this.isScoreAdded = response.isAdded;
-        this.newScorePosition = response.positionIndex;  
+        this.newScorePosition = response.positionIndex;
         newScore.position = response.positionIndex;
         this.socketService.send('globalMessage', newScore);
-      } 
-
+    }
 
     addHistory(newHistory: GameHistory) {
         this.comm.addNewGameHistory(newHistory);
