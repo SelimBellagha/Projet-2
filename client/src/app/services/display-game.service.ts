@@ -44,9 +44,15 @@ export class DisplayGameService {
 
     checkPlayerScore(newScore: TopScore) {
         this.comm.addScore(newScore).subscribe((response: AddedScoreResult) => {
-            this.isScoreAdded = response.isAdded;
-            this.newScorePosition = response.positionIndex;
+            this.sendGlobalMessage(newScore, response);
         });
+    }
+
+    sendGlobalMessage(newScore: TopScore, response: AddedScoreResult) {
+        this.isScoreAdded = response.isAdded;
+        this.newScorePosition = response.positionIndex;
+        newScore.position = response.positionIndex;
+        this.socketService.send('globalMessage', newScore);
     }
 
     addHistory(newHistory: GameHistory) {

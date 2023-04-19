@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/no-magic-numbers */
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild, AfterViewInit } from '@angular/core';
+
 import { ActivatedRoute } from '@angular/router';
+import { MouseFocusService } from '@app/mouse-focus.service';
 import { ActionSaverService } from '@app/services/action-saver.service';
 import { LoginFormService } from '@app/services/login-form.service';
 import { SocketClientService } from '@app/services/socket-client-service.service';
@@ -11,7 +13,9 @@ import { Message } from '@common/chatMessage';
     templateUrl: './chat-box.component.html',
     styleUrls: ['./chat-box.component.scss'],
 })
-export class ChatBoxComponent implements OnInit {
+export class ChatBoxComponent implements OnInit, AfterViewInit {
+    @ViewChild('chatInput') chatInput: ElementRef;
+
     gameId: string;
     messages: Message[] = [];
     message: string = '';
@@ -22,10 +26,20 @@ export class ChatBoxComponent implements OnInit {
         public route: ActivatedRoute,
         public socketService: SocketClientService,
         private gameUtils: LoginFormService,
+        private mouseFocus: MouseFocusService,
         private actionSaver: ActionSaverService,
     ) {
         const snapshot = route.snapshot;
         this.pageName = snapshot.routeConfig?.path?.toString();
+    }
+    ngAfterViewInit() {
+        this.chatInput.nativeElement.addEventListener('focus', () => {
+            this.mouseFocus.isFocusOnchat = true;
+        });
+
+        this.chatInput.nativeElement.addEventListener('blur', () => {
+            this.mouseFocus.isFocusOnchat = false;
+        });
     }
 
     ngOnInit() {
@@ -33,6 +47,12 @@ export class ChatBoxComponent implements OnInit {
         this.gameId = this.gameUtils.getGameId();
         this.handleSockets();
         this.actionSaver.messages = this.messages;
+    }
+    onFocus() {
+        this.mouseFocus.isFocusOnchat = true;
+    }
+    onBlur() {
+        this.mouseFocus.isFocusOnchat = false;
     }
 
     handleSockets() {

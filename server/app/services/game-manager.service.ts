@@ -10,7 +10,7 @@ export class GameManager {
     tempGame: GameData;
     jsonPath = path.join(__dirname + '../../../../../app/data/games.json');
 
-    constructor(private topScoreService: TopScoresService) {}
+    constructor(public topScoreService: TopScoresService) {}
 
     async writeToJsonFile(filePath: string, data: string) {
         return await fs.promises.writeFile(filePath, data);
