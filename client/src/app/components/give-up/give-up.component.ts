@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
+import { LimitedTimeLobbyService } from '@app/services/limited-time-lobby.service';
 
 @Component({
     selector: 'app-give-up',
@@ -8,7 +9,7 @@ import { Router } from '@angular/router';
     styleUrls: ['./give-up.component.scss'],
 })
 export class GiveUpComponent implements OnInit {
-    constructor(private router: Router, private dialogRef: MatDialog) {}
+    constructor(private router: Router, private dialogRef: MatDialog, private limitedLobby: LimitedTimeLobbyService) {}
 
     ngOnInit(): void {}
 
@@ -17,7 +18,10 @@ export class GiveUpComponent implements OnInit {
     }
 
     giveUp() {
+        if (this.router.url === '/soloLimitedTime' || this.router.url === '/limitedOneVsOne') {
+            clearInterval(this.limitedLobby.timerId);
+        }
         this.dialogRef.closeAll();
-        this.router.navigate(['home']);
+        this.router.navigate(['/home']);
     }
 }

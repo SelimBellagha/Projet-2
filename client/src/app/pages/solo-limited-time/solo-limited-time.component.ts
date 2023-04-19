@@ -102,7 +102,6 @@ export class SoloLimitedTimeComponent implements OnInit, AfterViewInit {
                 if (this.nbDifferencesFound === this.gameManager.gameNumberMax) {
                     this.endGame();
                 }
-                // Si on a tout trouvé, finir le jeu.
             }
         }
     }
@@ -113,6 +112,7 @@ export class SoloLimitedTimeComponent implements OnInit, AfterViewInit {
     }
 
     goToGiveup() {
+        this.limitedTimeLobbyService.timerId = this.intervalID;
         this.dialogRef.open(GiveUpComponent);
     }
 

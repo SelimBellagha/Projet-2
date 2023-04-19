@@ -142,6 +142,7 @@ export class OneVsOneLimitedTimeComponent implements OnInit, AfterViewInit {
     }
 
     goToGiveUp() {
+        this.limitedTimeLobbyService.timerId = this.intervalID;
         this.dialogRef.open(GiveUpComponent);
     }
 
