@@ -205,7 +205,7 @@ export class ModeIndiceComponent {
             case cadran4:
                 if (coordinate.y <= (this.centre.y * 3) / 2) {
                     this.yCadran = 1;
-                    this.gameManager.drawLine2(this.h, this.j);
+                    this.gameManager.drawLine2(this.h, this.i);
                     this.gameManager.drawLine2(this.i, this.centre);
                     return 1;
                 } else {

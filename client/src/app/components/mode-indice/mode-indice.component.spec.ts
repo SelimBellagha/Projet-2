@@ -251,7 +251,7 @@ describe('ModeIndiceComponent', () => {
     it('should draw the correct lines for cadran 4.1', () => {
         const coordinate: Vec2 = { x: 500, y: 350 };
         component.findCadran2(coordinate);
-        expect(gameManagerSpy.drawLine2).toHaveBeenCalledWith(component.h, component.j);
+        expect(gameManagerSpy.drawLine2).toHaveBeenCalledWith(component.h, component.i);
         expect(gameManagerSpy.drawLine2).toHaveBeenCalledWith(component.i, component.centre);
     });
 
