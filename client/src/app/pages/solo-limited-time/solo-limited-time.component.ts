@@ -59,7 +59,7 @@ export class SoloLimitedTimeComponent implements OnInit, AfterViewInit {
         this.difficulty = this.displayService.convertDifficulty(this.gameManager.gameData);
         this.gameManager.putImages();
         this.timer(this.limitedTimeLobbyService.initialTime);
-        this.socketService.send('startTimer', { gameTime: 30 });
+        this.socketService.send('startTimer', { gameTime: this.limitedTimeLobbyService.initialTime });
         this.historyService.history = {
             startDate: this.startDate.toLocaleString(),
             gameLength: 'tempLength',

@@ -78,7 +78,7 @@ describe('SoloLimitedTimeComponent', () => {
 
     it('endGame should call stopTimer and playWinAudio', async () => {
         const stopTimerSpy = spyOn(component, 'stopTimer');
-        historyServiceSpy.history.gameLength = 'lenght';
+        await component.ngOnInit();
         component.endGame();
         expect(stopTimerSpy).toHaveBeenCalled();
         expect(displayGameSpy.addHistory).toHaveBeenCalled();
@@ -174,9 +174,10 @@ describe('SoloLimitedTimeComponent', () => {
         expect(gameManagerSpy.initializeGame).toHaveBeenCalled();
     });
 
-    it('goToHomePageAfterQuit should unShow PopUp and navigate to home', () => {
+    it('goToHomePageAfterQuit should unShow PopUp and navigate to home', async () => {
         component.popUpWindow.nativeElement.style.display = 'block';
         const routerSpy = spyOn(router, 'navigate');
+        await component.ngOnInit();
         component.startDate = new Date();
         component.goToHomePageAfterQuit();
         expect(historyServiceSpy.findGameLength).toHaveBeenCalledWith(component.startDate);
