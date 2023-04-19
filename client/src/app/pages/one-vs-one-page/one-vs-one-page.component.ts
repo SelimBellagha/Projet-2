@@ -49,6 +49,8 @@ export class OneVsOnePageComponent implements OnInit, AfterViewInit {
     };
     startDate: Date;
 
+    inReplay: boolean = false;
+
     // eslint-disable-next-line max-params
     constructor(
         private router: Router,
@@ -109,7 +111,7 @@ export class OneVsOnePageComponent implements OnInit, AfterViewInit {
             this.nbDifferencesFoundUser2 = data.nbDifferenceInvite;
             if (this.gameManager.lastDifferenceFound !== data.differenceId) {
                 this.gameManager.lastDifferenceFound = data.differenceId;
-                this.gameManager.flashImages(this.gameManager.gameData.differences[data.differenceId]);
+                this.gameManager.opponentFoundDifference(data.differenceId);
             }
             this.winCheck();
         });
@@ -177,6 +179,7 @@ export class OneVsOnePageComponent implements OnInit, AfterViewInit {
         this.stopStopWatch();
         this.gameManager.playWinAudio();
         this.dialogRef.open(VictoryComponent);
+        this.inReplay = true;
     }
 
     winGame(): void {
@@ -185,6 +188,7 @@ export class OneVsOnePageComponent implements OnInit, AfterViewInit {
         this.stopStopWatch();
         this.gameManager.playWinAudio();
         this.dialogRef.open(VictoryComponent);
+        this.inReplay = true;
     }
 
     goToHomePage() {
@@ -218,7 +222,7 @@ export class OneVsOnePageComponent implements OnInit, AfterViewInit {
     }
 
     async onClick(event: MouseEvent): Promise<void> {
-        if (event.button === MouseButton.Left) {
+        if (event.button === MouseButton.Left && !this.inReplay) {
             const mousePosition: Vec2 = { x: event.offsetX, y: event.offsetY };
             if (await this.gameManager.onPositionClicked(mousePosition)) {
                 // Incrementer le cpt de differences
@@ -243,5 +247,11 @@ export class OneVsOnePageComponent implements OnInit, AfterViewInit {
                 this.loseGame();
             }
         }
+    }
+    onReplay(): void {
+        this.inReplay = true;
+        this.gameManager.enableReplay();
+        this.popUpWindowWin.nativeElement.style.display = 'none';
+        this.popUpWindowLose.nativeElement.style.display = 'none';
     }
 }

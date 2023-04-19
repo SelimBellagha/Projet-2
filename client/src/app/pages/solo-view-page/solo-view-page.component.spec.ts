@@ -1,4 +1,6 @@
+/* eslint-disable max-classes-per-file */
 import { HttpClientModule } from '@angular/common/http';
+import { Component } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
@@ -12,6 +14,22 @@ import { SocketClientService } from '@app/services/socket-client-service.service
 import { SoloViewPageComponent } from './solo-view-page.component';
 import SpyObj = jasmine.SpyObj;
 const timeTest = 1000;
+
+@Component({
+    selector: 'app-chat-box',
+    template: '',
+})
+class MockChatComponent {}
+@Component({
+    selector: 'app-cheat',
+    template: '',
+})
+class MockCheatComponent {}
+@Component({
+    selector: 'app-mode-indice',
+    template: '',
+})
+class MockHintComponent {}
 
 describe('SoloViewPageComponent', () => {
     let component: SoloViewPageComponent;
@@ -54,7 +72,7 @@ describe('SoloViewPageComponent', () => {
 
         await TestBed.configureTestingModule({
             imports: [RouterTestingModule, HttpClientModule],
-            declarations: [SoloViewPageComponent],
+            declarations: [SoloViewPageComponent, MockChatComponent, MockCheatComponent, MockHintComponent],
             providers: [
                 { provide: GameManagerService, useValue: gameManagerSpy },
                 { provide: DisplayGameService, useValue: displayServiceSpy },

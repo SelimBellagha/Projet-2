@@ -14,4 +14,8 @@ export class VictoryComponent {
         this.dialogRef.closeAll();
         this.router.navigate(['home']);
     }
+
+    stayForReplay(): void {
+        this.dialogRef.closeAll();
+    }
 }

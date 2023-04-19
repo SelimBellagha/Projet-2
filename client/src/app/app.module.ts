@@ -19,6 +19,7 @@ import { GiveUpComponent } from './components/give-up/give-up.component';
 import { JeuxComponent } from './components/jeux/jeux/jeux.component';
 import { JoinBarComponent } from './components/join-bar/join-bar.component';
 import { ModeIndiceComponent } from './components/mode-indice/mode-indice.component';
+import { ReplayBarComponent } from './components/replay-bar/replay-bar.component';
 import { TimeOffComponent } from './components/time-off/time-off.component';
 import { VictoryComponent } from './components/victory/victory.component';
 import { ConfigurationPageComponent } from './pages/configuration-page/configuration-page.component';
@@ -57,6 +58,7 @@ import { SoloViewPageComponent } from './pages/solo-view-page/solo-view-page.com
         SalleAttenteComponent,
         JoinBarComponent,
         ChatBoxComponent,
+        ReplayBarComponent,
         ConstantsComponent,
         ModeIndiceComponent,
         LimitedTimeTypeComponent,

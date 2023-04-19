@@ -5,6 +5,9 @@ body {
     padding: 1%;
 }
 
+.time {
+    margin-right: 20px;
+}
 .quit-button {
     position: absolute;
     left: 0;
@@ -31,7 +34,7 @@ body {
     background-color: #fffafa;
     border: dotted salmon;
     border-radius: 5px;
-    max-height: 90%;
+    height: 19%;
     max-width: 100%;
     padding: 2%;
     margin: 5% 0 4%;

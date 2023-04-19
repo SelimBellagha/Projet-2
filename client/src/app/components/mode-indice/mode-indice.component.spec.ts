@@ -182,84 +182,84 @@ describe('ModeIndiceComponent', () => {
     it('should draw the correct lines for cadran 1', () => {
         const coordinate: Vec2 = { x: 1, y: 1 };
         component.findCadran1(coordinate);
-        expect(gameManagerSpy.drawLine).toHaveBeenCalledWith(component.a);
-        expect(gameManagerSpy.drawLine).toHaveBeenCalledWith(component.c);
+        expect(gameManagerSpy.drawLine).toHaveBeenCalledWith(component.a, component.centre);
+        expect(gameManagerSpy.drawLine).toHaveBeenCalledWith(component.c, component.centre);
     });
     it('should draw the correct lines for cadran 2', () => {
         const coordinate: Vec2 = { x: 400, y: 130 };
         component.findCadran1(coordinate);
-        expect(gameManagerSpy.drawLine).toHaveBeenCalledWith(component.b);
-        expect(gameManagerSpy.drawLine).toHaveBeenCalledWith(component.c);
+        expect(gameManagerSpy.drawLine).toHaveBeenCalledWith(component.b, component.centre);
+        expect(gameManagerSpy.drawLine).toHaveBeenCalledWith(component.c, component.centre);
     });
     it('should draw the correct lines for cadran 3', () => {
         const coordinate: Vec2 = { x: 10, y: 400 };
         component.findCadran1(coordinate);
-        expect(gameManagerSpy.drawLine).toHaveBeenCalledWith(component.a);
-        expect(gameManagerSpy.drawLine).toHaveBeenCalledWith(component.d);
+        expect(gameManagerSpy.drawLine).toHaveBeenCalledWith(component.a, component.centre);
+        expect(gameManagerSpy.drawLine).toHaveBeenCalledWith(component.d, component.centre);
     });
     it('should draw the correct lines for cadran 4', () => {
         const coordinate: Vec2 = { x: 400, y: 460 };
         component.findCadran1(coordinate);
-        expect(gameManagerSpy.drawLine).toHaveBeenCalledWith(component.b);
-        expect(gameManagerSpy.drawLine).toHaveBeenCalledWith(component.d);
+        expect(gameManagerSpy.drawLine).toHaveBeenCalledWith(component.b, component.centre);
+        expect(gameManagerSpy.drawLine).toHaveBeenCalledWith(component.d, component.centre);
     });
 
     it('should draw the correct lines for cadran 1.2', () => {
         const coordinate: Vec2 = { x: 0, y: 130 };
         component.findCadran2(coordinate);
-        expect(gameManagerSpy.drawLine2).toHaveBeenCalledWith(component.e, component.f);
-        expect(gameManagerSpy.drawLine2).toHaveBeenCalledWith(component.f, component.centre);
-        expect(gameManagerSpy.drawLine2).toHaveBeenCalledWith(component.centre, component.a);
+        expect(gameManagerSpy.drawLine).toHaveBeenCalledWith(component.e, component.f);
+        expect(gameManagerSpy.drawLine).toHaveBeenCalledWith(component.f, component.centre);
+        expect(gameManagerSpy.drawLine).toHaveBeenCalledWith(component.centre, component.a);
     });
 
     it('should draw the correct lines for cadran 1.1', () => {
         const coordinate: Vec2 = { x: 5, y: 4 };
         component.findCadran2(coordinate);
-        expect(gameManagerSpy.drawLine2).toHaveBeenCalledWith(component.e, component.f);
-        expect(gameManagerSpy.drawLine2).toHaveBeenCalledWith(component.f, component.c);
+        expect(gameManagerSpy.drawLine).toHaveBeenCalledWith(component.e, component.f);
+        expect(gameManagerSpy.drawLine).toHaveBeenCalledWith(component.f, component.c);
     });
 
     it('should draw the correct lines for cadran 2.1', () => {
         const coordinate: Vec2 = { x: 300, y: 1 };
         component.findCadran2(coordinate);
-        expect(gameManagerSpy.drawLine2).toHaveBeenCalledWith(component.f, component.g);
-        expect(gameManagerSpy.drawLine2).toHaveBeenCalledWith(component.f, component.c);
+        expect(gameManagerSpy.drawLine).toHaveBeenCalledWith(component.f, component.g);
+        expect(gameManagerSpy.drawLine).toHaveBeenCalledWith(component.f, component.c);
     });
     it('should draw the correct lines for cadran 2.2', () => {
         const coordinate: Vec2 = { x: 300, y: 200 };
         component.findCadran2(coordinate);
-        expect(gameManagerSpy.drawLine2).toHaveBeenCalledWith(component.f, component.g);
-        expect(gameManagerSpy.drawLine2).toHaveBeenCalledWith(component.f, component.centre);
-        expect(gameManagerSpy.drawLine2).toHaveBeenCalledWith(component.centre, component.b);
+        expect(gameManagerSpy.drawLine).toHaveBeenCalledWith(component.f, component.g);
+        expect(gameManagerSpy.drawLine).toHaveBeenCalledWith(component.f, component.centre);
+        expect(gameManagerSpy.drawLine).toHaveBeenCalledWith(component.centre, component.b);
     });
 
     it('should draw the correct lines for cadran 3.1', () => {
         const coordinate: Vec2 = { x: 1, y: 350 };
         component.findCadran2(coordinate);
-        expect(gameManagerSpy.drawLine2).toHaveBeenCalledWith(component.h, component.i);
-        expect(gameManagerSpy.drawLine2).toHaveBeenCalledWith(component.i, component.centre);
+        expect(gameManagerSpy.drawLine).toHaveBeenCalledWith(component.h, component.i);
+        expect(gameManagerSpy.drawLine).toHaveBeenCalledWith(component.i, component.centre);
     });
 
     it('should draw the correct lines for cadran 3.2', () => {
         const coordinate: Vec2 = { x: 1, y: 365 };
         component.findCadran2(coordinate);
-        expect(gameManagerSpy.drawLine2).toHaveBeenCalledWith(component.centre, component.a);
-        expect(gameManagerSpy.drawLine2).toHaveBeenCalledWith(component.centre, component.i);
-        expect(gameManagerSpy.drawLine2).toHaveBeenCalledWith(component.i, component.h);
+        expect(gameManagerSpy.drawLine).toHaveBeenCalledWith(component.centre, component.a);
+        expect(gameManagerSpy.drawLine).toHaveBeenCalledWith(component.centre, component.i);
+        expect(gameManagerSpy.drawLine).toHaveBeenCalledWith(component.i, component.h);
     });
 
     it('should draw the correct lines for cadran 4.1', () => {
         const coordinate: Vec2 = { x: 500, y: 350 };
         component.findCadran2(coordinate);
-        expect(gameManagerSpy.drawLine2).toHaveBeenCalledWith(component.h, component.i);
-        expect(gameManagerSpy.drawLine2).toHaveBeenCalledWith(component.i, component.centre);
+        expect(gameManagerSpy.drawLine).toHaveBeenCalledWith(component.h, component.i);
+        expect(gameManagerSpy.drawLine).toHaveBeenCalledWith(component.i, component.centre);
     });
 
     it('should draw the correct lines for cadran 4.2', () => {
         const coordinate: Vec2 = { x: 500, y: 365 };
         component.findCadran2(coordinate);
-        expect(gameManagerSpy.drawLine2).toHaveBeenCalledWith(component.centre, component.b);
-        expect(gameManagerSpy.drawLine2).toHaveBeenCalledWith(component.i, component.j);
-        expect(gameManagerSpy.drawLine2).toHaveBeenCalledWith(component.i, component.centre);
+        expect(gameManagerSpy.drawLine).toHaveBeenCalledWith(component.centre, component.b);
+        expect(gameManagerSpy.drawLine).toHaveBeenCalledWith(component.i, component.j);
+        expect(gameManagerSpy.drawLine).toHaveBeenCalledWith(component.i, component.centre);
     });
 });

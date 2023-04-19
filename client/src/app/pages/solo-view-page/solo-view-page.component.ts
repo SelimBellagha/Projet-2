@@ -29,6 +29,8 @@ export class SoloViewPageComponent implements OnInit, AfterViewInit {
     minutes: number = 0;
     intervalID: number;
     gameTime: number;
+
+    inReplay: boolean = false;
     newScore: TopScore = {
         position: 'tempPosition',
         gameId: 'tempId',
@@ -125,7 +127,7 @@ export class SoloViewPageComponent implements OnInit, AfterViewInit {
     }
 
     async onClick(event: MouseEvent): Promise<void> {
-        if (event.button === MouseButton.Left) {
+        if (event.button === MouseButton.Left && !this.inReplay) {
             const mousePosition: Vec2 = { x: event.offsetX, y: event.offsetY };
             if (await this.gameManager.onPositionClicked(mousePosition)) {
                 // Incrementer le cpt de differences
@@ -141,11 +143,17 @@ export class SoloViewPageComponent implements OnInit, AfterViewInit {
 
     goToCongratulations() {
         this.dialogRef.open(VictoryComponent);
+        this.onReplay();
     }
 
     returnSelectionPage(): void {
         this.stopStopWatch();
         this.router.navigate(['/gameSelection']);
+    }
+    onReplay(): void {
+        this.inReplay = true;
+        this.gameManager.enableReplay();
+        // this.popUpWindow.nativeElement.style.display = 'none';
     }
 
     abandonGame(): void {

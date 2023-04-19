@@ -1,5 +1,6 @@
+/* eslint-disable max-classes-per-file */
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { ElementRef } from '@angular/core';
+import { Component, ElementRef } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
@@ -23,7 +24,16 @@ class SocketClientServiceMock extends SocketClientService {
     // eslint-disable-next-line @typescript-eslint/no-empty-function
     override connect() {}
 }
-
+@Component({
+    selector: 'app-chat-box',
+    template: '',
+})
+class MockChatComponent {}
+@Component({
+    selector: 'app-cheat',
+    template: '',
+})
+class MockCheatComponent {}
 describe('OneVsOnePageComponent', () => {
     let component: OneVsOnePageComponent;
     let fixture: ComponentFixture<OneVsOnePageComponent>;
@@ -63,6 +73,7 @@ describe('OneVsOnePageComponent', () => {
             'playWinAudio',
             'initializeGame',
             'flashImages',
+            'opponentFoundDifference',
         ]);
         displayServiceSpy = jasmine.createSpyObj('DisplayGameService', ['loadGame', 'convertDifficulty', 'checkPlayerScore', 'addHistory'], {
             game: gameMock1 as unknown as GameData,
@@ -76,7 +87,7 @@ describe('OneVsOnePageComponent', () => {
         socketServiceMock.socket = socketHelper as unknown as Socket;
 
         await TestBed.configureTestingModule({
-            declarations: [OneVsOnePageComponent],
+            declarations: [OneVsOnePageComponent, MockChatComponent, MockCheatComponent],
             imports: [RouterTestingModule, HttpClientTestingModule],
             providers: [
                 { provide: SocketClientService, useValue: socketServiceMock },
@@ -214,6 +225,6 @@ describe('OneVsOnePageComponent', () => {
         socketHelper.peerSideEmit('differenceUpdate', { nbDifferenceHost: 0, nbDifferenceInvite: 1, differenceId: 0 });
         expect(component.nbDifferencesFoundUser1).toEqual(0);
         expect(component.nbDifferencesFoundUser2).toEqual(1);
-        expect(gameManagerSpy.flashImages).toHaveBeenCalled();
+        expect(gameManagerSpy.opponentFoundDifference).toHaveBeenCalled();
     });
 });

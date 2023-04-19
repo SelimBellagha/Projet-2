@@ -1,5 +1,6 @@
 <body class="container">
-    <button class="quit-button" (click)="goToGiveUp()">Abandonner la partie</button>
+    <button *ngIf="!inReplay" class="quit-button" (click)="goToGiveUp()">Abandonner la partie</button>
+    <button *ngIf="inReplay" class="quit-button" (click)="goToHomePage()">Quitter la reprise</button>
 
     <div class="section">
         <div class="main-container">
@@ -28,6 +29,7 @@
                     <div>
                         <div>{{ minutes.toString().padStart(2, '0') }} :{{ secondes.toString().padStart(2, '0') }}</div>
                     </div>
+                    <app-replay-bar *ngIf="this.inReplay"></app-replay-bar>
                 </div>
             </div>
         </div>
@@ -40,12 +42,22 @@
     <div class="section">
         <app-chat-box></app-chat-box>
     </div>
+    <div #popUpWindowWin class="modal" id="congratulations">
+        <div class="modal-content">
+            <h1 class="title">Félicitations {{ myUsername }} ! Vous avez trouvé toutes les différences !</h1>
+            <div>
+                <button id="end" class="button-pop" (click)="goToHomePage()">Fermer</button>
+                <button id="replay-button" (click)="onReplay()">Open replay Menu</button>
+            </div>
+        </div>
+    </div>
 
     <div #popUpWindowLose class="modal">
         <div class="modal-content">
             <h1 class="title">Dommage {{ myUsername }} ! Vous n'avais pas été assez rapide, {{ opponentUsername }} a gagné la partie !</h1>
             <div>
                 <button id="end" class="button-pop" (click)="goToHomePage()">Fermer</button>
+                <button id="replay-button" (click)="onReplay()">Open replay Menu</button>
             </div>
         </div>
     </div>

@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-magic-numbers */
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { ActionSaverService } from '@app/services/action-saver.service';
 import { LoginFormService } from '@app/services/login-form.service';
 import { SocketClientService } from '@app/services/socket-client-service.service';
 import { Message } from '@common/chatMessage';
@@ -16,7 +17,13 @@ export class ChatBoxComponent implements OnInit {
     message: string = '';
     pageName: string | undefined;
 
-    constructor(public route: ActivatedRoute, public socketService: SocketClientService, private gameUtils: LoginFormService) {
+    // eslint-disable-next-line max-params
+    constructor(
+        public route: ActivatedRoute,
+        public socketService: SocketClientService,
+        private gameUtils: LoginFormService,
+        private actionSaver: ActionSaverService,
+    ) {
         const snapshot = route.snapshot;
         this.pageName = snapshot.routeConfig?.path?.toString();
     }
@@ -25,10 +32,12 @@ export class ChatBoxComponent implements OnInit {
         this.socketService.connect();
         this.gameId = this.gameUtils.getGameId();
         this.handleSockets();
+        this.actionSaver.messages = this.messages;
     }
 
     handleSockets() {
         this.socketService.on('receiveChatMessage', (data: Message) => {
+            this.actionSaver.addChatMessageAction(data);
             this.messages.push(data);
         });
 
@@ -42,6 +51,7 @@ export class ChatBoxComponent implements OnInit {
                 name,
             };
             this.messages.push(message);
+            this.actionSaver.addChatMessageAction(message);
         });
 
         this.socketService.on('receiveSystemMessageSolo', (systemMessage: string) => {
@@ -53,7 +63,10 @@ export class ChatBoxComponent implements OnInit {
                 isSystem: true,
                 name,
             };
-            if (!this.isMultiplayerMode()) this.messages.push(message);
+            if (!this.isMultiplayerMode()) {
+                this.messages.push(message);
+                this.actionSaver.addChatMessageAction(message);
+            }
         });
     }
 

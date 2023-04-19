@@ -1,6 +1,6 @@
 <body class="container">
-    <button class="quit-button" (click)="abandonGame()">Abandonner la partie</button>
-
+    <button *ngIf="!inReplay" class="quit-button" (click)="abandonGame()">Abandonner la partie</button>
+    <button *ngIf="inReplay" class="quit-button" (click)="returnSelectionPage()">Quitter la reprise </button>
     <div class="section">
         <div class="main-container">
             <h2 class="game-info">{{ gameName }} - {{ difficulty }}</h2>
@@ -24,9 +24,10 @@
                 <p>Differences trouvées par {{username}}: {{ nbDifferencesFound }}</p>
                 <div class="timer">
                     <img src="../../../assets/images/stopwatch.png" class="watch-logo" />
-                    <div>
+                    <div class="time">
                         <div>{{ minutes.toString().padStart(2, '0') }} :{{ secondes.toString().padStart(2, '0') }}</div>
                     </div>
+                    <app-replay-bar *ngIf="this.inReplay"></app-replay-bar>
                 </div>
             </div>
         </div>
@@ -39,4 +40,5 @@
     <div class="section">
         <app-chat-box></app-chat-box>
     </div>
+
 </body>
