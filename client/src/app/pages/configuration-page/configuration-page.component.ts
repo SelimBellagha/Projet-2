@@ -1,5 +1,6 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
+import { GameHistory } from '@app/interfaces/game-history';
 import { DisplayGameService } from '@app/services/display-game.service';
 import { SocketClientService } from '@app/services/socket-client-service.service';
 
@@ -17,7 +18,10 @@ const display = 4;
     styleUrls: ['./configuration-page.component.scss'],
 })
 export class ConfigurationPageComponent implements OnInit {
-    @ViewChild('popUpWindow') popUpWindow: ElementRef<HTMLDivElement>;
+    @ViewChild('popUpResetScores') popUpResetScores: ElementRef<HTMLDivElement>;
+    @ViewChild('popUpDeleteGames') popUpDeleteGames: ElementRef<HTMLDivElement>;
+    @ViewChild('popUpHistory') popUpHistory: ElementRef<HTMLDivElement>;
+    @ViewChild('popUpDeleteHistory') popUpDeleteHistory: ElementRef<HTMLDivElement>;
     componentNumber: number = 0;
     hasPrevious: boolean = false;
     hasNext: boolean = false;
@@ -27,6 +31,7 @@ export class ConfigurationPageComponent implements OnInit {
     marge: number = display;
     games: Game[];
     gamesDisplayed: Game[];
+    gameHistory: GameHistory[];
 
     constructor(private router: Router, private displayGames: DisplayGameService, private socketManager: SocketClientService) {}
 
@@ -78,6 +83,60 @@ export class ConfigurationPageComponent implements OnInit {
         if (this.games.length > display) {
             this.hasNext = true;
             this.hasNextPage = true;
+        }
+    }
+
+    goToReset(): void {
+        this.popUpResetScores.nativeElement.style.display = 'block';
+    }
+
+    goToDelete(): void {
+        this.popUpDeleteGames.nativeElement.style.display = 'block';
+    }
+
+    resetAllScores() {
+        this.displayGames.resetAllScores();
+        this.onClosingPopUp('reset');
+    }
+
+    deleteAllGames() {
+        this.onClosingPopUp('deleteGames');
+    }
+
+    async goToHistory() {
+        await this.displayGames.getHistory();
+        this.gameHistory = this.displayGames.history;
+        this.popUpHistory.nativeElement.style.display = 'block';
+    }
+
+    goToDeleteHistory() {
+        this.popUpDeleteHistory.nativeElement.style.display = 'block';
+    }
+
+    deleteHistory() {
+        this.displayGames.deleteGameHistory();
+        this.onClosingPopUp('deleteHistory');
+        this.onClosingPopUp('history');
+    }
+
+    onClosingPopUp(popUpName: string): void {
+        switch (popUpName) {
+            case 'reset': {
+                this.popUpResetScores.nativeElement.style.display = 'none';
+                break;
+            }
+            case 'deleteGames': {
+                this.popUpDeleteGames.nativeElement.style.display = 'none';
+                break;
+            }
+            case 'history': {
+                this.popUpHistory.nativeElement.style.display = 'none';
+                break;
+            }
+            case 'deleteHistory': {
+                this.popUpDeleteHistory.nativeElement.style.display = 'none';
+                break;
+            }
         }
     }
 }

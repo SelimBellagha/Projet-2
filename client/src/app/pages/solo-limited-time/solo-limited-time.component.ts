@@ -4,6 +4,7 @@ import { MouseButton } from '@app/components/play-area/play-area.component';
 import { Vec2 } from '@app/interfaces/vec2';
 import { DisplayGameService } from '@app/services/display-game.service';
 import { GameManagerService } from '@app/services/game-manager.service';
+import { HistoryService } from '@app/services/history.service';
 import { LimitedTimeLobbyService } from '@app/services/limited-time-lobby.service';
 import { LoginFormService } from '@app/services/login-form.service';
 
@@ -25,6 +26,7 @@ export class SoloLimitedTimeComponent implements OnInit, AfterViewInit {
     minutes: number = 0;
     secondes: number = 0;
     intervalID: number;
+    startDate: Date;
 
     // eslint-disable-next-line max-params
     constructor(
@@ -33,7 +35,10 @@ export class SoloLimitedTimeComponent implements OnInit, AfterViewInit {
         private displayService: DisplayGameService,
         private gameManager: GameManagerService,
         private limitedTimeLobbyService: LimitedTimeLobbyService,
-    ) {}
+        private historyService: HistoryService,
+    ) {
+        this.startDate = new Date();
+    }
 
     async ngOnInit() {
         if (!this.limitedTimeLobbyService.firstGame) {
@@ -53,6 +58,15 @@ export class SoloLimitedTimeComponent implements OnInit, AfterViewInit {
         // TODO changer time avec temps vue de config
         const time = 30;
         this.timer(time);
+        this.historyService.history = {
+            startDate: this.startDate.toLocaleString(),
+            gameLength: 'tempLength',
+            gameMode: 'Temps Limite',
+            namePlayer1: this.username,
+            namePlayer2: '',
+            winnerName: '',
+            nameAbandon: '',
+        };
     }
 
     timer(gameTime: number) {
@@ -85,6 +99,8 @@ export class SoloLimitedTimeComponent implements OnInit, AfterViewInit {
     }
 
     endGame(): void {
+        this.historyService.history.gameLength = this.historyService.findGameLength(this.startDate);
+        this.displayService.addHistory(this.historyService.history);
         this.stopTimer();
         this.gameManager.playWinAudio();
         this.popUpWindow.nativeElement.style.display = 'block';
@@ -114,5 +130,18 @@ export class SoloLimitedTimeComponent implements OnInit, AfterViewInit {
         this.stopTimer();
         this.popUpWindow.nativeElement.style.display = 'none';
         this.router.navigate(['home']);
+    }
+
+    goToHomePageAfterQuit() {
+        this.stopTimer();
+        this.historyService.history.nameAbandon = this.username;
+        this.historyService.history.gameLength = this.historyService.findGameLength(this.startDate);
+        this.displayService.addHistory(this.historyService.history);
+        this.popUpWindow.nativeElement.style.display = 'none';
+        this.router.navigate(['home']);
+    }
+
+    goToCongratulations() {
+        this.popUpWindow.nativeElement.style.display = 'block';
     }
 }

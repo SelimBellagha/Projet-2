@@ -1,5 +1,6 @@
-import { AfterViewInit, Component, ElementRef, Input, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
+import { TopScore } from '@app/interfaces/game.interface';
 import { CommunicationService } from '@app/services/communication.service';
 import { DisplayGameService } from '@app/services/display-game.service';
 import { LobbyService } from '@app/services/lobby.service';
@@ -12,7 +13,7 @@ import { v4 as uuidv4 } from 'uuid';
     templateUrl: './jeux.component.html',
     styleUrls: ['./jeux.component.scss'],
 })
-export class JeuxComponent implements AfterViewInit {
+export class JeuxComponent implements AfterViewInit, OnInit {
     @Input() customTitle: string;
     @Input() customDifficulty: string;
     @Input() isConfigurationMode: boolean;
@@ -21,6 +22,9 @@ export class JeuxComponent implements AfterViewInit {
     @Input() multiplayerButton: string;
     @ViewChild('image') image: ElementRef<HTMLImageElement>;
     @ViewChild('popUpWindow') popUpWindow: ElementRef<HTMLDivElement>;
+    @ViewChild('popUpWindow2') popUpWindow2: ElementRef<HTMLDivElement>;
+    soloScores: TopScore[];
+    oneVOneScores: TopScore[];
 
     // eslint-disable-next-line max-params
     constructor(
@@ -36,6 +40,19 @@ export class JeuxComponent implements AfterViewInit {
         this.image.nativeElement.src = this.customPhoto;
         this.lobbyService.host = false;
         this.holdUpdateLobbyAvailability();
+    }
+
+    ngOnInit(): void {
+        this.loadSoloScores();
+        this.load1v1Scores();
+    }
+
+    loadSoloScores() {
+        this.comm.getGameScores(this.customId, 'solo').subscribe((scores: TopScore[]) => (this.soloScores = scores));
+    }
+
+    load1v1Scores() {
+        this.comm.getGameScores(this.customId, '1v1').subscribe((scores: TopScore[]) => (this.oneVOneScores = scores));
     }
 
     goToLoginPage(): void {
@@ -66,13 +83,26 @@ export class JeuxComponent implements AfterViewInit {
         this.popUpWindow.nativeElement.style.display = 'block';
     }
 
+    goToPopUp2(): void {
+        this.popUpWindow2.nativeElement.style.display = 'block';
+    }
+
     deleteGame(): void {
         this.comm.deleteGame(this.customId);
-        this.popUpWindow.nativeElement.style.display = 'none';
+        this.onClosingPopUp();
+    }
+
+    resetGameScores(): void {
+        this.comm.resetGameScores(this.customId);
+        this.onClosingPopUp2();
     }
 
     onClosingPopUp(): void {
         this.popUpWindow.nativeElement.style.display = 'none';
+    }
+
+    onClosingPopUp2(): void {
+        this.popUpWindow2.nativeElement.style.display = 'none';
     }
 
     holdUpdateLobbyAvailability() {

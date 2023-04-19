@@ -75,6 +75,7 @@ export class SocketServerManager {
                 if (systemMessage === ' a abandonné la partie') {
                     const now: Date = new Date();
                     const timeString: string = now.toTimeString().slice(0, EIGHT);
+                    socket.emit('systemMessage', { name: playerName });
                     this.sio.to(lobby?.host.socketId).emit('receiveSystemMessage', playerName + systemMessage);
                     this.sio.to(lobby?.secondPlayer.socketId).emit('receiveSystemMessage', '[' + timeString + '] ' + playerName + systemMessage);
                     return;
