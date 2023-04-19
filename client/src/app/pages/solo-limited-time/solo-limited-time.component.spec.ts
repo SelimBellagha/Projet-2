@@ -2,14 +2,22 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
+import { SocketTestHelper } from '@app/classes/socket-test-helper';
 import { MouseButton } from '@app/components/play-area/play-area.component';
 import { GameData } from '@app/interfaces/game.interface';
 import { DisplayGameService } from '@app/services/display-game.service';
 import { GameManagerService } from '@app/services/game-manager.service';
 import { HistoryService } from '@app/services/history.service';
 import { LimitedTimeLobbyService } from '@app/services/limited-time-lobby.service';
+import { SocketClientService } from '@app/services/socket-client-service.service';
+import { Socket } from 'socket.io-client';
 import { SoloLimitedTimeComponent } from './solo-limited-time.component';
 import SpyObj = jasmine.SpyObj;
+
+class SocketClientServiceMock extends SocketClientService {
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    override connect() {}
+}
 
 describe('SoloLimitedTimeComponent', () => {
     let component: SoloLimitedTimeComponent;
@@ -19,6 +27,8 @@ describe('SoloLimitedTimeComponent', () => {
     let limitedLobbySpy: SpyObj<LimitedTimeLobbyService>;
     let historyServiceSpy: SpyObj<HistoryService>;
     let router: Router;
+    let socketHelper: SocketTestHelper;
+    let socketServiceMock: SocketClientServiceMock;
 
     const gameMock1: GameData = {
         id: '0',
@@ -38,6 +48,9 @@ describe('SoloLimitedTimeComponent', () => {
                 gameData: gameMock1 as unknown as GameData,
             },
         );
+        socketHelper = new SocketTestHelper();
+        socketServiceMock = new SocketClientService();
+        socketServiceMock.socket = socketHelper as unknown as Socket;
         displayGameSpy = jasmine.createSpyObj('DisplayGameService', ['convertDifficulty', 'loadAllGames', 'addHistory']);
         limitedLobbySpy = jasmine.createSpyObj('LimitedTimeLobbyService', ['getTimeInfo'], { roomId: 'id' });
         historyServiceSpy = jasmine.createSpyObj('HistoryService', ['findGameLength']);
@@ -49,6 +62,7 @@ describe('SoloLimitedTimeComponent', () => {
                 { provide: DisplayGameService, useValue: displayGameSpy },
                 { provide: LimitedTimeLobbyService, useValue: limitedLobbySpy },
                 { provide: HistoryService, useValue: historyServiceSpy },
+                { provide: SocketClientService, useValue: socketServiceMock },
             ],
         }).compileComponents();
 
@@ -64,6 +78,7 @@ describe('SoloLimitedTimeComponent', () => {
 
     it('endGame should call stopTimer and playWinAudio', async () => {
         const stopTimerSpy = spyOn(component, 'stopTimer');
+        historyServiceSpy.history.gameLength = 'lenght';
         component.endGame();
         expect(stopTimerSpy).toHaveBeenCalled();
         expect(displayGameSpy.addHistory).toHaveBeenCalled();
