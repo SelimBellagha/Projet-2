@@ -61,6 +61,9 @@ export class ModeIndiceComponent {
     }
     onClick(): void {
         {
+            if (this.gameManager.replayMode) {
+                return;
+            }
             if (this.counter < 3) {
                 this.gameManager.sendHintMessage(this.hints[this.counter]);
                 switch (this.counter) {
@@ -128,24 +131,24 @@ export class ModeIndiceComponent {
 
         switch (multiplicateur * this.yCadran + this.xCadran) {
             case cadran4:
-                this.gameManager.drawLine(this.b);
-                this.gameManager.drawLine(this.d);
+                this.gameManager.drawLine(this.b, this.centre);
+                this.gameManager.drawLine(this.d, this.centre);
 
                 return 1;
 
             case cadran3:
-                this.gameManager.drawLine(this.a);
-                this.gameManager.drawLine(this.d);
+                this.gameManager.drawLine(this.a, this.centre);
+                this.gameManager.drawLine(this.d, this.centre);
                 return 1;
 
             case cadran2:
-                this.gameManager.drawLine(this.b);
-                this.gameManager.drawLine(this.c);
+                this.gameManager.drawLine(this.b, this.centre);
+                this.gameManager.drawLine(this.c, this.centre);
                 return 1;
 
             case cadran1:
-                this.gameManager.drawLine(this.a);
-                this.gameManager.drawLine(this.c);
+                this.gameManager.drawLine(this.a, this.centre);
+                this.gameManager.drawLine(this.c, this.centre);
                 return 1;
         }
         return 0;
@@ -166,52 +169,52 @@ export class ModeIndiceComponent {
             case cadran1:
                 if (coordinate.y <= this.centre.y / 2) {
                     this.yCadran = 1;
-                    this.gameManager.drawLine2(this.e, this.f);
-                    this.gameManager.drawLine2(this.f, this.c);
+                    this.gameManager.drawLine(this.e, this.f);
+                    this.gameManager.drawLine(this.f, this.c);
                     return 1;
                 } else {
-                    this.gameManager.drawLine2(this.e, this.f);
-                    this.gameManager.drawLine2(this.f, this.centre);
-                    this.gameManager.drawLine2(this.centre, this.a);
+                    this.gameManager.drawLine(this.e, this.f);
+                    this.gameManager.drawLine(this.f, this.centre);
+                    this.gameManager.drawLine(this.centre, this.a);
                     return 1;
                 }
 
             case cadran2:
                 if (coordinate.y <= this.centre.y / 2) {
                     this.yCadran = 1;
-                    this.gameManager.drawLine2(this.f, this.g);
-                    this.gameManager.drawLine2(this.f, this.c);
+                    this.gameManager.drawLine(this.f, this.g);
+                    this.gameManager.drawLine(this.f, this.c);
                     return 1;
                 } else {
-                    this.gameManager.drawLine2(this.f, this.g);
-                    this.gameManager.drawLine2(this.f, this.centre);
-                    this.gameManager.drawLine2(this.centre, this.b);
+                    this.gameManager.drawLine(this.f, this.g);
+                    this.gameManager.drawLine(this.f, this.centre);
+                    this.gameManager.drawLine(this.centre, this.b);
                     return 1;
                 }
 
             case cadran3:
                 if (coordinate.y <= (this.centre.y * 3) / 2) {
                     this.yCadran = 1;
-                    this.gameManager.drawLine2(this.h, this.i);
-                    this.gameManager.drawLine2(this.i, this.centre);
+                    this.gameManager.drawLine(this.h, this.i);
+                    this.gameManager.drawLine(this.i, this.centre);
                     return 1;
                 } else {
-                    this.gameManager.drawLine2(this.centre, this.a);
-                    this.gameManager.drawLine2(this.centre, this.i);
-                    this.gameManager.drawLine2(this.i, this.h);
+                    this.gameManager.drawLine(this.centre, this.a);
+                    this.gameManager.drawLine(this.centre, this.i);
+                    this.gameManager.drawLine(this.i, this.h);
                     return 1;
                 }
 
             case cadran4:
                 if (coordinate.y <= (this.centre.y * 3) / 2) {
                     this.yCadran = 1;
-                    this.gameManager.drawLine2(this.h, this.i);
-                    this.gameManager.drawLine2(this.i, this.centre);
+                    this.gameManager.drawLine(this.h, this.i);
+                    this.gameManager.drawLine(this.i, this.centre);
                     return 1;
                 } else {
-                    this.gameManager.drawLine2(this.centre, this.b);
-                    this.gameManager.drawLine2(this.i, this.j);
-                    this.gameManager.drawLine2(this.i, this.centre);
+                    this.gameManager.drawLine(this.centre, this.b);
+                    this.gameManager.drawLine(this.i, this.j);
+                    this.gameManager.drawLine(this.i, this.centre);
                     return 1;
                 }
         }

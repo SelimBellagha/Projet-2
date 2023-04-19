@@ -1,7 +1,5 @@
 /* eslint-disable deprecation/deprecation */
 import { HttpException } from '@app/classes/http.exception';
-import { DateController } from '@app/controllers/date.controller';
-import { ExampleController } from '@app/controllers/example.controller';
 import { GameController } from '@app/controllers/games.controller';
 import { ScoresController } from '@app/controllers/scores.controller';
 import * as cookieParser from 'cookie-parser';
@@ -24,8 +22,6 @@ export class Application {
 
     // eslint-disable-next-line max-params
     constructor(
-        private readonly exampleController: ExampleController,
-        private readonly dateController: DateController,
         private gamesController: GameController,
         private scoresController: ScoresController,
         private readonly databaseService: DatabaseService,
@@ -53,8 +49,6 @@ export class Application {
 
     bindRoutes(): void {
         this.app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerJSDoc(this.swaggerOptions)));
-        this.app.use('/api/example', this.exampleController.router);
-        this.app.use('/api/date', this.dateController.router);
         this.app.use('/api/games', this.gamesController.router);
         this.app.use('/api/scores', this.scoresController.router);
         this.app.use('/api/history', this.historyController.router);

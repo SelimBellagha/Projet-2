@@ -1,0 +1,90 @@
+.tool-icons {
+    width: 20px;
+    height: 20px;
+    margin-top: 7px;
+}
+
+.tool-button {
+    cursor: pointer;
+    background-color: rgba(255, 255, 255, 0.812);
+    border-color: rgba(178, 177, 177, 0.592);
+    width: 40px;
+    height: 40px;
+    margin-right:20px;
+    margin-top: 2px;
+}
+
+.icon-description {
+    position: relative;
+    height: max-content;
+    width: max-content;
+    background: rgba(245, 245, 245, 0.823);
+    border: 1px solid rgb(197, 28, 28);
+    padding: 5px 5px 0 5px;
+    color: black;
+    opacity: 0;
+    transition: opacity .2s, visibility .2s;
+}
+
+
+.tool-button:hover .icon-description{
+    visibility: visible;
+    opacity: 1;
+  }
+
+button {
+    width: 50px;
+    height: 50px;
+}
+
+.note {
+    font-weight: bold;
+}
+
+
+
+//A checker
+.congrats {
+    text-align: center;
+    font-weight: bold;
+    font-family: serif;
+    font-style: italic;
+    font-size: xx-large;
+}
+
+.close-button {
+    text-align: right;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('../../../assets/images/confettis.gif');
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.4);
+    align-self: center;
+    visibility: visible;
+}
+.modal-content {
+    background-color: #ede1db;
+    margin: 5% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 50%;
+}
+
+.modal-content::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #555 transparent transparent transparent;
+}

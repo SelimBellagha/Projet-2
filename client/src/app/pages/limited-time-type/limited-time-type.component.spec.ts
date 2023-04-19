@@ -14,7 +14,6 @@ describe('LimitedTimeTypeComponent', () => {
     beforeEach(async () => {
         loginServiceSpy = jasmine.createSpyObj('LoginFormService', ['setGameType']);
         router = jasmine.createSpyObj('Router', ['navigate']);
-
         await TestBed.configureTestingModule({
             declarations: [LimitedTimeTypeComponent],
             imports: [RouterTestingModule],
@@ -51,5 +50,9 @@ describe('LimitedTimeTypeComponent', () => {
     it('goToCoopLimitedTime should navigate to Login page', () => {
         component.goToCoopLimitedTime();
         expect(router.navigate).toHaveBeenCalledWith(['/loginPage']);
+    });
+    it('goToHomePage should navigate to home page', () => {
+        component.goToHomePage();
+        expect(router.navigate).toHaveBeenCalledWith(['/home']);
     });
 });
