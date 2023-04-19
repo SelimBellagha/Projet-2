@@ -30,6 +30,12 @@ export class DisplayGameService {
         await this.convertAllGames();
     }
 
+    deleteAllGames() {
+        for (const game of this.tempGames) {
+            this.comm.deleteGame(game.id);
+        }
+    }
+
     resetAllScores() {
         for (const game of this.tempGames) {
             this.comm.resetGameScores(game.id);

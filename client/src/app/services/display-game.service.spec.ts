@@ -25,6 +25,7 @@ describe('DisplayGameService', () => {
             'addNewGameHistory',
             'deleteGameHistory',
             'getGameHistory',
+            'deleteGame',
         ]);
         socketServiceSpy = jasmine.createSpyObj('SocketClientService', ['send', 'on']);
         TestBed.configureTestingModule({
@@ -65,6 +66,19 @@ describe('DisplayGameService', () => {
         communicationSpy.getAllGames.and.returnValue(of(gameDataStub));
         await service.loadAllGames();
         expect(spy).toHaveBeenCalledWith(gameDataStub[0].id);
+    });
+
+    it('deleteAllGames should call deleteGame', () => {
+        const gameDataStub = [
+            { isDifficult: false, id: '1', name: 'mock', originalImage: 'mock' } as GameData,
+            { isDifficult: true, id: '2', name: 'mock2', originalImage: 'mock' } as GameData,
+        ];
+        service.tempGames = gameDataStub;
+        service.deleteAllGames();
+        expect(communicationSpy.deleteGame).toHaveBeenCalledTimes(2);
+        for (const game of gameDataStub) {
+            expect(communicationSpy.deleteGame).toHaveBeenCalledWith(game.id);
+        }
     });
 
     it('resetAllScores should call resetGameScores', () => {
