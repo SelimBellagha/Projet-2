@@ -1,5 +1,6 @@
 import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { Router } from '@angular/router';
 import { GiveUpComponent } from '@app/components/give-up/give-up.component';
 import { MouseButton } from '@app/components/play-area/play-area.component';
 import { TimeOffComponent } from '@app/components/time-off/time-off.component';
@@ -34,6 +35,7 @@ export class SoloLimitedTimeComponent implements OnInit, AfterViewInit {
     // eslint-disable-next-line max-params
     constructor(
         private dialogRef: MatDialog,
+        private router: Router,
         private loginService: LoginFormService,
         private displayService: DisplayGameService,
         private gameManager: GameManagerService,
@@ -151,11 +153,6 @@ export class SoloLimitedTimeComponent implements OnInit, AfterViewInit {
         this.historyService.history.nameAbandon = this.username;
         this.historyService.history.gameLength = this.historyService.findGameLength(this.startDate);
         this.displayService.addHistory(this.historyService.history);
-        this.popUpWindow.nativeElement.style.display = 'none';
         this.router.navigate(['home']);
-    }
-
-    goToCongratulations() {
-        this.popUpWindow.nativeElement.style.display = 'block';
     }
 }
