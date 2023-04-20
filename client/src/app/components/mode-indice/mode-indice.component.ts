@@ -28,25 +28,25 @@ export class ModeIndiceComponent {
     // coordinates for the cadrans
     a: Vec2 = { x: 0, y: 240 };
 
-    c: Vec2 = { x: 250, y: 0 };
+    c: Vec2 = { x: 320, y: 0 };
 
-    b: Vec2 = { x: 500, y: 240 };
+    b: Vec2 = { x: 640, y: 240 };
 
-    d: Vec2 = { x: 250, y: 480 };
+    d: Vec2 = { x: 320, y: 480 };
 
     e: Vec2 = { x: 0, y: 120 };
 
-    f: Vec2 = { x: 250, y: 120 };
+    f: Vec2 = { x: 320, y: 120 };
 
-    g: Vec2 = { x: 500, y: 120 };
+    g: Vec2 = { x: 640, y: 120 };
 
     h: Vec2 = { x: 0, y: 360 };
 
-    i: Vec2 = { x: 250, y: 360 };
+    i: Vec2 = { x: 640, y: 360 };
 
     j: Vec2 = { x: 500, y: 360 };
 
-    centre: Vec2 = { x: 250, y: 240 };
+    centre: Vec2 = { x: 320, y: 240 };
 
     status = '3 Indices Inactive';
 

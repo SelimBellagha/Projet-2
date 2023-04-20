@@ -16,6 +16,7 @@ describe('GameManagerService', () => {
     const PIXEL_SIZE = 4;
     const whiteValue = 255;
     let differenceVerificationSpy: SpyObj<DifferenceVerificationService>;
+    const pointA: Vec2 = { x: 0, y: 240 };
 
     beforeEach(() => {
         differenceVerificationSpy = jasmine.createSpyObj('DifferenceVerificationService', ['differenceVerification']);
@@ -56,6 +57,46 @@ describe('GameManagerService', () => {
         service.cheatState = false;
         service.stateChanger();
         expect(service.cheatState).toBe(true);
+    });
+
+    it('should return the value of hint toggle', () => {
+        service.hintState = true;
+        service.hintStateChanger();
+        expect(service.hintState).toBe(false);
+
+        service.hintState = false;
+        service.hintStateChanger();
+        expect(service.hintState).toBe(true);
+    });
+
+    it('should return the value of difference toggle', () => {
+        service.foundDifferenceCheat = true;
+        service.differenceCheatChanger();
+        expect(service.foundDifferenceCheat).toBe(false);
+
+        service.foundDifferenceCheat = false;
+        service.differenceCheatChanger();
+        expect(service.foundDifferenceCheat).toBe(true);
+    });
+    it('should draw a line between two points with red color and width of 1', () => {
+        const firstPoint = pointA;
+        const endPoint = pointA;
+        spyOn(service.originalImageCanvas, 'beginPath').and.callThrough();
+        spyOn(service.originalImageCanvas, 'moveTo').and.callThrough();
+        spyOn(service.originalImageCanvas, 'lineTo').and.callThrough();
+        spyOn(service.originalImageCanvas, 'stroke').and.callThrough();
+
+        service.drawLine(firstPoint, endPoint);
+
+        // expect(actionSaver.hintActions.length).toEqual(1);
+        // expect(actionSaver.hintActions[0].type).toEqual(ActionType.Line);
+        // expect(actionSaver.hintActions[0].params).toEqual([firstPoint, endPoint]);
+        expect(service.originalImageCanvas.beginPath).toHaveBeenCalled();
+        expect(service.originalImageCanvas.moveTo).toHaveBeenCalledWith(firstPoint.x, firstPoint.y);
+        expect(service.originalImageCanvas.lineTo).toHaveBeenCalledWith(endPoint.x, endPoint.y);
+        expect(service.originalImageCanvas.strokeStyle).toEqual('#ff0000');
+        expect(service.originalImageCanvas.lineWidth).toEqual(1);
+        expect(service.originalImageCanvas.stroke).toHaveBeenCalled();
     });
 
     it('flashPixels should not change the final canvas', async () => {
