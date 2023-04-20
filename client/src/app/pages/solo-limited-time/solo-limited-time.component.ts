@@ -31,6 +31,7 @@ export class SoloLimitedTimeComponent implements OnInit, AfterViewInit {
     secondes: number = 0;
     intervalID: number;
     startDate: Date;
+    penaltyTime: number;
 
     // eslint-disable-next-line max-params
     constructor(
@@ -73,6 +74,8 @@ export class SoloLimitedTimeComponent implements OnInit, AfterViewInit {
             winnerName: '',
             nameAbandon: '',
         };
+        await this.limitedTimeLobbyService.getTimeInfo();
+        this.penaltyTime = this.limitedTimeLobbyService.penaltyTime;
     }
 
     timer(gameTime: number) {
