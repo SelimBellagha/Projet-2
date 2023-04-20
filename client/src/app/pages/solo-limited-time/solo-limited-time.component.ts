@@ -48,6 +48,7 @@ export class SoloLimitedTimeComponent implements OnInit, AfterViewInit {
 
     async ngOnInit() {
         await this.limitedTimeLobbyService.getTimeInfo();
+        this.timer(this.limitedTimeLobbyService.initialTime);
         if (!this.limitedTimeLobbyService.firstGame) {
             this.nbDifferencesFound = 0;
             await this.displayService.loadAllGames();
@@ -62,7 +63,6 @@ export class SoloLimitedTimeComponent implements OnInit, AfterViewInit {
         this.gameName = this.gameManager.gameData.name;
         this.difficulty = this.displayService.convertDifficulty(this.gameManager.gameData);
         this.gameManager.putImages();
-        this.timer(this.limitedTimeLobbyService.initialTime);
         this.socketService.send('startTimer', { gameTime: this.limitedTimeLobbyService.initialTime });
         this.historyService.history = {
             startDate: this.startDate.toLocaleString(),
