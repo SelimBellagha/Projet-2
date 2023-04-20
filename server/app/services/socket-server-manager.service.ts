@@ -179,8 +179,8 @@ export class SocketServerManager {
                     this.lobbys.delete(data.roomId);
                 } else if (
                     this.limitedLobbys.has(data.roomId) &&
-                    this.limitedLobbys.get(data.roomId)?.checkFirstPlayer() &&
-                    this.limitedLobbys.get(data.roomId)?.checkSecondPlayer()
+                    (this.limitedLobbys.get(data.roomId)?.checkSecondPlayer() ||
+                        this.limitedLobbys.get(data.roomId)?.getFirstPlayer().socketId === socket.id)
                 ) {
                     this.limitedLobbys.delete(data.roomId);
                 } else {
@@ -188,6 +188,7 @@ export class SocketServerManager {
                 }
             });
 
+            // Fonction non testée car nous n'arrivons pas a initialiser ou get l'id de la socket dans le fichier de test.
             socket.on('differenceFound', (data: { roomId: string; differenceId: number }) => {
                 const lobby = this.lobbys.get(data.roomId);
                 if (lobby) {
@@ -203,7 +204,7 @@ export class SocketServerManager {
                     });
                 }
             });
-
+            // Fonction non testée car nous n'arrivons pas a initialiser ou get l'id de la socket dans le fichier de test.
             socket.on('giveUp', (data: { roomId: string }) => {
                 const lobby = this.lobbys.get(data.roomId);
                 if (socket.id === data.roomId && lobby) {
@@ -212,11 +213,10 @@ export class SocketServerManager {
                     socket.to(data.roomId).emit('win');
                 }
             });
-
+            // Fonction non testée car nous n'arrivons pas a mock le retour de 'this.gameService.getAllGames()'
             socket.on('checkLimitedGame', async (data: { playerName: string; roomId: string }) => {
                 const lobby = this.checkLimitedLobby();
-                const gamesNumber = await this.gameService.getAllGames();
-                const max = gamesNumber.length;
+                const max = (await this.gameService.getAllGames()).length;
                 const min = 0;
                 const firstGameNumber = Math.floor(Math.random() * (max - min + 1) + min);
                 if (lobby) {
@@ -265,6 +265,10 @@ export class SocketServerManager {
             socket.on('limitedTimeGiveUp', (data: { roomId: string }) => {
                 socket.to(data.roomId).emit('limitedTimeGiveUp');
             });
+
+            socket.on('joinRoomForTest', (data: { roomId: string }) => {
+                socket.join(data.roomId);
+            });
         });
     }
 
@@ -288,7 +292,7 @@ export class SocketServerManager {
     getPlayerFromSocketId(socketId: string) {
         for (const lobby of this.lobbys) {
             if (lobby[1].host.socketId === socketId) return lobby[1].host;
-            else if (lobby[1].secondPlayer.socketId === socketId) return lobby[1].secondPlayer;
+            else if (lobby[1].secondPlayer?.socketId === socketId) return lobby[1].secondPlayer;
         }
         return;
     }
