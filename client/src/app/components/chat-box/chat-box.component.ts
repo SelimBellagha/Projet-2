@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-magic-numbers */
-import { Component, ElementRef, OnInit, ViewChild, AfterViewInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 
 import { ActivatedRoute } from '@angular/router';
 import { MouseFocusService } from '@app/mouse-focus.service';
@@ -13,7 +13,7 @@ import { Message } from '@common/chatMessage';
     templateUrl: './chat-box.component.html',
     styleUrls: ['./chat-box.component.scss'],
 })
-export class ChatBoxComponent implements OnInit, AfterViewInit {
+export class ChatBoxComponent implements OnInit {
     @ViewChild('chatInput') chatInput: ElementRef;
 
     gameId: string;
@@ -32,16 +32,6 @@ export class ChatBoxComponent implements OnInit, AfterViewInit {
         const snapshot = route.snapshot;
         this.pageName = snapshot.routeConfig?.path?.toString();
     }
-    ngAfterViewInit() {
-        this.chatInput.nativeElement.addEventListener('focus', () => {
-            this.mouseFocus.isFocusOnchat = true;
-        });
-
-        this.chatInput.nativeElement.addEventListener('blur', () => {
-            this.mouseFocus.isFocusOnchat = false;
-        });
-    }
-
     ngOnInit() {
         this.socketService.connect();
         this.gameId = this.gameUtils.getGameId();

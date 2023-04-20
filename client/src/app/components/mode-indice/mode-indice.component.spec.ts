@@ -262,4 +262,10 @@ describe('ModeIndiceComponent', () => {
         expect(gameManagerSpy.drawLine).toHaveBeenCalledWith(component.i, component.j);
         expect(gameManagerSpy.drawLine).toHaveBeenCalledWith(component.i, component.centre);
     });
+    it('should not  execute onClick if game is in replay mode', () => {
+        gameManagerSpy.replayMode = true;
+        component.counter = 0;
+        component.onClick();
+        expect(gameManagerSpy.sendHintMessage).toHaveBeenCalledTimes(0);
+    });
 });

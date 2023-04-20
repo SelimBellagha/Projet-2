@@ -1,19 +1,27 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { Constants } from '@common/constants';
-import { ConstantsComponent } from './constants.component';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { CommunicationService } from '@app/services/communication.service';
+import { Constants } from '@common/constants';
+import { of } from 'rxjs';
+import { ConstantsComponent } from './constants.component';
+import SpyObj = jasmine.SpyObj;
 
 describe('ConstantsComponent', () => {
     let component: ConstantsComponent;
     let fixture: ComponentFixture<ConstantsComponent>;
     let spyWindowAlert: jasmine.Spy;
+    let communicationSpy: SpyObj<CommunicationService>;
 
     beforeEach(async () => {
+        communicationSpy = jasmine.createSpyObj('CommunicationService', ['sendConstants', 'getConstants']);
         await TestBed.configureTestingModule({
             declarations: [ConstantsComponent],
             imports: [HttpClientTestingModule],
+            providers: [{ provide: CommunicationService, useValue: communicationSpy }],
         }).compileComponents();
 
+        const response = { initTime: 1, penaltyTime: 1, timeBonus: 1 };
+        communicationSpy.getConstants.and.returnValue(of(response));
         fixture = TestBed.createComponent(ConstantsComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
@@ -136,5 +144,11 @@ describe('ConstantsComponent', () => {
         const spy = spyOn(component, 'getConstantsFromServer');
         component.ngOnInit();
         expect(spy).toHaveBeenCalled();
+    });
+    it('sendConstants() should call sendConstants from communicationService ', () => {
+        spyOn(component, 'verifyConstants').and.returnValue(true);
+        communicationSpy.sendConstants.and.returnValue(of());
+        component.sendConstants();
+        expect(communicationSpy.sendConstants).toHaveBeenCalled();
     });
 });

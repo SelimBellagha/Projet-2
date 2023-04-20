@@ -2,14 +2,21 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
+import { SocketTestHelper } from '@app/classes/socket-test-helper';
 import { CommunicationService } from '@app/services/communication.service';
 import { DisplayGameService } from '@app/services/display-game.service';
 import { LobbyService } from '@app/services/lobby.service';
 import { LoginFormService } from '@app/services/login-form.service';
 import { SocketClientService } from '@app/services/socket-client-service.service';
 import { of } from 'rxjs';
+import { Socket } from 'socket.io-client';
 import { JeuxComponent } from './jeux.component';
 import SpyObj = jasmine.SpyObj;
+
+class SocketClientServiceMock extends SocketClientService {
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    override connect() {}
+}
 
 describe('JeuxComponent', () => {
     let component: JeuxComponent;
@@ -19,13 +26,16 @@ describe('JeuxComponent', () => {
     let loginFormSpy: SpyObj<LoginFormService>;
     let lobbyServiceSpy: SpyObj<LobbyService>;
     let commService: CommunicationService;
-    let socketService: SpyObj<SocketClientService>;
-
+    let socketServiceMock: SocketClientServiceMock;
+    let socketHelper: SocketTestHelper;
     beforeEach(async () => {
         displayServiceSpy = jasmine.createSpyObj('DisplayGameService', ['loadGame']);
         loginFormSpy = jasmine.createSpyObj('LoginFormService', ['setGameType', 'setPlayerType', 'setGameId']);
         lobbyServiceSpy = jasmine.createSpyObj('LobbyServiceSpy', ['host']);
-        socketService = jasmine.createSpyObj('socketService', ['on']);
+
+        socketHelper = new SocketTestHelper();
+        socketServiceMock = new SocketClientService();
+        socketServiceMock.socket = socketHelper as unknown as Socket;
 
         await TestBed.configureTestingModule({
             declarations: [JeuxComponent],
@@ -35,7 +45,7 @@ describe('JeuxComponent', () => {
                 { provide: LoginFormService, useValue: loginFormSpy },
                 { provide: LobbyService, useValue: lobbyServiceSpy },
                 CommunicationService,
-                { provide: SocketClientService, useValue: socketService },
+                { provide: SocketClientService, useValue: socketServiceMock },
             ],
         }).compileComponents();
 
@@ -163,5 +173,17 @@ describe('JeuxComponent', () => {
                 playerName: 'TestName',
             },
         ]);
+    });
+    it('holdUpdateLobbyAvailability should change button name when receiving event "updatePlayers" from socket', () => {
+        component.multiplayerButton = 'rejoindre';
+        component.customId = '1';
+        socketHelper.peerSideEmit('updatePlayers', { gameId: '1', available: true });
+        expect(component.multiplayerButton).toEqual('Rejoindre');
+    });
+    it('holdUpdateLobbyAvailability should change button name when receiving event "updatePlayers" from socket', () => {
+        component.holdUpdateLobbyAvailability();
+        component.customId = '1';
+        socketHelper.peerSideEmit('updatePlayers', { gameId: '1', available: false });
+        expect(component.multiplayerButton).toEqual('Créer');
     });
 });

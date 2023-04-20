@@ -211,10 +211,6 @@ export class OneVsOnePageComponent implements OnInit, AfterViewInit {
         this.router.navigate(['home']);
     }
 
-    giveUp() {
-        this.goToHomePageAfterAbandon();
-    }
-
     goToGiveUp() {
         this.dialogRef.open(GiveUpComponent);
         this.socketService.send('giveUp', { roomId: this.roomId });
