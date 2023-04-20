@@ -80,7 +80,7 @@ export class GameManagerService {
 
     async changeGame() {
         const newGame = this.getRandomGame();
-        await this.initializeGame(newGame);
+        this.initializeGame(newGame);
         this.putImages();
     }
 
