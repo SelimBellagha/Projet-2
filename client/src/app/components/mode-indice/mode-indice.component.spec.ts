@@ -54,15 +54,6 @@ describe('ModeIndiceComponent', () => {
             expect(component.findCadran2).toHaveBeenCalledWith(expectedCoordinate);
         });
 
-        // it('should give hint 3 and set toggle to true when counter is 3', () => {
-        //     component.counter = 2;
-        //     const expectedCoordinate: Vec2 = { x: 1, y: 2 };
-        //     spyOn(component, 'setUpCoordinates3').and.returnValue(expectedCoordinate);
-        //     component.onClick();
-        //     expect(component.toggle).toBeTrue();
-        //     expect(gameManagerSpy.giveHint3).toHaveBeenCalledWith(expectedCoordinate);
-        // });
-
         it('should not change anything and show alert when counter is already at max', () => {
             component.counter = 3;
             spyOn(window, 'alert');
@@ -86,14 +77,6 @@ describe('ModeIndiceComponent', () => {
                 expect(result).toEqual(a);
             });
         });
-
-        // describe('setUpCoordinates3', () => {
-        //     it('should return the expected central coordinate', () => {
-        //         spyOn(component, 'getRandomNumber').and.returnValues(0, 1);
-        //         const result = component.setUpCoordinates3();
-        //         expect(result).toEqual(a);
-        //     });
-        // });
     });
     describe('onKeyUp', () => {
         it('should call onClick when the "i" key is pressed', () => {

@@ -113,14 +113,6 @@ export class ModeIndiceComponent {
         this.result.y = this.result.y / pixelDifferences.length;
         return this.result;
     }
-    // setUpCoordinates3(): Vec2 {
-    //     const randomHint = this.getRandomNumber(0, this.gameManager.gameData.nbDifferences - 1);
-    //     const pixelDifferences = this.gameManager.gameData.differences[randomHint];
-    //     this.result.x = pixelDifferences[(pixelDifferences.length - 1) / 2].x;
-    //     this.result.y = pixelDifferences[(pixelDifferences.length - 1) / 2].y;
-
-    //     return this.result;
-    // }
     findCadran1(coordinate: Vec2): number {
         if (coordinate.y >= this.centre.y) {
             this.yCadran = 1;
