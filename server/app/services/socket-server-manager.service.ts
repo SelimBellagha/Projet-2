@@ -2,6 +2,7 @@
 import { Lobby } from '@app/classes/lobby';
 import { LobbyLimitedTime } from '@app/classes/lobby-limited-time';
 import { Player } from '@app/data/player';
+import { TopScore } from '@app/data/top-scores.interface';
 import { Message } from '@common/chatMessage';
 import * as http from 'http';
 import * as io from 'socket.io';
@@ -9,7 +10,6 @@ import { Socket } from 'socket.io';
 import { Service } from 'typedi';
 import { GameManager } from './game-manager.service';
 import { TimerManager } from './timer-manager.service';
-import { TopScore } from '@app/data/top-scores.interface';
 
 const EIGHT = 8;
 
@@ -89,7 +89,6 @@ export class SocketServerManager {
 
             socket.on('systemMessage', (systemMessage: string) => {
                 const lobby = this.getLobbyFromSocketID(socket.id);
-
                 const playerName = this.getPlayerFromSocketId(socket.id)?.playerName;
                 if (!lobby) return;
                 if (systemMessage === ' a abandonné la partie') {
@@ -211,7 +210,7 @@ export class SocketServerManager {
                 }
             });
 
-            // Fonction non testée car nous n'arrivons pas a initialiser ou get l'id de la socket dans le fichier de test.
+            // Fonction non totalement testée car nous n'arrivons pas a initialiser ou get l'id de la socket dans le fichier de test.
             socket.on('differenceFound', (data: { roomId: string; differenceId: number }) => {
                 const lobby = this.lobbys.get(data.roomId);
                 if (lobby) {

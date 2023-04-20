@@ -3,6 +3,7 @@ import { Lobby } from '@app/classes/lobby';
 import { LobbyLimitedTime } from '@app/classes/lobby-limited-time';
 import { GameData } from '@app/data/game.interface';
 import { Player } from '@app/data/player';
+import { TopScore } from '@app/data/top-scores.interface';
 import { Vec2 } from '@app/data/vec2';
 import { Server } from 'app/server';
 import { expect } from 'chai';
@@ -31,6 +32,13 @@ describe('SocketManager service tests', () => {
     const vec: Vec2 = {
         x: 0,
         y: 0,
+    };
+    const topScoreTest: TopScore = {
+        position: 'testPos',
+        gameId: 'testGameId',
+        gameType: 'testType',
+        time: 'testTime',
+        playerName: 'testPlayer',
     };
     const gameData1: GameData = {
         id: 'id',
@@ -262,6 +270,21 @@ describe('SocketManager service tests', () => {
         clientSocket.emit('systemMessageSolo', testMessage);
     });
 
+    it('Receive a globalMessage event should send a receiveSystemMessage to everyone', (done) => {
+        const EIGHT = 8;
+        const now: Date = new Date();
+        const timeString: string = now.toTimeString().slice(0, EIGHT);
+        clientSocket2.on('receiveSystemMessage', (newMessage: string) => {
+            expect(newMessage).to.be.equal(
+                timeString +
+                    ` - ${topScoreTest.playerName} obtient la ${topScoreTest.position} place dans 
+                les meilleurs temps du jeu ${topScoreTest.gameType}`,
+            );
+            done();
+        });
+        clientSocket.emit('globalMessage', topScoreTest);
+    });
+
     it('Receive a deleteRoom event should delete room in parameter', (done) => {
         service.lobbys.set(roomId, lobby);
         clientSocket.emit('deleteRoom', { roomId });
@@ -353,7 +376,34 @@ describe('SocketManager service tests', () => {
         }, RESPONSE_DELAY);
     });
 
-    it('Receive a limitedDifferenceFound event should send a LimitedDifferenceUpdate', (done) => {
+    it('Receive a differenceFound event should add the nbDifferences found of the second player if it`s not the host', (done) => {
+        service.lobbys.set(roomId, lobby);
+        expect(lobby.nbDifferencesInvite).to.be.equal(0);
+        clientSocket.emit('differenceFound', { roomId, differenceId: 1 });
+        setTimeout(() => {
+            expect(lobby.nbDifferencesInvite).to.be.equal(1);
+            done();
+        }, RESPONSE_DELAY);
+    });
+
+    it('Receive a differenceFound event should send a differenceUpdate event', (done) => {
+        const nbDifference = 1;
+        lobby.nbDifferencesHost = 1;
+        lobby.nbDifferencesInvite = 1;
+        const differenceId = 2;
+        service.lobbys.set(roomId, lobby);
+        clientSocket2.on('differenceUpdate', (data: { nbDifferenceHost: number; nbDifferenceInvite: number; differenceId: number }) => {
+            expect(data.nbDifferenceHost).to.be.equal(nbDifference);
+            expect(data.nbDifferenceInvite).to.be.equal(nbDifference + 1);
+            expect(data.differenceId).to.be.equal(differenceId);
+            done();
+        });
+        clientSocket.emit('joinRoomForTest', { roomId });
+        clientSocket2.emit('joinRoomForTest', { roomId });
+        clientSocket.emit('differenceFound', { roomId, differenceId });
+    });
+
+    it('Receive a limitedDifferenceFound event should send a LimitedDifferenceUpdate event', (done) => {
         service.limitedLobbys.set(roomId, limitedLobby);
         clientSocket.emit('joinRoomForTest', { roomId });
         clientSocket2.emit('joinRoomForTest', { roomId });
@@ -391,6 +441,13 @@ describe('SocketManager service tests', () => {
         done();
     });
 
+    it('getLobbyFromSocketID should return the limitedLobby where the secondPlayer socket is', (done) => {
+        service.limitedLobbys.set(roomId, limitedLobby);
+        limitedLobby.addPlayer(secondPlayer);
+        expect(service.getLobbyFromSocketID(secondPlayer.socketId)).to.be.equal(limitedLobby);
+        done();
+    });
+
     it('getLobbyFromSocketID should return nothing if there is no lobby', (done) => {
         expect(service.getLobbyFromSocketID(secondPlayer.socketId)).to.be.equal(undefined);
         done();
@@ -399,6 +456,14 @@ describe('SocketManager service tests', () => {
     it('getPlayerFromSocketId should return the player', (done) => {
         service.lobbys.set(roomId, lobby);
         lobby.addPlayer(secondPlayer);
+        expect(service.getPlayerFromSocketId(host.socketId)).to.be.equal(host);
+        expect(service.getPlayerFromSocketId(secondPlayer.socketId)).to.be.equal(secondPlayer);
+        done();
+    });
+
+    it('getPlayerFromSocketId should return the player', (done) => {
+        service.limitedLobbys.set(roomId, limitedLobby);
+        limitedLobby.addPlayer(secondPlayer);
         expect(service.getPlayerFromSocketId(host.socketId)).to.be.equal(host);
         expect(service.getPlayerFromSocketId(secondPlayer.socketId)).to.be.equal(secondPlayer);
         done();
@@ -419,10 +484,64 @@ describe('SocketManager service tests', () => {
         }
     });
 
-    it('checkLimitedLobby nothing if there is no limitedLobby available', (done) => {
+    it('checkLimitedLobby should return nothing if there is no limitedLobby available', (done) => {
         service.limitedLobbys.set(roomId, limitedLobby);
         limitedLobby.addPlayer(secondPlayer);
         expect(service.checkLimitedLobby()).to.be.equal(undefined);
         done();
+    });
+
+    it('Receive a giveUp event should emit a win event to second player', (done) => {
+        service.lobbys.set(roomId, lobby);
+        limitedLobby.addPlayer(secondPlayer);
+        clientSocket2.on('win', () => {
+            done();
+        });
+        clientSocket.emit('joinRoomForTest', { roomId });
+        clientSocket2.emit('joinRoomForTest', { roomId });
+        clientSocket.emit('giveUp', { roomId });
+    });
+
+    it('Receive a sendChatToServer event should call getLobbyFromSocketID', (done) => {
+        const message = 'testMessage';
+        service.lobbys.set(roomId, lobby);
+        lobby.addPlayer(secondPlayer);
+        clientSocket.emit('joinRoomForTest', { roomId });
+        clientSocket2.emit('joinRoomForTest', { roomId });
+        const spy = sinon.spy(service, 'getLobbyFromSocketID');
+        clientSocket.emit('sendChatToServer', { message });
+        setTimeout(() => {
+            expect(spy.called).to.be.equal(true);
+            done();
+        }, RESPONSE_DELAY);
+    });
+
+    it('Receive a systemMessage event should call getLobbyFromSocketID', (done) => {
+        const systemMessage = ' a abandonné la partie';
+        const anotherMessage = 'testMessage';
+        service.lobbys.set(roomId, lobby);
+        lobby.addPlayer(secondPlayer);
+        sinon.stub(service, 'getLobbyFromSocketID').returns(lobby);
+        sinon.stub(service, 'getPlayerFromSocketId').returns(host);
+        clientSocket.emit('systemMessage', systemMessage);
+        clientSocket.emit('systemMessage', anotherMessage);
+        setTimeout(() => {
+            done();
+        }, RESPONSE_DELAY);
+    });
+
+    it('Receive a systemMessage event should emit a systemMessage event', (done) => {
+        const systemMessage = ' a abandonné la partie';
+        const anotherMessage = 'testMessage';
+        service.limitedLobbys.set(roomId, limitedLobby);
+        limitedLobby.addPlayer(secondPlayer);
+        clientSocket.on('systemMessage', (data: { name: string }) => {
+            expect(data.name).to.be.equal(host.playerName);
+            done();
+        });
+        sinon.stub(service, 'getLobbyFromSocketID').returns(limitedLobby);
+        sinon.stub(service, 'getPlayerFromSocketId').returns(host);
+        clientSocket.emit('systemMessage', systemMessage);
+        clientSocket.emit('systemMessage', anotherMessage);
     });
 });

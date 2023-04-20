@@ -29,7 +29,6 @@
             "app/index.ts",
             "app/server.ts",
             "app/app.ts",
-            "app/services/socket-server-manager.service.ts",
             "app/services/constants-manager.service.ts"
         ],
         "require": [
