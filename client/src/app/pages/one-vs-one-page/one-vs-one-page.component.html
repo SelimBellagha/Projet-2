@@ -23,7 +23,7 @@
                 <p>{{ hostName }} : {{ nbDifferencesFoundUser1 }} différences trouvées</p>
                 <p>{{ guestName }} : {{ nbDifferencesFoundUser2 }} différences trouvées</p>
                 <div class="timer">
-                    <img src="../../../assets/images/stopwatch.png" class="watch-logo" />
+                    <img src="../../../assets/images/clock.png" class="watch-logo" />
                     <div>
                         <div>{{ minutes.toString().padStart(2, '0') }} :{{ secondes.toString().padStart(2, '0') }}</div>
                     </div>
@@ -39,15 +39,6 @@
 
     <div class="section">
         <app-chat-box></app-chat-box>
-    </div>
-    <div #popUpWindowWin class="modal" id="congratulations">
-        <div class="modal-content">
-            <h1 class="title">Félicitations {{ myUsername }} ! Vous avez trouvé toutes les différences !</h1>
-            <div>
-                <button id="end" class="button-pop" (click)="goToHomePage()">Fermer</button>
-                <button id="replay-button" (click)="onReplay()">Open replay Menu</button>
-            </div>
-        </div>
     </div>
 
     <div #popUpWindowLose class="modal">
