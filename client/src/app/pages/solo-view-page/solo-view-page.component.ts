@@ -8,6 +8,7 @@ import { Vec2 } from '@app/interfaces/vec2';
 import { DisplayGameService } from '@app/services/display-game.service';
 import { GameManagerService } from '@app/services/game-manager.service';
 import { HistoryService } from '@app/services/history.service';
+import { LimitedTimeLobbyService } from '@app/services/limited-time-lobby.service';
 import { LoginFormService } from '@app/services/login-form.service';
 
 @Component({
@@ -29,6 +30,7 @@ export class SoloViewPageComponent implements OnInit, AfterViewInit {
     minutes: number = 0;
     intervalID: number;
     gameTime: number;
+    penaltyTime: number = this.limitedTimeLobby.penaltyTime;
 
     inReplay: boolean = false;
     newScore: TopScore = {
@@ -46,6 +48,7 @@ export class SoloViewPageComponent implements OnInit, AfterViewInit {
         private loginService: LoginFormService,
         private displayService: DisplayGameService,
         private gameManager: GameManagerService,
+        private limitedTimeLobby: LimitedTimeLobbyService,
         // private socketService: SocketClientService,
         private dialogRef: MatDialog,
         private historyService: HistoryService,
