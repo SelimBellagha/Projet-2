@@ -18,9 +18,9 @@
     <div class="section">
         <div class="main-container">
             <div class="game-details">
-                <p id="penalty">Pénalités pour utilisation d'indice : 00: XX</p>
+                <p id="penalty">Pénalités pour utilisation d'indice : 00: 0{{ penaltyTime }}</p>
                 <p>Indices restants: X</p>
-                <p>Differences trouvées par {{username}}: {{ nbDifferencesFound }}</p>
+                <p>Differences trouvées par {{ username }}: {{ nbDifferencesFound }}</p>
                 <div class="timer">
                     <img src="../../../assets/images/stopwatch.png" class="watch-logo" />
                     <div>{{ minutes.toString().padStart(2, '0') }} :{{ secondes.toString().padStart(2, '0') }}</div>
