@@ -2,7 +2,7 @@
     <button class="tool-button" (click)="onPause()">
         <img class="tool-icons" *ngIf="this.pause" src="./assets/images/play-button.png" alt="pause-icon"/>
 
-        <img class="tool-icons" *ngIf="this.pause"src="./assets/images/video-pause-button.png" alt="pause-icon"/>
+        <img class="tool-icons" *ngIf="!this.pause"src="./assets/images/video-pause-button.png" alt="pause-icon"/>
         <div class="icon-description">
             <p class="note">Pause/Continuer</p>
         </div>
@@ -18,7 +18,6 @@
         <div class="icon-description">
             <p class="note">Cliquer pour changer de vitesse</p>
             <p class>Une fois pour passer à x2</p>
-            <p>Une autre fois pour passer à x3</p>
             <p>Une autre fois pour passer à x4</p>
             <p>Une fois de plus pour revenir à x1</p>
         </div>

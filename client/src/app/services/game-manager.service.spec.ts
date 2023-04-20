@@ -1,12 +1,16 @@
+/* eslint-disable max-lines */
 import { HttpClientModule } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
+import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { CanvasTestHelper } from '@app/classes/canvas-test-helper';
 import { GameData } from '@app/interfaces/game-data';
 import { Vec2 } from '@app/interfaces/vec2';
 import { Verification } from '@app/interfaces/verification';
+import { ActionSaverService } from './action-saver.service';
 import { DifferenceVerificationService } from './difference-verification.service';
 import { GameManagerService } from './game-manager.service';
+import { SocketClientService } from './socket-client-service.service';
 import SpyObj = jasmine.SpyObj;
 
 describe('GameManagerService', () => {
@@ -16,12 +20,30 @@ describe('GameManagerService', () => {
     const PIXEL_SIZE = 4;
     const whiteValue = 255;
     let differenceVerificationSpy: SpyObj<DifferenceVerificationService>;
+    let actionSaverSpy: SpyObj<ActionSaverService>;
+    let socketServiceSpy: SpyObj<SocketClientService>;
+    let routerSpy: SpyObj<Router>;
+    const pointA: Vec2 = { x: 0, y: 240 };
 
     beforeEach(() => {
         differenceVerificationSpy = jasmine.createSpyObj('DifferenceVerificationService', ['differenceVerification']);
+        actionSaverSpy = jasmine.createSpyObj('ActionSaverService', [
+            'addClickAction',
+            'reset',
+            'addHintAction',
+            'addOpponentAction',
+            'addLastHintAction',
+        ]);
+        routerSpy = jasmine.createSpyObj('Router', [], { url: '/soloLimitedTime' });
+        socketServiceSpy = jasmine.createSpyObj('SocketClientService', ['send']);
         TestBed.configureTestingModule({
             imports: [HttpClientModule, RouterTestingModule],
-            providers: [{ provide: DifferenceVerificationService, useValue: differenceVerificationSpy }],
+            providers: [
+                { provide: DifferenceVerificationService, useValue: differenceVerificationSpy },
+                { provide: ActionSaverService, useValue: actionSaverSpy },
+                { provide: SocketClientService, useValue: socketServiceSpy },
+                { provide: Router, useValue: routerSpy },
+            ],
         });
         service = TestBed.inject(GameManagerService);
         service.originalImageCanvas = CanvasTestHelper.createCanvas(CANVAS_WIDTH, CANVAS_HEIGHT).getContext('2d') as CanvasRenderingContext2D;
@@ -56,6 +78,43 @@ describe('GameManagerService', () => {
         service.cheatState = false;
         service.stateChanger();
         expect(service.cheatState).toBe(true);
+    });
+
+    it('should return the value of hint toggle', () => {
+        service.hintState = true;
+        service.hintStateChanger();
+        expect(service.hintState).toBe(false);
+
+        service.hintState = false;
+        service.hintStateChanger();
+        expect(service.hintState).toBe(true);
+    });
+
+    it('should return the value of difference toggle', () => {
+        service.foundDifferenceCheat = true;
+        service.differenceCheatChanger();
+        expect(service.foundDifferenceCheat).toBe(false);
+
+        service.foundDifferenceCheat = false;
+        service.differenceCheatChanger();
+        expect(service.foundDifferenceCheat).toBe(true);
+    });
+    it('should draw a line between two points with red color and width of 1', () => {
+        const firstPoint = pointA;
+        const endPoint = pointA;
+        spyOn(service.originalImageCanvas, 'beginPath').and.callThrough();
+        spyOn(service.originalImageCanvas, 'moveTo').and.callThrough();
+        spyOn(service.originalImageCanvas, 'lineTo').and.callThrough();
+        spyOn(service.originalImageCanvas, 'stroke').and.callThrough();
+
+        service.drawLine(firstPoint, endPoint);
+
+        expect(service.originalImageCanvas.beginPath).toHaveBeenCalled();
+        expect(service.originalImageCanvas.moveTo).toHaveBeenCalledWith(firstPoint.x, firstPoint.y);
+        expect(service.originalImageCanvas.lineTo).toHaveBeenCalledWith(endPoint.x, endPoint.y);
+        expect(service.originalImageCanvas.strokeStyle).toEqual('#ff0000');
+        expect(service.originalImageCanvas.lineWidth).toEqual(1);
+        expect(service.originalImageCanvas.stroke).toHaveBeenCalled();
     });
 
     it('flashPixels should not change the final canvas', async () => {
@@ -162,7 +221,7 @@ describe('GameManagerService', () => {
         service.locked = true;
         expect(await service.onPositionClicked(position)).toBeFalse();
     });
-    /* it('onPositionClicked should call errorMessage if position is not in a difference that is not found', async () => {
+    it('onPositionClicked should call errorMessage if position is not in a difference that is not found', async () => {
         const position: Vec2 = { x: 0, y: 0 };
         spyOn(service, 'verifyDifference').and.resolveTo(false);
         const spy = spyOn(service, 'drawError');
@@ -171,8 +230,8 @@ describe('GameManagerService', () => {
         await service.onPositionClicked(position);
         expect(spy).toHaveBeenCalled();
         expect(spy2).toHaveBeenCalled();
-    });*/
-    /* it('onPositionClicked should call playDifferenceAudio and  flashImages if position is verified', async () => {
+    });
+    it('onPositionClicked should call playDifferenceAudio and  flashImages if position is verified', async () => {
         const position: Vec2 = { x: 0, y: 0 };
         spyOn(service, 'verifyDifference').and.resolveTo(true);
         service.gameData = { differences: [[]] } as unknown as GameData;
@@ -180,11 +239,12 @@ describe('GameManagerService', () => {
         const spy1 = spyOn(service, 'playDifferenceAudio');
         const spy2 = spyOn(service, 'flashImages').and.resolveTo();
         service.locked = false;
+        spyOn(service, 'changeGame');
         await service.onPositionClicked(position);
 
         expect(spy1).toHaveBeenCalled();
         expect(spy2).toHaveBeenCalled();
-    });*/
+    });
 
     it('playDifferenceAudio should call playAudio', () => {
         const spy = spyOn(service, 'playAudio');
@@ -266,5 +326,66 @@ describe('GameManagerService', () => {
         }, 1000);
         await service.flashPixelsCheat(pixelsMock, service.originalImageCanvas);
         expect(spy).toHaveBeenCalledWith(pixelsMock[0]);
+    });
+    it('opponentFoundDifference should call flashImages with the id received', () => {
+        const spy = spyOn(service, 'flashImages');
+        service.gameData = { differences: [{} as Vec2[]] } as GameData;
+        service.gameData.differences[0] = [];
+        service.opponentFoundDifference(0);
+        expect(spy).toHaveBeenCalledOnceWith([]);
+    });
+    it('restartGame should call putImages to reset the canvases', () => {
+        service.gameData = { nbDifferences: 1 } as GameData;
+        const spy = spyOn(service, 'putImages');
+        service.restartGame();
+        expect(spy).toHaveBeenCalled();
+    });
+    it('restartGame should reset gameAttributes ', () => {
+        service.gameData = { nbDifferences: 1 } as GameData;
+        service.differencesFound = [true];
+        spyOn(service, 'putImages');
+        service.restartGame();
+        expect(service.differencesFound[0]).toBeFalse();
+    });
+    it('enableReplay should change replayMode attribute to true', () => {
+        service.replayMode = false;
+        service.enableReplay();
+        expect(service.replayMode).toBeTrue();
+    });
+    it('giveHint3 should call addLastHintAction from actionSaver', () => {
+        service.giveHint3({ x: 1, y: 1 } as Vec2);
+        expect(actionSaverSpy.addLastHintAction).toHaveBeenCalled();
+    });
+    it('giveHint3 should call strokeText from originalCanvas', () => {
+        const spy = spyOn(service.originalImageCanvas, 'strokeText');
+        service.giveHint3({ x: 1, y: 1 } as Vec2);
+        expect(spy).toHaveBeenCalled();
+    });
+    it('sendHintMessage should call send  from socketService', () => {
+        service.sendHintMessage('test');
+        expect(socketServiceSpy.send).toHaveBeenCalledWith('systemMessageSolo', 'test');
+    });
+    it('changeGame should get a new random game, initilaize it and put the new images on the canvas', () => {
+        const spyGetRandom = spyOn(service, 'getRandomGame').and.returnValue({} as GameData);
+        const spyInitilaize = spyOn(service, 'initializeGame');
+        const spyPut = spyOn(service, 'putImages');
+        service.changeGame();
+        expect(spyGetRandom).toHaveBeenCalled();
+        expect(spyInitilaize).toHaveBeenCalled();
+        expect(spyPut).toHaveBeenCalled();
+    });
+    it('getRandomGame should return one of the games from limitedGameData', () => {
+        // eslint-disable-next-line @typescript-eslint/no-magic-numbers
+        spyOn(Math, 'random').and.returnValue(0.99);
+        service.limitedGameData = [{ name: '1' } as GameData, { name: '1' } as GameData];
+        service.getRandomGame();
+        expect(service.getRandomGame()).toEqual({ name: '1' } as GameData);
+    });
+    it('initializeLimitedGame should set limitedGameData and gameNumberMax attributes', () => {
+        const data = [{ name: '1' } as GameData, { name: '12' } as GameData];
+        spyOn(service, 'getRandomGame').and.returnValue({} as GameData);
+        service.initializeLimitedGame(data);
+        spyOn(service, 'initializeGame');
+        expect(service.limitedGameData).toEqual(data);
     });
 });
