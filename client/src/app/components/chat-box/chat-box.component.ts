@@ -101,6 +101,6 @@ export class ChatBoxComponent implements OnInit {
     }
 
     isMultiplayerMode() {
-        return this.pageName === 'oneVSone';
+        return this.pageName === 'oneVSone' || this.pageName === 'limitedOneVsOne';
     }
 }

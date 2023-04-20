@@ -63,7 +63,13 @@ export class SocketServerManager {
                 const timeString: string = now.toTimeString().slice(0, EIGHT);
                 const textMessage = '[' + timeString + '] ' + playerEmitter.playerName + ' : ' + message.text;
                 message.text = textMessage;
-                if (lobby?.host.socketId === socket.id) {
+                let playerTarget;
+                if (lobby && 'host' in lobby) {
+                    playerTarget = lobby.host;
+                } else {
+                    playerTarget = lobby?.firstPlayer;
+                }
+                if (playerTarget?.socketId === socket.id) {
                     socketOtherPlayer = lobby?.secondPlayer.socketId;
                     if (!socketOtherPlayer) return;
                     message.isSender = false;
@@ -71,7 +77,7 @@ export class SocketServerManager {
                     message.isSender = true;
                     this.sio.to(socket.id).emit('receiveChatMessage', message);
                 } else {
-                    socketOtherPlayer = lobby?.host.socketId;
+                    socketOtherPlayer = playerTarget?.socketId;
                     if (!socketOtherPlayer) return;
                     message.isSender = false;
                     this.sio.to(socketOtherPlayer).emit('receiveChatMessage', message);
@@ -89,11 +95,19 @@ export class SocketServerManager {
                     const now: Date = new Date();
                     const timeString: string = now.toTimeString().slice(0, EIGHT);
                     socket.emit('systemMessage', { name: playerName });
-                    this.sio.to(lobby?.host.socketId).emit('receiveSystemMessage', playerName + systemMessage);
+                    if ('host' in lobby) {
+                        this.sio.to(lobby?.host.socketId).emit('receiveSystemMessage', playerName + systemMessage);
+                    } else {
+                        this.sio.to(lobby?.firstPlayer.socketId).emit('receiveSystemMessage', playerName + systemMessage);
+                    }
                     this.sio.to(lobby?.secondPlayer.socketId).emit('receiveSystemMessage', '[' + timeString + '] ' + playerName + systemMessage);
                     return;
                 }
-                this.sio.to(lobby?.host.socketId).emit('receiveSystemMessage', systemMessage + playerName);
+                if ('host' in lobby) {
+                    this.sio.to(lobby?.host.socketId).emit('receiveSystemMessage', systemMessage + playerName);
+                } else {
+                    this.sio.to(lobby?.firstPlayer.socketId).emit('receiveSystemMessage', systemMessage + playerName);
+                }
                 this.sio.to(lobby?.secondPlayer.socketId).emit('receiveSystemMessage', systemMessage + playerName);
             });
 
@@ -286,12 +300,20 @@ export class SocketServerManager {
             if (lobby[1].host.socketId === socketId) return lobby[1];
             else if (lobby[1].secondPlayer.socketId === socketId) return lobby[1];
         }
+        for (const lobby of this.limitedLobbys) {
+            if (lobby[1].firstPlayer.socketId === socketId) return lobby[1];
+            else if (lobby[1].secondPlayer.socketId === socketId) return lobby[1];
+        }
         return;
     }
 
     getPlayerFromSocketId(socketId: string) {
         for (const lobby of this.lobbys) {
             if (lobby[1].host.socketId === socketId) return lobby[1].host;
+            else if (lobby[1].secondPlayer?.socketId === socketId) return lobby[1].secondPlayer;
+        }
+        for (const lobby of this.limitedLobbys) {
+            if (lobby[1].firstPlayer.socketId === socketId) return lobby[1].firstPlayer;
             else if (lobby[1].secondPlayer?.socketId === socketId) return lobby[1].secondPlayer;
         }
         return;
