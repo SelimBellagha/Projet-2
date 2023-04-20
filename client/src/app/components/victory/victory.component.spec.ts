@@ -32,6 +32,11 @@ describe('VictoryComponent', () => {
         component.goToHomePage();
         expect(matDialogSpy.closeAll).toHaveBeenCalled();
         expect(spy).toHaveBeenCalledWith(['home']);
-        expect(component).toBeTruthy();
+    });
+    it('stayForReplay should close this component and but not naviagte to homePage', () => {
+        const spy = spyOn(router, 'navigate');
+        component.stayForReplay();
+        expect(matDialogSpy.closeAll).toHaveBeenCalled();
+        expect(spy).toHaveBeenCalledTimes(0);
     });
 });

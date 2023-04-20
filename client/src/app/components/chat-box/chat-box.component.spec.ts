@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
+import { MouseFocusService } from '@app/mouse-focus.service';
 import { LoginFormService } from '@app/services/login-form.service';
 import { SocketClientService } from '@app/services/socket-client-service.service';
 import { Message } from '@common/chatMessage';
@@ -11,6 +12,7 @@ describe('ChatBoxComponent', () => {
     let fixture: ComponentFixture<ChatBoxComponent>;
     let mockActivatedRoute: unknown;
     let mockSocketService: SpyObj<SocketClientService>;
+    let mouseFocusSpy: SpyObj<MouseFocusService>;
     let mockGameUtils: unknown;
 
     beforeEach(async () => {
@@ -23,14 +25,14 @@ describe('ChatBoxComponent', () => {
         };
         mockSocketService = jasmine.createSpyObj(['connect', 'on', 'send']);
         mockGameUtils = jasmine.createSpyObj(['getGameId']);
-
+        mouseFocusSpy = jasmine.createSpyObj('MouseFocusService', [], { isFocusOnChat: false });
         await TestBed.configureTestingModule({
             declarations: [ChatBoxComponent],
             providers: [
-                { provide: ActivatedRoute, useValue: {} },
                 { provide: ActivatedRoute, useValue: mockActivatedRoute },
                 { provide: SocketClientService, useValue: mockSocketService },
                 { provide: LoginFormService, useValue: mockGameUtils },
+                { provide: MouseFocusService, useValue: mouseFocusSpy },
             ],
         }).compileComponents();
 
@@ -62,6 +64,12 @@ describe('ChatBoxComponent', () => {
         expect(result).toBeFalse();
     });
 
+    it('should return current time in "hh:mm:ss" format', () => {
+        const currentTime = component.getCurrentTime();
+        const pattern = /^([01]\d|2[0-3]):([0-5]\d):([0-5]\d)$/;
+
+        expect(pattern.test(currentTime)).toBe(true);
+    });
     it('should return current time in "hh:mm:ss" format', () => {
         const currentTime = component.getCurrentTime();
         const pattern = /^([01]\d|2[0-3]):([0-5]\d):([0-5]\d)$/;
@@ -100,7 +108,7 @@ describe('ChatBoxComponent', () => {
         expect(spy).toHaveBeenCalledWith(message);
     });
 
-    /* it('should add a message when calling addMessage', () => {
+    it('should add a message when calling addMessage', () => {
         const message: Message = {
             text: 'Hello',
             roomId: '123',
@@ -108,17 +116,71 @@ describe('ChatBoxComponent', () => {
             isSystem: false,
             name: '',
         };
-
         component.message = message.text;
-
-        mockSocketService.send.and.callFake((event: string, data: unknown) => {
-            expect(event).toBe('sendChatToServer');
-            expect(data).toEqual(message);
-        });
-
+        component.gameId = message.roomId;
         component.addMessage();
-
-        expect(component.messages).toEqual([message]);
+        expect(mockSocketService.send).toHaveBeenCalledWith('sendChatToServer', jasmine.any(Object));
         expect(component.message).toBe('');
-    });*/
+    });
+
+    it('should handle system message sockets', () => {
+        const message: Message = {
+            text: 'The game has started!',
+            roomId: '123',
+            isSender: false,
+            isSystem: true,
+            name: '',
+        };
+        const spy = spyOn(component.messages, 'push');
+        /* eslint-disable */
+        mockSocketService.on.and.callFake((event: string, callback: any) => {
+          if (event === 'receiveSystemMessage') {
+            callback(message);
+          }
+        });
+        /* eslint-enable */
+        component.ngOnInit();
+
+        expect(mockSocketService.on).toHaveBeenCalledWith('receiveSystemMessage', jasmine.any(Function));
+        expect(spy).toHaveBeenCalled();
+    });
+    it('onFocus should change isFocusOnchat to true ', () => {
+        mouseFocusSpy.isFocusOnchat = false;
+        component.onFocus();
+        expect(mouseFocusSpy.isFocusOnchat).toBeTrue();
+    });
+    it('onBlur should change isFocusOnchat to false ', () => {
+        mouseFocusSpy.isFocusOnchat = true;
+        component.onBlur();
+        expect(mouseFocusSpy.isFocusOnchat).toBeFalse();
+    });
+    it('formatTime should return "03" if time input is 3', () => {
+        expect(component.formatTime(3)).toEqual('03');
+    });
+    it('formatTime should return "11" if time input is 11', () => {
+        // eslint-disable-next-line @typescript-eslint/no-magic-numbers
+        expect(component.formatTime(11)).toEqual('11');
+    });
+    it('should handle solo systemMessage if gamemode is solo', () => {
+        const message: Message = {
+            text: 'Hello',
+            roomId: '123',
+            isSender: false,
+            isSystem: false,
+            name: 'John Doe',
+        };
+        const spy = spyOn(component.messages, 'push');
+        spyOn(component, 'isMultiplayerMode').and.returnValue(false);
+        /* eslint-disable */
+        mockSocketService.on.and.callFake((event: string, callback: any) => {
+            if (event === 'receiveSystemMessageSolo') {
+                callback(message);
+            }
+        });
+        /* eslint-enable */
+        component.ngOnInit();
+
+        expect(mockSocketService.on).toHaveBeenCalledWith('receiveSystemMessageSolo', jasmine.any(Function));
+        expect(spy).toHaveBeenCalled();
+    });
 });

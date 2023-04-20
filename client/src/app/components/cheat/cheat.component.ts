@@ -1,4 +1,5 @@
 import { Component, HostListener } from '@angular/core';
+import { MouseFocusService } from '@app/mouse-focus.service';
 import { ActionSaverService } from '@app/services/action-saver.service';
 import { GameManagerService } from '@app/services/game-manager.service';
 
@@ -10,12 +11,13 @@ import { GameManagerService } from '@app/services/game-manager.service';
 export class CheatComponent {
     toggle = false;
     status = 'Activer Triche';
+    constructor(private gameManager: GameManagerService, private mouseFocus: MouseFocusService, private actionSaver: ActionSaverService) {}
 
-    constructor(private gameManager: GameManagerService, private actionSaver: ActionSaverService) {}
+    // eslint-disable-next-line @typescript-eslint/member-ordering
 
     @HostListener('document:keyup', ['$event'])
     onKeyUp(event: KeyboardEvent) {
-        if (event.key === 't' || event.key === 'T') {
+        if ((event.key === 't' || event.key === 'T') && !this.mouseFocus.isFocusOnchat) {
             this.onClick();
         }
     }

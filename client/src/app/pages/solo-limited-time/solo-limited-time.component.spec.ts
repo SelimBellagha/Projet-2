@@ -5,6 +5,9 @@ import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { SocketTestHelper } from '@app/classes/socket-test-helper';
 import { MouseButton } from '@app/components/play-area/play-area.component';
+import { TimeOffComponent } from '@app/components/time-off/time-off.component';
+import { VictoryComponent } from '@app/components/victory/victory.component';
+import { GameHistory } from '@app/interfaces/game-history';
 import { GameData } from '@app/interfaces/game.interface';
 import { DisplayGameService } from '@app/services/display-game.service';
 import { GameManagerService } from '@app/services/game-manager.service';
@@ -27,9 +30,8 @@ describe('SoloLimitedTimeComponent', () => {
     let displayGameSpy: SpyObj<DisplayGameService>;
     let limitedLobbySpy: SpyObj<LimitedTimeLobbyService>;
     let matDialogSpy: SpyObj<MatDialog>;
-    // let router: Router;
-    let historyServiceSpy: SpyObj<HistoryService>;
     let router: Router;
+    let historyServiceSpy: SpyObj<HistoryService>;
     let socketHelper: SocketTestHelper;
     let socketServiceMock: SocketClientServiceMock;
 
@@ -59,7 +61,9 @@ describe('SoloLimitedTimeComponent', () => {
         socketServiceMock.socket = socketHelper as unknown as Socket;
         displayGameSpy = jasmine.createSpyObj('DisplayGameService', ['convertDifficulty', 'loadAllGames', 'addHistory']);
         limitedLobbySpy = jasmine.createSpyObj('LimitedTimeLobbyService', ['getTimeInfo'], { roomId: 'id' });
-        historyServiceSpy = jasmine.createSpyObj('HistoryService', ['findGameLength']);
+        historyServiceSpy = jasmine.createSpyObj('HistoryService', ['findGameLength'], {
+            history: { nameAbandon: 'null', gameLength: 'null' } as GameHistory,
+        });
         await TestBed.configureTestingModule({
             declarations: [SoloLimitedTimeComponent],
             imports: [RouterTestingModule, HttpClientTestingModule],
@@ -74,7 +78,7 @@ describe('SoloLimitedTimeComponent', () => {
         }).compileComponents();
 
         fixture = TestBed.createComponent(SoloLimitedTimeComponent);
-        // router = TestBed.inject(Router);
+        router = TestBed.inject(Router);
         component = fixture.componentInstance;
         fixture.detectChanges();
     });
@@ -176,21 +180,22 @@ describe('SoloLimitedTimeComponent', () => {
         component.goToGiveup();
         expect(matDialogSpy.open).toHaveBeenCalled();
     });
-    xit('goToHomePageAfterQuit should unShow PopUp and navigate to home', async () => {
-        // component.popUpWindow.nativeElement.style.display = 'block';
+    it('goToHomePageAfterQuit should navigate to home', async () => {
         const routerSpy = spyOn(router, 'navigate');
-        await component.ngOnInit();
         component.startDate = new Date();
         component.goToHomePageAfterQuit();
+        historyServiceSpy.history = { nameAbandon: 'null', gameLength: 'null' } as GameHistory;
         expect(historyServiceSpy.findGameLength).toHaveBeenCalledWith(component.startDate);
         expect(displayGameSpy.addHistory).toHaveBeenCalledWith(historyServiceSpy.history);
-        // expect(component.popUpWindow.nativeElement.style.display).toEqual('none');
         expect(routerSpy).toHaveBeenCalledOnceWith(['home']);
     });
 
     it('goToCongratulations should show popUp', () => {
-        // component.popUpWindow.nativeElement.style.display = 'none';
         component.goToCongratulations();
-        // expect(component.popUpWindow.nativeElement.style.display).toEqual('block');
+        expect(matDialogSpy.open).toHaveBeenCalledWith(VictoryComponent);
+    });
+    it('timeOff should show correct popUp', () => {
+        component.timeOff();
+        expect(matDialogSpy.open).toHaveBeenCalledWith(TimeOffComponent);
     });
 });

@@ -4,6 +4,7 @@ import { SocketTestHelper } from '@app/classes/socket-test-helper';
 import { AddedScoreResult } from '@app/interfaces/added-score-result';
 import { GameHistory } from '@app/interfaces/game-history';
 import { GameData, TopScore } from '@app/interfaces/game.interface';
+import { Game } from '@app/pages/selection-page-component/selection-page-component.component';
 import { of } from 'rxjs';
 import { Socket } from 'socket.io-client';
 import { CommunicationService } from './communication.service';
@@ -196,5 +197,13 @@ describe('DisplayGameService', () => {
         service.getPlayersInGame(gameId);
         expect(socketServiceSpy.on).toHaveBeenCalled();
         expect(socketServiceSpy.on).toHaveBeenCalledWith(event, jasmine.any(Function));
+    });
+    it('updateLobbyAvailability should call getPalyersInGame for each Game', async () => {
+        const gameDataStub = [{ id: '0' } as Game, { id: '1' } as Game];
+        service.games = gameDataStub;
+        const spy = spyOn(service, 'getPlayersInGame').and.resolveTo('1');
+        await service.updateLobbyAvailability();
+        expect(spy).toHaveBeenCalledTimes(gameDataStub.length);
+        expect(service.games[0].playerInGame).toEqual('1');
     });
 });

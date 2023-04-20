@@ -153,7 +153,6 @@ export class SoloViewPageComponent implements OnInit, AfterViewInit {
     onReplay(): void {
         this.inReplay = true;
         this.gameManager.enableReplay();
-        // this.popUpWindow.nativeElement.style.display = 'none';
     }
 
     abandonGame(): void {

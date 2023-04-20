@@ -15,7 +15,6 @@ export class Server {
     private socketManager: SocketServerManager;
     private gameService: GameManager;
     private scoreService: TopScoresService;
-
     constructor(private readonly application: Application) {}
 
     private static normalizePort(val: number | string): number | string | boolean {
