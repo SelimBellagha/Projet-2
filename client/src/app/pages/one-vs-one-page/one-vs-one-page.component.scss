@@ -91,22 +91,21 @@ canvas {
 }
 
 .button-pop {
-    margin-left: 20%;
-    text-align: center;
     font-weight: bold;
-    height: 5%;
-    width: 20%;
-    border-radius: 6px;
-    font-family: 'Franklin Gothic Medium';
-    font-size: 20px;
+    height: 30px;
+    width: 30%;
+    background-color: #6da093;
+    color: white;
+    border-radius: 10px;
+    border-color: #6da093;
+    font-family: 'Oleo Script Swash Caps';
+    font-size: 15px;
+    margin-right: 5%;
 }
 
-#end {
-    margin-left: 40%;
-    background-color: green;
-    border-color: rgb(2, 97, 2);
+.pop {
+    text-align: center;
 }
-
 .modal {
     display: none;
     position: fixed;
@@ -130,6 +129,7 @@ canvas {
     padding: 20px;
     border: 1px solid #888;
     width: 50%;
+    border-radius: 4%;
 }
 
 .modal-content::after {

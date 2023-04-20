@@ -9,7 +9,6 @@
             <p class="game-details">L' image contient {{ nbDifferences }} différences. 
                 Pour gagner vous devez trouver la majorité des différences.
             </p>
-            <button class="indice">Obtenir un indice</button>
             <app-cheat></app-cheat>
         </div>
 
@@ -21,7 +20,6 @@
     <div class="section">
         <div class="main-container">
             <div class="game-details">
-                <p id="penalty">Pénalités pour utilisation d'indice : 00: XX - Indices restants: X</p>
                 <p>{{ hostName }} : {{ nbDifferencesFoundUser1 }} différences trouvées</p>
                 <p>{{ guestName }} : {{ nbDifferencesFoundUser2 }} différences trouvées</p>
                 <div class="timer">
@@ -54,10 +52,10 @@
 
     <div #popUpWindowLose class="modal">
         <div class="modal-content">
-            <h1 class="title">Dommage {{ myUsername }} ! Vous n'avais pas été assez rapide, {{ opponentUsername }} a gagné la partie !</h1>
-            <div>
-                <button id="end" class="button-pop" (click)="goToHomePage()">Fermer</button>
-                <button id="replay-button" (click)="onReplay()">Open replay Menu</button>
+            <h1 class="title">Dommage {{ myUsername }}. Vous n'avais pas été assez rapide, {{ opponentUsername }} a gagné la partie !</h1>
+            <div class="pop">
+                <button class="button-pop" (click)="goToHomePage()">Fermer</button>
+                <button class="button-pop" (click)="onReplay()"> Voir la reprise</button>
             </div>
         </div>
     </div>
