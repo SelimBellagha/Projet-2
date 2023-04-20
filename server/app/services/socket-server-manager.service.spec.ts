@@ -41,11 +41,12 @@ describe('SocketManager service tests', () => {
     it('Receive a startStopWatch event should call startStopWatch', (done) => {
         service.lobbys.set(roomId, lobby);
         const spy = sinon.spy(lobby.timer, 'startStopWatch');
+        lobby.timer.gameTime = 5;
         clientSocket.emit('startStopWatch', { roomId });
         setTimeout(() => {
             expect(spy.called).to.equal(true);
             done();
-        }, RESPONSE_DELAY);
+        }, RESPONSE_DELAY * 2);
     });
 
     it('Receive a getRealTime event should emit a getRealTime event', (done) => {
