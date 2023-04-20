@@ -89,7 +89,7 @@ export class ModeIndiceComponent {
                         this.status = this.hints[this.counter];
                         this.counter++;
                         this.gameManager.timePenalty();
-                        this.gameManager.giveHint3(this.setUpCoordinates3());
+                        this.gameManager.giveHint3(this.setUpCoordinates());
                         break;
                 }
             } else {

@@ -30,7 +30,7 @@ export class SoloViewPageComponent implements OnInit, AfterViewInit {
     minutes: number = 0;
     intervalID: number;
     gameTime: number;
-    penaltyTime: number = this.limitedTimeLobby.penaltyTime;
+    penaltyTime: number;
 
     inReplay: boolean = false;
     newScore: TopScore = {
@@ -56,7 +56,7 @@ export class SoloViewPageComponent implements OnInit, AfterViewInit {
         this.startDate = new Date();
     }
 
-    ngOnInit() {
+    async ngOnInit() {
         this.username = this.loginService.getFormData();
         this.historyService.history = {
             startDate: this.startDate.toLocaleString(),
@@ -76,6 +76,8 @@ export class SoloViewPageComponent implements OnInit, AfterViewInit {
             this.difficulty = this.displayService.convertDifficulty(this.displayService.game);
             this.nbDifferences = this.displayService.game.nbDifferences;
         }
+        await this.limitedTimeLobby.getTimeInfo();
+        this.penaltyTime = this.limitedTimeLobby.penaltyTime;
     }
 
     ngAfterViewInit() {
