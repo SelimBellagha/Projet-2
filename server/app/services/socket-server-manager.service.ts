@@ -2,6 +2,7 @@
 import { Lobby } from '@app/classes/lobby';
 import { LobbyLimitedTime } from '@app/classes/lobby-limited-time';
 import { Player } from '@app/data/player';
+import { TopScore } from '@app/data/top-scores.interface';
 import { Message } from '@common/chatMessage';
 import * as http from 'http';
 import * as io from 'socket.io';
@@ -9,7 +10,6 @@ import { Socket } from 'socket.io';
 import { Service } from 'typedi';
 import { GameManager } from './game-manager.service';
 import { TimerManager } from './timer-manager.service';
-import { TopScore } from '@app/data/top-scores.interface';
 
 const EIGHT = 8;
 
@@ -64,7 +64,13 @@ export class SocketServerManager {
                 const timeString: string = now.toTimeString().slice(0, EIGHT);
                 const textMessage = '[' + timeString + '] ' + playerEmitter.playerName + ' : ' + message.text;
                 message.text = textMessage;
-                if (lobby?.host.socketId === socket.id) {
+                let playerTarget;
+                if (lobby && 'host' in lobby) {
+                    playerTarget = lobby.host;
+                } else {
+                    playerTarget = lobby?.firstPlayer;
+                }
+                if (playerTarget?.socketId === socket.id) {
                     socketOtherPlayer = lobby?.secondPlayer.socketId;
                     if (!socketOtherPlayer) return;
                     message.isSender = false;
@@ -72,7 +78,7 @@ export class SocketServerManager {
                     message.isSender = true;
                     this.sio.to(socket.id).emit('receiveChatMessage', message);
                 } else {
-                    socketOtherPlayer = lobby?.host.socketId;
+                    socketOtherPlayer = playerTarget?.socketId;
                     if (!socketOtherPlayer) return;
                     message.isSender = false;
                     this.sio.to(socketOtherPlayer).emit('receiveChatMessage', message);
@@ -83,18 +89,25 @@ export class SocketServerManager {
 
             socket.on('systemMessage', (systemMessage: string) => {
                 const lobby = this.getLobbyFromSocketID(socket.id);
-
                 const playerName = this.getPlayerFromSocketId(socket.id)?.playerName;
                 if (!lobby) return;
                 if (systemMessage === ' a abandonné la partie') {
                     const now: Date = new Date();
                     const timeString: string = now.toTimeString().slice(0, EIGHT);
                     socket.emit('systemMessage', { name: playerName });
-                    this.sio.to(lobby?.host.socketId).emit('receiveSystemMessage', playerName + systemMessage);
+                    if ('host' in lobby) {
+                        this.sio.to(lobby?.host.socketId).emit('receiveSystemMessage', playerName + systemMessage);
+                    } else {
+                        this.sio.to(lobby?.firstPlayer.socketId).emit('receiveSystemMessage', playerName + systemMessage);
+                    }
                     this.sio.to(lobby?.secondPlayer.socketId).emit('receiveSystemMessage', '[' + timeString + '] ' + playerName + systemMessage);
                     return;
                 }
-                this.sio.to(lobby?.host.socketId).emit('receiveSystemMessage', systemMessage + playerName);
+                if ('host' in lobby) {
+                    this.sio.to(lobby?.host.socketId).emit('receiveSystemMessage', systemMessage + playerName);
+                } else {
+                    this.sio.to(lobby?.firstPlayer.socketId).emit('receiveSystemMessage', systemMessage + playerName);
+                }
                 this.sio.to(lobby?.secondPlayer.socketId).emit('receiveSystemMessage', systemMessage + playerName);
             });
 
@@ -188,8 +201,8 @@ export class SocketServerManager {
                     this.lobbys.delete(data.roomId);
                 } else if (
                     this.limitedLobbys.has(data.roomId) &&
-                    this.limitedLobbys.get(data.roomId)?.checkFirstPlayer() &&
-                    this.limitedLobbys.get(data.roomId)?.checkSecondPlayer()
+                    (this.limitedLobbys.get(data.roomId)?.checkSecondPlayer() ||
+                        this.limitedLobbys.get(data.roomId)?.getFirstPlayer().socketId === socket.id)
                 ) {
                     this.limitedLobbys.delete(data.roomId);
                 } else {
@@ -197,6 +210,7 @@ export class SocketServerManager {
                 }
             });
 
+            // Fonction non totalement testée car nous n'arrivons pas a initialiser ou get l'id de la socket dans le fichier de test.
             socket.on('differenceFound', (data: { roomId: string; differenceId: number }) => {
                 const lobby = this.lobbys.get(data.roomId);
                 if (lobby) {
@@ -212,7 +226,7 @@ export class SocketServerManager {
                     });
                 }
             });
-
+            // Fonction non testée car nous n'arrivons pas a initialiser ou get l'id de la socket dans le fichier de test.
             socket.on('giveUp', (data: { roomId: string }) => {
                 const lobby = this.lobbys.get(data.roomId);
                 if (socket.id === data.roomId && lobby) {
@@ -221,11 +235,10 @@ export class SocketServerManager {
                     socket.to(data.roomId).emit('win');
                 }
             });
-
+            // Fonction non testée car nous n'arrivons pas a mock le retour de 'this.gameService.getAllGames()'
             socket.on('checkLimitedGame', async (data: { playerName: string; roomId: string }) => {
                 const lobby = this.checkLimitedLobby();
-                const gamesNumber = await this.gameService.getAllGames();
-                const max = gamesNumber.length;
+                const max = (await this.gameService.getAllGames()).length;
                 const min = 0;
                 const firstGameNumber = Math.floor(Math.random() * (max - min + 1) + min);
                 if (lobby) {
@@ -274,6 +287,10 @@ export class SocketServerManager {
             socket.on('limitedTimeGiveUp', (data: { roomId: string }) => {
                 socket.to(data.roomId).emit('limitedTimeGiveUp');
             });
+
+            socket.on('joinRoomForTest', (data: { roomId: string }) => {
+                socket.join(data.roomId);
+            });
         });
     }
 
@@ -291,13 +308,21 @@ export class SocketServerManager {
             if (lobby[1].host.socketId === socketId) return lobby[1];
             else if (lobby[1].secondPlayer.socketId === socketId) return lobby[1];
         }
+        for (const lobby of this.limitedLobbys) {
+            if (lobby[1].firstPlayer.socketId === socketId) return lobby[1];
+            else if (lobby[1].secondPlayer.socketId === socketId) return lobby[1];
+        }
         return;
     }
 
     getPlayerFromSocketId(socketId: string) {
         for (const lobby of this.lobbys) {
             if (lobby[1].host.socketId === socketId) return lobby[1].host;
-            else if (lobby[1].secondPlayer.socketId === socketId) return lobby[1].secondPlayer;
+            else if (lobby[1].secondPlayer?.socketId === socketId) return lobby[1].secondPlayer;
+        }
+        for (const lobby of this.limitedLobbys) {
+            if (lobby[1].firstPlayer.socketId === socketId) return lobby[1].firstPlayer;
+            else if (lobby[1].secondPlayer?.socketId === socketId) return lobby[1].secondPlayer;
         }
         return;
     }

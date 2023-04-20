@@ -47,6 +47,7 @@ export class SelectionPageComponentComponent implements OnInit {
         }
         await this.checkGames();
         this.lobbyService.deleteLobby();
+        this.lobbyService.host = false;
     }
 
     async checkGames() {

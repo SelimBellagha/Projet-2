@@ -33,8 +33,7 @@ export class TimerManager {
     stopWatch() {
         const timerInterval = 1000;
         const max = 60;
-        this.minutes = 0;
-        this.secondes = 0;
+        this.gameTime = 0;
         setInterval(() => {
             this.gameTime++;
             this.secondes = this.gameTime % max;

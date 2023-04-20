@@ -32,12 +32,4 @@ export class LobbyLimitedTime {
             return false;
         }
     }
-
-    checkFirstPlayer() {
-        if (this.firstPlayer) {
-            return true;
-        } else {
-            return false;
-        }
-    }
 }
