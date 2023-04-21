@@ -11,7 +11,7 @@
     </div>
   </div>
   <div class="chat-box-input" *ngIf="isMultiplayerMode()">
-    <input type="text" id="message-input" (keydown.enter)="onKeyDown($event)" [(ngModel)]="message" maxlength="200" placeholder="Écrire ici" />
+    <input (blur)="onBlur()" (focus)="onFocus()" type="text" id="message-input" (keydown.enter)="onKeyDown($event)" [(ngModel)]="message" maxlength="200" placeholder="Écrire ici" />
     <button (click)="this.addMessage()" class="chat-box-input__button">
       <img class="tool-icons" src="./assets/images/send.png" alt="send-icon " />
     </button>

@@ -150,14 +150,4 @@ describe('GameController', () => {
     it('should add the game constants on valid post request to /games/constants', async () => {
         return await supertest(expressApp).post('/api/games/constants').send({ baseConstants }).expect(StatusCodes.OK);
     });
-
-    /* it('should return an GameConstants of constants on valid get request to /games/constants', async () => {
-        gamesConstantsService.getGameConstants.resolves(baseConstants);
-        return supertest(expressApp)
-            .get('/api/games/constants')
-            .expect(StatusCodes.OK)
-            .then((response) => {
-                expect(response.body).to.deep.equal(baseConstants);
-            });
-    });*/
 });

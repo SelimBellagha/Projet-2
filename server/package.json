@@ -28,8 +28,7 @@
             "**/*.spec.ts",
             "app/index.ts",
             "app/server.ts",
-            "app/app.ts",
-            "app/services/constants-manager.service.ts"
+            "app/app.ts"
         ],
         "require": [
             "ts-node/register",
