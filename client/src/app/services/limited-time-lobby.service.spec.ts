@@ -23,14 +23,14 @@ describe('LimitedTimeLobbyService', () => {
         expect(service).toBeTruthy();
     });
 
-    it('should get time info', () => {
+    it('should get time info', async () => {
         const constants: Constants = {
             initTime: 60,
             penaltyTime: 10,
             timeBonus: 5,
         };
         communicationSpy.getConstants.and.returnValue(of(constants));
-        service.getTimeInfo();
+        await service.getTimeInfo();
         expect(service.initialTime).toBe(constants.initTime);
         expect(service.penaltyTime).toBe(constants.penaltyTime);
         expect(service.timeBonus).toBe(constants.timeBonus);

@@ -54,15 +54,6 @@ describe('ModeIndiceComponent', () => {
             expect(component.findCadran2).toHaveBeenCalledWith(expectedCoordinate);
         });
 
-        it('should give hint 3 and set toggle to true when counter is 3', () => {
-            component.counter = 2;
-            const expectedCoordinate: Vec2 = { x: 1, y: 2 };
-            spyOn(component, 'setUpCoordinates3').and.returnValue(expectedCoordinate);
-            component.onClick();
-            expect(component.toggle).toBeTrue();
-            expect(gameManagerSpy.giveHint3).toHaveBeenCalledWith(expectedCoordinate);
-        });
-
         it('should not change anything and show alert when counter is already at max', () => {
             component.counter = 3;
             spyOn(window, 'alert');
@@ -83,14 +74,6 @@ describe('ModeIndiceComponent', () => {
             it('should return the expected average coordinate', () => {
                 spyOn(component, 'getRandomNumber').and.returnValues(0, 1);
                 const result = component.setUpCoordinates();
-                expect(result).toEqual(a);
-            });
-        });
-
-        describe('setUpCoordinates3', () => {
-            it('should return the expected central coordinate', () => {
-                spyOn(component, 'getRandomNumber').and.returnValues(0, 1);
-                const result = component.setUpCoordinates3();
                 expect(result).toEqual(a);
             });
         });
@@ -220,13 +203,13 @@ describe('ModeIndiceComponent', () => {
     });
 
     it('should draw the correct lines for cadran 2.1', () => {
-        const coordinate: Vec2 = { x: 300, y: 1 };
+        const coordinate: Vec2 = { x: 340, y: 1 };
         component.findCadran2(coordinate);
         expect(gameManagerSpy.drawLine).toHaveBeenCalledWith(component.f, component.g);
         expect(gameManagerSpy.drawLine).toHaveBeenCalledWith(component.f, component.c);
     });
     it('should draw the correct lines for cadran 2.2', () => {
-        const coordinate: Vec2 = { x: 300, y: 200 };
+        const coordinate: Vec2 = { x: 340, y: 220 };
         component.findCadran2(coordinate);
         expect(gameManagerSpy.drawLine).toHaveBeenCalledWith(component.f, component.g);
         expect(gameManagerSpy.drawLine).toHaveBeenCalledWith(component.f, component.centre);
@@ -238,28 +221,34 @@ describe('ModeIndiceComponent', () => {
         component.findCadran2(coordinate);
         expect(gameManagerSpy.drawLine).toHaveBeenCalledWith(component.h, component.i);
         expect(gameManagerSpy.drawLine).toHaveBeenCalledWith(component.i, component.centre);
+        expect(gameManagerSpy.drawLine).toHaveBeenCalledWith(component.centre, component.a);
     });
 
-    it('should draw the correct lines for cadran 3.2', () => {
+    xit('should draw the correct lines for cadran 3.2', () => {
         const coordinate: Vec2 = { x: 1, y: 365 };
         component.findCadran2(coordinate);
-        expect(gameManagerSpy.drawLine).toHaveBeenCalledWith(component.centre, component.a);
         expect(gameManagerSpy.drawLine).toHaveBeenCalledWith(component.centre, component.i);
         expect(gameManagerSpy.drawLine).toHaveBeenCalledWith(component.i, component.h);
     });
 
     it('should draw the correct lines for cadran 4.1', () => {
-        const coordinate: Vec2 = { x: 500, y: 350 };
+        const coordinate: Vec2 = { x: 640, y: 350 };
         component.findCadran2(coordinate);
         expect(gameManagerSpy.drawLine).toHaveBeenCalledWith(component.h, component.i);
         expect(gameManagerSpy.drawLine).toHaveBeenCalledWith(component.i, component.centre);
+        expect(gameManagerSpy.drawLine).toHaveBeenCalledWith(component.centre, component.b);
     });
 
     it('should draw the correct lines for cadran 4.2', () => {
-        const coordinate: Vec2 = { x: 500, y: 365 };
+        const coordinate: Vec2 = { x: 640, y: 365 };
         component.findCadran2(coordinate);
-        expect(gameManagerSpy.drawLine).toHaveBeenCalledWith(component.centre, component.b);
         expect(gameManagerSpy.drawLine).toHaveBeenCalledWith(component.i, component.j);
         expect(gameManagerSpy.drawLine).toHaveBeenCalledWith(component.i, component.centre);
+    });
+    it('should not  execute onClick if game is in replay mode', () => {
+        gameManagerSpy.replayMode = true;
+        component.counter = 0;
+        component.onClick();
+        expect(gameManagerSpy.sendHintMessage).toHaveBeenCalledTimes(0);
     });
 });

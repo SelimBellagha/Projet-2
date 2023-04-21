@@ -71,6 +71,15 @@ describe('DrawService', () => {
         service.drawRectangle(startPositionMock, endPositionMock);
         expect(fillRectSpy).toHaveBeenCalledOnceWith(startPositionMock.x, startPositionMock.y, 2, 2);
     });
+    it(' drawRectangle should adjust rectangle x dimension if isSquareEnabled is true and y difference is smaller', () => {
+        service.isSquareEnabled = true;
+        const fillRectSpy = spyOn(service.drawingContext, 'fillRect').and.callThrough();
+        const startPositionMock = { x: 10, y: 10 };
+        const endPositionMock = { x: 4, y: 6 };
+        service.drawRectangle(startPositionMock, endPositionMock);
+        // eslint-disable-next-line @typescript-eslint/no-magic-numbers
+        expect(fillRectSpy).toHaveBeenCalledOnceWith(startPositionMock.x, startPositionMock.y, -4, -4);
+    });
 
     it(' drawRectangle should adjust rectangle y dimension if isSquareEnabled is true and x difference is smaller', () => {
         service.isSquareEnabled = true;
@@ -79,6 +88,15 @@ describe('DrawService', () => {
         const endPositionMock = { x: 3, y: 10 };
         service.drawRectangle(startPositionMock, endPositionMock);
         expect(fillRectSpy).toHaveBeenCalledOnceWith(startPositionMock.x, startPositionMock.y, 1, 1);
+    });
+    it(' drawRectangle should adjust rectangle y dimension if isSquareEnabled is true and x difference is smaller', () => {
+        service.isSquareEnabled = true;
+        const fillRectSpy = spyOn(service.drawingContext, 'fillRect').and.callThrough();
+        const startPositionMock = { x: 2, y: 4 };
+        const endPositionMock = { x: 3, y: 0 };
+        service.drawRectangle(startPositionMock, endPositionMock);
+        // eslint-disable-next-line @typescript-eslint/no-magic-numbers
+        expect(fillRectSpy).toHaveBeenCalledOnceWith(startPositionMock.x, startPositionMock.y, 1, -1);
     });
     it('setColor should change color attribute', () => {
         service.setColor('blue');

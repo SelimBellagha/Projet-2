@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/no-magic-numbers */
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+
 import { ActivatedRoute } from '@angular/router';
+import { MouseFocusService } from '@app/mouse-focus.service';
 import { ActionSaverService } from '@app/services/action-saver.service';
 import { LoginFormService } from '@app/services/login-form.service';
 import { SocketClientService } from '@app/services/socket-client-service.service';
@@ -12,6 +14,8 @@ import { Message } from '@common/chatMessage';
     styleUrls: ['./chat-box.component.scss'],
 })
 export class ChatBoxComponent implements OnInit {
+    @ViewChild('chatInput') chatInput: ElementRef;
+
     gameId: string;
     messages: Message[] = [];
     message: string = '';
@@ -22,17 +26,23 @@ export class ChatBoxComponent implements OnInit {
         public route: ActivatedRoute,
         public socketService: SocketClientService,
         private gameUtils: LoginFormService,
+        private mouseFocus: MouseFocusService,
         private actionSaver: ActionSaverService,
     ) {
         const snapshot = route.snapshot;
         this.pageName = snapshot.routeConfig?.path?.toString();
     }
-
     ngOnInit() {
         this.socketService.connect();
         this.gameId = this.gameUtils.getGameId();
         this.handleSockets();
         this.actionSaver.messages = this.messages;
+    }
+    onFocus() {
+        this.mouseFocus.isFocusOnchat = true;
+    }
+    onBlur() {
+        this.mouseFocus.isFocusOnchat = false;
     }
 
     handleSockets() {
@@ -101,6 +111,6 @@ export class ChatBoxComponent implements OnInit {
     }
 
     isMultiplayerMode() {
-        return this.pageName === 'oneVSone';
+        return this.pageName === 'oneVSone' || this.pageName === 'limitedOneVsOne';
     }
 }

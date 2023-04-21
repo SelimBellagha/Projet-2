@@ -35,6 +35,7 @@ export class GameManagerService {
     replayMode: boolean = false;
     replaySpeed: number = 1;
     timeTest: number = 1;
+    penalty: number = this.limitedTimeLobby.penaltyTime;
 
     // eslint-disable-next-line max-params
     // eslint-disable-next-line max-params
@@ -80,7 +81,7 @@ export class GameManagerService {
 
     async changeGame() {
         const newGame = this.getRandomGame();
-        await this.initializeGame(newGame);
+        this.initializeGame(newGame);
         this.putImages();
     }
 

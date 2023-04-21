@@ -22,7 +22,6 @@ export class OneVsOneLimitedTimeComponent implements OnInit, AfterViewInit {
     @ViewChild('modifiedImage') modifiedCanvas: ElementRef<HTMLCanvasElement>;
     @ViewChild('originalImage') originalCanvas: ElementRef<HTMLCanvasElement>;
     myUsername: string;
-    opponentUsername: string;
     firstPlayerName: string;
     secondPlayerName: string;
     gameName: string;
@@ -50,14 +49,13 @@ export class OneVsOneLimitedTimeComponent implements OnInit, AfterViewInit {
     }
 
     async ngOnInit() {
-        await this.limitedTimeLobbyService.getTimeInfo();
         this.socketService.on('getPlayers', (data: { firstPlayer: Player; secondPlayer: Player }) => {
             this.limitedTimeLobbyService.firstPlayer = data.firstPlayer;
             this.limitedTimeLobbyService.secondPlayer = data.secondPlayer;
-            this.firstPlayerName = this.limitedTimeLobbyService.firstPlayer.playerName;
-            this.secondPlayerName = this.limitedTimeLobbyService.secondPlayer.playerName;
+            this.firstPlayerName = data.firstPlayer.playerName;
+            this.secondPlayerName = data.secondPlayer.playerName;
         });
-        // TODO changer constante avec temps de vue de config
+        await this.limitedTimeLobbyService.getTimeInfo();
         this.nbDifferencesFound = 0;
         this.startTimer(this.limitedTimeLobbyService.initialTime);
         await this.displayService.loadAllGames();

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Player } from '@app/interfaces/player';
-import { Constants } from '@common/constants';
+import { firstValueFrom } from 'rxjs';
 import { CommunicationService } from './communication.service';
 
 @Injectable({
@@ -20,12 +20,9 @@ export class LimitedTimeLobbyService {
     constructor(private communicationService: CommunicationService) {}
 
     async getTimeInfo() {
-        await this.communicationService.getConstants().subscribe({
-            next: (constants: Constants) => {
-                this.initialTime = constants.initTime;
-                this.penaltyTime = constants.penaltyTime;
-                this.timeBonus = constants.timeBonus;
-            },
-        });
+        const constants = await firstValueFrom(this.communicationService.getConstants());
+        this.initialTime = constants.initTime;
+        this.penaltyTime = constants.penaltyTime;
+        this.timeBonus = constants.timeBonus;
     }
 }

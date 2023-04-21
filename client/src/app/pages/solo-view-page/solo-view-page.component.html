@@ -1,6 +1,6 @@
 <body class="container">
     <button *ngIf="!inReplay" class="quit-button" (click)="abandonGame()">Abandonner la partie</button>
-    <button *ngIf="inReplay" class="quit-button" (click)="returnSelectionPage()">Quitter la reprise </button>
+    <button *ngIf="inReplay" class="quit-button" (click)="returnSelectionPage()">Quitter la reprise</button>
     <div class="section">
         <div class="main-container">
             <h2 class="game-info">{{ gameName }} - {{ difficulty }}</h2>
@@ -19,9 +19,9 @@
     <div class="section">
         <div class="main-container">
             <div class="game-details">
-                <p id="penalty">Pénalités pour utilisation d'indice : 00: XX</p>
+                <p id="penalty">Pénalités pour utilisation d'indice : {{ penaltyTime }} secondes</p>
                 <p>Indices restants: X</p>
-                <p>Differences trouvées par {{username}}: {{ nbDifferencesFound }}</p>
+                <p>Differences trouvées par {{ username }}: {{ nbDifferencesFound }}</p>
                 <div class="timer">
                     <img src="../../../assets/images/stopwatch.png" class="watch-logo" />
                     <div class="time">
@@ -40,5 +40,4 @@
     <div class="section">
         <app-chat-box></app-chat-box>
     </div>
-
 </body>

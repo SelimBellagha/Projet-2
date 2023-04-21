@@ -29,25 +29,25 @@ export class ModeIndiceComponent {
     // coordinates for the cadrans
     a: Vec2 = { x: 0, y: 240 };
 
-    c: Vec2 = { x: 250, y: 0 };
+    c: Vec2 = { x: 320, y: 0 };
 
-    b: Vec2 = { x: 500, y: 240 };
+    b: Vec2 = { x: 640, y: 240 };
 
-    d: Vec2 = { x: 250, y: 480 };
+    d: Vec2 = { x: 320, y: 480 };
 
     e: Vec2 = { x: 0, y: 120 };
 
-    f: Vec2 = { x: 250, y: 120 };
+    f: Vec2 = { x: 320, y: 120 };
 
-    g: Vec2 = { x: 500, y: 120 };
+    g: Vec2 = { x: 640, y: 120 };
 
     h: Vec2 = { x: 0, y: 360 };
 
-    i: Vec2 = { x: 250, y: 360 };
+    i: Vec2 = { x: 320, y: 360 };
 
-    j: Vec2 = { x: 500, y: 360 };
+    j: Vec2 = { x: 640, y: 360 };
 
-    centre: Vec2 = { x: 250, y: 240 };
+    centre: Vec2 = { x: 320, y: 240 };
 
     status = '3 Indices Inactive';
 
@@ -90,7 +90,7 @@ export class ModeIndiceComponent {
                         this.status = this.hints[this.counter];
                         this.counter++;
                         this.gameManager.timePenalty();
-                        this.gameManager.giveHint3(this.setUpCoordinates3());
+                        this.gameManager.giveHint3(this.setUpCoordinates());
                         break;
                 }
             } else {
@@ -112,14 +112,6 @@ export class ModeIndiceComponent {
         }
         this.result.x = this.result.x / pixelDifferences.length;
         this.result.y = this.result.y / pixelDifferences.length;
-        return this.result;
-    }
-    setUpCoordinates3(): Vec2 {
-        const randomHint = this.getRandomNumber(0, this.gameManager.gameData.nbDifferences - 1);
-        const pixelDifferences = this.gameManager.gameData.differences[randomHint];
-        this.result.x = pixelDifferences[(pixelDifferences.length - 1) / 2].x;
-        this.result.y = pixelDifferences[(pixelDifferences.length - 1) / 2].y;
-
         return this.result;
     }
     findCadran1(coordinate: Vec2): number {
@@ -198,9 +190,9 @@ export class ModeIndiceComponent {
                     this.yCadran = 1;
                     this.gameManager.drawLine(this.h, this.i);
                     this.gameManager.drawLine(this.i, this.centre);
+                    this.gameManager.drawLine(this.centre, this.a);
                     return 1;
                 } else {
-                    this.gameManager.drawLine(this.centre, this.a);
                     this.gameManager.drawLine(this.centre, this.i);
                     this.gameManager.drawLine(this.i, this.h);
                     return 1;
@@ -211,9 +203,9 @@ export class ModeIndiceComponent {
                     this.yCadran = 1;
                     this.gameManager.drawLine(this.h, this.i);
                     this.gameManager.drawLine(this.i, this.centre);
+                    this.gameManager.drawLine(this.centre, this.b);
                     return 1;
                 } else {
-                    this.gameManager.drawLine(this.centre, this.b);
                     this.gameManager.drawLine(this.i, this.j);
                     this.gameManager.drawLine(this.i, this.centre);
                     return 1;
