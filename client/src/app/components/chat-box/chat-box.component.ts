@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-magic-numbers */
-import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { MouseFocusService } from '@app/services/mouse-focus.service';
 import { ActionSaverService } from '@app/services/action-saver.service';
 import { LoginFormService } from '@app/services/login-form.service';
+import { MouseFocusService } from '@app/services/mouse-focus.service';
 import { SocketClientService } from '@app/services/socket-client-service.service';
 import { Message } from '@common/chatMessage';
 
@@ -12,7 +12,7 @@ import { Message } from '@common/chatMessage';
     templateUrl: './chat-box.component.html',
     styleUrls: ['./chat-box.component.scss'],
 })
-export class ChatBoxComponent implements OnInit, AfterViewInit {
+export class ChatBoxComponent implements OnInit {
     @ViewChild('chatInput') chatInput: ElementRef;
 
     gameId: string;
@@ -31,7 +31,7 @@ export class ChatBoxComponent implements OnInit, AfterViewInit {
         const snapshot = route.snapshot;
         this.pageName = snapshot.routeConfig?.path?.toString();
     }
-
+    /*
     ngAfterViewInit() {
         this.chatInput.nativeElement.addEventListener('focus', () => {
             this.mouseFocus.isFocusOnchat = true;
@@ -40,7 +40,7 @@ export class ChatBoxComponent implements OnInit, AfterViewInit {
         this.chatInput.nativeElement.addEventListener('blur', () => {
             this.mouseFocus.isFocusOnchat = false;
         });
-    }
+    }*/
 
     ngOnInit() {
         this.socketService.connect();
