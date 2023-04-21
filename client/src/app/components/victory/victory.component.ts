@@ -15,21 +15,25 @@ export class VictoryComponent {
     constructor(
         @Inject(MAT_DIALOG_DATA)
         public data: {
-            data1: GameHistory;
-            data2: TopScore;
-            data3: boolean;
-        },
+            data1?: GameHistory;
+            data2?: TopScore;
+            data3?: boolean;
+        } = {},
         private router: Router,
         private dialogRef: MatDialog,
         private displayService: DisplayGameService,
     ) {
-        this.addHistoryAndScore();
+        if (data) {
+            this.addHistoryAndScore();
+        }
     }
 
     addHistoryAndScore() {
-        if (this.data.data3) {
-            this.displayService.addHistory(this.data.data1);
-            this.displayService.checkPlayerScore(this.data.data2);
+        if (this.data?.data3 && this.data?.data1 && this.data?.data2) {
+            if (this.data.data3) {
+                this.displayService.addHistory(this.data.data1);
+                this.displayService.checkPlayerScore(this.data.data2);
+            }
         }
     }
 
