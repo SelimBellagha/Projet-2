@@ -50,7 +50,7 @@ export class OneVsOnePageComponent implements OnInit, AfterViewInit {
     startDate: Date;
     addedToHistory: boolean = false;
     inReplay: boolean = false;
-
+    // Nécéssaire pour que la page ait accès aux services nécéssaires
     // eslint-disable-next-line max-params
     constructor(
         private router: Router,

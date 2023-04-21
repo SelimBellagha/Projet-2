@@ -32,7 +32,7 @@ export class SoloLimitedTimeComponent implements OnInit, AfterViewInit {
     intervalID: number;
     startDate: Date;
     penaltyTime: number;
-
+    // Nécéssaire pour que la page ait accès aux services nécéssaires
     // eslint-disable-next-line max-params
     constructor(
         private dialogRef: MatDialog,
@@ -120,7 +120,7 @@ export class SoloLimitedTimeComponent implements OnInit, AfterViewInit {
         if (event.button === MouseButton.Left) {
             const mousePosition: Vec2 = { x: event.offsetX, y: event.offsetY };
             if (await this.gameManager.onPositionClicked(mousePosition)) {
-                // Incremented le cpt de differences
+                // Incrementer le cpt de differences
                 this.nbDifferencesFound++;
                 this.socketService.send('addToTimer', { timeToAdd: this.limitedTimeLobbyService.timeBonus });
                 this.gameManager.gameTime += this.limitedTimeLobbyService.timeBonus;

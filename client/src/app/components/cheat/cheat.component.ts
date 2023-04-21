@@ -13,8 +13,6 @@ export class CheatComponent {
     status = 'Activer Triche';
     constructor(private gameManager: GameManagerService, private mouseFocus: MouseFocusService, private actionSaver: ActionSaverService) {}
 
-    // eslint-disable-next-line @typescript-eslint/member-ordering
-
     @HostListener('document:keyup', ['$event'])
     onKeyUp(event: KeyboardEvent) {
         if ((event.key === 't' || event.key === 'T') && !this.mouseFocus.isFocusOnchat) {

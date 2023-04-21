@@ -130,7 +130,6 @@ export class DifferenceDetectionService {
             return differenceImage.data[PIXEL_SIZE * (pixelPosition.x + pixelPosition.y * DEFAULT_WIDTH)] === 0;
         }
     }
-    // True : le jeu est difficile
     getDifficulty(differences: Vec2[][]): boolean {
         return (
             differences.length >= NB_IMAGE_DIFFICULT &&

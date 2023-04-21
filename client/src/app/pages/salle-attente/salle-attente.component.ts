@@ -14,6 +14,7 @@ import { v4 as uuidv4 } from 'uuid';
 export class SalleAttenteComponent implements OnInit {
     playerQueue = new Map<string, Player>();
     host: boolean;
+    // Nécéssaire pour que la page ait accès aux services nécéssaires
     // eslint-disable-next-line max-params
     constructor(
         private router: Router,

@@ -33,6 +33,7 @@ export class SelectionPageComponentComponent implements OnInit {
     soloDefault: TopScore[];
     oneVOneDefault: TopScore[];
 
+    // Nécéssaire pour que la page ait accès aux services nécéssaires
     // eslint-disable-next-line max-params
     constructor(
         private router: Router,

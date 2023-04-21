@@ -84,9 +84,7 @@ export class DisplayGameService {
 
     async convertAllGames() {
         const tempArray: Game[] = [];
-        // eslint-disable-next-line @typescript-eslint/prefer-for-of
-        for (let i = 0; i < this.tempGames.length; i++) {
-            const game = this.tempGames[i];
+        for (const game of this.tempGames) {
             const playersInGame = await this.getPlayersInGame(game.id);
             const gameInformation: Game = {
                 id: game.id,
@@ -106,7 +104,6 @@ export class DisplayGameService {
 
     async getPlayersInGame(gameId: string): Promise<string> {
         return new Promise<string>((resolve) => {
-            // eslint-disable-next-line object-shorthand
             this.socketService.send('checkPlayersInGame', { gameId });
             this.socketService.on('playersInGame', (data: { playersNumber: string }) => {
                 resolve(data.playersNumber);

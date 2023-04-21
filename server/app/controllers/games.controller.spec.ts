@@ -1,13 +1,13 @@
 import { Application } from '@app/app';
 import { GameData } from '@app/data/game.interface';
+import { GameConstantsService } from '@app/services/constants-manager.service';
 import { GameManager } from '@app/services/game-manager.service';
+import { Constants } from '@common/constants';
 import { expect } from 'chai';
 import { StatusCodes } from 'http-status-codes';
 import { createStubInstance, SinonStubbedInstance } from 'sinon';
 import * as supertest from 'supertest';
 import { Container } from 'typedi';
-import { Constants } from '@common/constants';
-import { GameConstantsService } from '@app/services/constants-manager.service';
 
 const HTTP_STATUS_OK = StatusCodes.OK;
 const HTTP_STATUS_CREATED = StatusCodes.CREATED;

@@ -224,13 +224,6 @@ describe('ModeIndiceComponent', () => {
         expect(gameManagerSpy.drawLine).toHaveBeenCalledWith(component.centre, component.a);
     });
 
-    xit('should draw the correct lines for cadran 3.2', () => {
-        const coordinate: Vec2 = { x: 1, y: 365 };
-        component.findCadran2(coordinate);
-        expect(gameManagerSpy.drawLine).toHaveBeenCalledWith(component.centre, component.i);
-        expect(gameManagerSpy.drawLine).toHaveBeenCalledWith(component.i, component.h);
-    });
-
     it('should draw the correct lines for cadran 4.1', () => {
         const coordinate: Vec2 = { x: 640, y: 350 };
         component.findCadran2(coordinate);

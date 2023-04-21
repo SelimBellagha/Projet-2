@@ -1,11 +1,9 @@
 import { Component, ElementRef, HostListener, ViewChild } from '@angular/core';
 import { Vec2 } from '@app/interfaces/vec2';
 
-// TODO : Avoir un fichier séparé pour les constantes!
 export const DEFAULT_WIDTH = 640;
 export const DEFAULT_HEIGHT = 480;
 
-// TODO : Déplacer ça dans un fichier séparé accessible par tous
 export enum MouseButton {
     Left = 0,
     Middle = 1,
@@ -40,15 +38,6 @@ export class PlayAreaComponent {
         this.buttonPressed = event.key;
         this.canvas.nativeElement.getContext('2d');
     }
-    /*
-    ngAfterViewInit(): void {
-        this.drawService.context = this.canvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
-        this.drawService.drawGrid();
-        this.drawService.drawWord('Différence');
-        this.canvas.nativeElement.focus();
-    }*/
-
-    // TODO : déplacer ceci dans un service de gestion de la souris!
     mouseHitDetect(event: MouseEvent) {
         if (event.button === MouseButton.Left) {
             this.mousePosition = { x: event.offsetX, y: event.offsetY };

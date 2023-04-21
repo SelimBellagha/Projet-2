@@ -104,10 +104,9 @@ export class ModeIndiceComponent {
         const randomHint = this.getRandomNumber(0, this.gameManager.gameData.nbDifferences - 1);
         const pixelDifferences = this.gameManager.gameData.differences[randomHint];
 
-        // eslint-disable-next-line @typescript-eslint/prefer-for-of
-        for (let i = 0; i < pixelDifferences.length; i++) {
-            this.result.x += pixelDifferences[i].x;
-            this.result.y += pixelDifferences[i].y;
+        for (const pixel of pixelDifferences) {
+            this.result.x += pixel.x;
+            this.result.y += pixel.y;
         }
         this.result.x = this.result.x / pixelDifferences.length;
         this.result.y = this.result.y / pixelDifferences.length;
