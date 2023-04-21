@@ -48,7 +48,7 @@ export class ModeIndiceComponent {
 
     centre: Vec2 = { x: 320, y: 240 };
 
-    status = '3 Indices Inactive';
+    status = '3 Indice Disponibles';
 
     hints: string[] = ['Indice 1 utilisé', 'Indice 2 utilisé', 'Indice 3 utilisé', 'MAX ATTEINT'];
     constructor(private gameManager: GameManagerService) {}
@@ -89,7 +89,7 @@ export class ModeIndiceComponent {
                         this.status = this.hints[this.counter];
                         this.counter++;
                         this.gameManager.timePenalty();
-                        this.gameManager.giveHint3(this.setUpCoordinates3());
+                        this.gameManager.giveHint3(this.setUpCoordinates());
                         break;
                 }
             } else {
@@ -111,14 +111,6 @@ export class ModeIndiceComponent {
         }
         this.result.x = this.result.x / pixelDifferences.length;
         this.result.y = this.result.y / pixelDifferences.length;
-        return this.result;
-    }
-    setUpCoordinates3(): Vec2 {
-        const randomHint = this.getRandomNumber(0, this.gameManager.gameData.nbDifferences - 1);
-        const pixelDifferences = this.gameManager.gameData.differences[randomHint];
-        this.result.x = pixelDifferences[(pixelDifferences.length - 1) / 2].x;
-        this.result.y = pixelDifferences[(pixelDifferences.length - 1) / 2].y;
-
         return this.result;
     }
     findCadran1(coordinate: Vec2): number {

@@ -233,7 +233,6 @@ export class OneVsOnePageComponent implements OnInit, AfterViewInit {
     onReplay(): void {
         this.inReplay = true;
         this.gameManager.enableReplay();
-        this.popUpWindowWin.nativeElement.style.display = 'none';
         this.popUpWindowLose.nativeElement.style.display = 'none';
     }
 }
