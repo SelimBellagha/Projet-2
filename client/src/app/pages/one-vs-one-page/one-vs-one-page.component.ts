@@ -48,7 +48,7 @@ export class OneVsOnePageComponent implements OnInit, AfterViewInit {
         playerName: 'tempName',
     };
     startDate: Date;
-
+    addedToHistory: boolean = false;
     inReplay: boolean = false;
 
     // eslint-disable-next-line max-params
@@ -66,6 +66,7 @@ export class OneVsOnePageComponent implements OnInit, AfterViewInit {
     }
 
     ngOnInit() {
+        this.addedToHistory = false;
         this.historyService.history = {
             startDate: this.startDate.toLocaleString(),
             gameLength: 'tempLength',
@@ -118,11 +119,6 @@ export class OneVsOnePageComponent implements OnInit, AfterViewInit {
         this.socketService.on('win', () => {
             this.winGameAfterGiveUp();
         });
-        this.socketService.on('getRealTime', (data: { realTime: number }) => {
-            this.newScore.time = this.convertTimeToString(data.realTime);
-            this.historyService.history.namePlayer1 = this.hostName;
-            this.historyService.history.namePlayer2 = this.guestName;
-        });
         this.socketService.on('systemMessage', (data: { name: string }) => {
             this.historyService.history.namePlayer1 = this.hostName;
             this.historyService.history.namePlayer2 = this.guestName;
@@ -132,16 +128,18 @@ export class OneVsOnePageComponent implements OnInit, AfterViewInit {
             } else {
                 this.historyService.history.winnerName = this.hostName;
             }
+            this.historyService.history.gameLength = this.historyService.findGameLength(this.startDate);
+            this.displayService.addHistory(this.historyService.history);
         });
     }
 
-    convertTimeToString(seconds: number): string {
+    formatTime(minutes: number, seconds: number): string {
         const secondsInMinute = 60;
-        const doubleDigits = 10;
-        const minutes: number = Math.floor(seconds / secondsInMinute);
-        const remainingSeconds: number = seconds % secondsInMinute;
-        const formattedSeconds: string = remainingSeconds < doubleDigits ? `0${remainingSeconds}` : `${remainingSeconds}`;
-        return `${minutes}:${formattedSeconds}`;
+        const totalSeconds = minutes * secondsInMinute + seconds;
+        const formattedMinutes = Math.floor(totalSeconds / secondsInMinute);
+        const formattedSeconds = totalSeconds % secondsInMinute;
+        const formattedTime = `${formattedMinutes}:${formattedSeconds.toString().padStart(2, '0')}`;
+        return formattedTime;
     }
 
     stopWatch() {
@@ -178,35 +176,22 @@ export class OneVsOnePageComponent implements OnInit, AfterViewInit {
     winGameAfterGiveUp(): void {
         this.stopStopWatch();
         this.gameManager.playWinAudio();
-        this.dialogRef.open(VictoryComponent);
+        const data = { data1: this.historyService.history, data2: this.newScore, data3: false };
+        this.dialogRef.open(VictoryComponent, { data });
         this.inReplay = true;
     }
 
     winGame(): void {
+        this.newScore.time = this.formatTime(this.minutes, this.secondes);
         this.historyService.history.gameLength = this.historyService.findGameLength(this.startDate);
-        this.socketService.send('getRealTime', { roomId: this.roomId });
         this.stopStopWatch();
         this.gameManager.playWinAudio();
-        this.dialogRef.open(VictoryComponent);
+        const data = { data1: this.historyService.history, data2: this.newScore, data3: true };
+        this.dialogRef.open(VictoryComponent, { data });
         this.inReplay = true;
     }
 
     goToHomePage() {
-        this.router.navigate(['home']);
-    }
-
-    goToHomePageAfterAbandon() {
-        this.historyService.history.gameLength = this.historyService.findGameLength(this.startDate);
-        this.displayService.addHistory(this.historyService.history);
-        this.router.navigate(['home']);
-    }
-    goToHomePageWinner() {
-        this.displayService.checkPlayerScore(this.newScore);
-        this.displayService.addHistory(this.historyService.history);
-        this.router.navigate(['home']);
-    }
-
-    goToHomePageAbandonWinner() {
         this.router.navigate(['home']);
     }
 
@@ -229,6 +214,8 @@ export class OneVsOnePageComponent implements OnInit, AfterViewInit {
 
     winCheck() {
         if (this.nbDifferencesFoundUser1 === this.nbDifferenceToWin || this.nbDifferencesFoundUser2 === this.nbDifferenceToWin) {
+            this.historyService.history.namePlayer1 = this.hostName;
+            this.historyService.history.namePlayer2 = this.guestName;
             this.newScore.gameId = this.gameId;
             if (this.nbDifferencesFoundUser1 === this.nbDifferenceToWin && this.lobbyService.host) {
                 this.newScore.playerName = this.hostName;
