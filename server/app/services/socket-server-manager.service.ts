@@ -102,7 +102,7 @@ export class SocketServerManager {
                 const timeString: string = now.toTimeString().slice(0, EIGHT);
                 this.sio.to(socket.id).emit('receiveSystemMessageSolo', '[' + timeString + '] ' + systemMessage);
             });
-
+// ----------------------------------------------------------
             socket.on('getRealTime', (data: { roomId: string }) => {
                 const lobby = this.lobbys.get(data.roomId);
                 const limitedLobby = this.limitedLobbys.get(data.roomId);

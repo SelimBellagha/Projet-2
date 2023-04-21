@@ -3,6 +3,7 @@ import { Vec2 } from '@app/interfaces/vec2';
 
 import { GameManagerService } from '@app/services/game-manager.service';
 
+
 const cadran1 = 0;
 const cadran2 = 1;
 const cadran3 = 10;
@@ -51,7 +52,7 @@ export class ModeIndiceComponent {
     status = '3 Indices Inactive';
 
     hints: string[] = ['Indice 1 utilisé', 'Indice 2 utilisé', 'Indice 3 utilisé', 'MAX ATTEINT'];
-    constructor(private gameManager: GameManagerService) {}
+    constructor(private gameManager: GameManagerService, private mousefocus: Mouse) {}
 
     @HostListener('document:keyup', ['$event'])
     onKeyUp(event: KeyboardEvent) {
