@@ -1,13 +1,13 @@
 import { Application } from '@app/app';
 import { GameData } from '@app/data/game.interface';
+import { GameConstantsService } from '@app/services/constants-manager.service';
 import { GameManager } from '@app/services/game-manager.service';
+import { Constants } from '@common/constants';
 import { expect } from 'chai';
 import { StatusCodes } from 'http-status-codes';
 import { createStubInstance, SinonStubbedInstance } from 'sinon';
 import * as supertest from 'supertest';
 import { Container } from 'typedi';
-import { Constants } from '@common/constants';
-import { GameConstantsService } from '@app/services/constants-manager.service';
 
 const HTTP_STATUS_OK = StatusCodes.OK;
 const HTTP_STATUS_CREATED = StatusCodes.CREATED;
@@ -150,14 +150,4 @@ describe('GameController', () => {
     it('should add the game constants on valid post request to /games/constants', async () => {
         return await supertest(expressApp).post('/api/games/constants').send({ baseConstants }).expect(StatusCodes.OK);
     });
-
-    /* it('should return an GameConstants of constants on valid get request to /games/constants', async () => {
-        gamesConstantsService.getGameConstants.resolves(baseConstants);
-        return supertest(expressApp)
-            .get('/api/games/constants')
-            .expect(StatusCodes.OK)
-            .then((response) => {
-                expect(response.body).to.deep.equal(baseConstants);
-            });
-    });*/
 });

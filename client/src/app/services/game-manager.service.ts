@@ -25,7 +25,6 @@ export class GameManagerService {
     gameData: GameData;
     limitedGameData: GameData[];
     gameNumberMax: number;
-    // cheatMode: cheatMode;
     lastDifferenceFound: number = 0;
     locked: boolean;
     cheatState: boolean = false;
@@ -37,7 +36,7 @@ export class GameManagerService {
     timeTest: number = 1;
     penalty: number = this.limitedTimeLobby.penaltyTime;
 
-    // eslint-disable-next-line max-params
+    // Nécéssaire pour que le service ait accès aux services nécéssaires
     // eslint-disable-next-line max-params
     constructor(
         private differenceVerification: DifferenceVerificationService,
@@ -131,7 +130,6 @@ export class GameManagerService {
     }
 
     async verifyDifference(position: Vec2): Promise<boolean> {
-        // code temporaire
         const verification: Verification = await this.differenceVerification.differenceVerification(position.x, position.y, this.gameData.id);
         if (verification.result) {
             if (!this.differencesFound[verification.index]) {
@@ -278,14 +276,11 @@ export class GameManagerService {
 
     async errorMessage(position: Vec2): Promise<void> {
         this.playErrorAudio();
-        // save originals
         const originalImageData = this.originalImageCanvas.getImageData(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT);
         const modifiedImageData = this.modifiedImageCanvas.getImageData(0, 0, DEFAULT_WIDTH, DEFAULT_HEIGHT);
-        // put error
         this.drawError(this.originalImageCanvas, position);
         this.drawError(this.modifiedImageCanvas, position);
         await this.wait(ONE_SECOND / this.replaySpeed);
-        // restore Canvas
         this.originalImageCanvas.putImageData(originalImageData, 0, 0);
         this.modifiedImageCanvas.putImageData(modifiedImageData, 0, 0);
     }

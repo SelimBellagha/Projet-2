@@ -57,14 +57,6 @@ describe('OneVsOnePageComponent', () => {
         differences: [],
         isDifficult: true,
     };
-    /*
-    const scoreMock1 = {
-        position: '1',
-        gameId: 'test',
-        gameType: 'test',
-        time: 'test',
-        playerName: 'mock',
-    };*/
 
     beforeEach(async () => {
         lobbyServiceSpy = jasmine.createSpyObj('LobbyService', ['send', 'on']);

@@ -58,6 +58,7 @@ export class GameManager {
         const clickPosition = { x: positionX, y: positionY };
         const game = await this.getGamebyId(id);
         for (let i = 0; i < game.nbDifferences; i++) {
+            // Eslint Disable nécéssaire ici pour la clarté, plus simple à comprendre
             // eslint-disable-next-line @typescript-eslint/prefer-for-of
             for (let j = 0; j < game.differences[i].length; j++) {
                 if (clickPosition.x === game.differences[i][j].x && game.differences[i][j].y === clickPosition.y) {

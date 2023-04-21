@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Vec2 } from '@app/interfaces/vec2';
 
-// TODO : Avoir un fichier séparé pour les constantes et ne pas les répéter!
 export const DEFAULT_WIDTH = 640;
 export const DEFAULT_HEIGHT = 480;
 
@@ -41,8 +40,6 @@ export class DrawService {
         }
 
         this.drawingContext.fillRect(startPosition.x, startPosition.y, xLength, yLength);
-        // eslint-disable-next-line no-console
-        console.log(startPosition.x, startPosition.y);
     }
 
     erase(position: Vec2): void {

@@ -145,26 +145,6 @@ export class CanvasManagerService {
         this.rightCanvasContext.drawImage(this.rightBackground, 0, 0);
         this.rightCanvasContext.drawImage(this.rightForeground, 0, 0);
     }
-    /*
-    duplicateLeft(): void {
-        const ctx = this.rightForeground.getContext('2d') as OffscreenCanvasRenderingContext2D;
-        ctx.save();
-        ctx.globalCompositeOperation = 'copy';
-        ctx.drawImage(this.leftForeground, 0, 0);
-        ctx.restore();
-        this.updateDisplay();
-        this.saveAction();
-    }
-    
-    duplicateRight(): void {
-        const ctx = this.leftForeground.getContext('2d') as OffscreenCanvasRenderingContext2D;
-        ctx.save();
-        ctx.globalCompositeOperation = 'copy';
-        ctx.drawImage(this.rightForeground, 0, 0);
-        ctx.restore();
-        this.updateDisplay();
-        this.saveAction();
-    }*/
 
     duplicate(left: boolean): void {
         const copy = left ? this.leftForeground : this.rightForeground;

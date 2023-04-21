@@ -9,8 +9,3 @@ export interface GameData {
     differences: Vec2[][];
     isDifficult: boolean;
 }
-
-/* export interface GameData extends BaseGame {
-    id: string;
-}
-*/

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/naming-convention */
 import { Lobby } from '@app/classes/lobby';
 import { LobbyLimitedTime } from '@app/classes/lobby-limited-time';
 import { Player } from '@app/data/player';

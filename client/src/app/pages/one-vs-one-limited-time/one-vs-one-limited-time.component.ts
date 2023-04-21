@@ -34,7 +34,7 @@ export class OneVsOneLimitedTimeComponent implements OnInit, AfterViewInit {
     gameTime: number;
 
     startDate: Date;
-
+    // Nécéssaire pour que la page ait accès aux services nécéssaires
     // eslint-disable-next-line max-params
     constructor(
         private router: Router,

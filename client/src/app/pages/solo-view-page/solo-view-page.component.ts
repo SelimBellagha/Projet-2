@@ -41,7 +41,7 @@ export class SoloViewPageComponent implements OnInit, AfterViewInit {
         playerName: 'tempName',
     };
     startDate: Date;
-
+    // Nécéssaire pour que la page ait accès aux services nécéssaires
     // eslint-disable-next-line max-params
     constructor(
         private router: Router,
@@ -49,7 +49,6 @@ export class SoloViewPageComponent implements OnInit, AfterViewInit {
         private displayService: DisplayGameService,
         private gameManager: GameManagerService,
         private limitedTimeLobby: LimitedTimeLobbyService,
-        // private socketService: SocketClientService,
         private dialogRef: MatDialog,
         private historyService: HistoryService,
     ) {
