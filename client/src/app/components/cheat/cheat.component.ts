@@ -1,5 +1,5 @@
 import { Component, HostListener } from '@angular/core';
-import { MouseFocusService } from '@app/mouse-focus.service';
+import { MouseFocusService } from '@app/services/mouse-focus.service';
 import { ActionSaverService } from '@app/services/action-saver.service';
 import { GameManagerService } from '@app/services/game-manager.service';
 

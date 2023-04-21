@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
-import { MouseFocusService } from '@app/mouse-focus.service';
+import { MouseFocusService } from '@app/services/mouse-focus.service';
 import { LoginFormService } from '@app/services/login-form.service';
 import { SocketClientService } from '@app/services/socket-client-service.service';
 import { Message } from '@common/chatMessage';

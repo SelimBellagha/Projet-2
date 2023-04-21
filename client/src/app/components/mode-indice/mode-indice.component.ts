@@ -1,6 +1,6 @@
 import { Component, HostListener } from '@angular/core';
 import { Vec2 } from '@app/interfaces/vec2';
-
+import { MouseFocusService } from '@app/services/mouse-focus.service';
 import { GameManagerService } from '@app/services/game-manager.service';
 
 const cadran1 = 0;
@@ -51,11 +51,11 @@ export class ModeIndiceComponent {
     status = '3 Indice Disponibles';
 
     hints: string[] = ['Indice 1 utilisé', 'Indice 2 utilisé', 'Indice 3 utilisé', 'MAX ATTEINT'];
-    constructor(private gameManager: GameManagerService) {}
+    constructor(private gameManager: GameManagerService, private mouseFocus: MouseFocusService) {}
 
     @HostListener('document:keyup', ['$event'])
     onKeyUp(event: KeyboardEvent) {
-        if (event.key === 'i' || event.key === 'I') {
+        if ((event.key === 'i' || event.key === 'I') && !this.mouseFocus.isFocusOnchat) {
             this.onClick();
         }
     }

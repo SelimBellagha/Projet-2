@@ -8,7 +8,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { SocketTestHelper } from '@app/classes/socket-test-helper';
 import { MouseButton } from '@app/components/play-area/play-area.component';
 import { VictoryComponent } from '@app/components/victory/victory.component';
-import { GameData, TopScore } from '@app/interfaces/game.interface';
+import { GameData } from '@app/interfaces/game.interface';
 import { Player } from '@app/interfaces/player';
 import { Vec2 } from '@app/interfaces/vec2';
 import { DisplayGameService } from '@app/services/display-game.service';
@@ -56,6 +56,22 @@ describe('OneVsOnePageComponent', () => {
         nbDifferences: 1,
         differences: [],
         isDifficult: true,
+    };
+    const scoreMock1 = {
+        position: '1',
+        gameId: 'test',
+        gameType: 'test',
+        time: 'test',
+        playerName: 'mock',
+    };
+    const historyMock1 = {
+        startDate: 'testDate',
+        gameLength: '0:19',
+        gameMode: 'Temps Limite',
+        namePlayer1: 'testName',
+        namePlayer2: '',
+        winnerName: '',
+        nameAbandon: 'testName',
     };
 
     beforeEach(async () => {
@@ -177,6 +193,25 @@ describe('OneVsOnePageComponent', () => {
         expect(spy).toHaveBeenCalled();
     });
 
+    it('names in history object should be changed when receiving event "systemMessage" from socket', () => {
+        historyServiceSpy.history.nameAbandon = '';
+        component.guestName = 'testGuest';
+        component.hostName = 'testName';
+        socketHelper.peerSideEmit('systemMessage', { name: 'testName' });
+        expect(historyServiceSpy.history.nameAbandon).toEqual('testName');
+        expect(historyServiceSpy.history.winnerName).toEqual('testGuest');
+        expect(displayServiceSpy.addHistory).toHaveBeenCalledWith(historyServiceSpy.history);
+    });
+
+    it('if returned name is the host name, winnerName in history object should be changed when receiving event "systemMessage" from socket', () => {
+        historyServiceSpy.history.nameAbandon = '';
+        component.guestName = 'testGuest';
+        component.hostName = 'testHost';
+        socketHelper.peerSideEmit('systemMessage', { name: 'testGuest' });
+        expect(historyServiceSpy.history.nameAbandon).toEqual('testGuest');
+        expect(historyServiceSpy.history.winnerName).toEqual('testHost');
+    });
+
     it('Win check should call loseGame if otherUser found enough differences', () => {
         component.nbDifferenceToWin = 1;
         component.nbDifferencesFoundUser1 = 0;
@@ -198,17 +233,6 @@ describe('OneVsOnePageComponent', () => {
         socketHelper.peerSideEmit('win');
         expect(spy).toHaveBeenCalled();
     });
-    it('newScore time attribute should be changed when receiving event "getRealTime" from socket', () => {
-        const spy = spyOn(component, 'convertTimeToString').and.returnValue('test');
-        component.newScore = { time: '1' } as TopScore;
-        socketHelper.peerSideEmit('getRealTime', { realTime: 1 });
-        expect(spy).toHaveBeenCalled();
-        expect(component.newScore.time).toEqual('test');
-    });
-    it('convertTimeToString should return "1:01 if seconds passed are 61', () => {
-        // eslint-disable-next-line @typescript-eslint/no-magic-numbers
-        expect(component.convertTimeToString(61)).toEqual('1:01');
-    });
     it('number of differences found per user attributes should be changed when receiving event "differenceUpdate" from socket', () => {
         gameManagerSpy.lastDifferenceFound = 1;
         gameManagerSpy.gameData = gameMock1;
@@ -223,26 +247,12 @@ describe('OneVsOnePageComponent', () => {
         expect(gameManagerSpy.playWinAudio).toHaveBeenCalled();
     });
     it('winAfterGiveUp should show VictoryPopUp ', () => {
+        component.newScore = scoreMock1;
+        historyServiceSpy.history = historyMock1;
         component.winGameAfterGiveUp();
-        expect(matDialogSpy.open).toHaveBeenCalledWith(VictoryComponent);
-    });
-    it('goToHomePageAfterAbandon should navigate to home and add game to history', () => {
-        const spy = spyOn(router, 'navigate');
-        component.goToHomePageAfterAbandon();
-        expect(spy).toHaveBeenCalledWith(['home']);
-        expect(displayServiceSpy.addHistory).toHaveBeenCalled();
-    });
-    it('goToHomePageWinner should navigate to home and add game to history', () => {
-        const spy = spyOn(router, 'navigate');
-        component.goToHomePageWinner();
-        expect(spy).toHaveBeenCalledWith(['home']);
-        expect(displayServiceSpy.addHistory).toHaveBeenCalled();
-    });
-    it('goToHomePageAbandonWinner should navigate to home and not add game to history', () => {
-        const spy = spyOn(router, 'navigate');
-        component.goToHomePageAbandonWinner();
-        expect(spy).toHaveBeenCalledWith(['home']);
-        expect(displayServiceSpy.addHistory).toHaveBeenCalledTimes(0);
+        expect(matDialogSpy.open).toHaveBeenCalledWith(VictoryComponent, {
+            data: { data1: historyMock1, data2: scoreMock1, data3: false },
+        });
     });
     it('onReplay() should put component and gameManager in replayMode and', () => {
         component.onReplay();

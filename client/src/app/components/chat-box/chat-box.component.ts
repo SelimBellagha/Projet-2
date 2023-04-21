@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { MouseFocusService } from '@app/mouse-focus.service';
 import { ActionSaverService } from '@app/services/action-saver.service';
 import { LoginFormService } from '@app/services/login-form.service';
+import { MouseFocusService } from '@app/services/mouse-focus.service';
 import { SocketClientService } from '@app/services/socket-client-service.service';
 import { Message } from '@common/chatMessage';
 const DECIMAL_CUTOFF = 10;
@@ -28,6 +28,7 @@ export class ChatBoxComponent implements OnInit {
         const snapshot = route.snapshot;
         this.pageName = snapshot.routeConfig?.path?.toString();
     }
+
     ngOnInit() {
         this.socketService.connect();
         this.gameId = this.gameUtils.getGameId();
