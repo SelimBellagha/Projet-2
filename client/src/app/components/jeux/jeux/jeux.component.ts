@@ -25,7 +25,7 @@ export class JeuxComponent implements AfterViewInit, OnInit {
     @ViewChild('popUpWindow2') popUpWindow2: ElementRef<HTMLDivElement>;
     soloScores: TopScore[];
     oneVOneScores: TopScore[];
-
+    // Nécéssaire pour que le component puisse avoir tous les services dont il a besoin
     // eslint-disable-next-line max-params
     constructor(
         private router: Router,

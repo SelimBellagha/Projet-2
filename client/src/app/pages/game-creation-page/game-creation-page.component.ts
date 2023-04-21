@@ -79,12 +79,10 @@ export class GameCreationPageComponent implements AfterViewInit {
     }
 
     resetBackground(leftPicture: boolean): void {
-        // Remettre le fond en blanc
         this.canvasManager.resetBackground(leftPicture);
     }
 
     onValidationLaunched(): void {
-        // lancer la validation des erreurs avec le service créer
         this.canvasManager.launchVerification(this.radius).then((gameData) => {
             this.currentGameData = gameData;
             this.currentGameData.originalImage = this.leftCanvas.nativeElement.toDataURL('image/bmp');
@@ -96,24 +94,6 @@ export class GameCreationPageComponent implements AfterViewInit {
     modifyRadius(newRadius: number): void {
         this.radius = newRadius;
     }
-    /*
-    onUpdateRightImageInput(rightImageInput: HTMLInputElement): void {
-        const file = rightImageInput.files?.item(0);
-        this.canvasManager.changeBackgrounds(file as File, false, true);
-        rightImageInput.value = '';
-    }
-
-    onUpdateLeftImageInput(leftImageInput: HTMLInputElement): void {
-        const file = leftImageInput.files?.item(0);
-        this.canvasManager.changeBackgrounds(file as File, true, false);
-        leftImageInput.value = '';
-    }
-
-    onUpdateMiddleImageInput(middleImageInput: HTMLInputElement): void {
-        const file = middleImageInput.files?.item(0);
-        this.canvasManager.changeBackgrounds(file as File, true, true);
-        middleImageInput.value = '';
-    }*/
 
     onUpdateInput(imageInput: HTMLInputElement, changeLeft: boolean, changeRight: boolean): void {
         const file = imageInput.files?.item(0);

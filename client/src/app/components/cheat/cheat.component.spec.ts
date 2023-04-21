@@ -31,7 +31,6 @@ describe('CheatComponent', () => {
 
     it('should toggle the toggle property and change the status', () => {
         const giveHintSpy = spyOn(component, 'giveHint');
-        // gameManagerSpy.state = false;
         component.onClick();
         expect(component.toggle).toBe(true);
         expect(component.status).toBe('Activer Triche');

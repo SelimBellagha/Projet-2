@@ -7,7 +7,6 @@ import { Constants, MAX_BONUS_TIME, MAX_INIT_TIME, MAX_PENALTY_TIME, MIN_BONUS_T
     styleUrls: ['./constants.component.scss'],
 })
 export class ConstantsComponent implements OnInit {
-    // @Output() constants: Constants;
     protected initTime: number;
     protected penaltyTime: number;
     protected timeBonus: number;
