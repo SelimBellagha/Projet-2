@@ -48,7 +48,7 @@ export class ModeIndiceComponent {
 
     centre: Vec2 = { x: 320, y: 240 };
 
-    status = '3 Indices Inactive';
+    status = '3 Indice Disponibles';
 
     hints: string[] = ['Indice 1 utilisé', 'Indice 2 utilisé', 'Indice 3 utilisé', 'MAX ATTEINT'];
     constructor(private gameManager: GameManagerService, private mouseFocus: MouseFocusService) {}
