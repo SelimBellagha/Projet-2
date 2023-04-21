@@ -69,7 +69,7 @@ describe('VictoryComponent', () => {
     });
 
     it('should add history and score when data3 is true', () => {
-        component.data = {
+        const data = {
             data1: {
                 startDate: 'testDate',
                 gameLength: '0:19',
@@ -88,9 +88,10 @@ describe('VictoryComponent', () => {
             },
             data3: true,
         };
+        component.data = data;
         component.addHistoryAndScore();
-        expect(displayServiceSpy.addHistory).toHaveBeenCalledWith(component.data.data1);
-        expect(displayServiceSpy.checkPlayerScore).toHaveBeenCalledWith(component.data.data2);
+        expect(displayServiceSpy.addHistory).toHaveBeenCalledWith(data.data1);
+        expect(displayServiceSpy.checkPlayerScore).toHaveBeenCalledWith(data.data2);
     });
 
     it('should not add history and score when data3 is false', () => {
